@@ -12,4 +12,6 @@ jobs:
       with:
         webhook_id: ${{ secrets.WEBHOOK_ID }}
         webhook_token: ${{ secrets.WEBHOOK_TOKEN }}
-        args: ${{ github.event_name }} event triggered first step.
+        color: "#48f442"
+        username: "GitHub Bot"
+        message: "A new commit has been pushed with custom color."
