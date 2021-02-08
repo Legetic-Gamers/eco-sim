@@ -4,7 +4,7 @@ using UnityEngine;
 
 public static class MeshGenerator
 {
-    public static MeshData GenerateTerrainMesh(float[,] heightMap, float heightMultiplier, AnimationCurve _heightCurve, int levelOfDetail)
+    public static MeshData GenerateTerrainMesh(float[,] heightMap, float heightMultiplier, AnimationCurve _heightCurve, int levelOfDetail, bool useFlatShading)
     {
         AnimationCurve heightCurve = new AnimationCurve(_heightCurve.keys);
 
@@ -19,7 +19,7 @@ public static class MeshGenerator
 
         int verticiesPerLine = (meshSize - 1) / meshSimplificationIncrement + 1;
 
-        MeshData meshData = new MeshData(verticiesPerLine);
+        MeshData meshData = new MeshData(verticiesPerLine, useFlatShading);
 
         int[,] vertexIndiciesMap = new int[borderedSize, borderedSize];
         int meshVertexIndex = 0;
@@ -68,6 +68,9 @@ public static class MeshGenerator
                 vertexIndex += 1;
             }
         }
+
+        meshData.ProcessMesh();
+
         return meshData;
     }
 }
@@ -77,6 +80,7 @@ public class MeshData
     Vector3[] verticies;
     int[] triangles;
     Vector2[] uvs;
+    Vector3[] bakedNormals;
 
     Vector3[] borderVerticies;
     int[] borderTriangles;
@@ -84,8 +88,11 @@ public class MeshData
     int triangleIndex;
     int borderTriangleIndex;
 
-    public MeshData(int verticiesPerLine)
+    bool useFlatShading;
+
+    public MeshData(int verticiesPerLine, bool useFlatShading)
     {
+        this.useFlatShading = useFlatShading;
         verticies = new Vector3[verticiesPerLine * verticiesPerLine];
         uvs = new Vector2[verticiesPerLine * verticiesPerLine];
         triangles = new int[(verticiesPerLine - 1) * (verticiesPerLine - 1) * 6];
@@ -186,13 +193,52 @@ public class MeshData
         return Vector3.Cross(sideAB, sideAC).normalized;
     }
 
+    public void ProcessMesh()
+    {
+        if (useFlatShading)
+        {
+            FlatShading();
+        }
+        else
+        {
+            BakeNormals();
+        }
+    }
+
+    public void BakeNormals()
+    {
+        bakedNormals = CalculateNormals();
+    }
+
+    void FlatShading()
+    {
+        Vector3[] flatShadedVerticies = new Vector3[triangles.Length];
+        Vector2[] flatShadedUvs = new Vector2[triangles.Length];
+        for (int i = 0; i < triangles.Length; i++)
+        {
+            flatShadedVerticies[i] = verticies[triangles[i]];
+            flatShadedUvs[i] = uvs[triangles[i]];
+            triangles[i] = i;
+        }
+
+        verticies = flatShadedVerticies;
+        uvs = flatShadedUvs;
+    }
+
     public Mesh CreateMesh()
     {
         Mesh mesh = new Mesh();
         mesh.vertices = verticies;
         mesh.triangles = triangles;
         mesh.uv = uvs;
-        mesh.normals = CalculateNormals();
+        if (useFlatShading)
+        {
+            mesh.RecalculateNormals();
+        }
+        else
+        {
+            mesh.normals = bakedNormals;
+        }
         return mesh;
     }
 }
