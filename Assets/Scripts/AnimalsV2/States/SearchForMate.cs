@@ -22,7 +22,7 @@ public sealed class SearchForMate : FSMState<Animal>
 
     public override void Enter (Animal a) {
         Debug.Log("Time to find me a mate");
-
+        a.anim.SetBool("isJumping", true);
        /* if (m.Location != Locations.goldmine) {
             Debug.Log("Entering the mine...");
             m.ChangeLocation(Locations.goldmine);
