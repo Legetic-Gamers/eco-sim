@@ -1,3 +1,4 @@
+# https://game.ci/docs/github/activation
 name: Acquire activation file
 on: [push]
 jobs:
