@@ -19,13 +19,14 @@ public class AnimationController : MonoBehaviour
         //Get access to Animator to animate the animal.
         animator = GetComponent<Animator>();
 
-        //Listen to state changes of the animal to update animations.
+        //Listen to state changes of the animals states to update animations.
         animal.FSM.OnStateEnter += FSM_OnStateEnter;
         animal.FSM.OnStateExecute += FSM_OnOnStateExecute;
         animal.FSM.OnStateExit += FSM_OnOnStateExit;
 
     }
 
+    //Animation parameters which need updating on state enter.
     private void FSM_OnStateEnter(FSMState<Animal> state)
     {
         Debug.Log("Enter " + state.ToString() +" Animation");
@@ -40,14 +41,15 @@ public class AnimationController : MonoBehaviour
         }
         
     }
+    //Animation parameters which need updating every frame
+    //Pretty much a very indirect Update() that goes through the FSM.
+    //Has access to the state that is being executed.
     private void FSM_OnOnStateExecute(FSMState<Animal> state)
     {
-        //Debug.Log("Execute State Animation");
-        Debug.Log(state.ToString());
-        
-
-
+        //Use update() instead most likely
     }
+
+    //Animation parameters which need updating once a state ends
     private void FSM_OnOnStateExit(FSMState<Animal> state)
     {
         Debug.Log("Exit " + state.ToString() +" Animation");
