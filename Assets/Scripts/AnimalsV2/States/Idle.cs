@@ -8,7 +8,7 @@ using UnityEngine;
 //Author: Alexander LV
 // Heavily Inspired by: https://blog.playmedusa.com/a-finite-state-machine-in-c-for-unity3d/
 
-//State where the animal searches actively for a mate.
+//State where the animal just sits/ stands still.
 //sealed just prevents other classes from inheriting
 public sealed class Idle : FSMState<Animal>
 {
@@ -20,6 +20,11 @@ public sealed class Idle : FSMState<Animal>
     }
     static Idle() { }
     private Idle() { }
+
+    public override int getStateID()
+    {
+        return 0;
+    }
 
     public override void Enter (Animal a) {
         Debug.Log("Idleing...");

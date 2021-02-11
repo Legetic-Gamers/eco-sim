@@ -10,9 +10,15 @@ using UnityEngine;
 // Used Unity Official Tutorial on the Animator
 public class Animal : MonoBehaviour
 {
+    //Finite state machine, Behavior controller
+    public FiniteStateMachine<Animal> FSM;
+    //public FiniteStateMachine<Animal> FSM { get; private set; }
 
-    private FiniteStateMachine<Animal> FSM;
-    public Animator anim;
+
+
+    //State Changed Listeners. Used so that class is decoupled from view (animation).
+    //Passes in the state that was changed to.
+    //public event Action<FSMState<Animal>> OnStateChanged;
 
     //Perceptions
     //Some form of hearing
@@ -20,7 +26,7 @@ public class Animal : MonoBehaviour
     //Some form of sight
 
     //Parameters of the animal
-    public int Hunger = 0;
+    public float Hunger = 0;
     public int Energy = 0;
     public int Thirst = 0;
     public int ReproductiveUrge = 0;
@@ -32,11 +38,14 @@ public class Animal : MonoBehaviour
 
         //For now get instance of the state. Could also be switched to instance-based.
         FSM.Configure(this, Idle.Instance);
-     }
+
+    }
 
     public void ChangeState(FSMState<Animal> state)
     {
         FSM.ChangeState(state);
+        //notify state changed listeners
+        //OnStateChanged?.Invoke(state);
     }
 
     public void Eat(int amount)
@@ -49,26 +58,26 @@ public class Animal : MonoBehaviour
     //Taken from:  https://blog.playmedusa.com/a-finite-state-machine-in-c-for-unity3d/
     //returns true if animal is thirsty.
     public bool Thirsty() {
-        bool thirsty = Thirst == 10 ? true : false;
+        bool thirsty = Thirst >= 10 ? true : false;
         return thirsty;
     }
 
     public bool Hungry() {
-        bool hungry = Hunger == 10 ? true : false;
+        bool hungry = Hunger >= 2 ? true : false;
         return hungry;
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        anim = GetComponent<Animator>();
+        
     }
 
     // Update is called once per frame
     void Update()
     {
         //Tick parameters
-        Hunger++;
+        Hunger += 1 * Time.deltaTime;
         Thirst++;
         if(Hungry()) ChangeState(SearchForMate.Instance);
         FSM.Update();

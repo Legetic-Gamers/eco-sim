@@ -11,9 +11,12 @@ namespace FSM
 
 abstract public class FSMState <T>
 {
+    abstract public int getStateID();
     abstract public void Enter(T entity);
     abstract public void Execute (T entity);
     abstract public void Exit(T entity);
+
+    //Override isEqual?
 }
 
 }
