@@ -14,6 +14,8 @@ public class Animal : MonoBehaviour
     private FiniteStateMachine<Animal> FSM;
     public Animator anim;
 
+    private MoveTo nav;
+
     //Perceptions
     //Some form of hearing
     //Some form of Smell
@@ -37,6 +39,7 @@ public class Animal : MonoBehaviour
     public void ChangeState(FSMState<Animal> state)
     {
         FSM.ChangeState(state);
+        nav.enabled = true;
     }
 
     public void Eat(int amount)
@@ -62,6 +65,7 @@ public class Animal : MonoBehaviour
     void Start()
     {
         anim = GetComponent<Animator>();
+        nav = GetComponent<MoveTo>();
     }
 
     // Update is called once per frame

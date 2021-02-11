@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.AI;
-    
+using FSM;
+
 public class MoveTo : MonoBehaviour {
        
     public Transform goal;
