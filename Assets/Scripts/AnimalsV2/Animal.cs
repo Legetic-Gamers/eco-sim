@@ -20,6 +20,8 @@ public class Animal : MonoBehaviour
     //Passes in the state that was changed to.
     //public event Action<FSMState<Animal>> OnStateChanged;
 
+    private MoveTo nav;
+
     //Perceptions
     //Some form of hearing
     //Some form of Smell
@@ -44,8 +46,7 @@ public class Animal : MonoBehaviour
     public void ChangeState(FSMState<Animal> state)
     {
         FSM.ChangeState(state);
-        //notify state changed listeners
-        //OnStateChanged?.Invoke(state);
+        nav.enabled = true;
     }
 
     public void Eat(int amount)
@@ -70,7 +71,8 @@ public class Animal : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        //anim = GetComponent<Animator>();
+        nav = GetComponent<MoveTo>();
     }
 
     // Update is called once per frame
