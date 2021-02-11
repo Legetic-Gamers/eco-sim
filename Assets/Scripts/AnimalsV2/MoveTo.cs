@@ -5,20 +5,16 @@ using FSM;
 
 public class MoveTo : MonoBehaviour {
        
-    public Transform target;
-    Vector3 destination;
     NavMeshAgent agent;
     void Start () {
         agent = GetComponent<NavMeshAgent>();
         agent.autoBraking = false;
-        destination = agent.destination;
-        //goal = Random.insideUnitCircle * 5;
+        agent.destination = Random.insideUnitCircle * 20;
     }
 
     void Update () {
-        if (Vector3.Distance(destination, target.position) > 1.0f){
-            destination = target.position;
-            agent.destination = destination;
+        if (agent.remainingDistance < 1.0f){
+            agent.destination = Random.insideUnitCircle * 20;
         }
         }
 }

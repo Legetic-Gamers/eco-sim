@@ -20,7 +20,7 @@ public class Animal : MonoBehaviour
     //Passes in the state that was changed to.
     //public event Action<FSMState<Animal>> OnStateChanged;
 
-    private MoveTo nav;
+    public MoveTo nav;
 
     //Perceptions
     //Some form of hearing
@@ -46,7 +46,7 @@ public class Animal : MonoBehaviour
     public void ChangeState(FSMState<Animal> state)
     {
         FSM.ChangeState(state);
-        nav.enabled = true;
+        
     }
 
     public void Eat(int amount)
