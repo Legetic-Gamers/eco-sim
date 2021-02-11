@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -17,6 +18,13 @@ public class FiniteStateMachine <T>  {
   private FSMState<T> PreviousState;
   private FSMState<T> GlobalState;
 
+
+  //State Changed Listeners. Used so that class is decoupled from view (animation).
+  //Passes in the state that was changed to.
+  public event Action<FSMState<T>> OnStateEnter;
+  public event Action<FSMState<T>> OnStateExecute;
+  public event Action<FSMState<T>> OnStateExit;
+
   public void Awake() {
     CurrentState = null;
     PreviousState = null;
@@ -32,16 +40,42 @@ public class FiniteStateMachine <T>  {
   public void  Update() {
     if (GlobalState != null)  GlobalState.Execute(Owner);
     if (CurrentState != null) CurrentState.Execute(Owner);
+
+    //Notify execute state listeners.
+    
+    OnStateExecute?.Invoke(CurrentState);
+        //Debug.Log("EXECTUUTUEUTD");
+
+    
+
+
   }
 
         //Change current state.
   public void  ChangeState(FSMState<T> NewState) {
+      
+      if(NewState == CurrentState)return;
+      
     PreviousState = CurrentState;
     if (CurrentState != null)
-      CurrentState.Exit(Owner);
-      CurrentState = NewState;
-      if (CurrentState != null)
-        CurrentState.Enter(Owner);
+    {
+        
+        //Notify exit state listeners
+        OnStateExit?.Invoke(CurrentState);
+
+        //Exit state and change state
+        CurrentState.Exit(Owner);
+
+    }
+        CurrentState = NewState; 
+
+        if (CurrentState != null)
+        {
+            //Notify Enter State listeners and enter new state
+            OnStateEnter?.Invoke(CurrentState);
+            CurrentState.Enter(Owner);
+        }
+    
   }
 
   public void  RevertToPreviousState() {
