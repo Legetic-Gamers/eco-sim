@@ -4,10 +4,9 @@ using UnityEngine;
 
 public static class MeshGenerator
 {
-    public static MeshData GenerateTerrainMesh(float[,] heightMap, float heightMultiplier, AnimationCurve _heightCurve, int levelOfDetail, bool useFlatShading)
-    {
-        AnimationCurve heightCurve = new AnimationCurve(_heightCurve.keys);
 
+    public static MeshData GenerateTerrainMesh(float[,] heightMap, MeshSettings meshSettings, int levelOfDetail)
+    {
         int meshSimplificationIncrement = (levelOfDetail == 0) ? 1 : levelOfDetail * 2;
 
         int borderedSize = heightMap.GetLength(0);
@@ -19,7 +18,7 @@ public static class MeshGenerator
 
         int verticiesPerLine = (meshSize - 1) / meshSimplificationIncrement + 1;
 
-        MeshData meshData = new MeshData(verticiesPerLine, useFlatShading);
+        MeshData meshData = new MeshData(verticiesPerLine, meshSettings.useFlatShading);
 
         int[,] vertexIndiciesMap = new int[borderedSize, borderedSize];
         int meshVertexIndex = 0;
@@ -50,8 +49,8 @@ public static class MeshGenerator
             {
                 int vertexIndex = vertexIndiciesMap[x, y];
                 Vector2 percent = new Vector2((x - meshSimplificationIncrement) / (float)meshSize, (y - meshSimplificationIncrement) / (float)meshSize);
-                float height = heightCurve.Evaluate(heightMap[x, y]) * heightMultiplier;
-                Vector3 vertexPosition = new Vector3(topLeftX + percent.x * meshSizeUnsimplified, height, topLeftZ - percent.y * meshSizeUnsimplified);
+                float height = heightMap[x, y];
+                Vector3 vertexPosition = new Vector3((topLeftX + percent.x * meshSizeUnsimplified) * meshSettings.meshScale, height, (topLeftZ - percent.y * meshSizeUnsimplified) * meshSettings.meshScale);
 
                 meshData.AddVertex(vertexPosition, percent, vertexIndex);
 
@@ -93,6 +92,7 @@ public class MeshData
     public MeshData(int verticiesPerLine, bool useFlatShading)
     {
         this.useFlatShading = useFlatShading;
+
         verticies = new Vector3[verticiesPerLine * verticiesPerLine];
         uvs = new Vector2[verticiesPerLine * verticiesPerLine];
         triangles = new int[(verticiesPerLine - 1) * (verticiesPerLine - 1) * 6];
@@ -121,7 +121,6 @@ public class MeshData
             borderTriangles[borderTriangleIndex] = a;
             borderTriangles[borderTriangleIndex + 1] = b;
             borderTriangles[borderTriangleIndex + 2] = c;
-
             borderTriangleIndex += 3;
         }
         else
@@ -130,7 +129,6 @@ public class MeshData
             triangles[triangleIndex] = a;
             triangles[triangleIndex + 1] = b;
             triangles[triangleIndex + 2] = c;
-
             triangleIndex += 3;
         }
     }
