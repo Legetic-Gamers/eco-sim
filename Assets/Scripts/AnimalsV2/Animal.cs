@@ -1,17 +1,18 @@
-﻿using System;
+using System;
 using FSM;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 
-//Author: Alexander LV
+//Author: Alexander LV, Johan A
 // Heavily Inspired by: https://blog.playmedusa.com/a-finite-state-machine-in-c-for-unity3d/
-
+// Used Unity Official Tutorial on the Animator
 public class Animal : MonoBehaviour
 {
 
     private FiniteStateMachine<Animal> FSM;
+    public Animator anim;
 
     //Perceptions
     //Some form of hearing
@@ -30,7 +31,7 @@ public class Animal : MonoBehaviour
         FSM = new FiniteStateMachine<Animal>();
 
         //For now get instance of the state. Could also be switched to instance-based.
-        //FSM.Configure(this, SearchForMate.instance);
+        FSM.Configure(this, Idle.Instance);
      }
 
     public void ChangeState(FSMState<Animal> state)
@@ -60,7 +61,7 @@ public class Animal : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        anim = GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -69,5 +70,7 @@ public class Animal : MonoBehaviour
         //Tick parameters
         Hunger++;
         Thirst++;
+        if(Hungry()) ChangeState(SearchForMate.Instance);
+        FSM.Update();
     }
 }
