@@ -33,7 +33,7 @@
 		}
 
 		void surf (Input IN, inout SurfaceOutputStandard o) {
-			float heightPercent = inverseLerp(minHeight,maxHeight, IN.worldPos.y);
+			float heightPercent = inverseLerp(minHeight, maxHeight, IN.worldPos.y);
 			for (int i = 0; i < baseColourCount; i ++) {
 				float drawStrength = inverseLerp(-baseBlends[i]/2 - epsilon, baseBlends[i]/2, heightPercent - baseStartHeights[i]);
 				o.Albedo = o.Albedo * (1-drawStrength) + baseColours[i] * drawStrength;
