@@ -12,8 +12,8 @@ public class TextureData : UpdatableData
     [Range(0, 1)]
     public float[] baseBlends;
 
-    float savedMinHeight;
-    float savedMaxHeight;
+    private float savedMinHeight;
+    private float savedMaxHeight;
 
     public void ApplyToMaterial(Material material)
     {

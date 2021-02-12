@@ -16,11 +16,16 @@ public class TerrainChunk
     MeshFilter meshFilter;
     MeshCollider meshCollider;
 
+
+    // Endless terrain
     LODInfo[] detailLevels;
     LevelOfDetailMesh[] levelOfDetailMeshes;
     int colliderLevelOfDetailIndex;
 
-    HeightMap mapData1;
+    // Fixed terrain
+    bool fixedTerrain;
+    TerrainMesh terrainMesh;
+
     bool heightMapReceived;
     int previousLODIndex = -1;
     bool hasSetCollider;
@@ -30,7 +35,7 @@ public class TerrainChunk
     MeshSettings meshSettings;
     Transform viewer;
 
-    public TerrainChunk(Vector2 coordinate, HeightMapSettings heightMapSettings, MeshSettings meshSettings, LODInfo[] detailLevels, int colliderLevelOfDetailIndex, Transform parent, Transform viewer, Material material)
+    public TerrainChunk(Vector2 coordinate, HeightMapSettings heightMapSettings, MeshSettings meshSettings, bool fixedTerrain, LODInfo[] detailLevels, int colliderLevelOfDetailIndex, Transform parent, Transform viewer, Material material)
     {
         this.coordinate = coordinate;
         this.detailLevels = detailLevels;
@@ -38,6 +43,7 @@ public class TerrainChunk
         this.heightMapSettings = heightMapSettings;
         this.meshSettings = meshSettings;
         this.viewer = viewer;
+        this.fixedTerrain = fixedTerrain;
 
         sampleCentre = coordinate * meshSettings.meshWorldSize / meshSettings.meshScale;
         Vector2 position = coordinate * meshSettings.meshWorldSize;
@@ -53,19 +59,30 @@ public class TerrainChunk
         meshObject.transform.parent = parent;
         SetVisible(false);
 
-        levelOfDetailMeshes = new LevelOfDetailMesh[detailLevels.Length];
-        for (int i = 0; i < detailLevels.Length; i++)
+        if (fixedTerrain)
         {
-            levelOfDetailMeshes[i] = new LevelOfDetailMesh(detailLevels[i].lod);
-            levelOfDetailMeshes[i].updateCallback += UpdateTerrainChunk;
-            if (i == colliderLevelOfDetailIndex)
+            terrainMesh = new TerrainMesh();
+            terrainMesh.updateCallback += UpdateTerrainChunk;
+            terrainMesh.updateCallback += SetCollisionMesh;
+            SetVisible(true);
+        }
+        else
+        {
+            levelOfDetailMeshes = new LevelOfDetailMesh[detailLevels.Length];
+
+            for (int i = 0; i < detailLevels.Length; i++)
             {
-                levelOfDetailMeshes[i].updateCallback += UpdateCollisionMesh;
+                levelOfDetailMeshes[i] = new LevelOfDetailMesh(detailLevels[i].lod);
+                levelOfDetailMeshes[i].updateCallback += UpdateTerrainChunk;
+                if (i == colliderLevelOfDetailIndex)
+                {
+                    levelOfDetailMeshes[i].updateCallback += UpdateCollisionMesh;
+                }
+
             }
 
+            maxViewDistance = detailLevels[detailLevels.Length - 1].visibleDistanceThreshold;
         }
-
-        maxViewDistance = detailLevels[detailLevels.Length - 1].visibleDistanceThreshold;
 
     }
 
@@ -92,50 +109,64 @@ public class TerrainChunk
 
     public void UpdateTerrainChunk()
     {
-        if (heightMapReceived)
+        if (fixedTerrain)
         {
-            float viewerDistanceFromNearestEdge = Mathf.Sqrt(bounds.SqrDistance(viewerPosition));
-
-            bool wasVisible = IsVisible();
-            bool visible = viewerDistanceFromNearestEdge <= maxViewDistance;
-
-            if (visible)
+            if (terrainMesh.hasMesh)
             {
-                int lodIndex = 0;
-
-                for (int i = 0; i < detailLevels.Length - 1; i++)
-                {
-                    if (viewerDistanceFromNearestEdge > detailLevels[i].visibleDistanceThreshold)
-                    {
-                        lodIndex = i + 1;
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-
-                if (lodIndex != previousLODIndex)
-                {
-                    LevelOfDetailMesh lodMesh = levelOfDetailMeshes[lodIndex];
-                    if (lodMesh.hasMesh)
-                    {
-                        previousLODIndex = lodIndex;
-                        meshFilter.mesh = lodMesh.mesh;
-                    }
-                    else if (!lodMesh.hasRequestedMesh)
-                    {
-                        lodMesh.RequestMesh(heightMap, meshSettings);
-                    }
-                }
+                meshFilter.mesh = terrainMesh.mesh;
             }
-
-            if (wasVisible != visible)
+            else if (!terrainMesh.hasRequestedMesh)
             {
-                SetVisible(visible);
-                if (onVisibilityChanged != null)
+                terrainMesh.RequestMesh(heightMap, meshSettings);
+            }
+        }
+        else
+        {
+            if (heightMapReceived)
+            {
+                float viewerDistanceFromNearestEdge = Mathf.Sqrt(bounds.SqrDistance(viewerPosition));
+
+                bool wasVisible = IsVisible();
+                bool visible = viewerDistanceFromNearestEdge <= maxViewDistance;
+
+                if (visible)
                 {
-                    onVisibilityChanged(this, visible);
+                    int lodIndex = 0;
+
+                    for (int i = 0; i < detailLevels.Length - 1; i++)
+                    {
+                        if (viewerDistanceFromNearestEdge > detailLevels[i].visibleDistanceThreshold)
+                        {
+                            lodIndex = i + 1;
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+
+                    if (lodIndex != previousLODIndex)
+                    {
+                        LevelOfDetailMesh lodMesh = levelOfDetailMeshes[lodIndex];
+                        if (lodMesh.hasMesh)
+                        {
+                            previousLODIndex = lodIndex;
+                            meshFilter.mesh = lodMesh.mesh;
+                        }
+                        else if (!lodMesh.hasRequestedMesh)
+                        {
+                            lodMesh.RequestMesh(heightMap, meshSettings);
+                        }
+                    }
+                }
+
+                if (wasVisible != visible)
+                {
+                    SetVisible(visible);
+                    if (onVisibilityChanged != null)
+                    {
+                        onVisibilityChanged(this, visible);
+                    }
                 }
             }
         }
@@ -166,6 +197,15 @@ public class TerrainChunk
         }
     }
 
+    public void SetCollisionMesh()
+    {
+        if (terrainMesh.hasMesh && !hasSetCollider)
+        {
+            meshCollider.sharedMesh = terrainMesh.mesh;
+            hasSetCollider = true;
+        }
+    }
+
     public void SetVisible(bool visible)
     {
         meshObject.SetActive(visible);
@@ -177,20 +217,17 @@ public class TerrainChunk
     }
 }
 
-class LevelOfDetailMesh
+
+
+class TerrainMesh
 {
     public Mesh mesh;
     public bool hasRequestedMesh;
     public bool hasMesh;
-    int lod;
+
     public event System.Action updateCallback;
 
-    public LevelOfDetailMesh(int lod)
-    {
-        this.lod = lod;
-    }
-
-    private void OnMeshDataReceived(object meshDataObject)
+    protected void OnMeshDataReceived(object meshDataObject)
     {
         mesh = ((MeshData)meshDataObject).CreateMesh();
         hasMesh = true;
@@ -198,7 +235,26 @@ class LevelOfDetailMesh
         updateCallback();
     }
 
-    public void RequestMesh(HeightMap heightMap, MeshSettings meshSettings)
+    public virtual void RequestMesh(HeightMap heightMap, MeshSettings meshSettings)
+    {
+        hasRequestedMesh = true;
+
+        ThreadedDataRequester.RequestData(() => MeshGenerator.GenerateTerrainMesh(heightMap.values, meshSettings, 0), OnMeshDataReceived);
+    }
+}
+
+class LevelOfDetailMesh : TerrainMesh
+{
+
+    int lod;
+
+    public LevelOfDetailMesh(int lod)
+    {
+        this.lod = lod;
+    }
+
+
+    public override void RequestMesh(HeightMap heightMap, MeshSettings meshSettings)
     {
         hasRequestedMesh = true;
 
