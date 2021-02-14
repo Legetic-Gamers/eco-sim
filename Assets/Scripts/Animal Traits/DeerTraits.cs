@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DeerTraits : AnimalTraitModel
+public class DeerTraits : AnimalModel
 {
     // Start is called before the first frame update
     private void Start()

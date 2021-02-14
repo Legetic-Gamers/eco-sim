@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FieldOfHearing : MonoBehaviour
+public class HearingAbility : MonoBehaviour
 {
 
     /* /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\ */
@@ -17,7 +17,7 @@ public class FieldOfHearing : MonoBehaviour
 
     public List<Transform> targets = new List<Transform>();
 
-    private AnimalTraitModel animalModel;
+    private AnimalModel animalModel;
 
     /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
 
@@ -51,7 +51,7 @@ public class FieldOfHearing : MonoBehaviour
     
     private void Start()
     {
-        animalModel = GetComponent<AnimalTraitModel>();
+        animalModel = GetComponent<AnimalModel>();
         radius = animalModel.hearingRadius;
 
         StartCoroutine("FindTargetsWithDelay", .5f);
