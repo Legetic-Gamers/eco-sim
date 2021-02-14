@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-[CustomEditor(typeof(FieldOfHearing))]
+[CustomEditor(typeof(HearingAbility))]
 public class FoHEdit : Editor
 {
     private void OnSceneGUI()
     {
-        var animal = (FieldOfHearing)target;
+        var animal = (HearingAbility)target;
         Handles.color = Color.yellow;
 
         var animalPos = animal.transform.position;

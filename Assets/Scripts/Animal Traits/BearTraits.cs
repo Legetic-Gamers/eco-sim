@@ -2,19 +2,30 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BearTraits : AnimalTraitModel
+public class BearTraits : AnimalModel
 {
     private void Start()
     {
-        agingDelay = 10.0f; // delay of each age tick in seconds
-        ageLimit = 30; // multiplied by agingDelay to get the limit of age in seconds
-        StartCoroutine("AgeTimer");
-        //hungerDelegateFunctions += HungerDelegate.DecrementHunger;
+        ageLimit = 30;
+
+        currentEnergy = 10;
+        hydration = 10;
+        reproductiveUrge = 0;
+        // subscribe to the OnTickEvent for parameter handling.
+        EventSubscribe();
     }
 
     private void Update()
     {
         // for testing
         if (isControllable) Move();
+        if (isAlive && currentEnergy <= 0 && hydration <= 0)
+        {
+            isAlive = false; 
+            EventUnsubscribe();
+            
+            // probably doing this in deathState instead
+            Destroy(gameObject, 2.0f);
+        }
     }
 }

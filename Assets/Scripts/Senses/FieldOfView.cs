@@ -19,7 +19,7 @@ public class FieldOfView : MonoBehaviour
 
     public List<Transform> targets = new List<Transform>();
 
-    private AnimalTraitModel animalModel;
+    private AnimalModel animalModel;
 
     /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
 
@@ -73,7 +73,7 @@ public class FieldOfView : MonoBehaviour
     
     private void Start() 
     {
-        animalModel = GetComponent<AnimalTraitModel>();
+        animalModel = GetComponent<AnimalModel>();
         
         angle = animalModel.viewAngle;
         radius = animalModel.viewRadius;

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WolfTraits : AnimalTraitModel
+public class WolfTraits : AnimalModel
 {
     
     private void Start()
