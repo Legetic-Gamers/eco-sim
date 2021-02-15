@@ -6,29 +6,31 @@ public class CameraController : MonoBehaviour
 {
     // Move
     public float speed = 25.0f;
-    public float height = 50.0f;
+    public float height = 5.0f;
 
     // Rotate
-    public Vector2 pitchMinMax = new Vector2(-20, 40);
     private float pitch;
     private float yaw;
-    private float sensitivity = 2.0f;
+    public Vector2 pitchMinMax = new Vector2(-20, 40);
+    public float sensitivity = 2.0f;
     
     // FollowTarget
-    [Tooltip("Must be a valid tag (including correct capitalization) for targeting to work!")]
-    public string target_tag = "Animal";
-    private GameObject Target;
-    private Vector3 offset = new Vector3(0, 2, 0);
+    [Tooltip("Must be a valid tag (including correct capitalization) for targeting to work.")]
+    public string targetTag = "Animal";
+    private GameObject target;
+    private readonly Vector3 yOffset = new Vector3(0, 2, 0);
+
+    private bool hasTarget = false;
     
     // WASD movement
-    void Move()
+    private void Move()
     {
         // Positive: D, Negative: A
-        float X_Axis = Input.GetAxis("Horizontal");
+        var xAxis = Input.GetAxis("Horizontal") * speed * Time.deltaTime;
         // Positive: W, Negative: S
-        float Z_Axis = Input.GetAxis("Vertical");
+        var zAxis = Input.GetAxis("Vertical") * speed * Time.deltaTime;
 
-        transform.Translate(new Vector3(X_Axis, 0, Z_Axis) * speed * Time.deltaTime);
+        transform.Translate(new Vector3(xAxis, 0, zAxis));
 
         // This is set so that the camera always stays at a certain height
         transform.position = new Vector3(transform.position.x, height, transform.position.z);
@@ -48,7 +50,7 @@ public class CameraController : MonoBehaviour
     }
 
     // Camera rotation
-    void Rotate()
+    private void Rotate()
     {
         // Mouse movement
         yaw += Input.GetAxis("Mouse X") * sensitivity;
@@ -60,24 +62,28 @@ public class CameraController : MonoBehaviour
     }
 
     // Raycast to get a target at mouse position
-    void GetTarget() 
+    private void GetTarget() 
     {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit))
         {
-            if (hit.collider.tag == target_tag) 
+            if (hit.collider.CompareTag(targetTag)) 
             {
-                Target = hit.collider.gameObject;
-                Debug.Log("Raycast hit " + Target.name + "!");
+                hasTarget = true;
+                target = hit.collider.gameObject;
+                if (target.GetComponent<AnimalModel>() != null)
+                    target.GetComponent<AnimalModel>().isControllable = true;
+                
+                Debug.Log("Raycast hit " + target.name + "!");
             }
         }
     }
 
     // Update is called once per frame
-    void LateUpdate()
+    private void LateUpdate()
     {
-        // Selects an object with a certain tag at mouseover after pressing T so it can be followed
+        // selct an object (correct tag) to follow it
         if (Input.GetMouseButtonDown(0))
         {
             GetTarget();
@@ -85,7 +91,11 @@ public class CameraController : MonoBehaviour
         // Esc to deselect target and/or reset zoom/fov level
         if (Input.GetKey(KeyCode.Escape)) 
         {
-            Target = null;
+            hasTarget = false;
+            target = null;
+            if (target.GetComponent<AnimalModel>() != null)
+                target.GetComponent<AnimalModel>().isControllable = true;
+            
             Camera.main.fieldOfView = 60;
         }
         
@@ -93,7 +103,7 @@ public class CameraController : MonoBehaviour
         if (!Input.GetKey(KeyCode.LeftAlt)) Rotate();
 
         // Follow the target
-        if (Target != null) transform.position = Target.transform.position - transform.forward * 4 + offset;
+        if (hasTarget) transform.position = target.transform.position - transform.forward * 4 + yOffset;
         else Move();
     }
 }
