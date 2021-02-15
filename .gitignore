@@ -73,3 +73,6 @@ crashlytics-build.properties
 
 #Plugins
 /Assets/Plugins/
+
+#Rider
+/.idea
