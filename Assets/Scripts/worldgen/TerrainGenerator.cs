@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
+
 
 public class TerrainGenerator : MonoBehaviour
 {
@@ -26,6 +28,7 @@ public class TerrainGenerator : MonoBehaviour
     [Header("Fixed terrain settings")]
     public int fixedSizeX;
     public int fixedSizeY;
+    public NavMeshSurface navMeshSurface;
 
     [Header("General")]
     public Material mapMaterial;
@@ -44,6 +47,7 @@ public class TerrainGenerator : MonoBehaviour
     private List<TerrainChunk> visibleTerrainChunks = new List<TerrainChunk>();
 
     private List<TerrainChunk> fixedSizeChunks = new List<TerrainChunk>();
+    private int loadedChunks = 0;
 
 
 
@@ -130,11 +134,20 @@ public class TerrainGenerator : MonoBehaviour
         {
             for (int x = 0; x < fixedSizeX; x++)
             {
-                TerrainChunk newChunk = new TerrainChunk(new Vector2(x - fixedSizeX / 2, y - fixedSizeY / 2), heightMapSettings, meshSettings, true, detailLevels, colliderLevelOfDetailIndex, transform, viewer, mapMaterial);
+                TerrainChunk newChunk = new TerrainChunk(new Vector2(x - fixedSizeX / 2, y - fixedSizeY / 2), heightMapSettings, meshSettings, true, detailLevels, colliderLevelOfDetailIndex, transform, viewer, mapMaterial, OnChunkLoaded);
                 fixedSizeChunks.Add(newChunk);
                 newChunk.Load();
                 newChunk.SetCollisionMesh();
             }
+        }
+    }
+
+    public void OnChunkLoaded()
+    {
+        loadedChunks++;
+        if (loadedChunks >= fixedSizeX * fixedSizeY)
+        {
+            navMeshSurface.BuildNavMesh();
         }
     }
 
