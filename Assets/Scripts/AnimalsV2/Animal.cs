@@ -11,13 +11,9 @@ using UnityEngine;
 public class Animal : MonoBehaviour
 {
     //Finite state machine, Behavior controller
-    public FiniteStateMachine<Animal> FSM;
-    //public FiniteStateMachine<Animal> FSM { get; private set; }
+    //public FiniteStateMachine<Animal> FSM;
+    public FiniteStateMachine<Animal> FSM { get; private set; }
 
-
-
-    //State Changed Listeners. Used so that class is decoupled from view (animation).
-    //Passes in the state that was changed to.
     //public event Action<FSMState<Animal>> OnStateChanged;
 
     public MoveTo nav;
@@ -37,7 +33,7 @@ public class Animal : MonoBehaviour
 
         Debug.Log("Rabbit exists");
         FSM = new FiniteStateMachine<Animal>();
-
+       
         //For now get instance of the state. Could also be switched to instance-based.
         FSM.Configure(this, Idle.Instance);
 
@@ -82,6 +78,7 @@ public class Animal : MonoBehaviour
         Hunger += 1 * Time.deltaTime;
         Thirst++;
         if(Hungry()) ChangeState(SearchForMate.Instance);
-        FSM.Update();
+        
+        FSM.UpdateState();
     }
 }

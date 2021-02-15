@@ -37,7 +37,7 @@ public class FiniteStateMachine <T>  {
     ChangeState(InitialState);
   }
         //Update the state 
-  public void  Update() {
+  public void  UpdateState() {
     if (GlobalState != null)  GlobalState.Execute(Owner);
     if (CurrentState != null) CurrentState.Execute(Owner);
 
@@ -60,20 +60,22 @@ public class FiniteStateMachine <T>  {
     if (CurrentState != null)
     {
         
-        //Notify exit state listeners
-        OnStateExit?.Invoke(CurrentState);
+        
 
         //Exit state and change state
         CurrentState.Exit(Owner);
+        //Notify exit state listeners, animationcontroller for example.
+        OnStateExit?.Invoke(CurrentState);
 
     }
         CurrentState = NewState; 
 
         if (CurrentState != null)
         {
+            
+            CurrentState.Enter(Owner);
             //Notify Enter State listeners and enter new state
             OnStateEnter?.Invoke(CurrentState);
-            CurrentState.Enter(Owner);
         }
     
   }

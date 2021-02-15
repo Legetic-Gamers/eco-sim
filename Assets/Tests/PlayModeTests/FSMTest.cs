@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using FSM;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
@@ -17,9 +18,10 @@ namespace Tests
         
         // Testing the basic functionality of the FSM
         [Test]
-        public void FSMTestBasicFunctionalityPasses()
+        public void FSM_Configure_Passes()
         {
-            GameObject g = new GameObject();
+            FiniteStateMachine<GameObject> fsm = new FiniteStateMachine<GameObject>();
+            //Assert.IsTrue(fsm.);
             
 
         }

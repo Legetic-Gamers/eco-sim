@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using FSM;
+using static FSM.StateAnimation;
+
 public class Eating : FSMState<Animal>
 {
     static readonly Eating instance = new Eating();
@@ -12,15 +14,11 @@ public class Eating : FSMState<Animal>
     }
     static Eating() { }
     private Eating() { }
-
-    public override int getStateID()
-    {
-        return 0;
-    }
+    
 
     public override void Enter (Animal a) {
         Debug.Log("Eating...");
-        
+        currentStateAnimation = LookingOut;
     }
 
     public override void Execute (Animal a) {

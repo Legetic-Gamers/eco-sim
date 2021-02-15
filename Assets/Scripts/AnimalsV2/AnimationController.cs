@@ -31,14 +31,9 @@ public class AnimationController : MonoBehaviour
     {
         Debug.Log("Enter " + state.ToString() +" Animation");
         
-        if (state.getStateID() == 1)
-        {
-            animator.SetBool("isJumping",true);
-        }
-        else if (state.getStateID() == 0)
-        {
-            animator.SetBool("isJumping",false);
-        }
+        animator?.CrossFade("Base Layer." + state,0.5f,0);
+        
+        
         
     }
     //Animation parameters which need updating every frame
@@ -47,12 +42,15 @@ public class AnimationController : MonoBehaviour
     private void FSM_OnOnStateExecute(FSMState<Animal> state)
     {
         //Use update() instead most likely
+        animator.SetFloat("runningSpeed",animal.Hunger);
     }
 
     //Animation parameters which need updating once a state ends
     private void FSM_OnOnStateExit(FSMState<Animal> state)
     {
         Debug.Log("Exit " + state.ToString() +" Animation");
+        animator?.CrossFade("Base Layer." + state,0.5f,0);
+        //animator.Play("Base Layer." + state,0);
     }
 
 
