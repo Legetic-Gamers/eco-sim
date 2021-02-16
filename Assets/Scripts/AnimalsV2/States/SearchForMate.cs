@@ -22,23 +22,16 @@ namespace FSM
         {
             get { return instance; }
         }
-
-        static SearchForMate()
-        {
-        }
+ 
+        static SearchForMate() {}
 
         //Hide constructor
-        private SearchForMate()
-        {
-        }
+        private SearchForMate() {}
 
 
         public override void Enter(Animal a)
         {
             Debug.Log("Time to find me a mate");
-            a.nav.enabled = true;
-            
-
             //we only change the state animation here for this purpose.
             currentStateAnimation = Running;
         }
@@ -46,7 +39,6 @@ namespace FSM
         public override void Execute(Animal a)
         {
             //Searching behavior goes here
-
         }
 
         public override void Exit(Animal a)

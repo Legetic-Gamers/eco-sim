@@ -16,5 +16,5 @@ public class MoveTo : MonoBehaviour {
         if (agent.remainingDistance < 1.0f){
             agent.destination = Random.insideUnitCircle * 20;
         }
-        }
+    }
 }
