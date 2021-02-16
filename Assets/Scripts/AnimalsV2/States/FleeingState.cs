@@ -27,7 +27,6 @@ namespace FSM
         
         
         //Fields
-        private float distance;
         private NavMeshAgent nMAgent;
         
         
@@ -40,8 +39,8 @@ namespace FSM
         public override void Execute(Animal a)
         {
             //Get average position of enemies and run away from it.
-            Vector3 averagePosition = GetAveragePredatorPosition(a);
-            RunAway(a.transform,averagePosition);
+            Vector3 averagePosition = GetClosestPredatorPosition(a);
+            RunToFromPoint(a.transform,averagePosition,false);
         }
         
 
@@ -50,25 +49,35 @@ namespace FSM
             
         }
         
+        //Uses
         //Inspired by: https://answers.unity.com/questions/868003/navmesh-flee-ai-flee-from-player.html 
-        private void RunAway(Transform animalTransform,Vector3 averageEnemyPosition)
+        private void RunToFromPoint(Transform animalTransform,Vector3 targetPoint,bool toPoint)
         {
-            Transform startTransform = animalTransform;
+            
+            Vector3 pointToAnimalVector;
 
-            animalTransform.rotation = Quaternion.LookRotation(animalTransform.position - averageEnemyPosition);
+            //Run to point or from point
+            if (toPoint)
+            {
+                pointToAnimalVector = targetPoint - animalTransform.position;
+            }
+            else
+            {
+                pointToAnimalVector = animalTransform.position - targetPoint;
+            }
 
-            Vector3 pointToRunTo = animalTransform.position + animalTransform.forward * distance;
+            //Calculate point to run towards or from.
+            Vector3 pointToRunTo = animalTransform.position + Vector3.Normalize(pointToAnimalVector);
             
             //Move the animal using the navmeshagent.
             NavMeshHit hit;
             NavMesh.SamplePosition(pointToRunTo,out hit,5,1 << NavMesh.GetAreaFromName("Walkable"));
-            
-            //Reset transform
-            animalTransform.position = startTransform.position;
-            animalTransform.rotation = startTransform.rotation;
-            
+            nMAgent.SetDestination(hit.position);
+
         }
         
+        //This function could be extended upon to generate a better point.
+        //This would result in smarter fleeing behavior.
         private static Vector3 GetAveragePredatorPosition(Animal a)
         {
             Vector3 averagePosition = new Vector3();
@@ -80,6 +89,29 @@ namespace FSM
             averagePosition /= a.nearbyPredators.Length;
 
             return averagePosition;
+        }
+        
+        private static Vector3 GetClosestPredatorPosition(Animal a)
+        {
+            Vector3 animalPosition = a.transform.position;
+            if (a.nearbyPredators.Length == 0) return animalPosition;
+            
+            
+            Vector3 closestPredatorPostiion = a.nearbyPredators[0].transform.position;
+            float closestDistance = Vector3.Distance(closestPredatorPostiion, animalPosition);
+            
+            foreach (GameObject g in a.nearbyPredators)
+            {
+                float dist = Vector3.Distance(g.transform.position, animalPosition);
+                if (dist < closestDistance)
+                {
+                    closestDistance = dist;
+                    closestPredatorPostiion = g.transform.position;
+                }
+                
+            }
+            
+            return closestPredatorPostiion;
         }
 
     }
