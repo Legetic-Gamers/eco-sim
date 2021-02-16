@@ -9,6 +9,8 @@ using static FSM.StateAnimation;
 
 namespace FSM
 {
+    
+    //TODO Could potentially just get all possible animations.
     public enum StateAnimation
     {
         Walking,

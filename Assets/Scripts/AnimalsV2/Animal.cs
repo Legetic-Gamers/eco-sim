@@ -22,6 +22,7 @@ public class Animal : MonoBehaviour
     //Some form of hearing
     //Some form of Smell
     //Some form of sight
+    public GameObject[] nearbyPredators;//TODO replace placeholder implementation.
 
     //Parameters of the animal
     public float Hunger = 0;
@@ -30,6 +31,8 @@ public class Animal : MonoBehaviour
     public int ReproductiveUrge = 0;
 
     void Awake(){
+        
+        
 
         Debug.Log("Rabbit exists");
         FSM = new FiniteStateMachine<Animal>();
@@ -74,10 +77,14 @@ public class Animal : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        
+        //TODO Replace with perception check that finds them
+        nearbyPredators = GameObject.FindGameObjectsWithTag("Predator");
+        
         //Tick parameters
         Hunger += 1 * Time.deltaTime;
         Thirst++;
-        if(Hungry()) ChangeState(SearchForMate.Instance);
+        if(Hungry()) ChangeState(FleeingState.Instance);
         
         FSM.UpdateState();
     }
