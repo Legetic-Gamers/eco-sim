@@ -20,7 +20,6 @@ namespace FSM
         Idle,
         Dead
     }
-
     abstract public class FSMState<T>
     {
         //protected = seen by children.

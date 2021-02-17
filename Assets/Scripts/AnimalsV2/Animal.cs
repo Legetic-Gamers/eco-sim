@@ -19,23 +19,20 @@ public class Animal : MonoBehaviour
 
     public NavMeshAgent nMAgent;
     
+    
     //Perceptions
     //Some form of hearing
     //Some form of Smell
     //Some form of sight
-    public GameObject[] nearbyPredators;//TODO replace placeholder implementation.
-    public GameObject[] nearbyFood;//TODO replace placeholder implementation.
+    public GameObject[] nearbyObjects;
 
     //Parameters of the animal
     public float Hunger = 0;
     public int Energy = 0;
     public int Thirst = 0;
     public int ReproductiveUrge = 0;
-
+    
     void Awake(){
-        
-        
-
         Debug.Log("Rabbit exists");
         FSM = new FiniteStateMachine<Animal>();
        
@@ -47,7 +44,6 @@ public class Animal : MonoBehaviour
     public void ChangeState(FSMState<Animal> state)
     {
         FSM.ChangeState(state);
-        
     }
 
     public void Eat(int amount)
@@ -73,21 +69,16 @@ public class Animal : MonoBehaviour
     void Start()
     {
         nMAgent = GetComponent<NavMeshAgent>();
-        //nav = GetComponent<MoveTo>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        
-        //TODO Replace with perception check that finds them
-        nearbyPredators = GameObject.FindGameObjectsWithTag("Predator");
-        nearbyFood = GameObject.FindGameObjectsWithTag("Food");
-        
+
         //Tick parameters
         Hunger += 1 * Time.deltaTime;
         Thirst++;
-        if(Hungry()) ChangeState(SearchForFood.Instance);
+        if(Hungry()) ChangeState(FleeingState.Instance);
         
         FSM.UpdateState();
     }

@@ -20,13 +20,14 @@ public class SearchForFood : FSMState<Animal>
     public override void Enter (Animal a) {
         Debug.Log("Search for food...");
         currentStateAnimation = Running;
+        
     }
 
     public override void Execute (Animal a)
     {
         currentStateAnimation = Walking;
         //Get average position of enemies and run away from it.
-        Vector3 foodPos = GetNearestFood(a);
+        Vector3 foodPos = Utilities.GetNearest(a, "Food");
         Vector3 pointToRunTo = Utilities.RunToFromPoint(a.transform,foodPos,true);
         //Move the animal using the navmeshagent.
         NavMeshHit hit;
@@ -35,15 +36,16 @@ public class SearchForFood : FSMState<Animal>
     }
 
     private Vector3 GetNearestFood(Animal a)
-    {
+    {   
+        
         Vector3 animalPosition = a.transform.position;
-        if (a.nearbyFood.Length == 0) return animalPosition;
+        if (a.nearbyObjects.Length == 0) return animalPosition;
             
             
-        Vector3 nearbyFoodPos = a.nearbyFood[0].transform.position;
+        Vector3 nearbyFoodPos = a.nearbyObjects[0].transform.position;
         float closestDistance = Vector3.Distance(nearbyFoodPos, animalPosition);
             
-        foreach (GameObject g in a.nearbyFood)
+        foreach (GameObject g in a.nearbyObjects)
         {
             float dist = Vector3.Distance(g.transform.position, animalPosition);
             if (dist < closestDistance)

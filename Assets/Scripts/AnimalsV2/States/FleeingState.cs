@@ -33,7 +33,7 @@ namespace FSM
         public override void Execute(Animal a)
         {
             //Get average position of enemies and run away from it.
-            Vector3 averagePosition = GetClosestPredatorPosition(a);
+            Vector3 averagePosition = Utilities.GetNearest(a, "Predator");
             Vector3 pointToRunTo = Utilities.RunToFromPoint(a.transform,averagePosition,false);
             //Move the animal using the navmeshagent.
             NavMeshHit hit;
@@ -51,38 +51,14 @@ namespace FSM
         private static Vector3 GetAveragePredatorPosition(Animal a)
         {
             Vector3 averagePosition = new Vector3();
-            foreach (GameObject g in a.nearbyPredators)
+            foreach (GameObject g in a.nearbyObjects)
             {
                 averagePosition += g.transform.position;
             }
 
-            averagePosition /= a.nearbyPredators.Length;
+            averagePosition /= a.nearbyObjects.Length;
 
             return averagePosition;
         }
-        
-        private static Vector3 GetClosestPredatorPosition(Animal a)
-        {
-            Vector3 animalPosition = a.transform.position;
-            if (a.nearbyPredators.Length == 0) return animalPosition;
-            
-            
-            Vector3 closestPredatorPostiion = a.nearbyPredators[0].transform.position;
-            float closestDistance = Vector3.Distance(closestPredatorPostiion, animalPosition);
-            
-            foreach (GameObject g in a.nearbyPredators)
-            {
-                float dist = Vector3.Distance(g.transform.position, animalPosition);
-                if (dist < closestDistance)
-                {
-                    closestDistance = dist;
-                    closestPredatorPostiion = g.transform.position;
-                }
-                
-            }
-            
-            return closestPredatorPostiion;
-        }
-
     }
 }
