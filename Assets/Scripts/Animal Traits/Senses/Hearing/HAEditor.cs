@@ -4,9 +4,9 @@ using UnityEngine;
 using UnityEditor;
 
 [CustomEditor(typeof(HearingAbility))]
-public class FoHEdit : Editor
+public class HAEditor : Editor
 {
-    private void OnSceneGUI()
+    void OnSceneGUI()
     {
         var animal = (HearingAbility)target;
         Handles.color = Color.yellow;
@@ -19,9 +19,9 @@ public class FoHEdit : Editor
 
         // Draw line from animal to target
         Handles.color = Color.blue;
-        foreach (var target in animal.targets)
+        foreach (GameObject target in animal.targets)
         {
-            Handles.DrawLine(animal.transform.position, target.position);
+            Handles.DrawLine(animal.transform.position, target.transform.position);
         }
     }
 }
