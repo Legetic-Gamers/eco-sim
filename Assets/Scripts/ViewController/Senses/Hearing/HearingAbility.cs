@@ -47,13 +47,13 @@ public class HearingAbility : MonoBehaviour
     private void Start()
     {
         animalController = GetComponent<AnimalController>();
-        radius = animalController.animal.hearingRadius;
+        radius = animalController.animal.traits.hearingRadius;
         
         FindObjectOfType<global::TickEventPublisher>().onSenseTickEvent += FindHeardTargets;
     }
     
     private void FixedUpdate()
     {
-        radius = animalController.animal.hearingRadius;
+        radius = animalController.animal.traits.hearingRadius;
     }
 }

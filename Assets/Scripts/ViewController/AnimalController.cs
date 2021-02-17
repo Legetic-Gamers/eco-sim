@@ -42,7 +42,7 @@ public abstract class AnimalController : MonoBehaviour
         animal.age++; 
         //Debug.Log(gameObject.name + " has lived for " + age*2 + " seconds.");
         
-        if (animal.age > animal.ageLimit) animal.isAlive = false;
+        if (animal.age > animal.traits.ageLimit) animal.isAlive = false;
     }
     protected void EventSubscribe()
     {
@@ -66,43 +66,20 @@ public abstract class AnimalController : MonoBehaviour
     /* /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\ */
     /*                                          Other                                         */
     /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
-    
-    // ugly ugly ugly, but what can you do?
-    // maybe offspring logic should be in the model?
-    public void CreateOffspring(GameObject fatherObject, AnimalController[] parents)
+
+    //TODO a rabbit should be able to have more than one offspring at a time
+    void CreateOffspring(AnimalController otherParent)
     {
+
         // Spawn child as a copy of the father at the position of the mother
-        GameObject offspringObject = Instantiate(fatherObject, parents[0].transform.position, parents[0].transform.rotation);
+        GameObject child = Instantiate(gameObject, gameObject.transform.position, gameObject.transform.rotation); //NOTE CHANGE SO THAT PREFAB IS USED
+        // Generate the offspring traits
+        Traits childTraits = animal.traits.Crossover(otherParent.animal.traits);
+        // Add coresponding controller
+        AnimalController childsAnimalController = child.AddComponent<BearController>();
+        // Assign traits to child
+        childsAnimalController.animal.traits = childTraits;
 
-        // initialize offspring traits
-        AnimalController offspring = offspringObject.GetComponent<AnimalController>();
-
-        System.Random rnd = new System.Random();
-
-        var index = rnd.Next(0,2);
-        offspring.animal.ageLimit = (int) parents[index].animal.ageLimit;
-        index = rnd.Next(0,2);
-        offspring.animal.maxEnergy = (int) parents[index].animal.maxEnergy;
-        index = rnd.Next(0,2);
-        offspring.animal.maxHealth = (int) parents[index].animal.maxHealth;
-        index = rnd.Next(0,2);
-        offspring.animal.size = parents[index].animal.size;
-        index = rnd.Next(0,2);
-        offspring.animal.movementSpeed = parents[index].animal.movementSpeed;
-        index = rnd.Next(0,2);
-        offspring.animal.endurance = parents[index].animal.endurance;
-        index = rnd.Next(0,2);
-        offspring.animal.temperatureResist = parents[index].animal.temperatureResist;
-        index = rnd.Next(0,2);
-        offspring.animal.desirability = parents[index].animal.desirability;
-        index = rnd.Next(0,2);
-        offspring.animal.viewAngle = parents[index].animal.viewAngle;
-        index = rnd.Next(0,2);
-        offspring.animal.viewRadius = parents[index].animal.viewRadius;
-        index = rnd.Next(0,2);
-        offspring.animal.hearingRadius =parents[index].animal.hearingRadius;
-        index = rnd.Next(0,2);
-        offspring.animal.furColor = parents[index].animal.furColor;
     }
     
     // both hostile and friendly targets, get from FieldOfView and HearingAbility

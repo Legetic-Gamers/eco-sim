@@ -76,15 +76,15 @@ public class FieldOfView : MonoBehaviour
     {
         animalController = GetComponent<AnimalController>();
         
-        angle = animalController.animal.viewAngle;
-        radius = animalController.animal.viewRadius;
+        angle = animalController.animal.traits.viewAngle;
+        radius = animalController.animal.traits.viewRadius;
 
         FindObjectOfType<global::TickEventPublisher>().onSenseTickEvent += FindVisibleTargets;
     }
 
     private void FixedUpdate()
     {
-        angle = animalController.animal.viewAngle;
-        radius = animalController.animal.viewRadius;
+        angle = animalController.animal.traits.viewAngle;
+        radius = animalController.animal.traits.viewRadius;
     }
 }
