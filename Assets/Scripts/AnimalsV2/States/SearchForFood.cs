@@ -33,7 +33,7 @@ namespace AnimalsV2.States
         {
             base.LogicUpdate();
             //Get average position of enemies and run away from it.
-            Vector3 foodPos = NavigationUtilities.GetNearestObjectByTag(animal, "Food");
+            Vector3 foodPos = NavigationUtilities.GetNearestObjectPositionByTag(animal, "Food");
             Vector3 pointToRunTo = NavigationUtilities.RunToFromPoint(animal.transform,foodPos,true);
             //Move the animal using the navmeshagent.
             NavMeshHit hit;

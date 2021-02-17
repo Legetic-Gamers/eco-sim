@@ -57,7 +57,7 @@ namespace AnimalsV2
             {
                 //Enter new state
                 CurrentState.Enter();
-                Debug.Log("Entering state!");
+                
                 
                 OnStateEnter?.Invoke(CurrentState);
             }

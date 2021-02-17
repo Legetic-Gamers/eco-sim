@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using AnimalsV2.States;
 using FSM;
 using UnityEngine;
@@ -28,20 +29,17 @@ namespace AnimalsV2
         public Idle idle;
 
         // Internal representation. Traits, parameters and senses of the animal
-        public GameObject[] nearbyObjects;
         private AnimalModel animalModel;
 
-        // Parameters
-        public float Hunger = 0;
-        public int Energy = 0;
-        public int Thirst = 0;
-        public int ReproductiveUrge = 0;
-        
-    
+
+        [HideInInspector] 
+        public List<GameObject> heardTargets;
+        [HideInInspector] 
+        public List<GameObject> visibleTargets;
         void Awake()
         {
             
-            //Init Senses
+            //Init internal Animal  model.
             animalModel = GetComponent<AnimalModel>();
 
             // Init the NavMesh agent
@@ -50,7 +48,7 @@ namespace AnimalsV2
 
             //Create the FSM.
             Fsm = new StateMachine();
-            // AnimationController animationController = new AnimationController(this);
+            AnimationController animationController = new AnimationController(this);
             
         }
 
@@ -62,7 +60,7 @@ namespace AnimalsV2
             // sm = new SearchForMate(this, Fsm);
              fs = new FleeingState(this, Fsm);
              idle = new Idle(this, Fsm);
-             Fsm.Initialize(idle);
+             Fsm.Initialize(fs);
 
             
         }
@@ -72,18 +70,15 @@ namespace AnimalsV2
 
             //Get information from senses
             //animalModel.
+            heardTargets = animalModel.heardTargets;
+            visibleTargets = animalModel.visibleTargets;
             
             //Handle Input
             Fsm.HandleStatesInput();
             
             //Update Logic
             Fsm.UpdateStatesLogic();
-
-            if (Hungry())
-            {
-                Fsm.ChangeState(fs);
-            }
-
+            
             // if (agent.remainingDistance < 1.0f){
             //     agent.destination = Random.insideUnitCircle * 20;
             // }
@@ -97,24 +92,5 @@ namespace AnimalsV2
         
         
         
-        
-        //  OTHER METHODS
-        public void Eat(int amount)
-        {
-            //Update hunger, not below 0.
-            Hunger = Math.Max(Hunger - amount,0);
-        }
-
-        //Taken from:  https://blog.playmedusa.com/a-finite-state-machine-in-c-for-unity3d/
-        //returns true if animal is thirsty.
-        public bool Thirsty() {
-            bool thirsty = Thirst >= 10 ? true : false;
-            return thirsty;
-        }
-
-        public bool Hungry() {
-            bool hungry = Hunger >= 2 ? true : false;
-            return hungry;
-        }
     }
 }

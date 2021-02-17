@@ -161,25 +161,25 @@ public abstract class AnimalModel : MonoBehaviour
     void DecrementEnergy() 
     { 
         currentEnergy--; // currentEnergy -= Size * deltaTemp * Const
-        Debug.Log("currentEnergy " + currentEnergy + " " + gameObject.name);
+        //Debug.Log("currentEnergy " + currentEnergy + " " + gameObject.name);
     }
 
     void DecrementHydration()
     {
         hydration--; 
-        Debug.Log("thirstLevel " + hydration + " " + gameObject.name);
+        //Debug.Log("thirstLevel " + hydration + " " + gameObject.name);
     }
 
     void IncrementReproductiveUrge()
     {
         reproductiveUrge++; 
-        Debug.Log("reproductiveUrge " + reproductiveUrge + " " + gameObject.name);
+        //Debug.Log("reproductiveUrge " + reproductiveUrge + " " + gameObject.name);
     }
 
     private void IncrementAge()
     {
         age++; 
-        Debug.Log(gameObject.name + " has lived for " + age*2 + " seconds.");
+        //Debug.Log(gameObject.name + " has lived for " + age*2 + " seconds.");
         
         if (age > ageLimit) isAlive = false;
     }

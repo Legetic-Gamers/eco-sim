@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using AnimalsV2;
 using UnityEngine;
@@ -17,6 +18,13 @@ namespace AnimalsV2.States
             currentStateAnimation = Running;
         }
 
+        public override void Exit()
+        {
+            base.Exit();
+            Debug.Log("EXITING FLEEING");
+            currentStateAnimation = StateAnimation.Idle;
+        }
+
         public override void HandleInput()
         {
             base.HandleInput();
@@ -28,7 +36,7 @@ namespace AnimalsV2.States
             base.LogicUpdate();
             
             // Get average position of enemies and run away from it.
-            Vector3 averagePosition = NavigationUtilities.GetNearestObjectByTag(animal, "Predator");
+            Vector3 averagePosition = NavigationUtilities.GetNearObjectsAveragePositionByTag(animal, "Predator");
             Vector3 pointToRunTo = NavigationUtilities.RunToFromPoint(animal.transform,averagePosition,false);
             
             // Move the animal using the NavMeshAgent.
@@ -37,18 +45,6 @@ namespace AnimalsV2.States
             animal.agent.SetDestination(hit.position);
         }
 
-        /// <summary>
-        /// This function could be extended upon to generate a better point.
-        /// this would result in smarter fleeing behavior.
-        /// </summary>
-        /// <param name="a"> Animal to calculate positions from. </param>
-        /// <returns></returns>
-        private static Vector3 GetAveragePredatorPosition(Animal a)
-        {
-            Vector3 averagePosition = new Vector3();
-            foreach (GameObject g in a.nearbyObjects)  averagePosition += g.transform.position;
-            averagePosition /= a.nearbyObjects.Length;
-            return averagePosition;
-        }
+        
     }
 }
