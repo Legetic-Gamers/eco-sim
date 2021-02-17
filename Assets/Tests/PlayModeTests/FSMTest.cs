@@ -20,7 +20,7 @@ namespace Tests
         [Test]
         public void FSM_Configure_Passes()
         {
-            FiniteStateMachine<GameObject> fsm = new FiniteStateMachine<GameObject>();
+            
             //Assert.IsTrue(fsm.);
             
 

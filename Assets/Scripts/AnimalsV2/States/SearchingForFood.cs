@@ -1,30 +1,36 @@
+using FSM;
 using UnityEngine;
-using static FSM.StateAnimation;
 
-namespace FSM
+
+//Author: Alexander LV
+// Heavily Inspired by: https://blog.playmedusa.com/a-finite-state-machine-in-c-for-unity3d/
+namespace AnimalsV2.States
 {
-    public sealed class SearchingForFood : FSMState<Animal>
+//State where the animal just sits/ stands still.
+//sealed just prevents other classes from inheriting
+    public class SearchingForFood : State
     {
-        private static readonly SearchingForFood instance = new SearchingForFood();
 
-        public static SearchingForFood Instance => instance;
-
-        static SearchingForFood() {}
-        private SearchingForFood() {}
-
-        public override void Enter(Animal entity)
+        public SearchingForFood(Animal animal, StateMachine stateMachine) : base(animal, stateMachine)
         {
-            currentStateAnimation = Running;
         }
 
-        public override void Execute(Animal entity)
+        public override void Enter()
         {
+            base.Enter();
+            Debug.Log("ENTERED SEARCHING FOR FOOD");
+        }
+
+        public override void HandleInput()
+        {
+            base.HandleInput();
             
         }
 
-        public override void Exit(Animal entity)
+        public override void LogicUpdate()
         {
-            throw new System.NotImplementedException();
+            base.LogicUpdate();
+            
         }
     }
 }

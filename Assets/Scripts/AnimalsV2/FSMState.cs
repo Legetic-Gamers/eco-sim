@@ -5,37 +5,50 @@
 
 //Represents a finite state where T is the type of the owner of the FSM.
 
-using static FSM.StateAnimation;
+
+using System;
+using UnityEngine;
 
 namespace FSM
 {
-    public enum StateAnimation
+    public abstract class State
     {
-        Walking,
-        Running,
-        LookingOut,
-        JumpingUp,
-        Idle,
-        Dead
-    }
-
-    abstract public class FSMState<T>
-    {
-        //protected = seen by children.
-        protected StateAnimation currentStateAnimation = StateAnimation.Idle;
-
-         abstract public void Enter(T entity);
-        abstract public void Execute(T entity);
-        abstract public void Exit(T entity);
-
-        //You can override GetStateAnimation if custom evaluation is wanted.
+        protected Animal animal;
+        protected StateMachine stateMachine;
         
-        public override string ToString()
+        public event Action<State> OnStateEnter;
+        public event Action<State> OnStateExecute;
+        public event Action<State> OnStateExit;
+
+        protected State(Animal animal, StateMachine stateMachine)
         {
-            return currentStateAnimation.ToString();
+            this.animal = animal;
+            this.stateMachine = stateMachine;
         }
 
+        public virtual void Enter()
+        {
+            OnStateEnter?.Invoke(stateMachine.CurrentState);
+        }
 
-        //Override isEqual?
+        public virtual void HandleInput()
+        {
+            if(Input.GetButton("Space")) stateMachine.Initialize(animal.sf);
+        }
+
+        public virtual void LogicUpdate()
+        {
+            OnStateExecute?.Invoke(stateMachine.CurrentState);
+        }
+
+        public virtual void PhysicsUpdate()
+        {
+
+        }
+
+        public virtual void Exit()
+        {
+            OnStateExit?.Invoke(stateMachine.CurrentState);
+        }
     }
 }

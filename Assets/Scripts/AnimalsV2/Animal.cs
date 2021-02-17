@@ -2,6 +2,7 @@ using System;
 using FSM;
 using System.Collections;
 using System.Collections.Generic;
+using AnimalsV2.States;
 using UnityEngine;
 using UnityEngine.AI;
 using Random = UnityEngine.Random;
@@ -12,14 +13,17 @@ using Random = UnityEngine.Random;
 // Used Unity Official Tutorial on the Animator
 public class Animal : MonoBehaviour
 {
-    //Finite state machine, Behavior controller
-    //public FiniteStateMachine<Animal> FSM;
-    public FiniteStateMachine<Animal> FSM { get; private set; }
 
     //public event Action<FSMState<Animal>> OnStateChanged;
 
     NavMeshAgent agent;
-
+    
+    public StateMachine Fsm;
+    public SearchForMate sm;
+    public SearchingForFood sf;
+    public SearchingForWater sw;
+    public Idle idle;
+    
     //Perceptions
     //Some form of hearing
     //Some form of Smell
@@ -30,11 +34,6 @@ public class Animal : MonoBehaviour
     public int Energy = 0;
     public int Thirst = 0;
     public int ReproductiveUrge = 0;
-
-    public void ChangeState(FSMState<Animal> state)
-    {
-        FSM.ChangeState(state);
-    }
 
     public void Eat(int amount)
     {
@@ -56,14 +55,22 @@ public class Animal : MonoBehaviour
     
     void Awake(){
         Debug.Log("Rabbit exists");
-        FSM = new FiniteStateMachine<Animal>();
-        
-        //For now get instance of the state. Could also be switched to instance-based.
-        FSM.Configure(this, Idle.Instance);
-        
+
         // Get the NavMesh agent
         agent = this.GetComponent<NavMeshAgent>();
         agent.autoBraking = false;
+    }
+
+    private void Start()
+    {
+        Fsm = new StateMachine();
+
+        sf = new SearchingForFood(this, Fsm);
+        sw = new SearchingForWater(this, Fsm);
+        sm = new SearchForMate(this, Fsm);
+        idle = new Idle(this, Fsm);
+
+        Fsm.Initialize(idle);
     }
 
     // Update is called once per frame
@@ -72,13 +79,17 @@ public class Animal : MonoBehaviour
         //Tick parameters
         Hunger += 1 * Time.deltaTime;
         Thirst++;
-        if (Hungry())
-        {
-            ChangeState(SearchForMate.Instance);
-            FSM.UpdateState();
-        }
+        Fsm.CurrentState.HandleInput();
+
+        Fsm.CurrentState.LogicUpdate();
+        
         if (agent.remainingDistance < 1.0f){
             agent.destination = Random.insideUnitCircle * 20;
         }
+    }
+    
+    private void FixedUpdate()
+    {
+        Fsm.CurrentState.PhysicsUpdate();
     }
 }

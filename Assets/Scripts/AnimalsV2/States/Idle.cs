@@ -1,49 +1,31 @@
-using System.Runtime.InteropServices.ComTypes;
-using System.Collections;
-using System.Collections.Generic;
 using FSM;
 using UnityEngine;
-using static FSM.StateAnimation;
 
-
-
-//Author: Alexander LV
-// Heavily Inspired by: https://blog.playmedusa.com/a-finite-state-machine-in-c-for-unity3d/
-namespace FSM
+namespace AnimalsV2.States
 {
-//State where the animal just sits/ stands still.
-//sealed just prevents other classes from inheriting
-    public sealed class Idle : FSMState<Animal>
+    public class Idle : State
     {
-        static readonly Idle instance = new Idle();
 
-        public static Idle Instance
-        {
-            get { return instance; }
-        }
-
-        static Idle()
+        public Idle(Animal animal, StateMachine stateMachine) : base(animal, stateMachine)
         {
         }
 
-        private Idle()
+        public override void Enter()
         {
+            base.Enter();
+            Debug.Log("ENTERING IDLE");
         }
 
-
-        public override void Enter(Animal a)
+        public override void HandleInput()
         {
-            //Debug.Log("Idleing...");
-
-            currentStateAnimation = StateAnimation.Idle;
+            base.HandleInput();
+            Debug.Log("EXECUTING IDLE");
         }
 
-        public override void Execute(Animal a)
+        public override void LogicUpdate()
         {
-        }
-
-        public override void Exit(Animal a)
-        {
+            base.LogicUpdate();
+            
         }
     }
 }

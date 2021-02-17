@@ -1,49 +1,35 @@
-﻿using UnityEngine;
-using static FSM.StateAnimation;
+﻿using FSM;
 
 
 //Author: Alexander LV
 // Heavily Inspired by: https://blog.playmedusa.com/a-finite-state-machine-in-c-for-unity3d/
-
-//Also, Singleton pattern: https://csharpindepth.com/articles/singleton
-
-namespace FSM
+namespace AnimalsV2.States
 {
-    
-    
-//State where the animal searches actively for a mate.
-//sealed just prevents other classes from inheriting. Not necessary for pattern since private constructor already makes sure of this.
-//However might improve optimization.
-    public sealed class SearchForMate : FSMState<Animal>
+//State where the animal just sits/ stands still.
+//sealed just prevents other classes from inheriting
+    public class SearchForMate : State
     {
-        private static readonly SearchForMate instance = new SearchForMate();
 
-        public static SearchForMate Instance
+        public SearchForMate(Animal animal, StateMachine stateMachine) : base(animal, stateMachine)
         {
-            get { return instance; }
-        }
- 
-        static SearchForMate() {}
-
-        //Hide constructor
-        private SearchForMate() {}
-
-
-        public override void Enter(Animal a)
-        {
-            Debug.Log("Time to find me a mate");
-            //we only change the state animation here for this purpose.
-            currentStateAnimation = Running;
         }
 
-        public override void Execute(Animal a)
+        public override void Enter()
         {
-            //Searching behavior goes here
+            base.Enter();
+            
         }
 
-        public override void Exit(Animal a)
+        public override void HandleInput()
         {
-            Debug.Log("Wonder if i found a mate? Alright imma stop looking at least.");
+            base.HandleInput();
+            
+        }
+
+        public override void LogicUpdate()
+        {
+            base.LogicUpdate();
+            
         }
     }
 }

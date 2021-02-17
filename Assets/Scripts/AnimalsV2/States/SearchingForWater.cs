@@ -1,32 +1,32 @@
-using UnityEngine;
-using static FSM.StateAnimation;
+using FSM;
 
-namespace FSM
+namespace AnimalsV2.States
 {
-    public sealed class SearchingForWater : FSMState<Animal>
+//State where the animal just sits/ stands still.
+//sealed just prevents other classes from inheriting
+    public class SearchingForWater : State
     {
 
-        private static readonly SearchingForWater instance = new SearchingForWater();
-
-        public static SearchingForWater Instance => instance;
-
-        static SearchingForWater() {}
-
-        private SearchingForWater() {}
-
-        public override void Enter(Animal entity)
+        public SearchingForWater(Animal animal, StateMachine stateMachine) : base(animal, stateMachine)
         {
-            currentStateAnimation = Running;
         }
 
-        public override void Execute(Animal entity)
+        public override void Enter()
         {
-            throw new System.NotImplementedException();
+            base.Enter();
+
         }
 
-        public override void Exit(Animal entity)
+        public override void HandleInput()
         {
-            throw new System.NotImplementedException();
+            base.HandleInput();
+
+        }
+
+        public override void LogicUpdate()
+        {
+            base.LogicUpdate();
+
         }
     }
 }
