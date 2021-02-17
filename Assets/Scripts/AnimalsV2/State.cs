@@ -1,14 +1,15 @@
-﻿using System;
-using AnimalsV2;
-using UnityEngine;
+﻿/*
+ * Authors: Johan A, Alexander L.V.
+ */
+using System;
+using FSM;
 
-//Author: Alexander LV
-// Source: https://blog.playmedusa.com/a-finite-state-machine-in-c-for-unity3d/
-
-//Represents a finite state where T is the type of the owner of the FSM.
-
-namespace FSM
+namespace AnimalsV2
 {
+    /// <summary>
+    /// Abstract class that all states inherits. StateAnimation is used in AnimationController to animate. 
+    /// </summary>
+    //TODO Change System with animationcontroller. 
     public enum StateAnimation
     {
         Running,
@@ -19,10 +20,15 @@ namespace FSM
     }
     public abstract class State
     {
+        /// <summary>
+        /// Sates have an owner (Animal) and a stateMachine to control them. 
+        /// </summary>
+        
         protected StateAnimation currentStateAnimation = StateAnimation.Idle;
         protected Animal animal;
         protected StateMachine stateMachine;
         
+        // Actions for animator. 
         public event Action<State> OnStateEnter;
         public event Action<State> OnStateExecute;
         public event Action<State> OnStateExit;
@@ -37,19 +43,14 @@ namespace FSM
             OnStateEnter?.Invoke(stateMachine.CurrentState);
         }
 
-        public virtual void HandleInput()
-        {
-            
-        }
+        public virtual void HandleInput() {}
 
         public virtual void LogicUpdate()
         {
             OnStateExecute?.Invoke(stateMachine.CurrentState);
         }
 
-        public virtual void PhysicsUpdate()
-        {
-        }
+        public virtual void PhysicsUpdate() {}
 
         public virtual void Exit()
         {

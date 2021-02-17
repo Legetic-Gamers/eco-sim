@@ -1,29 +1,33 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditorInternal;
-using UnityEngine;
+﻿/*
+ * Authors: Johan A, Alexander L.V.
+ */
 
-
-//Author: Alexander LV
-// Source: https://blog.playmedusa.com/a-finite-state-machine-in-c-for-unity3d/
-
-namespace FSM
+namespace AnimalsV2
  {
+     /// <summary>
+     /// State Machine handles States. 
+     /// </summary>
      public class StateMachine
     {
         public State CurrentState { get; private set; }
 
+        /// <summary>
+        /// Start the state machine in a non-empty state
+        /// </summary>
+        /// <param name="startingState"> State to start in (Idle) </param>
         public void Initialize(State startingState)
         {
             CurrentState = startingState;
             startingState.Enter();
         }
 
+        /// <summary>
+        /// Changing states. 
+        /// </summary>
+        /// <param name="newState"> State to change into. </param>
         public void ChangeState(State newState)
         {
             CurrentState.Exit();
-
             CurrentState = newState;
             newState.Enter();
         }
