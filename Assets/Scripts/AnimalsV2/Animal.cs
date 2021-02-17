@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using AnimalsV2.States;
 using FSM;
 using UnityEngine;
@@ -8,8 +9,13 @@ using Random = UnityEngine.Random;
 //Author: Alexander LV, Johan A
 // Heavily Inspired by: https://blog.playmedusa.com/a-finite-state-machine-in-c-for-unity3d/
 // Used Unity Official Tutorial on the Animator
+
+
 namespace AnimalsV2
 {
+    [RequireComponent(typeof(NavMeshAgent))]
+    [RequireComponent(typeof(AnimalModel))]
+    
     public class Animal : MonoBehaviour
     {
     
@@ -22,39 +28,39 @@ namespace AnimalsV2
         public FleeingState fs;
         public Idle idle;
 
-        // TODO Senses
-        public GameObject[] nearbyObjects;
+        // Internal representation. Traits, parameters and senses of the animal
+        private AnimalModel animalModel;
 
-        // Parameters
-        public float Hunger = 0;
-        public int Energy = 0;
-        public int Thirst = 0;
-        public int ReproductiveUrge = 0;
-        
-    
-        void Awake(){
-            Debug.Log("Rabbit exists");
 
-            // Get the NavMesh agent
+        [HideInInspector] 
+        public List<GameObject> heardTargets;
+        [HideInInspector] 
+        public List<GameObject> visibleTargets;
+        void Awake()
+        {
+            
+            //Init internal Animal  model.
+            animalModel = GetComponent<AnimalModel>();
+
+            // Init the NavMesh agent
             agent = GetComponent<NavMeshAgent>();
             agent.autoBraking = false;
 
+            //Create the FSM.
             Fsm = new StateMachine();
-            // AnimationController animationController = new AnimationController(this);
+            AnimationController animationController = new AnimationController(this);
             
         }
 
         private void Start()
         {
             
-            
-
             // sf = new SearchForFood(this, Fsm);
             // sw = new SearchForWater(this, Fsm);
             // sm = new SearchForMate(this, Fsm);
              fs = new FleeingState(this, Fsm);
              idle = new Idle(this, Fsm);
-             Fsm.Initialize(idle);
+             Fsm.Initialize(fs);
 
             
         }
@@ -62,21 +68,17 @@ namespace AnimalsV2
         void Update()
         {
 
-            //Tick parameters
-            Hunger += 1 * Time.deltaTime;
-            Thirst++;
+            //Get information from senses
+            //animalModel.
+            heardTargets = animalModel.heardTargets;
+            visibleTargets = animalModel.visibleTargets;
             
             //Handle Input
             Fsm.HandleStatesInput();
             
             //Update Logic
             Fsm.UpdateStatesLogic();
-
-            if (Hungry())
-            {
-                Fsm.ChangeState(fs);
-            }
-
+            
             // if (agent.remainingDistance < 1.0f){
             //     agent.destination = Random.insideUnitCircle * 20;
             // }
@@ -90,24 +92,5 @@ namespace AnimalsV2
         
         
         
-        
-        //  OTHER METHODS
-        public void Eat(int amount)
-        {
-            //Update hunger, not below 0.
-            Hunger = Math.Max(Hunger - amount,0);
-        }
-
-        //Taken from:  https://blog.playmedusa.com/a-finite-state-machine-in-c-for-unity3d/
-        //returns true if animal is thirsty.
-        public bool Thirsty() {
-            bool thirsty = Thirst >= 10 ? true : false;
-            return thirsty;
-        }
-
-        public bool Hungry() {
-            bool hungry = Hunger >= 2 ? true : false;
-            return hungry;
-        }
     }
 }
