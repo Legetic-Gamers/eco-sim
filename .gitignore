@@ -74,5 +74,8 @@ crashlytics-build.properties
 #Plugins
 /Assets/Plugins/*
 
+#mac-OS
+*.DS_Store
+
 #Rider
 /.idea
