@@ -1,31 +1,32 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using FSM;
-using static FSM.StateAnimation;
 
-public class SearchForWater : FSMState<Animal>
+namespace AnimalsV2.States
 {
-    static readonly SearchForWater instance = new SearchForWater();
-    public static SearchForWater Instance {
-        get {
-            return instance;
+//State where the animal just sits/ stands still.
+//sealed just prevents other classes from inheriting
+    public class SearchForWater : State
+    {
+
+        public SearchForWater(Animal animal, StateMachine stateMachine) : base(animal, stateMachine)
+        {
         }
-    }
-    static SearchForWater() { }
-    private SearchForWater() { }
-    
 
-    public override void Enter (Animal a) {
-        Debug.Log("Searching for water...");
-        currentStateAnimation = LookingOut;
-    }
+        public override void Enter()
+        {
+            base.Enter();
 
-    public override void Execute (Animal a) {
-        
-    }
+        }
 
-    public override void Exit(Animal a) {
+        public override void HandleInput()
+        {
+            base.HandleInput();
 
+        }
+
+        public override void LogicUpdate()
+        {
+            base.LogicUpdate();
+
+        }
     }
 }

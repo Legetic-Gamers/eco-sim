@@ -1,4 +1,5 @@
 using System;
+using AnimalsV2;
 using UnityEngine;
 using UnityEngine.AI;
 

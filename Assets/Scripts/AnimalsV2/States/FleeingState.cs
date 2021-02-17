@@ -1,51 +1,43 @@
 ﻿using System.Collections.Generic;
+using AnimalsV2;
 using UnityEngine;
 using UnityEngine.AI;
 using static FSM.StateAnimation;
 
 namespace FSM
 {
-    public class FleeingState : FSMState<Animal>
+    public class FleeingState : State
     {
 
-        
-        private static readonly FleeingState instance = new FleeingState();
-
-        public static FleeingState Instance
-        {
-            get { return instance; }
-        }
-
-        static FleeingState()
+        public FleeingState(Animal animal, StateMachine stateMachine) : base(animal, stateMachine)
         {
         }
 
-        //Hide constructor
-        private FleeingState()
+        public override void Enter()
         {
-        }
-        
-        public override void Enter(Animal a)
-        {
+            base.Enter();
+            Debug.Log("ENTERING IDLE");
             currentStateAnimation = Running;
         }
 
-        public override void Execute(Animal a)
+        public override void HandleInput()
         {
+            base.HandleInput();
+            Debug.Log("EXECUTING IDLE");
+        }
+
+        public void LogicUpdate()
+        {
+            base.LogicUpdate();
             //Get average position of enemies and run away from it.
-            Vector3 averagePosition = Utilities.GetNearest(a, "Predator");
-            Vector3 pointToRunTo = Utilities.RunToFromPoint(a.transform,averagePosition,false);
+            Vector3 averagePosition = Utilities.GetNearest(animal, "Predator");
+            Vector3 pointToRunTo = Utilities.RunToFromPoint(animal.transform,averagePosition,false);
             //Move the animal using the navmeshagent.
             NavMeshHit hit;
             NavMesh.SamplePosition(pointToRunTo,out hit,5,1 << NavMesh.GetAreaFromName("Walkable"));
-            a.nMAgent.SetDestination(hit.position);
+            animal.agent.SetDestination(hit.position);
         }
 
-        public override void Exit(Animal a)
-        {
-            
-        }
-        
         //This function could be extended upon to generate a better point.
         //This would result in smarter fleeing behavior.
         private static Vector3 GetAveragePredatorPosition(Animal a)

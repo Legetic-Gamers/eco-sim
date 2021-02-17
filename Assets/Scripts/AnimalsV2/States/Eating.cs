@@ -1,31 +1,30 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using FSM;
-using static FSM.StateAnimation;
+﻿using FSM;
 
-public class Eating : FSMState<Animal>
+namespace AnimalsV2.States
 {
-    static readonly Eating instance = new Eating();
-    public static Eating Instance {
-        get {
-            return instance;
+    public class Eating : State
+    {
+
+        public Eating(Animal animal, StateMachine stateMachine) : base(animal, stateMachine)
+        {
         }
-    }
-    static Eating() { }
-    private Eating() { }
-    
 
-    public override void Enter (Animal a) {
-        Debug.Log("Eating...");
-        currentStateAnimation = LookingOut;
-    }
+        public override void Enter()
+        {
+            base.Enter();
+            
+        }
 
-    public override void Execute (Animal a) {
-        
-    }
+        public override void HandleInput()
+        {
+            base.HandleInput();
+            
+        }
 
-    public override void Exit(Animal a) {
-
+        public override void LogicUpdate()
+        {
+            base.LogicUpdate();
+            
+        }
     }
 }
