@@ -20,23 +20,24 @@ namespace FSM
     public abstract class State
     {
         protected StateAnimation currentStateAnimation = StateAnimation.Idle;
+        
         protected Animal animal;
         protected StateMachine stateMachine;
         
-        public event Action<State> OnStateEnter;
-        public event Action<State> OnStateExecute;
-        public event Action<State> OnStateExit;
 
         protected State(Animal animal, StateMachine stateMachine)
         {
             this.animal = animal;
             this.stateMachine = stateMachine;
         }
+        
+        //ENTER
         public virtual void Enter()
         {
-            OnStateEnter?.Invoke(stateMachine.CurrentState);
+            
         }
 
+        //DURING UPDATE()
         public virtual void HandleInput()
         {
             
@@ -44,16 +45,26 @@ namespace FSM
 
         public virtual void LogicUpdate()
         {
-            OnStateExecute?.Invoke(stateMachine.CurrentState);
+            
         }
-
+        
+        
+        //DURING FIXEDUPDATE
         public virtual void PhysicsUpdate()
         {
         }
-
+        
+        
+        //EXIT
         public virtual void Exit()
         {
-            OnStateExit?.Invoke(stateMachine.CurrentState);
+            
+        }
+
+
+        public override string ToString()
+        {
+            return currentStateAnimation.ToString();
         }
     }
 }

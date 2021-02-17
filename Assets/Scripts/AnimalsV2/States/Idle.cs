@@ -13,13 +13,13 @@ namespace AnimalsV2.States
         public override void Enter()
         {
             base.Enter();
-            Debug.Log("ENTERING IDLE");
+            //Debug.Log("ENTERING IDLE");
         }
 
         public override void HandleInput()
         {
             base.HandleInput();
-            Debug.Log("EXECUTING IDLE");
+            //Debug.Log("EXECUTING IDLE");
         }
 
         public override void LogicUpdate()

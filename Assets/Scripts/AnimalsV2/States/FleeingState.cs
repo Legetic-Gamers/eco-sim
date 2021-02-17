@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using AnimalsV2;
+using FSM;
 using UnityEngine;
 using UnityEngine.AI;
 using static FSM.StateAnimation;
 
-namespace FSM
+namespace AnimalsV2.States
 {
     public class FleeingState : State
     {
@@ -16,17 +17,17 @@ namespace FSM
         public override void Enter()
         {
             base.Enter();
-            Debug.Log("ENTERING IDLE");
+            Debug.Log("ENTERING FLEEING");
             currentStateAnimation = Running;
         }
 
         public override void HandleInput()
         {
             base.HandleInput();
-            Debug.Log("EXECUTING IDLE");
+            //Debug.Log("EXECUTING FLEEING");
         }
 
-        public void LogicUpdate()
+        public override void LogicUpdate()
         {
             base.LogicUpdate();
             //Get average position of enemies and run away from it.

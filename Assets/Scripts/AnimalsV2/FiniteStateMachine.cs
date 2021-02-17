@@ -5,7 +5,7 @@ using UnityEditorInternal;
 using UnityEngine;
 
 
-//Author: Alexander LV
+//Author: Alexander LV, Johan A
 // Source: https://blog.playmedusa.com/a-finite-state-machine-in-c-for-unity3d/
 
 namespace FSM
@@ -13,19 +13,68 @@ namespace FSM
      public class StateMachine
     {
         public State CurrentState { get; private set; }
+        
+        
+        //State Change Listeners
+        public event Action<State> OnStateEnter;
+        public event Action<State> OnStateLogicUpdate;
+        public event Action<State> OnStatePhysicsUpdate;
+        public event Action<State> OnStateExit;
 
         public void Initialize(State startingState)
         {
-            CurrentState = startingState;
-            startingState.Enter();
+            ChangeState(startingState);
+            
         }
 
         public void ChangeState(State newState)
         {
-            CurrentState.Exit();
+            if(newState == CurrentState) return;
+            
+            if (CurrentState != null)
+            {
+                //Exit old state
+                CurrentState.Exit();
+                OnStateExit?.Invoke(CurrentState);
+            }
+            
+            //Change state
+            CurrentState = newState; 
 
-            CurrentState = newState;
-            newState.Enter();
+            if (CurrentState != null)
+            {
+                //Enter new state
+                CurrentState.Enter();
+                Debug.Log("Entering state!");
+                
+                OnStateEnter?.Invoke(CurrentState);
+            }
+            
         }
+        
+        public void  UpdateStatesLogic() {
+            if (CurrentState != null) CurrentState.LogicUpdate();
+            Debug.Log(OnStateEnter.ToString());
+            OnStateLogicUpdate?.Invoke(CurrentState);
+
+        }
+        
+       
+
+        public virtual void HandleStatesInput()
+        {
+            if (CurrentState != null) CurrentState.HandleInput();
+        }
+        
+
+        public virtual void UpdateStatesPhysics()
+        {
+            if (CurrentState != null) CurrentState.PhysicsUpdate();
+            OnStatePhysicsUpdate?.Invoke(CurrentState);
+        }
+
+      
+
+        
     }
 }

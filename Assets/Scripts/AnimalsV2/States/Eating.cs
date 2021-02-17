@@ -2,6 +2,7 @@
 
 namespace AnimalsV2.States
 {
+    //Author: Alexander LV, Johan A
     public class Eating : State
     {
 

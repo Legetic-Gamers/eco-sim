@@ -19,6 +19,7 @@ namespace AnimalsV2
         public SearchForMate sm;
         public SearchForFood sf;
         public SearchForWater sw;
+        public FleeingState fs;
         public Idle idle;
 
         //Perceptions
@@ -32,8 +33,59 @@ namespace AnimalsV2
         public int Energy = 0;
         public int Thirst = 0;
         public int ReproductiveUrge = 0;
+        
     
+        void Awake(){
+            Debug.Log("Rabbit exists");
 
+            // Get the NavMesh agent
+            agent = GetComponent<NavMeshAgent>();
+            agent.autoBraking = false;
+        }
+
+        private void Start()
+        {
+            Fsm = new StateMachine();
+            Fsm.Initialize(new Idle(this,Fsm));
+
+            // sf = new SearchForFood(this, Fsm);
+            // sw = new SearchForWater(this, Fsm);
+            // sm = new SearchForMate(this, Fsm);
+            // fs = new FleeingState(this, Fsm);
+            // idle = new Idle(this, Fsm);
+
+            
+        }
+
+        // Update is called once per frame
+        void Update()
+        {
+
+            //Tick parameters
+            Hunger += 1 * Time.deltaTime;
+            Thirst++;
+            
+            //Handle Input
+            Fsm.HandleStatesInput();
+            
+            //Update Logic
+            Fsm.UpdateStatesLogic();
+            
+            // if (agent.remainingDistance < 1.0f){
+            //     agent.destination = Random.insideUnitCircle * 20;
+            // }
+        }
+    
+        private void FixedUpdate()
+        {
+            //Update physics
+            Fsm.UpdateStatesPhysics();
+        }
+        
+        
+        
+        
+        //  OTHER METHODS
         public void Eat(int amount)
         {
             //Update hunger, not below 0.
@@ -50,46 +102,6 @@ namespace AnimalsV2
         public bool Hungry() {
             bool hungry = Hunger >= 2 ? true : false;
             return hungry;
-        }
-    
-        void Awake(){
-            Debug.Log("Rabbit exists");
-
-            // Get the NavMesh agent
-            agent = this.GetComponent<NavMeshAgent>();
-            agent.autoBraking = false;
-        }
-
-        private void Start()
-        {
-            Fsm = new StateMachine();
-
-            sf = new SearchForFood(this, Fsm);
-            sw = new SearchForWater(this, Fsm);
-            sm = new SearchForMate(this, Fsm);
-            idle = new Idle(this, Fsm);
-
-            Fsm.Initialize(idle);
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
-            //Tick parameters
-            Hunger += 1 * Time.deltaTime;
-            Thirst++;
-            Fsm.CurrentState.HandleInput();
-
-            Fsm.CurrentState.LogicUpdate();
-            if (agent.remainingDistance < 1.0f){
-                agent.destination = Random.insideUnitCircle * 20;
-            }
-        }
-    
-        private void FixedUpdate()
-        {
-            Fsm.CurrentState.PhysicsUpdate();
         }
     }
 }
