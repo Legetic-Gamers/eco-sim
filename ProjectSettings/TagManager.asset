@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - Animal
+  - Predator
   layers:
   - Default
   - TransparentFX
