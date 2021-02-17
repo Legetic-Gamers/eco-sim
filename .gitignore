@@ -72,8 +72,10 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
 #Plugins
-/Assets/Plugins/
-.idea/
+/Assets/Plugins/*
 
-# macOS
-.DS_Store
+#mac-OS
+*.DS_Store
+
+#Rider
+/.idea
