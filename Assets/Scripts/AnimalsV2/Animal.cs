@@ -38,11 +38,15 @@ namespace AnimalsV2
             // Get the NavMesh agent
             agent = GetComponent<NavMeshAgent>();
             agent.autoBraking = false;
+
+            Fsm = new StateMachine();
+            AnimationController animationController = new AnimationController(this);
+            
         }
 
         private void Start()
         {
-            Fsm = new StateMachine();
+            
             Fsm.Initialize(new FleeingState(this,Fsm));
 
             // sf = new SearchForFood(this, Fsm);

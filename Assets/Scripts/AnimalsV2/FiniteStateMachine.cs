@@ -66,7 +66,7 @@ namespace AnimalsV2
         
         public void  UpdateStatesLogic() {
             if (CurrentState != null) CurrentState.LogicUpdate();
-            Debug.Log(OnStateLogicUpdate.ToString());
+            //Debug.Log(OnStateLogicUpdate.ToString());
             OnStateLogicUpdate?.Invoke(CurrentState);
 
         }
