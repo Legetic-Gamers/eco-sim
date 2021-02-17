@@ -22,14 +22,14 @@ public class FieldOfView : MonoBehaviour
     public List<GameObject> targets = new List<GameObject>();
 
     [HideInInspector]
-    public AnimalModel animalModel;
+    public AnimalController animalController;
 
     /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
 
     private void FindVisibleTargets()
     {
         // prevent adding duplicates
-        animalModel.visibleTargets.Clear();
+        animalController.visibleTargets.Clear();
         // for custom editor FoVEditor
         targets.Clear();
 
@@ -53,7 +53,7 @@ public class FieldOfView : MonoBehaviour
                 // if target is not obscured
                 if (!Physics.Raycast(transform.position, dirToTarget, distToTarget, obstacleMask))
                 {
-                    animalModel.visibleTargets.Add(target);
+                    animalController.visibleTargets.Add(target);
                     // for custom editor FoVEditor
                     targets.Add(target);
                 }
@@ -74,17 +74,17 @@ public class FieldOfView : MonoBehaviour
 
     private void Start() 
     {
-        animalModel = GetComponent<AnimalModel>();
+        animalController = GetComponent<AnimalController>();
         
-        angle = animalModel.viewAngle;
-        radius = animalModel.viewRadius;
+        angle = animalController.animal.viewAngle;
+        radius = animalController.animal.viewRadius;
 
         FindObjectOfType<global::TickEventPublisher>().onSenseTickEvent += FindVisibleTargets;
     }
 
     private void FixedUpdate()
     {
-        angle = animalModel.viewAngle;
-        radius = animalModel.viewRadius;
+        angle = animalController.animal.viewAngle;
+        radius = animalController.animal.viewRadius;
     }
 }
