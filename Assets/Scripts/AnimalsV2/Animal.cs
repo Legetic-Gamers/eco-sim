@@ -22,13 +22,10 @@ namespace AnimalsV2
         public FleeingState fs;
         public Idle idle;
 
-        //Perceptions
-        //Some form of hearing
-        //Some form of Smell
-        //Some form of sight
+        // TODO Senses
         public GameObject[] nearbyObjects;
 
-        //Parameters of the animal
+        // Parameters
         public float Hunger = 0;
         public int Energy = 0;
         public int Thirst = 0;
@@ -57,7 +54,6 @@ namespace AnimalsV2
             
         }
 
-        // Update is called once per frame
         void Update()
         {
 

@@ -5,11 +5,15 @@ using UnityEditorInternal;
 using UnityEngine;
 
 
-//Author: Alexander LV, Johan A
-// Source: https://blog.playmedusa.com/a-finite-state-machine-in-c-for-unity3d/
 
-namespace FSM
+
+namespace AnimalsV2
  {
+     /// <summary>
+     /// State Machine handles States.
+     /// Author: Alexander LV, Johan A
+     /// Source: https://blog.playmedusa.com/a-finite-state-machine-in-c-for-unity3d/
+     /// </summary>
      public class StateMachine
     {
         public State CurrentState { get; private set; }
@@ -21,12 +25,20 @@ namespace FSM
         public event Action<State> OnStatePhysicsUpdate;
         public event Action<State> OnStateExit;
 
+        /// <summary>
+        /// Start the state machine in a non-empty state
+        /// </summary>
+        /// <param name="startingState"> State to start in (Idle) </param>
         public void Initialize(State startingState)
         {
             ChangeState(startingState);
             
         }
 
+        /// <summary>
+        /// Changing states. 
+        /// </summary>
+        /// <param name="newState"> State to change into. </param>
         public void ChangeState(State newState)
         {
             if(newState == CurrentState) return;
