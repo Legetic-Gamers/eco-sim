@@ -10,7 +10,7 @@ namespace AnimalsV2
     /// <summary>
     /// General purpose movement function. Add more general functions from states.  
     /// </summary>
-    public static class Utilities
+    public static class NavigationUtilities
     {   
         /// <summary>
         /// Calculates the point to run to given a character transform and target point to flee from or run towards.
@@ -34,7 +34,7 @@ namespace AnimalsV2
         /// <param name="a"> Animal to find objects near.</param>
         /// <param name="tag"> String tag to find objects of. </param>
         /// <returns> GameObject to be used by NavMeshAgent. </returns>
-        public static Vector3 GetNearest(Animal a, String tag)
+        public static Vector3 GetNearestObjectByTag(Animal a, String tag)
         {
             // Find all nearby object of given type (Tag in Unity)
             a.nearbyObjects = GameObject.FindGameObjectsWithTag(tag);

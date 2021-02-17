@@ -43,7 +43,7 @@ namespace AnimalsV2
         private void Start()
         {
             Fsm = new StateMachine();
-            Fsm.Initialize(new Idle(this,Fsm));
+            Fsm.Initialize(new FleeingState(this,Fsm));
 
             // sf = new SearchForFood(this, Fsm);
             // sw = new SearchForWater(this, Fsm);
