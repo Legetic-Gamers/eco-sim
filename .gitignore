@@ -73,3 +73,7 @@ crashlytics-build.properties
 
 #Plugins
 /Assets/Plugins/
+.idea/
+
+# macOS
+.DS_Store
