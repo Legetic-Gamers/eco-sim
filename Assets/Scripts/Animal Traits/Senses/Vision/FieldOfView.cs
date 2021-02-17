@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -17,15 +18,19 @@ public class FieldOfView : MonoBehaviour
     [SerializeField]
     private LayerMask obstacleMask;
 
-    public List<Transform> targets = new List<Transform>();
+    // custom editor needs this (otherwise will get an error), remove once custom editor is obsolete, or when stress testing
+    public List<GameObject> targets = new List<GameObject>();
 
-    private AnimalModel animalModel;
+    [HideInInspector]
+    public AnimalModel animalModel;
 
     /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
 
     private void FindVisibleTargets()
     {
         // prevent adding duplicates
+        animalModel.visibleTargets.Clear();
+        // for custom editor FoVEditor
         targets.Clear();
 
         // add targets in list when they enter the sphere
@@ -34,18 +39,23 @@ public class FieldOfView : MonoBehaviour
         // loop through targets within the entire circle to determine if they are in the view cone --> add to Targets list
         for (int i = 0; i < targetsInRadius.Length; i++)
         {
-            Transform target = targetsInRadius[i].transform;
-            Vector3 dirToTarget = (target.position - transform.position).normalized;
+            GameObject target = targetsInRadius[i].gameObject;
+            
+            // don't add self
+            if (target == gameObject) return;
+            
+            Vector3 dirToTarget = (target.transform.position - transform.position).normalized;
 
             if (Vector3.Angle(transform.forward, dirToTarget) < angle / 2)
             {
-                float distToTarget = Vector3.Distance(transform.position, target.position);
+                float distToTarget = Vector3.Distance(transform.position, target.transform.position);
 
                 // if target is not obscured
                 if (!Physics.Raycast(transform.position, dirToTarget, distToTarget, obstacleMask))
                 {
+                    animalModel.visibleTargets.Add(target);
+                    // for custom editor FoVEditor
                     targets.Add(target);
-                    // handle target added somehow: flee from, move closer, etc
                 }
             }
         }
@@ -62,15 +72,6 @@ public class FieldOfView : MonoBehaviour
 
     /* /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\ */
 
-    private IEnumerator FindTargetsWithDelay(float delay)
-    {
-        while (true)
-        {
-            yield return new WaitForSeconds(delay);
-            FindVisibleTargets();
-        }
-    }
-    
     private void Start() 
     {
         animalModel = GetComponent<AnimalModel>();
@@ -78,7 +79,12 @@ public class FieldOfView : MonoBehaviour
         angle = animalModel.viewAngle;
         radius = animalModel.viewRadius;
 
-        // runs FindTargets every delay
-        StartCoroutine("FindTargetsWithDelay", .5f);
+        FindObjectOfType<global::TickEventPublisher>().onSenseTickEvent += FindVisibleTargets;
+    }
+
+    private void FixedUpdate()
+    {
+        angle = animalModel.viewAngle;
+        radius = animalModel.viewRadius;
     }
 }
