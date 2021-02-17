@@ -28,7 +28,7 @@ public abstract class AnimalModel : MonoBehaviour
     ///     -OffspringSize / 2 + Const                  -Cannot create energy, so when creating offspring energy has to be lost
     ///
     /// -Health (optional):
-    /// Is affected by other animals damage in fights and hunts.
+    /// Is affected by other animals damage in fights and hunts.*
     /// As decreasing health based on energy and hydration levels is not too realistic/is a bit "gameified",
     /// an alternative to health is to decide the result of hunts/fights based on size and a random factor of luck,
     /// and let low hydration and energy lead directly to death.
@@ -161,25 +161,25 @@ public abstract class AnimalModel : MonoBehaviour
     void DecrementEnergy() 
     { 
         currentEnergy--; // currentEnergy -= Size * deltaTemp * Const
-        Debug.Log("currentEnergy " + currentEnergy + " " + gameObject.name);
+        //Debug.Log("currentEnergy " + currentEnergy + " " + gameObject.name);
     }
 
     void DecrementHydration()
     {
         hydration--; 
-        Debug.Log("thirstLevel " + hydration + " " + gameObject.name);
+        //Debug.Log("thirstLevel " + hydration + " " + gameObject.name);
     }
 
     void IncrementReproductiveUrge()
     {
         reproductiveUrge++; 
-        Debug.Log("reproductiveUrge " + reproductiveUrge + " " + gameObject.name);
+        //Debug.Log("reproductiveUrge " + reproductiveUrge + " " + gameObject.name);
     }
 
     private void IncrementAge()
     {
         age++; 
-        Debug.Log(gameObject.name + " has lived for " + age*2 + " seconds.");
+        //Debug.Log(gameObject.name + " has lived for " + age*2 + " seconds.");
         
         if (age > ageLimit) isAlive = false;
     }
