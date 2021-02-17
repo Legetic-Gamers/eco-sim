@@ -40,20 +40,21 @@ namespace AnimalsV2
             agent.autoBraking = false;
 
             Fsm = new StateMachine();
-            AnimationController animationController = new AnimationController(this);
+            // AnimationController animationController = new AnimationController(this);
             
         }
 
         private void Start()
         {
             
-            Fsm.Initialize(new FleeingState(this,Fsm));
+            
 
             // sf = new SearchForFood(this, Fsm);
             // sw = new SearchForWater(this, Fsm);
             // sm = new SearchForMate(this, Fsm);
-            // fs = new FleeingState(this, Fsm);
-            // idle = new Idle(this, Fsm);
+             fs = new FleeingState(this, Fsm);
+             idle = new Idle(this, Fsm);
+             Fsm.Initialize(idle);
 
             
         }
@@ -70,7 +71,12 @@ namespace AnimalsV2
             
             //Update Logic
             Fsm.UpdateStatesLogic();
-            
+
+            if (Hungry())
+            {
+                Fsm.ChangeState(fs);
+            }
+
             // if (agent.remainingDistance < 1.0f){
             //     agent.destination = Random.insideUnitCircle * 20;
             // }

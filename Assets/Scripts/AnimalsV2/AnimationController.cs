@@ -6,25 +6,20 @@ namespace FSM
 {
     
 
-public class AnimationController
+public class AnimationController : MonoBehaviour
 {
     private Animal animal;
     private Animator animator;
-
-
-    public AnimationController(Animal animal)
-    {
-        Initialize(animal);
-    }
+    
 
     // Start is called before the first frame update
-    void Initialize(Animal animal)
+    void Start()
     {
         //Get access to animal to animate
-        this.animal = animal;
+        animal = GetComponent<Animal>();
 
         //Get access to Animator to animate the animal.
-        animator = animal.GetComponent<Animator>();
+        animator = GetComponent<Animator>();
 
         //Listen to state changes of the animals states to update animations.
         animal.Fsm.OnStateEnter += FSM_OnStateEnter;
