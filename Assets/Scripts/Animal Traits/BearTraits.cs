@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class BearTraits : AnimalModel
 {
+    
     private void Start()
     {
         ageLimit = 30;
@@ -17,8 +18,6 @@ public class BearTraits : AnimalModel
 
     private void Update()
     {
-        // for testing
-        if (isControllable) Move();
         if (isAlive && currentEnergy <= 0 && hydration <= 0)
         {
             isAlive = false; 

@@ -4,9 +4,9 @@ using UnityEngine;
 using UnityEditor;
 
 [CustomEditor(typeof(FieldOfView))]
-public class FoVEdit : Editor
+public class FoVEditor : Editor
 {
-    private void OnSceneGUI() 
+    void OnSceneGUI() 
     {
         var animal = (FieldOfView)target;
         Handles.color = Color.white;
@@ -16,7 +16,7 @@ public class FoVEdit : Editor
         // Draw perpendicular circles around the animal
         Handles.DrawWireArc(animalPos, Vector3.up, Vector3.forward, 360, animal.radius);
         Handles.DrawWireArc(animalPos, Vector3.forward, Vector3.up, 360, animal.radius);
-        
+
         Vector3 viewAngleA = animal.DirectionOfAngle(-animal.angle / 2);
         Vector3 viewAngleB = animal.DirectionOfAngle(animal.angle / 2);
         // Draw view cone lines
@@ -25,9 +25,9 @@ public class FoVEdit : Editor
 
         // Draw line from animal to target
         Handles.color = Color.red;
-        foreach (Transform target in animal.targets)
+        foreach (GameObject target in animal.targets)
         {
-            Handles.DrawLine(animal.transform.position, target.position);
+            Handles.DrawLine(animal.transform.position, target.transform.position);
         }
     }
 }
