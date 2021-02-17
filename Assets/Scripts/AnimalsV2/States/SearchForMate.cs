@@ -36,8 +36,7 @@ namespace FSM
         public override void Enter(Animal a)
         {
             Debug.Log("Time to find me a mate");
-            a.nav.enabled = true;
-            
+
 
             //we only change the state animation here for this purpose.
             currentStateAnimation = Running;

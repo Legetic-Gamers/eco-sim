@@ -25,14 +25,8 @@ namespace FSM
         {
         }
         
-        
-        //Fields
-        private NavMeshAgent nMAgent;
-        
-        
         public override void Enter(Animal a)
         {
-            nMAgent = a.GetComponent<NavMeshAgent>();
             currentStateAnimation = Running;
         }
 
@@ -44,16 +38,13 @@ namespace FSM
             //Move the animal using the navmeshagent.
             NavMeshHit hit;
             NavMesh.SamplePosition(pointToRunTo,out hit,5,1 << NavMesh.GetAreaFromName("Walkable"));
-            nMAgent.SetDestination(hit.position);
+            a.nMAgent.SetDestination(hit.position);
         }
-        
 
         public override void Exit(Animal a)
         {
             
         }
-        
-        
         
         //This function could be extended upon to generate a better point.
         //This would result in smarter fleeing behavior.

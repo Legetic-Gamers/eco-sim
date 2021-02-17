@@ -3,6 +3,7 @@ using FSM;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 
 //Author: Alexander LV, Johan A
@@ -16,13 +17,14 @@ public class Animal : MonoBehaviour
 
     //public event Action<FSMState<Animal>> OnStateChanged;
 
-    public MoveTo nav;
-
+    public NavMeshAgent nMAgent;
+    
     //Perceptions
     //Some form of hearing
     //Some form of Smell
     //Some form of sight
     public GameObject[] nearbyPredators;//TODO replace placeholder implementation.
+    public GameObject[] nearbyFood;//TODO replace placeholder implementation.
 
     //Parameters of the animal
     public float Hunger = 0;
@@ -70,8 +72,8 @@ public class Animal : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //anim = GetComponent<Animator>();
-        nav = GetComponent<MoveTo>();
+        nMAgent = GetComponent<NavMeshAgent>();
+        //nav = GetComponent<MoveTo>();
     }
 
     // Update is called once per frame
@@ -80,11 +82,12 @@ public class Animal : MonoBehaviour
         
         //TODO Replace with perception check that finds them
         nearbyPredators = GameObject.FindGameObjectsWithTag("Predator");
+        nearbyFood = GameObject.FindGameObjectsWithTag("Food");
         
         //Tick parameters
         Hunger += 1 * Time.deltaTime;
         Thirst++;
-        if(Hungry()) ChangeState(FleeingState.Instance);
+        if(Hungry()) ChangeState(SearchForFood.Instance);
         
         FSM.UpdateState();
     }
