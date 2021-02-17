@@ -110,22 +110,26 @@ public abstract class AnimalModel : MonoBehaviour
     // optional, can be set in the behavior model instead
     protected string foodType; // herbivore, carnivore, omnivore
     
+    // both hostile and friendly targets, get from FieldOfView and HearingAbility
+    public List<GameObject> heardTargets = new List<GameObject>();
+    public List<GameObject> visibleTargets = new List<GameObject>();
+    
     /* /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\ */
     /*                                         Traits                                         */
     /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
     
-    protected float size;
-    protected int maxEnergy;
-    protected int maxHealth; // optional
+    public float size;
+    public int maxEnergy;
+    public int maxHealth; // optional
     
-    protected float movementSpeed;
-    protected float endurance;
+    public float movementSpeed;
+    public float endurance;
     
-    protected int ageLimit;
+    public int ageLimit;
     
-    protected float temperatureResist;
-    protected float desirability;
-    protected Color furColor = new Color(0.5f, 0.2f, 0.2f, 1.0f); // example
+    public float temperatureResist;
+    public float desirability;
+    public Color furColor = new Color(0.5f, 0.2f, 0.2f, 1.0f); // example
     
     [Range(0, 360)]
     public float viewAngle; // affects width of FoV
@@ -181,17 +185,17 @@ public abstract class AnimalModel : MonoBehaviour
     }
     protected void EventSubscribe()
     {
-        FindObjectOfType<global::TickEventPublisher>().onTickEvent += DecrementEnergy;
-        FindObjectOfType<global::TickEventPublisher>().onTickEvent += DecrementHydration;
-        FindObjectOfType<global::TickEventPublisher>().onTickEvent += IncrementReproductiveUrge;
-        FindObjectOfType<global::TickEventPublisher>().onTickEvent += IncrementAge;
+        FindObjectOfType<global::TickEventPublisher>().onParamTickEvent += DecrementEnergy;
+        FindObjectOfType<global::TickEventPublisher>().onParamTickEvent += DecrementHydration;
+        FindObjectOfType<global::TickEventPublisher>().onParamTickEvent += IncrementReproductiveUrge;
+        FindObjectOfType<global::TickEventPublisher>().onParamTickEvent += IncrementAge;
     }
     protected void EventUnsubscribe()
     {
-        FindObjectOfType<global::TickEventPublisher>().onTickEvent -= DecrementEnergy;
-        FindObjectOfType<global::TickEventPublisher>().onTickEvent -= DecrementHydration;
-        FindObjectOfType<global::TickEventPublisher>().onTickEvent -= IncrementReproductiveUrge;
-        FindObjectOfType<global::TickEventPublisher>().onTickEvent -= IncrementAge;
+        FindObjectOfType<global::TickEventPublisher>().onParamTickEvent -= DecrementEnergy;
+        FindObjectOfType<global::TickEventPublisher>().onParamTickEvent -= DecrementHydration;
+        FindObjectOfType<global::TickEventPublisher>().onParamTickEvent -= IncrementReproductiveUrge;
+        FindObjectOfType<global::TickEventPublisher>().onParamTickEvent -= IncrementAge;
         
         Debug.Log(gameObject.name + " has unsubscribed from onTickEvent.");
     }
@@ -200,17 +204,40 @@ public abstract class AnimalModel : MonoBehaviour
     /*                                          Other                                         */
     /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
     
-    // temporary implementation of move for testing purposes, should be in AnimalController once it exists
-    protected void Move()
+    // ugly ugly ugly, but what can you do?
+    public void CreateOffspring(GameObject fatherObject, AnimalModel[] parents)
     {
-        // Positive: D, Negative: A
-        var xAxis = Input.GetAxis("Horizontal") * 25 * Time.deltaTime;
-        // Positive: W, Negative: S
-        var zAxis = Input.GetAxis("Vertical") * 25 * Time.deltaTime;
-        // Mouse turning
-        var yAxis = Input.GetAxis("Mouse X");
+        // Spawn child as a copy of the father at the position of the mother
+        GameObject offspringObject = Instantiate(fatherObject, parents[0].transform.position, parents[0].transform.rotation);
 
-        transform.Translate(new Vector3(xAxis, 0, zAxis));
-        transform.eulerAngles += new Vector3(0, yAxis, 0);
+        // initialize offspring traits
+        AnimalModel offspring = offspringObject.GetComponent<AnimalModel>();
+
+        System.Random rnd = new System.Random();
+
+        var index = rnd.Next(0,2);
+        offspring.ageLimit = (int) parents[index].ageLimit;
+        index = rnd.Next(0,2);
+        offspring.maxEnergy = (int) parents[index].maxEnergy;
+        index = rnd.Next(0,2);
+        offspring.maxHealth = (int) parents[index].maxHealth;
+        index = rnd.Next(0,2);
+        offspring.size = parents[index].size;
+        index = rnd.Next(0,2);
+        offspring.movementSpeed = parents[index].movementSpeed;
+        index = rnd.Next(0,2);
+        offspring.endurance = parents[index].endurance;
+        index = rnd.Next(0,2);
+        offspring.temperatureResist = parents[index].temperatureResist;
+        index = rnd.Next(0,2);
+        offspring.desirability = parents[index].desirability;
+        index = rnd.Next(0,2);
+        offspring.viewAngle = parents[index].viewAngle;
+        index = rnd.Next(0,2);
+        offspring.viewRadius = parents[index].viewRadius;
+        index = rnd.Next(0,2);
+        offspring.hearingRadius =parents[index].hearingRadius;
+        index = rnd.Next(0,2);
+        offspring.furColor = parents[index].furColor;
     }
 }

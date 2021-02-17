@@ -12,18 +12,20 @@ public class HearingAbility : MonoBehaviour
 
     [SerializeField]
     private LayerMask targetMask;
-    [SerializeField]
-    private LayerMask obstacleMask;
 
-    public List<Transform> targets = new List<Transform>();
+    // custom editor needs this (otherwise will get an error), remove once custom editor is obsolete, or when stress testing
+    public List<GameObject> targets = new List<GameObject>();
 
-    private AnimalModel animalModel;
-
+    [HideInInspector]
+    public AnimalModel animalModel;
+   
     /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
 
     private void FindHeardTargets()
     {
         // prevent adding duplicates
+        animalModel.heardTargets.Clear();
+        // for custom editor HAEditor
         targets.Clear();
 
         // add targets in list when they enter the sphere
@@ -31,21 +33,15 @@ public class HearingAbility : MonoBehaviour
 
         for (int i = 0; i < targetsInRadius.Length; i++)
         {
-            Transform target = targetsInRadius[i].transform;
+            GameObject target = targetsInRadius[i].gameObject;
 
-            targets.Add(target);
-
-            // handle target added using delegate or by setting a state: turn towards, look at, flee from, etc
-        }
-    }
-
-    // runs FindTargets every delay
-    private IEnumerator FindTargetsWithDelay(float delay)
-    {
-        while (true)
-        {
-            yield return new WaitForSeconds(delay);
-            FindHeardTargets();
+            // don't add self
+            if (target != gameObject)
+            {
+                animalModel.heardTargets.Add(target);
+                // for custom editor HAEditor
+                targets.Add(target);
+            }
         }
     }
     
@@ -53,7 +49,12 @@ public class HearingAbility : MonoBehaviour
     {
         animalModel = GetComponent<AnimalModel>();
         radius = animalModel.hearingRadius;
-
-        StartCoroutine("FindTargetsWithDelay", .5f);
+        
+        FindObjectOfType<global::TickEventPublisher>().onSenseTickEvent += FindHeardTargets;
+    }
+    
+    private void FixedUpdate()
+    {
+        radius = animalModel.hearingRadius;
     }
 }

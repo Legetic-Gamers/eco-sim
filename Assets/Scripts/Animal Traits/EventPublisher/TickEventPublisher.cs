@@ -9,24 +9,36 @@ public class TickEventPublisher : MonoBehaviour
     /// Has to be attached to a (preferably empty) gameObject.
     ///
     /// Is a simple ticker that every few seconds publishes an event
-    /// telling the subscribed animals to increment or decrement their various parameters (in AnimalModel).
+    /// telling the subscribed animals to increment or decrement their various parameters (in AnimalModel),
+    /// and telling the senses to scan for targets
     /// </summary>
     
-    public delegate void OnTickDelegate();
+    public delegate void TickDelegate();
 
-    public event OnTickDelegate onTickEvent;
+    public event TickDelegate onParamTickEvent;
+    public event TickDelegate onSenseTickEvent;
 
-    private IEnumerator TickEvent()
+    private IEnumerator ParamTickEvent()
     {
         while (true)
         {
             yield return new WaitForSeconds(2.0f);
-            onTickEvent?.Invoke();
+            onParamTickEvent?.Invoke();
+        }
+    }
+    private IEnumerator SenseTickEvent()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(.5f);
+            onSenseTickEvent?.Invoke();
         }
     }
 
-    private void Start()
+
+    private void Awake()
     {
-        StartCoroutine("TickEvent");
+        StartCoroutine("ParamTickEvent");
+        StartCoroutine("SenseTickEvent");
     }
 }
