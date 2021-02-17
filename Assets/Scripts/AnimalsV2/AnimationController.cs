@@ -1,4 +1,5 @@
 ﻿
+using AnimalsV2;
 using UnityEngine;
 
 namespace FSM
@@ -9,6 +10,7 @@ public class AnimationController : MonoBehaviour
 {
     private Animal animal;
     private Animator animator;
+    
 
     // Start is called before the first frame update
     void Start()
@@ -20,39 +22,39 @@ public class AnimationController : MonoBehaviour
         animator = GetComponent<Animator>();
 
         //Listen to state changes of the animals states to update animations.
-        animal.FSM.OnStateEnter += FSM_OnStateEnter;
-        animal.FSM.OnStateExecute += FSM_OnOnStateExecute;
-        animal.FSM.OnStateExit += FSM_OnOnStateExit;
+        animal.Fsm.OnStateEnter += FSM_OnStateEnter;
+        animal.Fsm.OnStateLogicUpdate += FSM_OnStateLogicUpdate;
+        animal.Fsm.OnStateExit += FSM_OnStateExit;
+
+        Debug.Log("AnimationController listening to FSM");
 
     }
 
     //Animation parameters which need updating on state enter.
-    private void FSM_OnStateEnter(FSMState<Animal> state)
+    private void FSM_OnStateEnter(State state)
     {
         Debug.Log("Enter " + state.ToString() +" Animation");
         
-        if (state.getStateID() == 1)
-        {
-            animator.SetBool("isJumping",true);
-        }
-        else if (state.getStateID() == 0)
-        {
-            animator.SetBool("isJumping",false);
-        }
+        animator?.CrossFade("Base Layer." + state,0.5f,0);
+        
+        
         
     }
     //Animation parameters which need updating every frame
     //Pretty much a very indirect Update() that goes through the FSM.
     //Has access to the state that is being executed.
-    private void FSM_OnOnStateExecute(FSMState<Animal> state)
+    private void FSM_OnStateLogicUpdate(State state1)
     {
         //Use update() instead most likely
+        animator.SetFloat("runningSpeed",animal.Hunger);
     }
 
     //Animation parameters which need updating once a state ends
-    private void FSM_OnOnStateExit(FSMState<Animal> state)
+    private void FSM_OnStateExit(State state)
     {
         Debug.Log("Exit " + state.ToString() +" Animation");
+        animator?.CrossFade("Base Layer." + state,0.5f,0);
+        //animator.Play("Base Layer." + state,0);
     }
 
 

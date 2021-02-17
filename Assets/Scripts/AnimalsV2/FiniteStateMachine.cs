@@ -1,87 +1,92 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditorInternal;
 using UnityEngine;
 
 
-//Author: Alexander LV
-// Source: https://blog.playmedusa.com/a-finite-state-machine-in-c-for-unity3d/
 
-namespace FSM
+
+namespace AnimalsV2
  {
-
-
-//The finite state machine, which handles the current state and switching between states.
-public class FiniteStateMachine <T>  {
-  private T Owner;
-  private FSMState<T> CurrentState;
-  private FSMState<T> PreviousState;
-  private FSMState<T> GlobalState;
-
-
-  //State Changed Listeners. Used so that class is decoupled from view (animation).
-  //Passes in the state that was changed to.
-  public event Action<FSMState<T>> OnStateEnter;
-  public event Action<FSMState<T>> OnStateExecute;
-  public event Action<FSMState<T>> OnStateExit;
-
-  public void Awake() {
-    CurrentState = null;
-    PreviousState = null;
-    GlobalState = null;
-  }
-
-        //Initialization method which sets the owner and inital state.
-  public void Configure(T owner, FSMState<T> InitialState) {
-    Owner = owner;
-    ChangeState(InitialState);
-  }
-        //Update the state 
-  public void  Update() {
-    if (GlobalState != null)  GlobalState.Execute(Owner);
-    if (CurrentState != null) CurrentState.Execute(Owner);
-
-    //Notify execute state listeners.
-    
-    OnStateExecute?.Invoke(CurrentState);
-        //Debug.Log("EXECTUUTUEUTD");
-
-    
-
-
-  }
-
-        //Change current state.
-  public void  ChangeState(FSMState<T> NewState) {
-      
-      if(NewState == CurrentState)return;
-      
-    PreviousState = CurrentState;
-    if (CurrentState != null)
+     /// <summary>
+     /// State Machine handles States.
+     /// Author: Alexander LV, Johan A
+     /// Source: https://blog.playmedusa.com/a-finite-state-machine-in-c-for-unity3d/
+     /// </summary>
+     public class StateMachine
     {
+        public State CurrentState { get; private set; }
         
-        //Notify exit state listeners
-        OnStateExit?.Invoke(CurrentState);
+        
+        //State Change Listeners
+        public event Action<State> OnStateEnter;
+        public event Action<State> OnStateLogicUpdate;
+        public event Action<State> OnStatePhysicsUpdate;
+        public event Action<State> OnStateExit;
 
-        //Exit state and change state
-        CurrentState.Exit(Owner);
-
-    }
-        CurrentState = NewState; 
-
-        if (CurrentState != null)
+        /// <summary>
+        /// Start the state machine in a non-empty state
+        /// </summary>
+        /// <param name="startingState"> State to start in (Idle) </param>
+        public void Initialize(State startingState)
         {
-            //Notify Enter State listeners and enter new state
-            OnStateEnter?.Invoke(CurrentState);
-            CurrentState.Enter(Owner);
+            ChangeState(startingState);
+            
         }
-    
-  }
 
-  public void  RevertToPreviousState() {
-    if (PreviousState != null)
-      ChangeState(PreviousState);
-  }
-};
+        /// <summary>
+        /// Changing states. 
+        /// </summary>
+        /// <param name="newState"> State to change into. </param>
+        public void ChangeState(State newState)
+        {
+            if(newState == CurrentState) return;
+            
+            if (CurrentState != null)
+            {
+                //Exit old state
+                CurrentState.Exit();
+                OnStateExit?.Invoke(CurrentState);
+            }
+            
+            //Change state
+            CurrentState = newState; 
 
+            if (CurrentState != null)
+            {
+                //Enter new state
+                CurrentState.Enter();
+                Debug.Log("Entering state!");
+                
+                OnStateEnter?.Invoke(CurrentState);
+            }
+            
+        }
+        
+        public void  UpdateStatesLogic() {
+            if (CurrentState != null) CurrentState.LogicUpdate();
+            //Debug.Log(OnStateLogicUpdate.ToString());
+            OnStateLogicUpdate?.Invoke(CurrentState);
+
+        }
+        
+       
+
+        public virtual void HandleStatesInput()
+        {
+            if (CurrentState != null) CurrentState.HandleInput();
+        }
+        
+
+        public virtual void UpdateStatesPhysics()
+        {
+            if (CurrentState != null) CurrentState.PhysicsUpdate();
+            OnStatePhysicsUpdate?.Invoke(CurrentState);
+        }
+
+      
+
+        
+    }
 }
