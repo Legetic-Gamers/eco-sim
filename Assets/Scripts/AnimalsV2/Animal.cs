@@ -8,8 +8,13 @@ using Random = UnityEngine.Random;
 //Author: Alexander LV, Johan A
 // Heavily Inspired by: https://blog.playmedusa.com/a-finite-state-machine-in-c-for-unity3d/
 // Used Unity Official Tutorial on the Animator
+
+
 namespace AnimalsV2
 {
+    [RequireComponent(typeof(NavMeshAgent))]
+    [RequireComponent(typeof(AnimalModel))]
+    
     public class Animal : MonoBehaviour
     {
     
@@ -22,8 +27,9 @@ namespace AnimalsV2
         public FleeingState fs;
         public Idle idle;
 
-        // TODO Senses
+        // Internal representation. Traits, parameters and senses of the animal
         public GameObject[] nearbyObjects;
+        private AnimalModel animalModel;
 
         // Parameters
         public float Hunger = 0;
@@ -32,13 +38,17 @@ namespace AnimalsV2
         public int ReproductiveUrge = 0;
         
     
-        void Awake(){
-            Debug.Log("Rabbit exists");
+        void Awake()
+        {
+            
+            //Init Senses
+            animalModel = GetComponent<AnimalModel>();
 
-            // Get the NavMesh agent
+            // Init the NavMesh agent
             agent = GetComponent<NavMeshAgent>();
             agent.autoBraking = false;
 
+            //Create the FSM.
             Fsm = new StateMachine();
             // AnimationController animationController = new AnimationController(this);
             
@@ -47,8 +57,6 @@ namespace AnimalsV2
         private void Start()
         {
             
-            
-
             // sf = new SearchForFood(this, Fsm);
             // sw = new SearchForWater(this, Fsm);
             // sm = new SearchForMate(this, Fsm);
@@ -62,9 +70,8 @@ namespace AnimalsV2
         void Update()
         {
 
-            //Tick parameters
-            Hunger += 1 * Time.deltaTime;
-            Thirst++;
+            //Get information from senses
+            //animalModel.
             
             //Handle Input
             Fsm.HandleStatesInput();

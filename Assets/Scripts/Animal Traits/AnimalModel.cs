@@ -28,7 +28,7 @@ public abstract class AnimalModel : MonoBehaviour
     ///     -OffspringSize / 2 + Const                  -Cannot create energy, so when creating offspring energy has to be lost
     ///
     /// -Health (optional):
-    /// Is affected by other animals damage in fights and hunts.
+    /// Is affected by other animals damage in fights and hunts.*
     /// As decreasing health based on energy and hydration levels is not too realistic/is a bit "gameified",
     /// an alternative to health is to decide the result of hunts/fights based on size and a random factor of luck,
     /// and let low hydration and energy lead directly to death.
