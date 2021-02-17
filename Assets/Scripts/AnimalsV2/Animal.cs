@@ -1,11 +1,13 @@
+/*
+ * Authors: Alexander L.V, Johan A. 
+ */
+
 using System;
 using AnimalsV2.States;
-using FSM;
 using UnityEngine;
 using UnityEngine.AI;
 using Random = UnityEngine.Random;
 
-//Author: Alexander LV, Johan A
 // Heavily Inspired by: https://blog.playmedusa.com/a-finite-state-machine-in-c-for-unity3d/
 // Used Unity Official Tutorial on the Animator
 namespace AnimalsV2
@@ -14,20 +16,16 @@ namespace AnimalsV2
     {
     
         public NavMeshAgent agent;
-    
         public StateMachine Fsm;
         public SearchForMate sm;
         public SearchForFood sf;
         public SearchForWater sw;
         public Idle idle;
 
-        //Perceptions
-        //Some form of hearing
-        //Some form of Smell
-        //Some form of sight
+        // TODO Senses
         public GameObject[] nearbyObjects;
 
-        //Parameters of the animal
+        // Parameters
         public float Hunger = 0;
         public int Energy = 0;
         public int Thirst = 0;
@@ -36,7 +34,6 @@ namespace AnimalsV2
 
         public void Eat(int amount)
         {
-            //Update hunger, not below 0.
             Hunger = Math.Max(Hunger - amount,0);
         }
 
@@ -72,21 +69,17 @@ namespace AnimalsV2
             Fsm.Initialize(idle);
         }
 
-        // Update is called once per frame
         void Update()
         {
-
             //Tick parameters
             Hunger += 1 * Time.deltaTime;
             Thirst++;
             Fsm.CurrentState.HandleInput();
-
             Fsm.CurrentState.LogicUpdate();
             if (agent.remainingDistance < 1.0f){
                 agent.destination = Random.insideUnitCircle * 20;
             }
         }
-    
         private void FixedUpdate()
         {
             Fsm.CurrentState.PhysicsUpdate();
