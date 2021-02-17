@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class AnimalModel 
+public class AnimalModel
 {
     /// <summary>
     /// 
@@ -89,11 +89,13 @@ public class AnimalModel
     ///     -hydration == 0 (when not going the "decrementHealth if hydration less than 20%"-route)
     /// 
     /// </summary>
-
+    
+    public Traits traits { get; set; }
+    
     /* /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\ */
     /*                                       Parameters                                       */
     /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
-    
+
     public int age { get; set; }
     
     public int currentHealth { get; set; }
@@ -107,34 +109,4 @@ public class AnimalModel
 
     // optional, can be set in the behavior model instead
     protected string foodType; // herbivore, carnivore, omnivore
-
-    /* /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\ */
-    /*                                         Traits                                         */
-    /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
-    
-    public float size { get; set; }
-    public int maxEnergy { get; set; }
-    public int maxHealth { get; set; } // optional
-    
-    public float movementSpeed { get; set; }
-    public float endurance { get; set; }
-    
-    public int ageLimit { get; set; }
-    
-    public float temperatureResist { get; set; }
-    public float desirability { get; set; }
-    public Color furColor = new Color(0.5f, 0.2f, 0.2f, 1.0f); // example
-
-    [Range(0, 360)] public float viewAngle;// affects width of FoV
-    public float viewRadius { get; set; } // distance
-    
-    public float hearingRadius { get; set; }
-    
-    /* 
-     * if we are to have smell:
-     * we should probably have some simple "wind" 
-     * that determines the direction of the "smell-cone" 
-    */
-    [Range(0, 360)] private float smellingAngle;
-    private float smellingRadius { get; set; }
 }
