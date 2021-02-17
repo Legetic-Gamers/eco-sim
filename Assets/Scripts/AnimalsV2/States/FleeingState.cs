@@ -40,7 +40,11 @@ namespace FSM
         {
             //Get average position of enemies and run away from it.
             Vector3 averagePosition = GetClosestPredatorPosition(a);
-            RunToFromPoint(a.transform,averagePosition,false);
+            Vector3 pointToRunTo = Utilities.RunToFromPoint(a.transform,averagePosition,false);
+            //Move the animal using the navmeshagent.
+            NavMeshHit hit;
+            NavMesh.SamplePosition(pointToRunTo,out hit,5,1 << NavMesh.GetAreaFromName("Walkable"));
+            nMAgent.SetDestination(hit.position);
         }
         
 
@@ -49,32 +53,7 @@ namespace FSM
             
         }
         
-        //Uses
-        //Inspired by: https://answers.unity.com/questions/868003/navmesh-flee-ai-flee-from-player.html 
-        private void RunToFromPoint(Transform animalTransform,Vector3 targetPoint,bool toPoint)
-        {
-            
-            Vector3 pointToAnimalVector;
-
-            //Run to point or from point
-            if (toPoint)
-            {
-                pointToAnimalVector = targetPoint - animalTransform.position;
-            }
-            else
-            {
-                pointToAnimalVector = animalTransform.position - targetPoint;
-            }
-
-            //Calculate point to run towards or from.
-            Vector3 pointToRunTo = animalTransform.position + Vector3.Normalize(pointToAnimalVector);
-            
-            //Move the animal using the navmeshagent.
-            NavMeshHit hit;
-            NavMesh.SamplePosition(pointToRunTo,out hit,5,1 << NavMesh.GetAreaFromName("Walkable"));
-            nMAgent.SetDestination(hit.position);
-
-        }
+        
         
         //This function could be extended upon to generate a better point.
         //This would result in smarter fleeing behavior.
