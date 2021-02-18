@@ -69,7 +69,7 @@ public class Traits
     {
 
         Traits childTraits = new Traits(10,10,10,10,10,10,10,10,10,10,10);
-        //TODO crossover
+        //TODO crossover logic to generate a gene between trait of other parent and this.
         return childTraits;
         
         /*
