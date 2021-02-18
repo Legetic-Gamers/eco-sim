@@ -1,10 +1,8 @@
-﻿public class Wolfontroller : AnimalController
+﻿public class WolfController : AnimalController
 {
-    // Start is called before the first frame update
-    new void Start()
+    void Awake()
     {
         animal = new WolfModel();
-        base.Start();    // call base class
     }
 
     

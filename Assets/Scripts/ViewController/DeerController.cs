@@ -1,10 +1,8 @@
 ﻿public class DeerController : AnimalController
 {
-    // Start is called before the first frame update
-    new void Start()
+    void Awake()
     {
         animal = new DeerModel();
-        base.Start();    // call base class
     }
 
     

@@ -4,13 +4,13 @@ using System.Drawing;
 using UnityEngine;
 using Color = UnityEngine.Color;
 
-public class Traits : MonoBehaviour
+public class Traits
 {
     /* /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\ */
     /*                                         Traits                                         */
     /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
     
-    public float size { get; set; }
+    public  float maxSize { get; set; }
     public int maxEnergy { get; set; }
     public int maxHealth { get; set; } // optional
     
@@ -39,7 +39,7 @@ public class Traits : MonoBehaviour
     */
 
     public Traits(
-        float size, 
+        float maxSize, 
         int maxEnergy, 
         int maxHealth, 
         float movementSpeed, 
@@ -51,7 +51,7 @@ public class Traits : MonoBehaviour
         float viewRadius, 
         float hearingRadius)
     {
-        this.size = size;
+        this.maxSize = maxSize;
         this.maxEnergy = maxEnergy;
         this.maxHealth = maxHealth;
         this.movementSpeed = movementSpeed;
@@ -72,8 +72,9 @@ public class Traits : MonoBehaviour
         //TODO crossover
         return childTraits;
         
+        /*
         System.Random rnd = new System.Random();
-/*  
+  
         var index = rnd.Next(0,2);
         offspring.animal.ageLimit = (int) parents[index].animal.ageLimit;
         index = rnd.Next(0,2);

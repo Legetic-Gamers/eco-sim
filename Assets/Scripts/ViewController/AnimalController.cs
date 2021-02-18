@@ -22,19 +22,19 @@ public abstract class AnimalController : MonoBehaviour
     void DecrementEnergy() 
     { 
         animal.currentEnergy--; // currentEnergy -= Size * deltaTemp * Const
-        Debug.Log("currentEnergy " + animal.currentEnergy + " " + gameObject.name);
+        //Debug.Log("currentEnergy " + animal.currentEnergy + " " + gameObject.name);
     }
 
     void DecrementHydration()
     {
         animal.hydration--; 
-        Debug.Log("thirstLevel " + animal.hydration + " " + gameObject.name);
+        //Debug.Log("thirstLevel " + animal.hydration + " " + gameObject.name);
     }
 
     void IncrementReproductiveUrge()
     {
         animal.reproductiveUrge++; 
-        Debug.Log("reproductiveUrge " + animal.reproductiveUrge + " " + gameObject.name);
+        //Debug.Log("reproductiveUrge " + animal.reproductiveUrge + " " + gameObject.name);
     }
 
     private void IncrementAge()
@@ -76,9 +76,9 @@ public abstract class AnimalController : MonoBehaviour
         // Generate the offspring traits
         Traits childTraits = animal.traits.Crossover(otherParent.animal.traits);
         // Add coresponding controller
-        AnimalController childsAnimalController = child.AddComponent<BearController>();
+        AnimalController childAnimalController = child.AddComponent<BearController>();
         // Assign traits to child
-        childsAnimalController.animal.traits = childTraits;
+        childAnimalController.animal.traits = childTraits;
 
     }
     

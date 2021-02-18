@@ -1,8 +1,8 @@
-﻿public class BearModel : AnimalModel
+﻿public class RabbitModel : AnimalModel
 {
-    public BearModel()
+    public RabbitModel()
     {
-        // Set variables specific to bear
+        // Set variables specific to wolf
         traits = new Traits(10, 10, 10, 10,10,10,10,10,10,10,10);
         currentEnergy = 10;
         hydration = 10;
@@ -10,12 +10,11 @@
     }
 
 
-    public BearModel(Traits traits)
+    public RabbitModel(Traits traits)
     {
         this.traits = traits;
         currentEnergy = 10;
         hydration = 10;
         reproductiveUrge = 0;
     }
-    
 }
