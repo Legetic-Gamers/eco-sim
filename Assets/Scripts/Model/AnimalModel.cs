@@ -90,6 +90,7 @@ public class AnimalModel
     /// 
     /// </summary>
     
+    public int generation { get; set; }
     public Traits traits { get; set; }
     
     /* /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\ */

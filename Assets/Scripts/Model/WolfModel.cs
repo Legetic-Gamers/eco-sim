@@ -8,6 +8,13 @@
         hydration = 10;
         reproductiveUrge = 0;
     }
+    public WolfModel(Traits traits)
+    {
+        this.traits = traits;
+        currentEnergy = 10;
+        hydration = 10;
+        reproductiveUrge = 0;
+    }
 
 
 }
