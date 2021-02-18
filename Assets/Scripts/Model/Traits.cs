@@ -9,7 +9,36 @@ public class Traits
     /* /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\ */
     /*                                         Traits                                         */
     /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
+
+    public enum BehaviorType
+    {
+        Carnivore,
+        Herbivore,
+        Omnivore
+    }
+
+    public enum Species // expand
+    {
+        Bear,
+        Wolf,
+        Rabbit
+    }
+
+    public BehaviorType behaviorType { get; set; }
+
+    public Species species { get; set; }
     
+    public bool IsCarnivore
+    {
+        get{ return behaviorType == BehaviorType.Carnivore
+                    || behaviorType == BehaviorType.Omnivore; }
+        
+    }
+    public bool IsHerbivore
+    {
+        get{ return behaviorType == BehaviorType.Herbivore;}
+    }
+
     public  float maxSize { get; set; }
     public int maxEnergy { get; set; }
     public int maxHealth { get; set; } // optional
@@ -39,9 +68,11 @@ public class Traits
     */
 
     public Traits(
+        //BehaviorType behaviorType,
+        //Species species;
         float maxSize, 
         int maxEnergy, 
-        int maxHealth, 
+        int maxHealth,
         float movementSpeed, 
         float endurance, 
         int ageLimit, 
@@ -51,6 +82,8 @@ public class Traits
         float viewRadius, 
         float hearingRadius)
     {
+        //this.behaviorType = behaviorType;
+        //this.species = species;
         this.maxSize = maxSize;
         this.maxEnergy = maxEnergy;
         this.maxHealth = maxHealth;
