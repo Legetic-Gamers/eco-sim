@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
 
 public class FieldOfView : MonoBehaviour
@@ -23,6 +24,13 @@ public class FieldOfView : MonoBehaviour
 
     [HideInInspector]
     public AnimalController animalController;
+    private bool isPrey;
+    
+    public delegate void ScoutedTargetDelegate();
+
+    public event ScoutedTargetDelegate onSeenHostileEvent;
+    public event ScoutedTargetDelegate onSeenFriendlyEvent;
+    public event ScoutedTargetDelegate onSeenFoodEvent; // either prey or plants
 
     /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
 
@@ -40,6 +48,7 @@ public class FieldOfView : MonoBehaviour
         for (int i = 0; i < targetsInRadius.Length; i++)
         {
             GameObject target = targetsInRadius[i].gameObject;
+            AnimalController targetAnimalController = target.GetComponent<AnimalController>();
             
             // don't add self
             if (target == gameObject) return;
@@ -56,6 +65,30 @@ public class FieldOfView : MonoBehaviour
                     animalController.visibleTargets.Add(target);
                     // for custom editor FoVEditor
                     targets.Add(target);
+
+                    switch (isPrey)
+                    {
+                        case true: 
+                            if (targetAnimalController.animal.traits.IsCarnivore) 
+                                onSeenHostileEvent?.Invoke();
+                            /*
+                             * not herbivore and not carnivore/omnivore (above) -> must be a plant.
+                             * 
+                             * should probably have two targetMask, one for predators to see only prey and other predators,
+                             * and one for herbivores to see herbivores, predators, and plants
+                             */
+                            else if (!targetAnimalController.animal.traits.IsHerbivore) 
+                                onSeenFoodEvent?.Invoke();
+                            break;
+                        case false: 
+                            if (targetAnimalController.animal.traits.IsHerbivore)
+                                onSeenFoodEvent?.Invoke();
+                            break;
+                    }
+                    
+                    if (animalController.IsSameSpecies(targetAnimalController))
+                        onSeenFriendlyEvent?.Invoke();
+                    
                 }
             }
         }
@@ -75,6 +108,8 @@ public class FieldOfView : MonoBehaviour
     private void Start() 
     {
         animalController = GetComponent<AnimalController>();
+        
+        if (animalController.animal.traits.behaviorType == Traits.BehaviorType.Herbivore) isPrey = true;
         
         angle = animalController.animal.traits.viewAngle;
         radius = animalController.animal.traits.viewRadius;

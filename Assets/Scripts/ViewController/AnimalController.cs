@@ -66,6 +66,19 @@ public abstract class AnimalController : MonoBehaviour
     /* /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\ */
     /*                                          Other                                         */
     /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
+    
+    public bool IsSameSpecies(AnimalController otherAnimal)
+    {
+        try
+        {
+            return otherAnimal.animal.traits.species == animal.traits.species;
+        }
+        
+        catch (NullReferenceException)
+        {
+            return false;
+        }
+    }
 
     //TODO a rabbit should be able to have more than one offspring at a time
     void CreateOffspring(AnimalController otherParent)
