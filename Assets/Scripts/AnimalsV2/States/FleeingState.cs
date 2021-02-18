@@ -35,9 +35,17 @@ namespace AnimalsV2.States
         {
             base.LogicUpdate();
             
-            // Get average position of enemies and run away from it.
+            // Get average position of enemies 
             Vector3 averagePosition = NavigationUtilities.GetNearestObjectPositionByTag(animal, "Predator");
-            Vector3 pointToRunTo = NavigationUtilities.RunToFromPoint(animal.transform,averagePosition,false);
+            
+            //Run run away from the position.
+            //Default to just running forward.
+            Vector3 pointToRunTo = animal.transform.position + animal.transform.forward;
+            //If there was nothing to run from found.
+            if (averagePosition != animal.transform.position)
+            {
+                 pointToRunTo = NavigationUtilities.RunToFromPoint(animal.transform,averagePosition,false);
+            }
             
             // Move the animal using the NavMeshAgent.
             NavMeshHit hit;

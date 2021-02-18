@@ -24,9 +24,12 @@ namespace AnimalsV2
         public static Vector3 RunToFromPoint(Transform animalTransform, Vector3 targetPoint,bool toPoint)
         {
             Vector3 pointToAnimalVector;
+            
+            
             // Set direction
             if (toPoint) pointToAnimalVector = targetPoint - animalTransform.position;
             else pointToAnimalVector = animalTransform.position - targetPoint;
+
             return animalTransform.position + Vector3.Normalize(pointToAnimalVector);
         }
         
