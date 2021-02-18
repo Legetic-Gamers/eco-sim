@@ -1,20 +1,20 @@
 ﻿public class RabbitModel : AnimalModel
 {
-    public RabbitModel()
+    public RabbitModel() : base(new Traits(10, 10, 10, 10,10,10,10,10,10,10,10), 0)
     {
-        // Set variables specific to wolf
-        traits = new Traits(10, 10, 10, 10,10,10,10,10,10,10,10);
-        currentEnergy = 10;
-        hydration = 10;
-        reproductiveUrge = 0;
+        // Deer specific initialization 
+        
+    }
+    
+    public RabbitModel(Traits traits, int generation) : base(traits, generation)
+    {
+        
     }
 
-
-    public RabbitModel(Traits traits)
+    public override AnimalModel Mate(AnimalModel otherParent)
     {
-        this.traits = traits;
-        currentEnergy = 10;
-        hydration = 10;
-        reproductiveUrge = 0;
+        Traits childTraits = traits.Crossover(otherParent.traits);
+        //TODO logic for determining generation
+        return new RabbitModel(childTraits, 0);
     }
 }

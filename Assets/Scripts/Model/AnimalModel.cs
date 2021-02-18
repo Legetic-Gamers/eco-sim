@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class AnimalModel
+public abstract class AnimalModel
 {
     /// <summary>
     /// 
@@ -98,16 +98,34 @@ public class AnimalModel
     /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
 
     public int age { get; set; }
-    
     public int currentHealth { get; set; }
     public int currentEnergy { get; set; }
+    public float satiety { get; set; }
+    public float hydration { get; set; }
+    public float reproductiveUrge { get; set; }
+
+    public AnimalModel(Traits traits, int generation)
+    {
+        // initializing parameters
+        age = 0;
+        currentHealth = traits.maxHealth;
+        currentEnergy = traits.maxEnergy;
+        hydration = 1f;
+        reproductiveUrge = 0;
+        satiety = 1f;
+
+        this.traits = traits;
+    }
     
-    public int hydration { get; set; }
-    public int reproductiveUrge { get; set; }
-
-    public bool isAlive { get; set; } = true;
-    public bool isControllable { get; set; } = false;
-
     // optional, can be set in the behavior model instead
     protected string foodType; // herbivore, carnivore, omnivore
+
+    public bool isAlive()
+    {
+        return (currentHealth > 0 && currentEnergy > 0 && age < traits.ageLimit && hydration > 0);
+    }
+
+    public abstract AnimalModel Mate(AnimalModel otherParent);
+
+
 }
