@@ -16,15 +16,14 @@ public class HearingAbility : MonoBehaviour
     // custom editor needs this (otherwise will get an error), remove once custom editor is obsolete, or when stress testing
     public List<GameObject> targets = new List<GameObject>();
 
-    [HideInInspector]
-    public AnimalModel animalModel;
+    public AnimalController animalController;
    
     /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
 
     private void FindHeardTargets()
     {
         // prevent adding duplicates
-        animalModel.heardTargets.Clear();
+        animalController.heardTargets.Clear();
         // for custom editor HAEditor
         targets.Clear();
 
@@ -38,7 +37,7 @@ public class HearingAbility : MonoBehaviour
             // don't add self
             if (target != gameObject)
             {
-                animalModel.heardTargets.Add(target);
+                animalController.heardTargets.Add(target);
                 // for custom editor HAEditor
                 targets.Add(target);
             }
@@ -47,14 +46,17 @@ public class HearingAbility : MonoBehaviour
     
     private void Start()
     {
-        animalModel = GetComponent<AnimalModel>();
-        radius = animalModel.hearingRadius;
+        animalController = GetComponent<AnimalController>();
+        Debug.Log("YOO");
+        Debug.Log(animalController.animal);
+        radius = animalController.animal.traits.hearingRadius;
+        
         
         FindObjectOfType<global::TickEventPublisher>().onSenseTickEvent += FindHeardTargets;
     }
     
     private void FixedUpdate()
     {
-        radius = animalModel.hearingRadius;
+        radius = animalController.animal.traits.hearingRadius;
     }
 }

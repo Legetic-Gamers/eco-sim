@@ -1234,10 +1234,10 @@ GameObject:
   - component: {fileID: 6797856040219515850}
   - component: {fileID: 6797856040219515851}
   - component: {fileID: 6797856040219515848}
-  - component: {fileID: 6797856040219515849}
+  - component: {fileID: 4521836965761254405}
+  - component: {fileID: 6789566579005094291}
   - component: {fileID: 6797856040219515862}
   - component: {fileID: 6797856040219515863}
-  - component: {fileID: 6797856040219515854}
   m_Layer: 8
   m_Name: Rabbit Brown
   m_TagString: Untagged
@@ -1320,7 +1320,21 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &6797856040219515849
+--- !u!114 &4521836965761254405
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6797856040219515855}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f61a5d1bce1b8b4cbc2bd7ec9dba648, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  heardTargets: []
+  visibleTargets: []
+--- !u!114 &6789566579005094291
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1356,7 +1370,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   targets: []
-  animalModel: {fileID: 0}
+  animalController: {fileID: 0}
 --- !u!114 &6797856040219515863
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1374,35 +1388,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   targets: []
-  animalModel: {fileID: 0}
---- !u!114 &6797856040219515854
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6797856040219515855}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 514543dd658d722498d0b0a6d6f7fb36, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isAlive: 1
-  isControllable: 0
-  heardTargets: []
-  visibleTargets: []
-  size: 0
-  maxEnergy: 0
-  maxHealth: 0
-  movementSpeed: 0
-  endurance: 0
-  ageLimit: 0
-  temperatureResist: 0
-  desirability: 0
-  furColor: {r: 0.5, g: 0.2, b: 0.2, a: 1}
-  viewAngle: 93
-  viewRadius: 20
-  hearingRadius: 10
+  animalController: {fileID: 0}
 --- !u!1 &6797856040265311753
 GameObject:
   m_ObjectHideFlags: 0

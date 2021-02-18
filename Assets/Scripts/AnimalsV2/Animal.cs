@@ -14,8 +14,7 @@ using Random = UnityEngine.Random;
 namespace AnimalsV2
 {
     [RequireComponent(typeof(NavMeshAgent))]
-    [RequireComponent(typeof(AnimalModel))]
-    
+    [RequireComponent(typeof(AnimalController))]
     public class Animal : MonoBehaviour
     {
     
@@ -28,8 +27,8 @@ namespace AnimalsV2
         public FleeingState fs;
         public Idle idle;
 
-        // Internal representation. Traits, parameters and senses of the animal
-        private AnimalModel animalModel;
+        // Controller of the animal
+        private AnimalController animalController;
 
 
         [HideInInspector] 
@@ -40,7 +39,7 @@ namespace AnimalsV2
         {
             
             //Init internal Animal  model.
-            animalModel = GetComponent<AnimalModel>();
+            animalController = GetComponent<AnimalController>();
 
             // Init the NavMesh agent
             agent = GetComponent<NavMeshAgent>();
@@ -70,8 +69,8 @@ namespace AnimalsV2
 
             //Get information from senses
             //animalModel.
-            heardTargets = animalModel.heardTargets;
-            visibleTargets = animalModel.visibleTargets;
+            heardTargets = animalController.heardTargets;
+            visibleTargets = animalController.visibleTargets;
             
             //Handle Input
             Fsm.HandleStatesInput();

@@ -22,7 +22,7 @@ namespace AnimalsV2.States
         {
             base.Exit();
             Debug.Log("EXITING FLEEING");
-            currentStateAnimation = StateAnimation.Idle;
+            //currentStateAnimation = StateAnimation.Idle;
         }
 
         public override void HandleInput()
@@ -36,7 +36,7 @@ namespace AnimalsV2.States
             base.LogicUpdate();
             
             // Get average position of enemies and run away from it.
-            Vector3 averagePosition = NavigationUtilities.GetNearObjectsAveragePositionByTag(animal, "Predator");
+            Vector3 averagePosition = NavigationUtilities.GetNearestObjectPositionByTag(animal, "Predator");
             Vector3 pointToRunTo = NavigationUtilities.RunToFromPoint(animal.transform,averagePosition,false);
             
             // Move the animal using the NavMeshAgent.
