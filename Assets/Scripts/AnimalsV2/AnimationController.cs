@@ -11,6 +11,8 @@ public class AnimationController
     private Animal animal;
     private Animator animator;
     
+    private float transitionSpeed = 0.2f;
+    
     
     public AnimationController(Animal animal)
     {
@@ -34,7 +36,7 @@ public class AnimationController
     {
         Debug.Log("Enter " + state.ToString() +" Animation");
         
-        animator?.CrossFade("Base Layer." + state,0.5f,0);
+        animator?.CrossFade("Base Layer." + state,transitionSpeed,0);
         
         
         
@@ -52,7 +54,7 @@ public class AnimationController
     private void FSM_OnStateExit(State state)
     {
         Debug.Log("Exit " + state.ToString() +" Animation");
-        animator?.CrossFade("Base Layer." + state,0.5f,0);
+        animator?.CrossFade("Base Layer." + state,transitionSpeed,0);
         //animator.Play("Base Layer." + state,0);
     }
 

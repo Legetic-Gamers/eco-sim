@@ -21,6 +21,7 @@ namespace AnimalsV2.States
         {
             base.Enter();
             Debug.Log("ENTERED SEARCHING FOR FOOD");
+            currentStateAnimation = StateAnimation.Running;
         }
 
         public void HandleInput()
