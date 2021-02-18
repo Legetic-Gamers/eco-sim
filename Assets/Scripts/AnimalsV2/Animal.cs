@@ -14,8 +14,7 @@ using Random = UnityEngine.Random;
 namespace AnimalsV2
 {
     [RequireComponent(typeof(NavMeshAgent))]
-    [RequireComponent(typeof(AnimalModel))]
-    
+
     public class Animal : MonoBehaviour
     {
     
