@@ -22,7 +22,7 @@ public class ObjectClicker : MonoBehaviour
                 if (hit.transform != null)
                 {
                     // Print the name of the object
-                    //PrintName(hit.transform.gameObject);
+                    PrintName(hit.transform.gameObject);
                     // Method to handle the hit
                     HandleHit(hit.transform.gameObject);
 
@@ -47,7 +47,7 @@ public class ObjectClicker : MonoBehaviour
     
     private void PrintName(GameObject go)
     {
-        Debug.Log("THIS IS THE CLICKED OBJECT" + go);
+        Debug.Log("You clicked this object: " + go);
     }
     
     
