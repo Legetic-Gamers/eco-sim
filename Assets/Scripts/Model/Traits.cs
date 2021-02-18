@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Drawing;
-using UnityEngine;
+﻿using UnityEngine;
 using Color = UnityEngine.Color;
 
 public class Traits
@@ -10,11 +7,11 @@ public class Traits
     /*                                         Traits                                         */
     /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
     
-    public  float maxSize { get; set; }
+    public  float size { get; set; }
     public int maxEnergy { get; set; }
     public int maxHealth { get; set; } // optional
     
-    public float movementSpeed { get; set; }
+    public float maxSpeed { get; set; }
     public float endurance { get; set; }
     
     public int ageLimit { get; set; }
@@ -39,10 +36,10 @@ public class Traits
     */
 
     public Traits(
-        float maxSize, 
+        float size, 
         int maxEnergy, 
         int maxHealth, 
-        float movementSpeed, 
+        float maxSpeed, 
         float endurance, 
         int ageLimit, 
         float temperatureResist, 
@@ -51,10 +48,10 @@ public class Traits
         float viewRadius, 
         float hearingRadius)
     {
-        this.maxSize = maxSize;
+        this.size = size;
         this.maxEnergy = maxEnergy;
         this.maxHealth = maxHealth;
-        this.movementSpeed = movementSpeed;
+        this.maxSpeed = maxSpeed;
         this.endurance = endurance;
         this.ageLimit = ageLimit;
         this.temperatureResist = temperatureResist;

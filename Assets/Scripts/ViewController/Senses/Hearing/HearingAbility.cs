@@ -47,7 +47,6 @@ public class HearingAbility : MonoBehaviour
     private void Start()
     {
         animalController = GetComponent<AnimalController>();
-        Debug.Log("YOO");
         Debug.Log(animalController.animal);
         radius = animalController.animal.traits.hearingRadius;
         

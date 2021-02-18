@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using AnimalsV2;
 using UnityEngine;
 
 public class CameraController : MonoBehaviour
@@ -72,8 +73,8 @@ public class CameraController : MonoBehaviour
             {
                 hasTarget = true;
                 target = hit.collider.gameObject;
-                if (target.GetComponent<AnimalModel>() != null)
-                    target.GetComponent<AnimalModel>().isControllable = true;
+                if (target.GetComponent<AnimalController>() != null)
+                    target.GetComponent<AnimalController>().isControllable = true;
                 
                 Debug.Log("Raycast hit " + target.name + "!");
             }
@@ -93,8 +94,8 @@ public class CameraController : MonoBehaviour
         {
             hasTarget = false;
             target = null;
-            if (target.GetComponent<AnimalModel>() != null)
-                target.GetComponent<AnimalModel>().isControllable = true;
+            if (target.GetComponent<AnimalController>() != null)
+                target.GetComponent<AnimalController>().isControllable = true;
             
             Camera.main.fieldOfView = 60;
         }

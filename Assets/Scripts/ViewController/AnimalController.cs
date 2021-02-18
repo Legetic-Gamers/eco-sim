@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class AnimalController : MonoBehaviour
 {
     public AnimalModel animal;
+
+    public bool isControllable { get; set; } = false;
 
     /* /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\ */
     /*                                   Parameter handlers                                   */
@@ -27,13 +27,13 @@ public abstract class AnimalController : MonoBehaviour
 
     void DecrementHydration()
     {
-        animal.hydration--; 
+        animal.hydration -= 0.1f; 
         //Debug.Log("thirstLevel " + animal.hydration + " " + gameObject.name);
     }
 
     void IncrementReproductiveUrge()
     {
-        animal.reproductiveUrge++; 
+        animal.reproductiveUrge += 0.1f; 
         //Debug.Log("reproductiveUrge " + animal.reproductiveUrge + " " + gameObject.name);
     }
 
@@ -41,8 +41,6 @@ public abstract class AnimalController : MonoBehaviour
     {
         animal.age++; 
         //Debug.Log(gameObject.name + " has lived for " + age*2 + " seconds.");
-        
-        if (animal.age > animal.traits.ageLimit) animal.isAlive = false;
     }
     protected void EventSubscribe()
     {
@@ -74,11 +72,10 @@ public abstract class AnimalController : MonoBehaviour
         // Spawn child as a copy of the father at the position of the mother
         GameObject child = Instantiate(gameObject, gameObject.transform.position, gameObject.transform.rotation); //NOTE CHANGE SO THAT PREFAB IS USED
         // Generate the offspring traits
-        Traits childTraits = animal.traits.Crossover(otherParent.animal.traits);
+        AnimalModel childModel = animal.Mate(otherParent.animal);
         // Add coresponding controller
         AnimalController childAnimalController = child.AddComponent<BearController>();
         // Assign traits to child
-        childAnimalController.animal.traits = childTraits;
 
     }
     
@@ -96,9 +93,9 @@ public abstract class AnimalController : MonoBehaviour
     //should be refactored so that this logic is in AnimalModel
     private void Update()
     {
-        if (animal.isAlive && animal.currentEnergy <= 0 && animal.hydration <= 0)
+        if (animal.isAlive() && animal.currentEnergy <= 0 && animal.hydration <= 0)
         {
-            animal.isAlive = false; 
+            Debug.Log("Rabbit is ded");
             EventUnsubscribe();
             
             // probably doing this in deathState instead

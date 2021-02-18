@@ -1,19 +1,20 @@
 ﻿public class DeerModel : AnimalModel
 {
-    public DeerModel()
+    public DeerModel() : base(new Traits(10, 10, 10, 10,10,10,10,10,10,10,10), 0)
     {
-        // Set variables specific to deer
-        traits = new Traits(10, 10, 10, 10,10,10,10,10,10,10,10);
-        currentEnergy = 10;
-        hydration = 10;
-        reproductiveUrge = 0;
+        // Deer specific initialization 
+        
+    }
+    
+    public DeerModel(Traits traits, int generation) : base(traits, generation)
+    {
+        
     }
 
-    public DeerModel(Traits traits)
+    public override AnimalModel Mate(AnimalModel otherParent)
     {
-        this.traits = traits;
-        currentEnergy = 10;
-        hydration = 10;
-        reproductiveUrge = 0;
+        Traits childTraits = traits.Crossover(otherParent.traits);
+        //TODO logic for determining generation
+        return new DeerModel(childTraits, 0);
     }
 }
