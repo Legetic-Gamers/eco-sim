@@ -100,7 +100,6 @@ public abstract class AnimalModel
     public int age { get; set; }
     public int currentHealth { get; set; }
     public int currentEnergy { get; set; }
-    public float satiety { get; set; }
     public float hydration { get; set; }
     public float reproductiveUrge { get; set; }
 
@@ -112,7 +111,6 @@ public abstract class AnimalModel
         currentEnergy = traits.maxEnergy;
         hydration = 1f;
         reproductiveUrge = 0;
-        satiety = 1f;
 
         this.traits = traits;
     }
