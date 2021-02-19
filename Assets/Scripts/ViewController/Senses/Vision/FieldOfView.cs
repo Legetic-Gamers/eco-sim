@@ -117,6 +117,11 @@ public class FieldOfView : MonoBehaviour
         FindObjectOfType<global::TickEventPublisher>().onSenseTickEvent += FindVisibleTargets;
     }
 
+    private void OnDestroy()
+    {
+        FindObjectOfType<global::TickEventPublisher>().onSenseTickEvent -= FindVisibleTargets;
+    }
+
     private void FixedUpdate()
     {
         angle = animalController.animal.traits.viewAngle;

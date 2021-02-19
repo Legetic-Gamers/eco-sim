@@ -118,7 +118,7 @@ public abstract class AnimalModel
     // optional, can be set in the behavior model instead
     protected string foodType; // herbivore, carnivore, omnivore
 
-    public bool isAlive()
+    public bool IsAlive()
     {
         return (currentHealth > 0 && currentEnergy > 0 && age < traits.ageLimit && hydration > 0);
     }

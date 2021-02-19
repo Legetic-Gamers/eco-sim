@@ -66,22 +66,19 @@ public class Traits
 
     public Traits(
 
-        float size, 
- 
-        //BehaviorType behaviorType,
-        //Species species;
-
+        float size,
         int maxEnergy, 
         int maxHealth,
-        float maxSpeed, 
-
+        float maxSpeed,
         float endurance, 
         int ageLimit, 
         float temperatureResist, 
         float desirability, 
         float viewAngle, 
         float viewRadius, 
-        float hearingRadius)
+        float hearingRadius,
+        BehaviorType behaviorType,
+        Species species)
     {
 
         this.size = size;
@@ -99,13 +96,15 @@ public class Traits
         this.viewAngle = viewAngle;
         this.viewRadius = viewRadius;
         this.hearingRadius = hearingRadius;
+        this.behaviorType = behaviorType;
+        this.species = species;
     }
     
     
     public Traits Crossover(Traits otherParent)
     {
 
-        Traits childTraits = new Traits(10,10,10,10,10,10,10,10,10,10,10);
+        Traits childTraits = new Traits(10,10,10,10,10,10,10,10,10,10,10, otherParent.behaviorType, otherParent.species);
         //TODO crossover logic to generate a gene between trait of other parent and this.
         return childTraits;
         

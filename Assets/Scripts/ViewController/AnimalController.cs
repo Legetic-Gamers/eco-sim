@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class AnimalController : MonoBehaviour
@@ -28,7 +29,7 @@ public abstract class AnimalController : MonoBehaviour
     void DecrementHydration()
     {
         animal.hydration -= 0.1f; 
-        //Debug.Log("thirstLevel " + animal.hydration + " " + gameObject.name);
+        Debug.Log("thirstLevel " + animal.hydration + " " + gameObject.name);
     }
 
     void IncrementReproductiveUrge()
@@ -106,7 +107,7 @@ public abstract class AnimalController : MonoBehaviour
     //should be refactored so that this logic is in AnimalModel
     private void Update()
     {
-        if (animal.isAlive())
+        if (!animal.IsAlive())
         {
             Debug.Log("Rabbit is ded");
             EventUnsubscribe();

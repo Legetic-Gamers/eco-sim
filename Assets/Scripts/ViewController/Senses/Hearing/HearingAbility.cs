@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -42,9 +43,9 @@ public class HearingAbility : MonoBehaviour
         {
             GameObject target = targetsInRadius[i].gameObject;
             AnimalController targetAnimalController = target.GetComponent<AnimalController>();
-
+            
             // don't add self
-            if (target != gameObject)
+            if (target != gameObject && targetAnimalController != null)
             {
                 animalController.heardTargets.Add(target);
                 // for custom editor HAEditor
@@ -71,7 +72,12 @@ public class HearingAbility : MonoBehaviour
         
         FindObjectOfType<global::TickEventPublisher>().onSenseTickEvent += FindHeardTargets;
     }
-    
+
+    private void OnDestroy()
+    {
+        FindObjectOfType<global::TickEventPublisher>().onSenseTickEvent -= FindHeardTargets;
+    }
+
     private void FixedUpdate()
     {
         radius = animalController.animal.traits.hearingRadius;
