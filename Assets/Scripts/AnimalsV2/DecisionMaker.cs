@@ -260,9 +260,9 @@ namespace AnimalsV2
             eventPublisher.onParamTickEvent += MakeDecision;
             eventPublisher.onSenseTickEvent += MakeDecision;
             
-            animalModel.actionPerceivedHostile += AddPerceivedHostileToList;
-            animalModel.actionPerceivedFriendly += AddPerceivedFriendlyToList;
-            animalModel.actionPerceivedFood += AddPerceivedFoodToList;
+            animalModel.actionPerceivedHostile += HandleHostileTarget;
+            animalModel.actionPerceivedFriendly += HandleFriendlyTarget;
+            animalModel.actionPerceivedFood += HandleFoodTarget;
         }
         
 
@@ -271,30 +271,30 @@ namespace AnimalsV2
             eventPublisher.onParamTickEvent -= MakeDecision;
             eventPublisher.onSenseTickEvent -= MakeDecision;
         
-            animalModel.actionPerceivedHostile -= AddPerceivedHostileToList;
-            animalModel.actionPerceivedFriendly -= AddPerceivedFriendlyToList;
-            animalModel.actionPerceivedFood -= AddPerceivedFoodToList;
+            animalModel.actionPerceivedHostile -= HandleHostileTarget;
+            animalModel.actionPerceivedFriendly -= HandlePotentialMate;
+            animalModel.actionPerceivedFood -= HandleFoodTarget;
         }
 
         /// <summary>
-        /// Add perceived target to a list that GetBestAction should then use in deciding an action.
+        /// Handle perceived target such that GetBestAction can then use it in deciding an action.
         /// </summary>
         /// <param name="target"> perceived target sent from either FieldOfView or HearingAbility,
-        /// which method that is called depends on the type of target </param>
-        private void AddPerceivedHostileToList(GameObject target)
+        /// which method that will be called depends on the type of target </param>
+        private void HandleHostileTarget(GameObject target)
         {
             //hostileTargets.Add(target);
-            Debug.Log(target.name + " has been added to hostileTargets list.");
+            Debug.Log(target.name + " is hostile to " + gameObject.name);
         }
-        private void AddPerceivedFriendlyToList(GameObject target)
+        private void HandlePotentialMate(GameObject target)
         {
-            //friendlyTargets.Add(target);
-            Debug.Log(target.name + " has been added to friendlyTargets list.");
+            //PotentialMates.Add(target);
+            Debug.Log(target.name + " is a potential mate to " + gameObject.name);
         }
-        private void AddPerceivedFoodToList(GameObject target)
+        private void HandleFoodTarget(GameObject target)
         {
             //foodTargets.Add(target);
-            Debug.Log(target.name + " has been added to foodTargets list.");
+            Debug.Log(target.name + " can be eaten by " + gameObject.name);
         }
 
 
