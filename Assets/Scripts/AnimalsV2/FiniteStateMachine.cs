@@ -14,7 +14,7 @@ namespace AnimalsV2
      /// Author: Alexander LV, Johan A
      /// Source: https://blog.playmedusa.com/a-finite-state-machine-in-c-for-unity3d/
      /// </summary>
-     public class StateMachine
+     public class FiniteStateMachine
     {
         public State CurrentState { get; private set; }
         

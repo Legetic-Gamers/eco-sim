@@ -20,11 +20,12 @@ namespace AnimalsV2
     
         public NavMeshAgent agent;
     
-        public StateMachine Fsm;
+        public FiniteStateMachine Fsm;
         public SearchForMate sm;
         public SearchForFood sf;
         public SearchForWater sw;
         public FleeingState fs;
+        public Eating es;
         public Idle idle;
 
         // Controller of the animal
@@ -46,7 +47,7 @@ namespace AnimalsV2
             agent.autoBraking = false;
 
             //Create the FSM.
-            Fsm = new StateMachine();
+            Fsm = new FiniteStateMachine();
             AnimationController animationController = new AnimationController(this);
             
         }
@@ -54,12 +55,13 @@ namespace AnimalsV2
         private void Start()
         {
             
-            // sf = new SearchForFood(this, Fsm);
-            // sw = new SearchForWater(this, Fsm);
-            // sm = new SearchForMate(this, Fsm);
+             sf = new SearchForFood(this, Fsm);
+             sw = new SearchForWater(this, Fsm);
+             sm = new SearchForMate(this, Fsm);
+             es = new Eating(this, Fsm);
              fs = new FleeingState(this, Fsm);
              idle = new Idle(this, Fsm);
-             Fsm.Initialize(fs);
+             Fsm.Initialize(idle);
 
             
         }
