@@ -7,7 +7,7 @@ namespace AnimalsV2.States
     public class SearchForWater : State
     {
 
-        public SearchForWater(Animal animal, StateMachine stateMachine) : base(animal, stateMachine)
+        public SearchForWater(Animal animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine)
         {
         }
 

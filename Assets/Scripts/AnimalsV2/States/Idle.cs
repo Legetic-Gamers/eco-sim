@@ -6,7 +6,7 @@ namespace AnimalsV2.States
     public class Idle : State
     {
 
-        public Idle(Animal animal, StateMachine stateMachine) : base(animal, stateMachine)
+        public Idle(Animal animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine)
         {
         }
 

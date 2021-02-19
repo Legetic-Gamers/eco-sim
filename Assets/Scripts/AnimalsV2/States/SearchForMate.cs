@@ -10,7 +10,7 @@ namespace AnimalsV2.States
     public class SearchForMate : State
     {
 
-        public SearchForMate(Animal animal, StateMachine stateMachine) : base(animal, stateMachine)
+        public SearchForMate(Animal animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine)
         {
         }
 

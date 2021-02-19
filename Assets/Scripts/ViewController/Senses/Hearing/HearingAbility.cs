@@ -13,10 +13,18 @@ public class HearingAbility : MonoBehaviour
     [SerializeField]
     private LayerMask targetMask;
 
-    // custom editor needs this (otherwise will get an error), remove once custom editor is obsolete, or when stress testing
+    // custom editor needs this (will get an error if using animalController's lists instead),
+    // remove once custom editor is obsolete, or when stress testing
     public List<GameObject> targets = new List<GameObject>();
 
     public AnimalController animalController;
+    public bool isPrey;
+    
+    public delegate void ScoutedTargetDelegate();
+
+    public event ScoutedTargetDelegate onHeardHostileEvent;
+    public event ScoutedTargetDelegate onHeardFriendlyEvent;
+    public event ScoutedTargetDelegate onHeardFoodEvent;
    
     /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
 
@@ -33,6 +41,7 @@ public class HearingAbility : MonoBehaviour
         for (int i = 0; i < targetsInRadius.Length; i++)
         {
             GameObject target = targetsInRadius[i].gameObject;
+            AnimalController targetAnimalController = target.GetComponent<AnimalController>();
 
             // don't add self
             if (target != gameObject)
@@ -40,6 +49,13 @@ public class HearingAbility : MonoBehaviour
                 animalController.heardTargets.Add(target);
                 // for custom editor HAEditor
                 targets.Add(target);
+                
+                if (isPrey && targetAnimalController.animal.traits.IsCarnivore) 
+                    onHeardHostileEvent?.Invoke();
+                else if (!isPrey && targetAnimalController.animal.traits.IsHerbivore)
+                    onHeardFoodEvent?.Invoke();
+                else if (animalController.IsSameSpecies(targetAnimalController))
+                    onHeardFriendlyEvent?.Invoke();
             }
         }
     }
@@ -47,6 +63,8 @@ public class HearingAbility : MonoBehaviour
     private void Start()
     {
         animalController = GetComponent<AnimalController>();
+        if (animalController.animal.traits.behaviorType == Traits.BehaviorType.Herbivore) isPrey = true;
+
         Debug.Log(animalController.animal);
         radius = animalController.animal.traits.hearingRadius;
         

@@ -1,4 +1,5 @@
 ﻿using FSM;
+using UnityEngine;
 
 namespace AnimalsV2.States
 {
@@ -6,7 +7,7 @@ namespace AnimalsV2.States
     public class Eating : State
     {
 
-        public Eating(Animal animal, StateMachine stateMachine) : base(animal, stateMachine)
+        public Eating(Animal animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine)
         {
         }
 
@@ -26,6 +27,11 @@ namespace AnimalsV2.States
         {
             base.LogicUpdate();
             
+        }
+
+        public bool foodIsEmpty()
+        {
+            return true;
         }
     }
 }

@@ -9,7 +9,8 @@ namespace AnimalsV2.States
 {
     public class FleeingState : State
     {
-        public FleeingState(Animal animal, StateMachine stateMachine) : base(animal, stateMachine) {}
+        private Vector3 averagePosition;
+        public FleeingState(Animal animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine) {}
 
         public override void Enter()
         {
@@ -35,9 +36,17 @@ namespace AnimalsV2.States
         {
             base.LogicUpdate();
             
-            // Get average position of enemies and run away from it.
-            Vector3 averagePosition = NavigationUtilities.GetNearestObjectPositionByTag(animal, "Predator");
-            Vector3 pointToRunTo = NavigationUtilities.RunToFromPoint(animal.transform,averagePosition,false);
+            // Get average position of enemies 
+            averagePosition = NavigationUtilities.GetNearestObjectPositionByTag(animal, "Predator");
+            
+            //Run run away from the position.
+            //Default to just running forward.
+            Vector3 pointToRunTo = animal.transform.position + animal.transform.forward;
+            //If there was nothing to run from found.
+            if (averagePosition != animal.transform.position)
+            {
+                 pointToRunTo = NavigationUtilities.RunToFromPoint(animal.transform,averagePosition,false);
+            }
             
             // Move the animal using the NavMeshAgent.
             NavMeshHit hit;
@@ -45,6 +54,6 @@ namespace AnimalsV2.States
             animal.agent.SetDestination(hit.position);
         }
 
-        
+
     }
 }

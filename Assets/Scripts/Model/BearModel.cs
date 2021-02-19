@@ -1,9 +1,9 @@
 ﻿public class BearModel : AnimalModel
 {
-    public BearModel() : base(new Traits(10, 10, 10, 10,10,10,10,10,10,10,10), 0)
+    public BearModel() : base(new Traits(10, 300, 100, 10,10,10,10,10,10,10,10), 0)
     {
+
         // Bear specific initialization 
-        
     }
 
     public BearModel(Traits traits, int generation) : base(traits, generation)
@@ -17,5 +17,6 @@
         //TODO logic to determine generation
 
         return new BearModel(childTraits, 0);
+
     }
 }
