@@ -20,44 +20,35 @@ public abstract class AnimalController : MonoBehaviour
     ///
     /// Important to unsubscribe from the event publisher on death, however!
     /// </summary>
-    void DecrementEnergy() 
-    { 
-        animal.currentEnergy--; // currentEnergy -= Size * deltaTemp * Const
-        //Debug.Log("currentEnergy " + animal.currentEnergy + " " + gameObject.name);
-    }
-
-    void DecrementHydration()
+    
+    private void VaryParameters()
     {
+        /*
+         * - Size * (deltaTemp / tempResist) * Const
+         * - (Vision + Hearing + Smell) * Const
+         * - currentAge * Const
+         *
+         * when highEnergy (can be 0 or 1), also add:
+         * - Size * Speed * Const
+         *
+         * currentEnergy -= ( size * (deltaTemp / tempResist) + (vision + hearing + smell) + currentAge
+         *                  + (highEnergy * size * speed) ) * Const
+         */
+        animal.currentEnergy--;
         animal.hydration -= 0.1f; 
-        Debug.Log("thirstLevel " + animal.hydration + " " + gameObject.name);
-    }
-
-    void IncrementReproductiveUrge()
-    {
-        animal.reproductiveUrge += 0.1f; 
-        //Debug.Log("reproductiveUrge " + animal.reproductiveUrge + " " + gameObject.name);
-    }
-
-    private void IncrementAge()
-    {
+        animal.reproductiveUrge += 0.1f;
         animal.age++; 
-        //Debug.Log(gameObject.name + " has lived for " + age*2 + " seconds.");
     }
+
     protected void EventSubscribe()
     {
-        FindObjectOfType<global::TickEventPublisher>().onParamTickEvent += DecrementEnergy;
-        FindObjectOfType<global::TickEventPublisher>().onParamTickEvent += DecrementHydration;
-        FindObjectOfType<global::TickEventPublisher>().onParamTickEvent += IncrementReproductiveUrge;
-        FindObjectOfType<global::TickEventPublisher>().onParamTickEvent += IncrementAge;
+        FindObjectOfType<global::TickEventPublisher>().onParamTickEvent += VaryParameters;
         
         Debug.Log(gameObject.name + " has subscribed to onParamTickEvent");
     }
     protected void EventUnsubscribe()
     {
-        FindObjectOfType<global::TickEventPublisher>().onParamTickEvent -= DecrementEnergy;
-        FindObjectOfType<global::TickEventPublisher>().onParamTickEvent -= DecrementHydration;
-        FindObjectOfType<global::TickEventPublisher>().onParamTickEvent -= IncrementReproductiveUrge;
-        FindObjectOfType<global::TickEventPublisher>().onParamTickEvent -= IncrementAge;
+        FindObjectOfType<global::TickEventPublisher>().onParamTickEvent -= VaryParameters;
         
         Debug.Log(gameObject.name + " has unsubscribed from onParamTickEvent.");
     }
