@@ -1,9 +1,9 @@
 ﻿public class WolfModel : AnimalModel
 {
-    public WolfModel() : base(new Traits(10, 10, 10, 10,10,10,10,10,10,10,10), 0)
+    public WolfModel() : base(new Traits(10, 300, 100, 10,10,10,10,10,10,10,10, Traits.BehaviorType.Carnivore, Traits.Species.Wolf),0)
     {
-        // bear specific initialization 
-        
+
+        // Wolf specific initialization 
     }
 
 

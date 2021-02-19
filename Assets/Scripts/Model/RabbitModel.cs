@@ -1,9 +1,9 @@
 ﻿public class RabbitModel : AnimalModel
 {
-    public RabbitModel() : base(new Traits(10, 10, 10, 10,10,10,10,10,10,10,10), 0)
+    public RabbitModel() : base(new Traits(10, 300, 100, 10,10,10,10,10,10,10,10, Traits.BehaviorType.Herbivore, Traits.Species.Rabbit),0)
     {
-        // Deer specific initialization 
-        
+
+        // Rabbit specific initialization 
     }
     
     public RabbitModel(Traits traits, int generation) : base(traits, generation)
