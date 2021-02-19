@@ -1,11 +1,16 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using AnimalsV2;
 using UnityEngine;
 
 public abstract class AnimalController : MonoBehaviour
 {
-    public AnimalModel animal;
+    public AnimalModel animalModel;
+
+    private Animal animal;
+
+    private TickEventPublisher tickEventPublisher;
 
     /* /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\ */
     /*                                   Parameter handlers                                   */
@@ -21,44 +26,44 @@ public abstract class AnimalController : MonoBehaviour
     /// </summary>
     void DecrementEnergy() 
     { 
-        animal.currentEnergy--; // currentEnergy -= Size * deltaTemp * Const
+        animalModel.currentEnergy--; // currentEnergy -= Size * deltaTemp * Const
         //Debug.Log("currentEnergy " + animal.currentEnergy + " " + gameObject.name);
     }
 
     void DecrementHydration()
     {
-        animal.hydration--; 
+        animalModel.hydration--; 
         //Debug.Log("thirstLevel " + animal.hydration + " " + gameObject.name);
     }
 
     void IncrementReproductiveUrge()
     {
-        animal.reproductiveUrge++; 
+        animalModel.reproductiveUrge++; 
         //Debug.Log("reproductiveUrge " + animal.reproductiveUrge + " " + gameObject.name);
     }
 
     private void IncrementAge()
     {
-        animal.age++; 
+        animalModel.age++; 
         //Debug.Log(gameObject.name + " has lived for " + age*2 + " seconds.");
         
-        if (animal.age > animal.traits.ageLimit) animal.isAlive = false;
+        if (animalModel.age > animalModel.traits.ageLimit) animalModel.isAlive = false;
     }
-    protected void EventSubscribe()
+    protected void EventSubscribe(TickEventPublisher eventPublisher)
     {
-        FindObjectOfType<global::TickEventPublisher>().onParamTickEvent += DecrementEnergy;
-        FindObjectOfType<global::TickEventPublisher>().onParamTickEvent += DecrementHydration;
-        FindObjectOfType<global::TickEventPublisher>().onParamTickEvent += IncrementReproductiveUrge;
-        FindObjectOfType<global::TickEventPublisher>().onParamTickEvent += IncrementAge;
+        eventPublisher.onParamTickEvent += DecrementEnergy;
+        eventPublisher.onParamTickEvent += DecrementHydration;
+        eventPublisher.onParamTickEvent += IncrementReproductiveUrge;
+        eventPublisher.onParamTickEvent += IncrementAge;
         
         Debug.Log(gameObject.name + " has subscribed to onParamTickEvent");
     }
-    protected void EventUnsubscribe()
+    protected void EventUnsubscribe(TickEventPublisher eventPublisher)
     {
-        FindObjectOfType<global::TickEventPublisher>().onParamTickEvent -= DecrementEnergy;
-        FindObjectOfType<global::TickEventPublisher>().onParamTickEvent -= DecrementHydration;
-        FindObjectOfType<global::TickEventPublisher>().onParamTickEvent -= IncrementReproductiveUrge;
-        FindObjectOfType<global::TickEventPublisher>().onParamTickEvent -= IncrementAge;
+        eventPublisher.onParamTickEvent -= DecrementEnergy;
+        eventPublisher.onParamTickEvent -= DecrementHydration;
+        eventPublisher.onParamTickEvent -= IncrementReproductiveUrge;
+        eventPublisher.onParamTickEvent -= IncrementAge;
         
         Debug.Log(gameObject.name + " has unsubscribed from onParamTickEvent.");
     }
@@ -71,7 +76,7 @@ public abstract class AnimalController : MonoBehaviour
     {
         try
         {
-            return otherAnimal.animal.traits.species == animal.traits.species;
+            return otherAnimal.animalModel.traits.species == animalModel.traits.species;
         }
         
         catch (NullReferenceException)
@@ -87,11 +92,11 @@ public abstract class AnimalController : MonoBehaviour
         // Spawn child as a copy of the father at the position of the mother
         GameObject child = Instantiate(gameObject, gameObject.transform.position, gameObject.transform.rotation); //NOTE CHANGE SO THAT PREFAB IS USED
         // Generate the offspring traits
-        Traits childTraits = animal.traits.Crossover(otherParent.animal.traits);
+        Traits childTraits = animalModel.traits.Crossover(otherParent.animalModel.traits);
         // Add coresponding controller
         AnimalController childAnimalController = child.AddComponent<BearController>();
         // Assign traits to child
-        childAnimalController.animal.traits = childTraits;
+        childAnimalController.animalModel.traits = childTraits;
 
     }
     
@@ -103,16 +108,21 @@ public abstract class AnimalController : MonoBehaviour
     {
         Debug.Log("Start()");
         // subscribe to the OnTickEvent for parameter handling.
-        EventSubscribe();
+        tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
+        EventSubscribe(tickEventPublisher);
+
+        animal = GetComponent<Animal>();
+
+        DecisionMaker decisionMaker = new DecisionMaker(animal,this,animalModel,tickEventPublisher);
     }
     
     //should be refactored so that this logic is in AnimalModel
     private void Update()
     {
-        if (animal.isAlive && animal.currentEnergy <= 0 && animal.hydration <= 0)
+        if (animalModel.isAlive && animalModel.currentEnergy <= 0 && animalModel.hydration <= 0)
         {
-            animal.isAlive = false; 
-            EventUnsubscribe();
+            animalModel.isAlive = false; 
+            EventUnsubscribe(tickEventPublisher);
             
             // probably doing this in deathState instead
             Destroy(gameObject, 2.0f);

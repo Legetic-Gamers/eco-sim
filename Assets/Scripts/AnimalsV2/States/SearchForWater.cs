@@ -1,4 +1,6 @@
+using System.Numerics;
 using FSM;
+using UnityEngine;
 
 namespace AnimalsV2.States
 {
@@ -15,6 +17,9 @@ namespace AnimalsV2.States
         {
             base.Enter();
 
+            Debug.Log("Searching for water!");
+            currentStateAnimation = StateAnimation.LookingOut;
+
         }
 
         public override void HandleInput()
@@ -27,6 +32,12 @@ namespace AnimalsV2.States
         {
             base.LogicUpdate();
 
+        }
+        
+        public bool adjacentToWater()
+        {
+            //return Vector3.Distance(animal.transform.position, foodPos) < 10;
+            return false;
         }
     }
 }

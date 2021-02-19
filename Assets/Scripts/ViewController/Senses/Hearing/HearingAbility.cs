@@ -50,9 +50,9 @@ public class HearingAbility : MonoBehaviour
                 // for custom editor HAEditor
                 targets.Add(target);
                 
-                if (isPrey && targetAnimalController.animal.traits.IsCarnivore) 
+                if (isPrey && targetAnimalController.animalModel.traits.IsCarnivore) 
                     onHeardHostileEvent?.Invoke();
-                else if (!isPrey && targetAnimalController.animal.traits.IsHerbivore)
+                else if (!isPrey && targetAnimalController.animalModel.traits.IsHerbivore)
                     onHeardFoodEvent?.Invoke();
                 else if (animalController.IsSameSpecies(targetAnimalController))
                     onHeardFriendlyEvent?.Invoke();
@@ -64,11 +64,11 @@ public class HearingAbility : MonoBehaviour
     {
         animalController = GetComponent<AnimalController>();
         
-        if (animalController.animal.traits.behaviorType == Traits.BehaviorType.Herbivore) isPrey = true;
+        if (animalController.animalModel.traits.behaviorType == Traits.BehaviorType.Herbivore) isPrey = true;
         
-        Debug.Log("YOO");
-        Debug.Log(animalController.animal);
-        radius = animalController.animal.traits.hearingRadius;
+        // Debug.Log("YOO");
+        // Debug.Log(animalController.animalModel);
+        radius = animalController.animalModel.traits.hearingRadius;
         
         
         FindObjectOfType<global::TickEventPublisher>().onSenseTickEvent += FindHeardTargets;
@@ -76,6 +76,6 @@ public class HearingAbility : MonoBehaviour
     
     private void FixedUpdate()
     {
-        radius = animalController.animal.traits.hearingRadius;
+        radius = animalController.animalModel.traits.hearingRadius;
     }
 }

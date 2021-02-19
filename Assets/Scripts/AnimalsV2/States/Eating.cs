@@ -14,7 +14,8 @@ namespace AnimalsV2.States
         public override void Enter()
         {
             base.Enter();
-            
+            Debug.Log("Eating!");
+            currentStateAnimation = StateAnimation.Idle;
         }
 
         public override void HandleInput()

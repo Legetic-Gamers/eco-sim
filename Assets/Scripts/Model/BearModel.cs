@@ -3,7 +3,7 @@
     public BearModel()
     {
         // Set variables specific to bear
-        traits = new Traits(10, 300, 100, 10,10,10,10,10,10,10,10);
+        traits = new Traits(10, 300, 100,100, 10,10,10,10,10,10,10,10);
         currentEnergy = 300;
         hydration = 300;
         reproductiveUrge = 0;

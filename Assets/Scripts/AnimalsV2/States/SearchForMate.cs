@@ -1,4 +1,5 @@
 ﻿using FSM;
+using UnityEngine;
 
 
 //Author: Alexander LV
@@ -17,6 +18,8 @@ namespace AnimalsV2.States
         public void Enter()
         {
             base.Enter();
+            Debug.Log("Searching for mate!");
+            currentStateAnimation = StateAnimation.LookingOut;
         }
 
         public void HandleInput()
@@ -29,6 +32,12 @@ namespace AnimalsV2.States
         {
             base.LogicUpdate();
             
+        }
+        
+        public bool adjacentToMate()
+        {
+            //return Vector3.Distance(animal.transform.position, foodPos) < 10;
+            return false;
         }
     }
 }

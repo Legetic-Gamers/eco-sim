@@ -20,8 +20,8 @@ namespace AnimalsV2.States
         public void Enter()
         {
             base.Enter();
-            Debug.Log("ENTERED SEARCHING FOR FOOD");
-            currentStateAnimation = StateAnimation.Running;
+            Debug.Log("Searching for Food!");
+            currentStateAnimation = StateAnimation.LookingOut;
         }
 
         public void HandleInput()
@@ -44,7 +44,17 @@ namespace AnimalsV2.States
 
         public bool adjacentToFood()
         {
-            return Vector3.Distance(animal.transform.position, foodPos) < 10;
+            if (foodPos != null)
+            {
+               //return Vector3.Distance(animal.transform.position, foodPos) < 10;
+            }
+            else
+            {
+                return false;
+            }
+
+            return false;
+
         }
     }
 }
