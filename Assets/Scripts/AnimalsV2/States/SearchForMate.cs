@@ -1,34 +1,38 @@
-﻿using FSM;
+﻿/*
+ * Authors: Johan A., Alexander L.V.
+ */
 
+using UnityEngine;
+using UnityEngine.AI;
 
-//Author: Alexander LV
-// Heavily Inspired by: https://blog.playmedusa.com/a-finite-state-machine-in-c-for-unity3d/
 namespace AnimalsV2.States
 {
-//State where the animal just sits/ stands still.
-//sealed just prevents other classes from inheriting
-    public class SearchForMate : State
+    public class SearchForMate : Wander
     {
-
-        public SearchForMate(Animal animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine)
-        {
-        }
+        private Vector3 matePos;
+        public SearchForMate(Animal animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine) {}
 
         public void Enter()
         {
             base.Enter();
+            currentStateAnimation = StateAnimation.Running;
         }
 
         public void HandleInput()
         {
             base.HandleInput();
-            
         }
 
         public void LogicUpdate()
         {
             base.LogicUpdate();
-            
+            //Get average position of mate and run toward it.
+            matePos = NavigationUtilities.GetNearestObjectPositionByTag(animal, "Animal");
+            Vector3 pointToRunTo = NavigationUtilities.RunToFromPoint(animal.transform,matePos,true);
+            //Move the animal using the navmeshagent.
+            UnityEngine.AI.NavMeshHit hit;
+            UnityEngine.AI.NavMesh.SamplePosition(pointToRunTo,out hit,5,1 << UnityEngine.AI.NavMesh.GetAreaFromName("Walkable"));
+            animal.agent.SetDestination(hit.position);
         }
     }
 }

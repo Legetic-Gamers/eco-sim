@@ -54,16 +54,13 @@ namespace AnimalsV2
 
         private void Start()
         {
-            
-             sf = new SearchForFood(this, Fsm);
+            sf = new SearchForFood(this, Fsm);
              sw = new SearchForWater(this, Fsm);
              sm = new SearchForMate(this, Fsm);
              es = new Eating(this, Fsm);
              fs = new FleeingState(this, Fsm);
              idle = new Idle(this, Fsm);
              Fsm.Initialize(idle);
-
-            
         }
 
         void Update()

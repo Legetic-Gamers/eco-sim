@@ -1,32 +1,38 @@
-using FSM;
+/*
+ * Author: Johan A.
+ */
+
+using UnityEngine;
+using UnityEngine.AI;
 
 namespace AnimalsV2.States
 {
-//State where the animal just sits/ stands still.
-//sealed just prevents other classes from inheriting
-    public class SearchForWater : State
+    public class SearchForWater : Wander
     {
+        private Vector3 waterPos;
+        public SearchForWater(Animal animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine) {}
 
-        public SearchForWater(Animal animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine)
-        {
-        }
-
-        public override void Enter()
+        public void Enter()
         {
             base.Enter();
-
+            currentStateAnimation = StateAnimation.Running;
         }
 
-        public override void HandleInput()
+        public void HandleInput()
         {
             base.HandleInput();
-
         }
 
-        public override void LogicUpdate()
+        public void LogicUpdate()
         {
             base.LogicUpdate();
-
+            //Get average position of water and run toward it.
+            waterPos = NavigationUtilities.GetNearestObjectPositionByTag(animal, "Water");
+            Vector3 pointToRunTo = NavigationUtilities.RunToFromPoint(animal.transform,waterPos,true);
+            //Move the animal using the navmeshagent.
+            NavMeshHit hit;
+            NavMesh.SamplePosition(pointToRunTo,out hit,5,1 << NavMesh.GetAreaFromName("Walkable"));
+            animal.agent.SetDestination(hit.position);
         }
     }
 }
