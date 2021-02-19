@@ -93,7 +93,7 @@ public abstract class AnimalController : MonoBehaviour
     //should be refactored so that this logic is in AnimalModel
     private void Update()
     {
-        if (animal.isAlive() && animal.currentEnergy <= 0 && animal.hydration <= 0)
+        if (animal.isAlive())
         {
             Debug.Log("Rabbit is ded");
             EventUnsubscribe();
