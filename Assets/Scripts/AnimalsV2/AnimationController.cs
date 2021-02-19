@@ -32,7 +32,7 @@ namespace FSM
         {
             Debug.Log("Enter " + state.GetStateAnimation() + " Animation");
 
-            animator?.CrossFade("Base Layer." + state.GetStateAnimation(), transitionSpeed, 0);
+            animator?.CrossFade("Base Layer." + state, transitionSpeed, 0);
         }
 
         //Animation parameters which need updating every frame
@@ -48,7 +48,7 @@ namespace FSM
         private void FSM_OnStateExit(State state)
         {
             Debug.Log("Exit " + state.GetStateAnimation() + " Animation");
-            animator?.CrossFade("Base Layer." + state.GetStateAnimation(), transitionSpeed, 0);
+            animator?.CrossFade("Base Layer." + state, transitionSpeed, 0);
             //animator.Play("Base Layer." + state,0);
         }
     }

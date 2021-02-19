@@ -1,9 +1,8 @@
-﻿using FSM;
-using UnityEngine;
-
+﻿/*
+ * Authors: Alexander L.V, Johan A.
+ */
 namespace AnimalsV2.States
 {
-    //Author: Alexander LV, Johan A
     public class Eating : State
     {
 
