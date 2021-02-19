@@ -8,7 +8,6 @@ public class ParameterUI : MonoBehaviour
     [SerializeField] private GameObject animal;
     [SerializeField] private Slider health;
     [SerializeField] private Slider energy;
-    [SerializeField] private Slider satiety;
     [SerializeField] private Slider hydration;
     [SerializeField] private Slider reproductiveUrge;
 
@@ -31,7 +30,6 @@ public class ParameterUI : MonoBehaviour
             AnimalModel animal = animalController.animal;
             health.value = animal.currentHealth / animal.traits.maxHealth;
             energy.value = (float)animal.currentEnergy / animal.traits.maxEnergy;
-            satiety.value = animal.satiety;
             hydration.value = animal.hydration;
             reproductiveUrge.value = animal.reproductiveUrge;
         }
