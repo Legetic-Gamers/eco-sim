@@ -259,6 +259,10 @@ namespace AnimalsV2
         {
             eventPublisher.onParamTickEvent += MakeDecision;
             eventPublisher.onSenseTickEvent += MakeDecision;
+            
+            animalModel.actionPerceivedHostile += AddPerceivedHostileToList;
+            animalModel.actionPerceivedFriendly += AddPerceivedFriendlyToList;
+            animalModel.actionPerceivedFood += AddPerceivedFoodToList;
         }
         
 
@@ -267,10 +271,33 @@ namespace AnimalsV2
             eventPublisher.onParamTickEvent -= MakeDecision;
             eventPublisher.onSenseTickEvent -= MakeDecision;
         
+            animalModel.actionPerceivedHostile -= AddPerceivedHostileToList;
+            animalModel.actionPerceivedFriendly -= AddPerceivedFriendlyToList;
+            animalModel.actionPerceivedFood -= AddPerceivedFoodToList;
         }
-        
-        
-        
+
+        /// <summary>
+        /// Add perceived target to a list that GetBestAction should then use in deciding an action.
+        /// </summary>
+        /// <param name="target"> perceived target sent from either FieldOfView or HearingAbility,
+        /// which method that is called depends on the type of target </param>
+        private void AddPerceivedHostileToList(GameObject target)
+        {
+            //hostileTargets.Add(target);
+            Debug.Log(target.name + " has been added to hostileTargets list.");
+        }
+        private void AddPerceivedFriendlyToList(GameObject target)
+        {
+            //friendlyTargets.Add(target);
+            Debug.Log(target.name + " has been added to friendlyTargets list.");
+        }
+        private void AddPerceivedFoodToList(GameObject target)
+        {
+            //foodTargets.Add(target);
+            Debug.Log(target.name + " has been added to foodTargets list.");
+        }
+
+
 
     }
 }

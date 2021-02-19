@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class AnimalModel
@@ -108,6 +109,9 @@ public class AnimalModel
     public bool isAlive { get; set; } = true;
     public bool isControllable { get; set; } = false;
 
-    // optional, can be set in the behavior model instead
-    protected string foodType; // herbivore, carnivore, omnivore
+    // decisionMaker subscribes to these actions
+    public Action<GameObject> actionPerceivedHostile = delegate {};
+    public Action<GameObject> actionPerceivedFriendly = delegate {};
+    // seenFood can be either plant (for herbivores/omnivores) or a herbivore (for carnivores/omnivores)
+    public Action<GameObject> actionPerceivedFood = delegate {}; 
 }
