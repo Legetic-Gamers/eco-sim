@@ -34,7 +34,7 @@ public class AnimationController
     //Animation parameters which need updating on state enter.
     private void FSM_OnStateEnter(State state)
     {
-        Debug.Log("Enter " + state.ToString() +" Animation");
+        Debug.Log("Enter " + state.GetStateAnimation() +" Animation");
         
         animator?.CrossFade("Base Layer." + state,transitionSpeed,0);
         
@@ -53,7 +53,7 @@ public class AnimationController
     //Animation parameters which need updating once a state ends
     private void FSM_OnStateExit(State state)
     {
-        Debug.Log("Exit " + state.ToString() +" Animation");
+        Debug.Log("Exit " + state.GetStateAnimation() +" Animation");
         animator?.CrossFade("Base Layer." + state,transitionSpeed,0);
         //animator.Play("Base Layer." + state,0);
     }
