@@ -1,15 +1,16 @@
-﻿/*
- * Authors: Alexander L.V, Johan A.
+/*
+ * Authors: Johan A.
  */
 
 using UnityEngine;
 
 namespace AnimalsV2.States
 {
-    public class Eating : State
+    public class Mating : State
     {
+    
         private float timeLeft = 3.0f;
-        public Eating(Animal animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine) {}
+        public Mating(Animal animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine) {}
 
         public override void Enter()
         {
@@ -29,8 +30,8 @@ namespace AnimalsV2.States
             timeLeft -= Time.deltaTime;
             if (timeLeft < 0)
             {
-                // Return to Wander
-            }   
+                // Go back to Wander
+            }
         }
     }
 }
