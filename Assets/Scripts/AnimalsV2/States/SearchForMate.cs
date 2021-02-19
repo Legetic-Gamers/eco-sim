@@ -1,9 +1,7 @@
-﻿/*
+/*
  * Authors: Johan A., Alexander L.V.
  */
-
 using UnityEngine;
-using UnityEngine.AI;
 
 namespace AnimalsV2.States
 {
@@ -15,6 +13,7 @@ namespace AnimalsV2.States
         public void Enter()
         {
             base.Enter();
+            Debug.Log("Searching for mate");
             currentStateAnimation = StateAnimation.Running;
         }
 
@@ -33,6 +32,12 @@ namespace AnimalsV2.States
             UnityEngine.AI.NavMeshHit hit;
             UnityEngine.AI.NavMesh.SamplePosition(pointToRunTo,out hit,5,1 << UnityEngine.AI.NavMesh.GetAreaFromName("Walkable"));
             animal.agent.SetDestination(hit.position);
+        }
+        
+        public bool adjacentToMate()
+        {
+            //return Vector3.Distance(animal.transform.position, foodPos) < 10;
+            return false;
         }
     }
 }

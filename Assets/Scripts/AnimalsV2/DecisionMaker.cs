@@ -1,35 +1,32 @@
-﻿using System.Collections.Generic;
+﻿/*
+ * Author: Alexander L.V
+ */
+
+using System.Collections.Generic;
 using System.Linq;
-using AnimalsV2;
 using AnimalsV2.States;
-using UnityEditor;
 using UnityEngine;
 
 namespace AnimalsV2
 {
-    
-    
-
-    public class DecisionMaker : MonoBehaviour
+    public class DecisionMaker
     {
         private AnimalController animalController;
         private AnimalModel animalModel;
+        private TickEventPublisher eventPublisher;
         private Animal animal;
         private FiniteStateMachine fsm;
 
-        public DecisionMaker(Animal animal, AnimalController animalController, AnimalModel animalModel)
+        public DecisionMaker(Animal animal, AnimalController animalController, AnimalModel animalModel,TickEventPublisher eventPublisher)
         {
             this.animal = animal;
             fsm = animal.Fsm;
             this.animalController = animalController;
             this.animalModel = animalModel;
-        }
-
-        public void Start()
-        {
+            this.eventPublisher = eventPublisher;
+            
             EventSubscribe();
         }
-
         
         /// <summary>
         /// Makes a decision based on the senses and the parameters of the animal (its perception of itself and its environment)
@@ -52,6 +49,7 @@ namespace AnimalsV2
             List<GameObject> heardTargets = animalController.heardTargets;
             List<GameObject> seenTargets = animalController.visibleTargets;
             List<GameObject> allTargets = heardTargets.Concat(seenTargets).ToList();
+            Debug.Log(allTargets.Count);
 
             
             bool predatorNearby = PredatorNearby(allTargets);
@@ -68,10 +66,15 @@ namespace AnimalsV2
             //Preconditions: conditions on traits
 
             //Effect: change "state"/ delete object etc.
+
+            Debug.Log("Get Best Action");
+            Debug.Log(fsm.CurrentState.GetType());
             
             //No matter the current state, flee if getting eaten is iminent.
+            //(fleeing is above and is therefore more prioritized)
             if (predatorNearby)
             {
+                Debug.Log("RIP!");
                 ChangeState(animal.fs);
                 return;
             }
@@ -84,46 +87,97 @@ namespace AnimalsV2
             {
                 Eating eatingState = (Eating) currentState;
                 //Eat until full or out of food.
-                if (eatingState.foodIsEmpty() || animalModel.currentEnergy == animalModel.traits.maxEnergy)
+                if (eatingState.foodIsEmpty() || energyFull())
                 {
-                    ChangeState(animal.idle);
+                    Prioritize();
                 }
 
             }else if (currentState is FleeingState)
             {
-                FleeingState fleeingState = (FleeingState) currentState;
+                //FleeingState fleeingState = (FleeingState) currentState;
                 //Run until no predator nearby.
                 //Run a bit longer?
                 
                 //if we arrive here predatorNearby is false.
-                ChangeState(animal.idle);
+                Prioritize();
                 
             }
             else if (currentState is Idle)
             {
                 
-                
+                Prioritize();
             }
+            //Always finish eating/drinking/mating
             else if (currentState is SearchForFood)
             {
                 SearchForFood searchForFood = (SearchForFood) currentState;
 
                 if (searchForFood.adjacentToFood())
                 {
-                    ChangeState(animal.es);
+                    //ChangeState(animal.es);
                 }
             }
             else if (currentState is SearchForWater)
             {
                 SearchForWater searchForWater = (SearchForWater) currentState;
                 
+                if (searchForWater.adjacentToWater())
+                {
+                    //TODO should be drinking
+                    //ChangeState(animal.es);
+                }
             }
             else if (currentState is SearchForMate)
             {
                 SearchForMate searchForMate = (SearchForMate) currentState;
+                if (searchForMate.adjacentToMate())
+                {
+                    //TODO should be mating
+                    //ChangeState(animal.es);
+                }
             }
 
         }
+        
+        
+
+        /// <summary>
+        /// Considers the animals internal state and depending on it chooses the next action.
+        ///
+        /// </summary>
+        private void Prioritize()
+        {
+            Debug.Log("Prio!");
+            if (lowHydration()) //Prio 1 don't die from dehydration -> Find Water.
+            {
+                ChangeState(animal.sw);
+            }
+            else if (lowEnergy()) //Prio 2 dont die from hunger -> Find Food.
+            {
+                ChangeState(animal.sf);
+            }
+            else if (highHydration() && highEnergy() && wantingOffspring()) // Prio 3 (If we live good) search for mate.
+            {
+                ChangeState(animal.sm);
+            }
+            else if (highHydration() && !highEnergy()
+            ) //Prio 4, not low hydration but not high either + high energy -> find Water.
+            {
+                ChangeState(animal.sw);
+            }
+            else if (highHydration() && !highEnergy()
+            ) //Prio 5, not low energy but not high either + high hydration -> find Food.
+            {
+                ChangeState(animal.sf);
+            }
+            else // dont know what to do? -> Idle.
+            {
+                ChangeState(animal.idle);
+            }
+
+            Debug.Log(fsm.CurrentState.GetType());
+        }
+
 
         private void ChangeState(State newState)
         {
@@ -164,17 +218,35 @@ namespace AnimalsV2
             return allTargets.Any(o => o.CompareTag("Predator"));
         }
         
+        private bool energyFull()
+        {
+            return animalModel.currentEnergy == animalModel.traits.maxEnergy;
+        }
+        
+        private bool highEnergy()
+        {
+            return animalModel.currentEnergy > 250;
+        }
         private bool lowEnergy()
         {
             return animalModel.currentEnergy < 100;
         }
-        private bool thirsty()
+        private bool hydrationFull()
+        {
+            return animalModel.hydration == animalModel.traits.maxHydration;
+        }
+        private bool highHydration()
+        {
+            return animalModel.hydration > 250;
+        }
+        private bool lowHydration()
         {
             return animalModel.hydration < 100;
         }
         private bool wantingOffspring()
         {
-            return animalModel.reproductiveUrge > 30;
+            //reproductive urge greater than average of energy and hydration.
+            return animalModel.reproductiveUrge > (animalModel.currentEnergy + animalModel.hydration) / 2;
         }
         private bool lowHealth()
         {
@@ -185,15 +257,15 @@ namespace AnimalsV2
         //Listen to when parameters or senses were updated.
         private void EventSubscribe()
         {
-            FindObjectOfType<global::TickEventPublisher>().onParamTickEvent += MakeDecision;
-            FindObjectOfType<global::TickEventPublisher>().onSenseTickEvent += MakeDecision;
+            eventPublisher.onParamTickEvent += MakeDecision;
+            eventPublisher.onSenseTickEvent += MakeDecision;
         }
         
 
         private void EventUnsubscribe()
         {
-            FindObjectOfType<global::TickEventPublisher>().onParamTickEvent -= MakeDecision;
-            FindObjectOfType<global::TickEventPublisher>().onSenseTickEvent -= MakeDecision;
+            eventPublisher.onParamTickEvent -= MakeDecision;
+            eventPublisher.onSenseTickEvent -= MakeDecision;
         
         }
         

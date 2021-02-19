@@ -3,7 +3,6 @@
  */
 
 using System;
-using FSM;
 
 namespace AnimalsV2
 {

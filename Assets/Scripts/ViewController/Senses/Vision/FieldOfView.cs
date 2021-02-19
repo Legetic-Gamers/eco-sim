@@ -69,7 +69,7 @@ public class FieldOfView : MonoBehaviour
                     switch (isPrey)
                     {
                         case true: 
-                            if (targetAnimalController.animal.traits.IsCarnivore) 
+                            if (targetAnimalController.animalModel.traits.IsCarnivore) 
                                 onSeenHostileEvent?.Invoke();
                             /*
                              * not herbivore and not carnivore/omnivore (above) -> must be a plant.
@@ -77,11 +77,11 @@ public class FieldOfView : MonoBehaviour
                              * should probably have two targetMask, one for predators to see only prey and other predators,
                              * and one for herbivores to see herbivores, predators, and plants
                              */
-                            else if (!targetAnimalController.animal.traits.IsHerbivore) 
+                            else if (!targetAnimalController.animalModel.traits.IsHerbivore) 
                                 onSeenFoodEvent?.Invoke();
                             break;
                         case false: 
-                            if (targetAnimalController.animal.traits.IsHerbivore)
+                            if (targetAnimalController.animalModel.traits.IsHerbivore)
                                 onSeenFoodEvent?.Invoke();
                             break;
                     }
@@ -109,17 +109,17 @@ public class FieldOfView : MonoBehaviour
     {
         animalController = GetComponent<AnimalController>();
         
-        if (animalController.animal.traits.behaviorType == Traits.BehaviorType.Herbivore) isPrey = true;
+        if (animalController.animalModel.traits.behaviorType == Traits.BehaviorType.Herbivore) isPrey = true;
         
-        angle = animalController.animal.traits.viewAngle;
-        radius = animalController.animal.traits.viewRadius;
+        angle = animalController.animalModel.traits.viewAngle;
+        radius = animalController.animalModel.traits.viewRadius;
 
         FindObjectOfType<global::TickEventPublisher>().onSenseTickEvent += FindVisibleTargets;
     }
 
     private void FixedUpdate()
     {
-        angle = animalController.animal.traits.viewAngle;
-        radius = animalController.animal.traits.viewRadius;
+        angle = animalController.animalModel.traits.viewAngle;
+        radius = animalController.animalModel.traits.viewRadius;
     }
 }

@@ -41,6 +41,8 @@ public class Traits
 
     public  float maxSize { get; set; }
     public int maxEnergy { get; set; }
+    
+    public int maxHydration { get; set; }
     public int maxHealth { get; set; } // optional
     
     public float movementSpeed { get; set; }
@@ -73,6 +75,7 @@ public class Traits
         float maxSize, 
         int maxEnergy, 
         int maxHealth,
+        int maxHydration,
         float movementSpeed, 
         float endurance, 
         int ageLimit, 
@@ -87,6 +90,7 @@ public class Traits
         this.maxSize = maxSize;
         this.maxEnergy = maxEnergy;
         this.maxHealth = maxHealth;
+        this.maxHydration = maxHydration;
         this.movementSpeed = movementSpeed;
         this.endurance = endurance;
         this.ageLimit = ageLimit;
@@ -101,7 +105,7 @@ public class Traits
     public Traits Crossover(Traits otherParent)
     {
 
-        Traits childTraits = new Traits(10,10,10,10,10,10,10,10,10,10,10);
+        Traits childTraits = new Traits(10,10,10,10,10,10,10,10,10,10,10,10);
         //TODO crossover logic to generate a gene between trait of other parent and this.
         return childTraits;
         

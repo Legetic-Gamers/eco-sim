@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using AnimalsV2.States;
-using FSM;
 using UnityEngine;
 using UnityEngine.AI;
 using Random = UnityEngine.Random;

@@ -1,9 +1,10 @@
 /*
- * Author: Johan A.
+ * Author: Johan A, Alexander L.V.
  */
 
 using UnityEngine;
 using UnityEngine.AI;
+
 
 namespace AnimalsV2.States
 {
@@ -16,6 +17,7 @@ namespace AnimalsV2.States
         {
             base.Enter();
             currentStateAnimation = StateAnimation.Running;
+            Debug.Log("Searching for water!");
         }
 
         public void HandleInput()
@@ -33,6 +35,12 @@ namespace AnimalsV2.States
             NavMeshHit hit;
             NavMesh.SamplePosition(pointToRunTo,out hit,5,1 << NavMesh.GetAreaFromName("Walkable"));
             animal.agent.SetDestination(hit.position);
+        }
+        
+        public bool adjacentToWater()
+        {
+            //return Vector3.Distance(animal.transform.position, foodPos) < 10;
+            return false;
         }
     }
 }

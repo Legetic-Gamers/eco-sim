@@ -2,19 +2,26 @@
  * Authors: Alexander L.V, Johan A.
  */
 
+using System;
 using UnityEngine;
 
 namespace AnimalsV2.States
 {
     public class Eating : State
     {
-        private float timeLeft = 3.0f;
-        public Eating(Animal animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine) {}
+        private float timeLeft;
+        private bool doneEating;
+        public Eating(Animal animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine)
+        {
+            timeLeft = 3.0f;
+            doneEating = false;
+        }
 
         public override void Enter()
         {
             base.Enter();
-            currentStateAnimation = StateAnimation.LookingOut;
+            Debug.Log("Eating!");
+            currentStateAnimation = StateAnimation.Idle;
         }
 
         public override void HandleInput()
@@ -29,8 +36,13 @@ namespace AnimalsV2.States
             timeLeft -= Time.deltaTime;
             if (timeLeft < 0)
             {
-                // Return to Wander
+                doneEating = true;
             }   
+        }
+
+        public bool foodIsEmpty()
+        {
+            return doneEating;
         }
     }
 }

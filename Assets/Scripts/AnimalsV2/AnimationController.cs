@@ -1,7 +1,10 @@
-﻿using AnimalsV2;
+﻿/*
+ * Author: Alexander L.V
+ */
+
 using UnityEngine;
 
-namespace FSM
+namespace AnimalsV2
 {
     public class AnimationController
     {
@@ -30,7 +33,7 @@ namespace FSM
         //Animation parameters which need updating on state enter.
         private void FSM_OnStateEnter(State state)
         {
-            Debug.Log("Enter " + state.GetStateAnimation() + " Animation");
+            //Debug.Log("Enter " + state.GetStateAnimation() +" Animation");
 
             animator?.CrossFade("Base Layer." + state, transitionSpeed, 0);
         }
@@ -47,7 +50,7 @@ namespace FSM
         //Animation parameters which need updating once a state ends
         private void FSM_OnStateExit(State state)
         {
-            Debug.Log("Exit " + state.GetStateAnimation() + " Animation");
+            //Debug.Log("Exit " + state.GetStateAnimation() +" Animation");
             animator?.CrossFade("Base Layer." + state, transitionSpeed, 0);
             //animator.Play("Base Layer." + state,0);
         }
