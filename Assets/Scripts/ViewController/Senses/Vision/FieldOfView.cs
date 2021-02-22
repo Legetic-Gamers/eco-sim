@@ -24,6 +24,8 @@ public class FieldOfView : MonoBehaviour
 
     [HideInInspector]
     public AnimalController animalController;
+
+    private TickEventPublisher tickEventPublisher;
     
     /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
 
@@ -112,19 +114,21 @@ public class FieldOfView : MonoBehaviour
 
     /* /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\ */
 
-    private void Start() 
+    private void Start()
     {
+        tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
+        
         animalController = GetComponent<AnimalController>();
         
         angle = animalController.animalModel.traits.viewAngle;
         radius = animalController.animalModel.traits.viewRadius;
 
-        FindObjectOfType<global::TickEventPublisher>().onSenseTickEvent += FindVisibleTargets;
+        tickEventPublisher.onSenseTickEvent += FindVisibleTargets;
     }
 
     private void OnDestroy()
     {
-        FindObjectOfType<global::TickEventPublisher>().onSenseTickEvent -= FindVisibleTargets;
+        tickEventPublisher.onSenseTickEvent -= FindVisibleTargets;
     }
 
     private void FixedUpdate()

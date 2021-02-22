@@ -106,10 +106,11 @@ public abstract class AnimalController : MonoBehaviour
     {
         Debug.Log("Start()");
         // subscribe to the OnTickEvent for parameter handling.
+        tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
+        
         EventSubscribe();
 
         animal = GetComponent<Animal>();
-        animalModel = GetComponent<AnimalModel>();
 
         DecisionMaker decisionMaker = new DecisionMaker(animal,this,animalModel,tickEventPublisher);
     }
