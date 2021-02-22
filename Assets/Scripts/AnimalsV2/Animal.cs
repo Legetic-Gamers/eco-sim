@@ -70,10 +70,6 @@ namespace AnimalsV2
 
         void Update()
         {
-
-            heardTargets = animalController.heardTargets;
-            visibleTargets = animalController.visibleTargets;
-
             //Get information from senses
             //animalModel.
             // heardTargets = animalController.heardTargets;

@@ -26,7 +26,11 @@ public class HearingAbility : MonoBehaviour
     private void FindHeardTargets()
     {
         // prevent adding duplicates
-        animalController.heardTargets.Clear();
+        //animalController.heardTargets.Clear(); // obsolete
+        
+        animalController.heardHostileTargets.Clear();
+        animalController.heardFriendlyTargets.Clear();
+        animalController.heardPreyTargets.Clear();
         // for custom editor HAEditor
         targets.Clear();
 
@@ -42,16 +46,23 @@ public class HearingAbility : MonoBehaviour
             if (target != gameObject && targetAnimalController != null)
             {
                 
-                animalController.heardTargets.Add(target);
+                //animalController.heardTargets.Add(target);
                 // for custom editor HAEditor
                 targets.Add(target);
-                
-                // if (isPrey && targetAnimalController.animalModel.traits.IsCarnivore) 
-                //     animalController.animalModel.actionPerceivedHostile?.Invoke(target);
-                // else if (!isPrey && targetAnimalController.animalModel.traits.IsHerbivore)
-                //     animalController.animalModel.actionPerceivedFood?.Invoke(target);
-                // else if (animalController.IsSameSpecies(targetAnimalController))
-                //     animalController.animalModel.actionPerceivedFriendly?.Invoke(target);
+
+                if (isPrey && targetAnimalController.animalModel.traits.IsPredator)
+                {
+                    animalController.heardHostileTargets.Add(target);
+                    animalController.animalModel.actionPerceivedHostile?.Invoke(target);
+                }
+                else if (!isPrey && targetAnimalController.animalModel.traits.IsPrey)
+                {
+                    animalController.heardPreyTargets.Add(target);
+                }
+                else if (animalController.IsSameSpecies(targetAnimalController))
+                {
+                    animalController.heardFriendlyTargets.Add(target);
+                }
             }
         }
     }

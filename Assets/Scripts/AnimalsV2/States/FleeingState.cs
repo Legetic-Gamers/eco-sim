@@ -12,6 +12,8 @@ namespace AnimalsV2.States
         private Vector3 averagePosition;
         public FleeingState(Animal animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine) {}
 
+        public Vector3 fleeingFromPos;
+        
         public override void Enter()
         {
             base.Enter();
@@ -31,7 +33,10 @@ namespace AnimalsV2.States
             base.LogicUpdate();
             
             // Get average position of enemies 
-            averagePosition = NavigationUtilities.GetNearestObjectPositionByTag(animal, "Predator");
+            //averagePosition = NavigationUtilities.GetNearestObjectPositionByTag(animal, "Predator");
+            
+            // alternative to the above
+            averagePosition = fleeingFromPos;
             
             //Run run away from the position.
             //Default to just running forward.
