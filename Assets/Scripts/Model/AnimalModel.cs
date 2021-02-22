@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AnimalModel
+public abstract class AnimalModel
 {
     /// <summary>
     /// 
@@ -99,19 +99,36 @@ public class AnimalModel
     /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
 
     public int age { get; set; }
-    
     public int currentHealth { get; set; }
     public int currentEnergy { get; set; }
-    
-    public int hydration { get; set; }
-    public int reproductiveUrge { get; set; }
+    public float hydration { get; set; }
+    public float reproductiveUrge { get; set; }
 
-    public bool isAlive { get; set; } = true;
-    public bool isControllable { get; set; } = false;
+    public AnimalModel(Traits traits, int generation)
+    {
+        // initializing parameters
+        age = 0;
+        currentHealth = traits.maxHealth;
+        currentEnergy = traits.maxEnergy;
+        hydration = 1f;
+        reproductiveUrge = 0;
 
-    // decisionMaker subscribes to these actions
-    public Action<GameObject> actionPerceivedHostile;
-    public Action<GameObject> actionPerceivedFriendly;
+        // decisionMaker subscribes to these actions
+        public Action<GameObject> actionPerceivedHostile;
+        public Action<GameObject> actionPerceivedFriendly;
     // seenFood can be either plant (for herbivores/omnivores) or a herbivore (for carnivores/omnivores)
-    public Action<GameObject> actionPerceivedFood; 
+        public Action<GameObject> actionPerceivedFood; 
+        this.traits = traits;
+     }
+    
+    // optional, can be set in the behavior model instead
+    // protected string foodType; // herbivore, carnivore, omnivore
+
+    public bool IsAlive()
+    {
+        return (currentHealth > 0 && currentEnergy > 0 && age < traits.ageLimit && hydration > 0);
+    }
+
+    public abstract AnimalModel Mate(AnimalModel otherParent);
+
 }

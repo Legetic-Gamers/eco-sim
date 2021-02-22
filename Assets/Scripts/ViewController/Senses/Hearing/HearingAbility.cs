@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -36,9 +37,9 @@ public class HearingAbility : MonoBehaviour
         {
             GameObject target = targetsInRadius[i].gameObject;
             AnimalController targetAnimalController = target.GetComponent<AnimalController>();
-
+            
             // don't add self
-            if (target != gameObject)
+            if (target != gameObject && targetAnimalController != null)
             {
                 
                 animalController.heardTargets.Add(target);
@@ -58,17 +59,18 @@ public class HearingAbility : MonoBehaviour
     private void Start()
     {
         animalController = GetComponent<AnimalController>();
-        
         if (animalController.animalModel.traits.behaviorType == Traits.BehaviorType.Herbivore) isPrey = true;
         
-        // Debug.Log("YOO");
-        // Debug.Log(animalController.animalModel);
         radius = animalController.animalModel.traits.hearingRadius;
-        
         
         FindObjectOfType<global::TickEventPublisher>().onSenseTickEvent += FindHeardTargets;
     }
-    
+
+    private void OnDestroy()
+    {
+        FindObjectOfType<global::TickEventPublisher>().onSenseTickEvent -= FindHeardTargets;
+    }
+
     private void FixedUpdate()
     {
         radius = animalController.animalModel.traits.hearingRadius;

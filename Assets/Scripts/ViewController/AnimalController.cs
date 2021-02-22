@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using AnimalsV2;
 using UnityEngine;
@@ -11,6 +10,8 @@ public abstract class AnimalController : MonoBehaviour
     private Animal animal;
 
     private TickEventPublisher tickEventPublisher;
+
+    public bool isControllable { get; set; } = false;
 
     /* /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\ */
     /*                                   Parameter handlers                                   */
@@ -24,47 +25,35 @@ public abstract class AnimalController : MonoBehaviour
     ///
     /// Important to unsubscribe from the event publisher on death, however!
     /// </summary>
-    void DecrementEnergy() 
-    { 
-        animalModel.currentEnergy--; // currentEnergy -= Size * deltaTemp * Const
-        //Debug.Log("currentEnergy " + animal.currentEnergy + " " + gameObject.name);
+
+    private void VaryParameters()
+    {
+        /*
+         * - Size * (deltaTemp / tempResist) * Const
+         * - (Vision + Hearing + Smell) * Const
+         * - currentAge * Const
+         *
+         * when highEnergy (can be 0 or 1), also add:
+         * - Size * Speed * Const
+         *
+         * currentEnergy -= ( size * (deltaTemp / tempResist) + (vision + hearing + smell) + currentAge
+         *                  + (highEnergy * size * speed) ) * Const
+         */
+        animal.currentEnergy--;
+        animal.hydration -= 0.1f; 
+        animal.reproductiveUrge += 0.1f;
+        animal.age++; 
     }
 
-    void DecrementHydration()
+    protected void EventSubscribe()
     {
-        animalModel.hydration--;
-        Debug.Log(animalModel.hydration);
-        //Debug.Log("thirstLevel " + animal.hydration + " " + gameObject.name);
-    }
-
-    void IncrementReproductiveUrge()
-    {
-        animalModel.reproductiveUrge++; 
-        //Debug.Log("reproductiveUrge " + animal.reproductiveUrge + " " + gameObject.name);
-    }
-
-    private void IncrementAge()
-    {
-        animalModel.age++; 
-        //Debug.Log(gameObject.name + " has lived for " + age*2 + " seconds.");
-        
-        if (animalModel.age > animalModel.traits.ageLimit) animalModel.isAlive = false;
-    }
-    protected void EventSubscribe(TickEventPublisher eventPublisher)
-    {
-        eventPublisher.onParamTickEvent += DecrementEnergy;
-        eventPublisher.onParamTickEvent += DecrementHydration;
-        eventPublisher.onParamTickEvent += IncrementReproductiveUrge;
-        eventPublisher.onParamTickEvent += IncrementAge;
+        FindObjectOfType<global::TickEventPublisher>().onParamTickEvent += VaryParameters;
         
         Debug.Log(gameObject.name + " has subscribed to onParamTickEvent");
     }
     protected void EventUnsubscribe(TickEventPublisher eventPublisher)
     {
-        eventPublisher.onParamTickEvent -= DecrementEnergy;
-        eventPublisher.onParamTickEvent -= DecrementHydration;
-        eventPublisher.onParamTickEvent -= IncrementReproductiveUrge;
-        eventPublisher.onParamTickEvent -= IncrementAge;
+        FindObjectOfType<global::TickEventPublisher>().onParamTickEvent -= VaryParameters;
         
         Debug.Log(gameObject.name + " has unsubscribed from onParamTickEvent.");
     }
@@ -93,12 +82,10 @@ public abstract class AnimalController : MonoBehaviour
         // Spawn child as a copy of the father at the position of the mother
         GameObject child = Instantiate(gameObject, gameObject.transform.position, gameObject.transform.rotation); //NOTE CHANGE SO THAT PREFAB IS USED
         // Generate the offspring traits
-        Traits childTraits = animalModel.traits.Crossover(otherParent.animalModel.traits);
+        AnimalModel childModel = animal.Mate(otherParent.animal);
         // Add coresponding controller
         AnimalController childAnimalController = child.AddComponent<BearController>();
         // Assign traits to child
-        childAnimalController.animalModel.traits = childTraits;
-
     }
     
     // both hostile and friendly targets, get from FieldOfView and HearingAbility
@@ -120,10 +107,10 @@ public abstract class AnimalController : MonoBehaviour
     //should be refactored so that this logic is in AnimalModel
     private void Update()
     {
-        if (animalModel.isAlive && animalModel.currentEnergy <= 0 && animalModel.hydration <= 0)
+        if (!animal.IsAlive())
         {
-            animalModel.isAlive = false; 
-            EventUnsubscribe(tickEventPublisher);
+            Debug.Log("Rabbit is ded");
+            EventUnsubscribe();
             
             // probably doing this in deathState instead
             Destroy(gameObject, 2.0f);

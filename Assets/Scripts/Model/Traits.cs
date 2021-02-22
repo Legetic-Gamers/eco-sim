@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Drawing;
-using UnityEngine;
+﻿using UnityEngine;
 using Color = UnityEngine.Color;
 
 public class Traits
@@ -39,13 +36,13 @@ public class Traits
         get{ return behaviorType == BehaviorType.Herbivore;}
     }
 
-    public  float maxSize { get; set; }
+    public  float size { get; set; }
     public int maxEnergy { get; set; }
     
     public int maxHydration { get; set; }
     public int maxHealth { get; set; } // optional
     
-    public float movementSpeed { get; set; }
+    public float maxSpeed { get; set; }
     public float endurance { get; set; }
     
     public int ageLimit { get; set; }
@@ -70,28 +67,32 @@ public class Traits
     */
 
     public Traits(
-        //BehaviorType behaviorType,
-        //Species species;
-        float maxSize, 
+
+        float size,
         int maxEnergy, 
         int maxHealth,
         int maxHydration,
-        float movementSpeed, 
+        float maxSpeed,
         float endurance, 
         int ageLimit, 
         float temperatureResist, 
         float desirability, 
         float viewAngle, 
         float viewRadius, 
-        float hearingRadius)
+        float hearingRadius,
+        BehaviorType behaviorType,
+        Species species)
     {
+
+        this.size = size;
+
         //this.behaviorType = behaviorType;
         //this.species = species;
-        this.maxSize = maxSize;
+
         this.maxEnergy = maxEnergy;
         this.maxHealth = maxHealth;
         this.maxHydration = maxHydration;
-        this.movementSpeed = movementSpeed;
+        this.maxSpeed = maxSpeed;
         this.endurance = endurance;
         this.ageLimit = ageLimit;
         this.temperatureResist = temperatureResist;
@@ -99,13 +100,14 @@ public class Traits
         this.viewAngle = viewAngle;
         this.viewRadius = viewRadius;
         this.hearingRadius = hearingRadius;
+        this.behaviorType = behaviorType;
+        this.species = species;
     }
     
     
     public Traits Crossover(Traits otherParent)
     {
-
-        Traits childTraits = new Traits(10,10,10,10,10,10,10,10,10,10,10,10);
+        Traits childTraits = new Traits(10,10,10,10,10,10,10,10,10,10,10, otherParent.behaviorType, otherParent.species);
         //TODO crossover logic to generate a gene between trait of other parent and this.
         return childTraits;
         

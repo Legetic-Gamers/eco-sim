@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,7 +7,7 @@ using UnityEngine.UI;
 public class AnimalSelectPanel : MonoBehaviour
 {
     [SerializeField] private Text title;
-    [SerializeField] private Text maxSize;
+    [SerializeField] private Text size;
     [SerializeField] private Text maxEnergy;
     [SerializeField] private Text maxHealth;
     [SerializeField] private Text movementSpeed;
@@ -17,15 +18,19 @@ public class AnimalSelectPanel : MonoBehaviour
     [SerializeField] private Text viewRadius;
     [SerializeField] private Text hearingRadius;
 
+    private void Start()
+    {
+        Hide();
+    }
 
     public void SetTraitText(Traits traits, string name)
     {
         gameObject.SetActive(true);
         title.text = name;
-        maxSize.text = "maxSize: " + traits.maxSize;
+        size.text = "size: " + traits.size;
         maxEnergy.text = "maxEnergy: " + traits.maxEnergy;
         maxHealth.text = "maxHealth: " + traits.maxHealth;
-        movementSpeed.text = "movementSpeed: " + traits.movementSpeed;
+        movementSpeed.text = "maxSpeed: " + traits.maxSpeed;
         ageLimit.text = "ageLimit: " + traits.ageLimit;
         temperatureResist.text = "temperatureResist: " + traits.temperatureResist;
         desirability.text = "desirability: " + traits.desirability;
@@ -35,7 +40,7 @@ public class AnimalSelectPanel : MonoBehaviour
 
     }
 
-    public void hide()
+    public void Hide()
     {
         gameObject.SetActive(false);
     }

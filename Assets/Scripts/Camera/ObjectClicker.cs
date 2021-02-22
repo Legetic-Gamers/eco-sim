@@ -41,7 +41,7 @@ public class ObjectClicker : MonoBehaviour
         }
         else
         {
-            animalSelectPanel.hide();
+            animalSelectPanel.Hide();
         }
     }
     
