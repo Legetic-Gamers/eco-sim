@@ -103,6 +103,12 @@ public abstract class AnimalModel
     public int currentEnergy { get; set; }
     public float hydration { get; set; }
     public float reproductiveUrge { get; set; }
+    
+    // decisionMaker subscribes to these actions
+    public Action<GameObject> actionPerceivedHostile;
+    public Action<GameObject> actionPerceivedFriendly;
+    // seenFood can be either plant (for herbivores/omnivores) or a herbivore (for carnivores/omnivores)
+    public Action<GameObject> actionPerceivedFood; 
 
     public AnimalModel(Traits traits, int generation)
     {
@@ -112,15 +118,9 @@ public abstract class AnimalModel
         currentEnergy = traits.maxEnergy;
         hydration = 1f;
         reproductiveUrge = 0;
-
-        // decisionMaker subscribes to these actions
-        public Action<GameObject> actionPerceivedHostile;
-        public Action<GameObject> actionPerceivedFriendly;
-    // seenFood can be either plant (for herbivores/omnivores) or a herbivore (for carnivores/omnivores)
-        public Action<GameObject> actionPerceivedFood; 
         this.traits = traits;
-     }
-    
+    }
+
     // optional, can be set in the behavior model instead
     // protected string foodType; // herbivore, carnivore, omnivore
 

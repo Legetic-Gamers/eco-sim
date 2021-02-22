@@ -107,7 +107,7 @@ public class Traits
     
     public Traits Crossover(Traits otherParent)
     {
-        Traits childTraits = new Traits(10,10,10,10,10,10,10,10,10,10,10, otherParent.behaviorType, otherParent.species);
+        Traits childTraits = new Traits(10,10,10,100, 10,10,10,10,10,10,10,10, otherParent.behaviorType, otherParent.species);
         //TODO crossover logic to generate a gene between trait of other parent and this.
         return childTraits;
         

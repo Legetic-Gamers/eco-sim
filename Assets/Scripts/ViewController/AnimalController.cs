@@ -16,7 +16,7 @@ public abstract class AnimalController : MonoBehaviour
     /* /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\ */
     /*                                   Parameter handlers                                   */
     /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
-    
+
     /// <summary>
     /// Parameter levels are to constantly be ticking down.
     /// Using tickEvent so as to not need a separate yielding tick thread for each animal.
@@ -25,6 +25,21 @@ public abstract class AnimalController : MonoBehaviour
     ///
     /// Important to unsubscribe from the event publisher on death, however!
     /// </summary>
+
+
+    protected void Start()
+    {
+        Debug.Log("Start()");
+        
+        tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
+        Debug.Log(tickEventPublisher);
+        
+        EventSubscribe();
+
+        animal = GetComponent<Animal>();
+
+        DecisionMaker decisionMaker = new DecisionMaker(animal,this,animalModel,tickEventPublisher);
+    }
 
     private void VaryParameters()
     {
@@ -39,21 +54,21 @@ public abstract class AnimalController : MonoBehaviour
          * currentEnergy -= ( size * (deltaTemp / tempResist) + (vision + hearing + smell) + currentAge
          *                  + (highEnergy * size * speed) ) * Const
          */
-        animal.currentEnergy--;
-        animal.hydration -= 0.1f; 
-        animal.reproductiveUrge += 0.1f;
-        animal.age++; 
+        animalModel.currentEnergy--;
+        animalModel.hydration -= 0.1f; 
+        animalModel.reproductiveUrge += 0.1f;
+        animalModel.age++; 
     }
 
     protected void EventSubscribe()
     {
-        FindObjectOfType<global::TickEventPublisher>().onParamTickEvent += VaryParameters;
+        tickEventPublisher.onParamTickEvent += VaryParameters;
         
         Debug.Log(gameObject.name + " has subscribed to onParamTickEvent");
     }
-    protected void EventUnsubscribe(TickEventPublisher eventPublisher)
+    protected void EventUnsubscribe()
     {
-        FindObjectOfType<global::TickEventPublisher>().onParamTickEvent -= VaryParameters;
+        tickEventPublisher.onParamTickEvent -= VaryParameters;
         
         Debug.Log(gameObject.name + " has unsubscribed from onParamTickEvent.");
     }
@@ -82,7 +97,7 @@ public abstract class AnimalController : MonoBehaviour
         // Spawn child as a copy of the father at the position of the mother
         GameObject child = Instantiate(gameObject, gameObject.transform.position, gameObject.transform.rotation); //NOTE CHANGE SO THAT PREFAB IS USED
         // Generate the offspring traits
-        AnimalModel childModel = animal.Mate(otherParent.animal);
+        AnimalModel childModel = animalModel.Mate(otherParent.animalModel);
         // Add coresponding controller
         AnimalController childAnimalController = child.AddComponent<BearController>();
         // Assign traits to child
@@ -92,22 +107,12 @@ public abstract class AnimalController : MonoBehaviour
     public List<GameObject> heardTargets = new List<GameObject>();
     public List<GameObject> visibleTargets = new List<GameObject>();
     
-    protected void Start()
-    {
-        Debug.Log("Start()");
-        // subscribe to the OnTickEvent for parameter handling.
-        tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
-        EventSubscribe(tickEventPublisher);
-
-        animal = GetComponent<Animal>();
-
-        DecisionMaker decisionMaker = new DecisionMaker(animal,this,animalModel,tickEventPublisher);
-    }
+    
     
     //should be refactored so that this logic is in AnimalModel
     private void Update()
     {
-        if (!animal.IsAlive())
+        if (!animalModel.IsAlive())
         {
             Debug.Log("Rabbit is ded");
             EventUnsubscribe();
