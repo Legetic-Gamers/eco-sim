@@ -60,8 +60,8 @@ namespace AnimalsV2
             seenTargets = animalController.visibleTargets;
             heardTargets = animalController.heardTargets;
             List<GameObject> allTargets = seenTargets.Concat(heardTargets).ToList();
-            Debug.Log(seenTargets.Count);
-            Debug.Log(heardTargets.Count);
+            //Debug.Log(seenTargets.Count);
+            //Debug.Log(heardTargets.Count);
             
             bool predatorNearby = PredatorNearby(allTargets);
             bool foodNearby = FoodNearby(allTargets);
@@ -78,13 +78,13 @@ namespace AnimalsV2
 
             //Effect: change "state"/ delete object etc.
 
-            Debug.Log("Get Best Action");
-            Debug.Log(fsm.CurrentState.GetType());
+            //Debug.Log("Get Best Action");
+            //Debug.Log(fsm.CurrentState.GetType());
             //No matter the current state, flee if getting eaten is iminent.
             //(fleeing is above and is therefore more prioritized)
             if (predatorNearby)
             {
-                Debug.Log("RIP!");
+                //Debug.Log("RIP!");
                 ChangeState(animal.fs);
                 return;
             }

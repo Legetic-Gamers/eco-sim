@@ -32,7 +32,8 @@ public abstract class AnimalController : MonoBehaviour
 
     void DecrementHydration()
     {
-        animalModel.hydration--; 
+        animalModel.hydration--;
+        Debug.Log(animalModel.hydration);
         //Debug.Log("thirstLevel " + animal.hydration + " " + gameObject.name);
     }
 
