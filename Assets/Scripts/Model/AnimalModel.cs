@@ -106,9 +106,6 @@ public abstract class AnimalModel
     
     // decisionMaker subscribes to these actions
     public Action<GameObject> actionPerceivedHostile;
-    public Action<GameObject> actionPerceivedFriendly;
-    // seenFood can be either plant (for herbivores/omnivores) or a herbivore (for carnivores/omnivores)
-    public Action<GameObject> actionPerceivedFood; 
 
     public AnimalModel(Traits traits, int generation)
     {
