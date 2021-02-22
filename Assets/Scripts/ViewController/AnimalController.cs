@@ -1,10 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using AnimalsV2;
 using UnityEngine;
 
 public abstract class AnimalController : MonoBehaviour
 {
-    public AnimalModel animal;
+    public AnimalModel animalModel;
+
+    private Animal animal;
+
+    private TickEventPublisher tickEventPublisher;
 
     public bool isControllable { get; set; } = false;
 
@@ -20,7 +25,7 @@ public abstract class AnimalController : MonoBehaviour
     ///
     /// Important to unsubscribe from the event publisher on death, however!
     /// </summary>
-    
+
     private void VaryParameters()
     {
         /*
@@ -46,7 +51,7 @@ public abstract class AnimalController : MonoBehaviour
         
         Debug.Log(gameObject.name + " has subscribed to onParamTickEvent");
     }
-    protected void EventUnsubscribe()
+    protected void EventUnsubscribe(TickEventPublisher eventPublisher)
     {
         FindObjectOfType<global::TickEventPublisher>().onParamTickEvent -= VaryParameters;
         
@@ -61,7 +66,7 @@ public abstract class AnimalController : MonoBehaviour
     {
         try
         {
-            return otherAnimal.animal.traits.species == animal.traits.species;
+            return otherAnimal.animalModel.traits.species == animalModel.traits.species;
         }
         
         catch (NullReferenceException)
@@ -81,7 +86,6 @@ public abstract class AnimalController : MonoBehaviour
         // Add coresponding controller
         AnimalController childAnimalController = child.AddComponent<BearController>();
         // Assign traits to child
-
     }
     
     // both hostile and friendly targets, get from FieldOfView and HearingAbility
@@ -92,7 +96,12 @@ public abstract class AnimalController : MonoBehaviour
     {
         Debug.Log("Start()");
         // subscribe to the OnTickEvent for parameter handling.
-        EventSubscribe();
+        tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
+        EventSubscribe(tickEventPublisher);
+
+        animal = GetComponent<Animal>();
+
+        DecisionMaker decisionMaker = new DecisionMaker(animal,this,animalModel,tickEventPublisher);
     }
     
     //should be refactored so that this logic is in AnimalModel

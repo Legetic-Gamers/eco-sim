@@ -1,20 +1,27 @@
-﻿using FSM;
+﻿/*
+ * Authors: Alexander L.V, Johan A.
+ */
+
+using System;
 using UnityEngine;
 
 namespace AnimalsV2.States
 {
-    //Author: Alexander LV, Johan A
     public class Eating : State
     {
-
+        private float timeLeft;
+        private bool doneEating;
         public Eating(Animal animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine)
         {
+            timeLeft = 3.0f;
+            doneEating = false;
         }
 
         public override void Enter()
         {
             base.Enter();
-            
+            Debug.Log("Eating!");
+            currentStateAnimation = StateAnimation.Idle;
         }
 
         public override void HandleInput()
@@ -26,12 +33,16 @@ namespace AnimalsV2.States
         public override void LogicUpdate()
         {
             base.LogicUpdate();
-            
+            timeLeft -= Time.deltaTime;
+            if (timeLeft < 0)
+            {
+                doneEating = true;
+            }   
         }
 
         public bool foodIsEmpty()
         {
-            return true;
+            return doneEating;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class AnimalModel
@@ -112,11 +113,16 @@ public abstract class AnimalModel
         hydration = 1f;
         reproductiveUrge = 0;
 
+        // decisionMaker subscribes to these actions
+        public Action<GameObject> actionPerceivedHostile;
+        public Action<GameObject> actionPerceivedFriendly;
+    // seenFood can be either plant (for herbivores/omnivores) or a herbivore (for carnivores/omnivores)
+        public Action<GameObject> actionPerceivedFood; 
         this.traits = traits;
-    }
+     }
     
     // optional, can be set in the behavior model instead
-    protected string foodType; // herbivore, carnivore, omnivore
+    // protected string foodType; // herbivore, carnivore, omnivore
 
     public bool IsAlive()
     {
@@ -124,6 +130,5 @@ public abstract class AnimalModel
     }
 
     public abstract AnimalModel Mate(AnimalModel otherParent);
-
 
 }

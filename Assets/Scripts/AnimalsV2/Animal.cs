@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using AnimalsV2.States;
-using FSM;
 using UnityEngine;
 using UnityEngine.AI;
 using Random = UnityEngine.Random;
@@ -21,20 +20,20 @@ namespace AnimalsV2
         public NavMeshAgent agent;
     
         public FiniteStateMachine Fsm;
-        public SearchForMate sm;
-        public SearchForFood sf;
-        public SearchForWater sw;
+        public GoToMate sm;
+        public GoToFood sf;
+        public GoToWater sw;
         public FleeingState fs;
         public Eating es;
+        public Wander wander;
         public Idle idle;
 
         // Controller of the animal
         private AnimalController animalController;
 
 
-        [HideInInspector] 
+        
         public List<GameObject> heardTargets;
-        [HideInInspector] 
         public List<GameObject> visibleTargets;
         void Awake()
         {
@@ -55,13 +54,16 @@ namespace AnimalsV2
         private void Start()
         {
             
-             sf = new SearchForFood(this, Fsm);
-             sw = new SearchForWater(this, Fsm);
-             sm = new SearchForMate(this, Fsm);
+             sf = new GoToFood(this, Fsm);
+             sw = new GoToWater(this, Fsm);
+             sm = new GoToMate(this, Fsm);
              es = new Eating(this, Fsm);
              fs = new FleeingState(this, Fsm);
+             wander = new Wander(this, Fsm);
              idle = new Idle(this, Fsm);
              Fsm.Initialize(idle);
+             
+             
 
             
         }
@@ -69,10 +71,13 @@ namespace AnimalsV2
         void Update()
         {
 
-            //Get information from senses
-            //animalModel.
             heardTargets = animalController.heardTargets;
             visibleTargets = animalController.visibleTargets;
+
+            //Get information from senses
+            //animalModel.
+            // heardTargets = animalController.heardTargets;
+            // visibleTargets = animalController.visibleTargets;
             
             //Handle Input
             Fsm.HandleStatesInput();

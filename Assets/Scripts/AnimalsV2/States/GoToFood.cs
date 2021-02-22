@@ -1,33 +1,26 @@
-using System.Collections;
-using System.Collections.Generic;
+/*
+ * Authors: Johan A., Alexander L.V.
+ */
 using UnityEngine;
-using FSM;
 using UnityEngine.AI;
 
-//Author: Alexander LV
-// Heavily Inspired by: https://blog.playmedusa.com/a-finite-state-machine-in-c-for-unity3d/
 namespace AnimalsV2.States
 {
-//State where the animal just sits/ stands still.
-//sealed just prevents other classes from inheriting
-    public class SearchForFood : State
+    public class GoToFood : Wander
     {
         private Vector3 foodPos;
-        public SearchForFood(Animal animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine)
-        {
-        }
+        public GoToFood(Animal animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine) {}
 
-        public void Enter()
+        public override void Enter()
         {
             base.Enter();
-            Debug.Log("ENTERED SEARCHING FOR FOOD");
+            Debug.Log("Searching For Food");
             currentStateAnimation = StateAnimation.Running;
         }
 
-        public void HandleInput()
+        public override void HandleInput()
         {
             base.HandleInput();
-            
         }
 
         public override void LogicUpdate()
@@ -44,7 +37,17 @@ namespace AnimalsV2.States
 
         public bool adjacentToFood()
         {
-            return Vector3.Distance(animal.transform.position, foodPos) < 10;
+            if (foodPos != null)
+            {
+               //return Vector3.Distance(animal.transform.position, foodPos) < 10;
+            }
+            else
+            {
+                return false;
+            }
+
+            return false;
+
         }
     }
 }

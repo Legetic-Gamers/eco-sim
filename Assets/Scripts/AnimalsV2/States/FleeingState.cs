@@ -15,21 +15,15 @@ namespace AnimalsV2.States
         public override void Enter()
         {
             base.Enter();
-            Debug.Log("ENTERING FLEEING");
+            Debug.Log("Fleeing!");
             currentStateAnimation = Running;
         }
 
         public override void Exit()
         {
             base.Exit();
-            Debug.Log("EXITING FLEEING");
+            //Debug.Log("EXITING FLEEING");
             //currentStateAnimation = StateAnimation.Idle;
-        }
-
-        public override void HandleInput()
-        {
-            base.HandleInput();
-            //Debug.Log("EXECUTING FLEEING");
         }
 
         public override void LogicUpdate()
