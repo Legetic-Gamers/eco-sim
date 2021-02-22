@@ -21,6 +21,8 @@ public class HearingAbility : MonoBehaviour
     public AnimalController animalController;
     public bool isPrey;
 
+    private TickEventPublisher tickEventPublisher;
+
     /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
 
     private void FindHeardTargets()
@@ -69,17 +71,19 @@ public class HearingAbility : MonoBehaviour
     
     private void Start()
     {
+        tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
+        
         animalController = GetComponent<AnimalController>();
         if (animalController.animalModel.traits.behaviorType == Traits.BehaviorType.Herbivore) isPrey = true;
         
         radius = animalController.animalModel.traits.hearingRadius;
         
-        FindObjectOfType<global::TickEventPublisher>().onSenseTickEvent += FindHeardTargets;
+        tickEventPublisher.onSenseTickEvent += FindHeardTargets;
     }
 
     private void OnDestroy()
     {
-        FindObjectOfType<global::TickEventPublisher>().onSenseTickEvent -= FindHeardTargets;
+        tickEventPublisher.onSenseTickEvent -= FindHeardTargets;
     }
 
     private void FixedUpdate()
