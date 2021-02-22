@@ -110,8 +110,8 @@ public class AnimalModel
     public bool isControllable { get; set; } = false;
 
     // decisionMaker subscribes to these actions
-    public Action<GameObject> actionPerceivedHostile = delegate {};
-    public Action<GameObject> actionPerceivedFriendly = delegate {};
+    public Action<GameObject> actionPerceivedHostile;
+    public Action<GameObject> actionPerceivedFriendly;
     // seenFood can be either plant (for herbivores/omnivores) or a herbivore (for carnivores/omnivores)
-    public Action<GameObject> actionPerceivedFood = delegate {}; 
+    public Action<GameObject> actionPerceivedFood; 
 }

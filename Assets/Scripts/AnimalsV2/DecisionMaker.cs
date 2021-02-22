@@ -11,11 +11,16 @@ namespace AnimalsV2
 {
     public class DecisionMaker
     {
+        //TODO REDUCE DEPENDENCIES.
         private AnimalController animalController;
         private AnimalModel animalModel;
         private TickEventPublisher eventPublisher;
         private Animal animal;
         private FiniteStateMachine fsm;
+        
+        public List<GameObject> hostileTargets;
+        public List<GameObject> friendlyTargets;
+        public List<GameObject> foodTargets;
 
         public DecisionMaker(Animal animal, AnimalController animalController, AnimalModel animalModel,TickEventPublisher eventPublisher)
         {
@@ -24,6 +29,12 @@ namespace AnimalsV2
             this.animalController = animalController;
             this.animalModel = animalModel;
             this.eventPublisher = eventPublisher;
+
+            //TESTING!!!!!!
+            hostileTargets = animal.heardTargets;
+            friendlyTargets = new List<GameObject>();
+            foodTargets = new List<GameObject>();
+           
             
             EventSubscribe();
         }
@@ -38,22 +49,14 @@ namespace AnimalsV2
         /// <returns></returns>
         private void MakeDecision()
         {//TODO STATE should be called ACTION instead?!
-            
             GetBestAction(animalModel);
-            
         }
 
         private void GetBestAction(AnimalModel parameters)
         {
-            //TODO This should have been accessable from model??!!
-            List<GameObject> heardTargets = animalController.heardTargets;
-            List<GameObject> seenTargets = animalController.visibleTargets;
-            List<GameObject> allTargets = heardTargets.Concat(seenTargets).ToList();
-            Debug.Log(allTargets.Count);
-
             
-            bool predatorNearby = PredatorNearby(allTargets);
-            bool foodNearby = FoodNearby(seenTargets);
+            bool predatorNearby = PredatorNearby(hostileTargets);
+            bool foodNearby = FoodNearby(foodTargets);
 
             
             //This is instead of using the state machine regularly.
@@ -69,7 +72,6 @@ namespace AnimalsV2
 
             Debug.Log("Get Best Action");
             Debug.Log(fsm.CurrentState.GetType());
-            
             //No matter the current state, flee if getting eaten is iminent.
             //(fleeing is above and is therefore more prioritized)
             if (predatorNearby)
@@ -79,6 +81,8 @@ namespace AnimalsV2
                 return;
             }
 
+            //TEST
+            //ChangeState(animal.fs);
 
             State currentState = fsm.CurrentState;
             
@@ -91,8 +95,8 @@ namespace AnimalsV2
                 {
                     Prioritize();
                 }
-
-            }else if (currentState is FleeingState)
+            
+            }else if (currentState is FleeingState && !predatorNearby)
             {
                 //FleeingState fleeingState = (FleeingState) currentState;
                 //Run until no predator nearby.
@@ -111,7 +115,7 @@ namespace AnimalsV2
             else if (currentState is SearchForFood)
             {
                 SearchForFood searchForFood = (SearchForFood) currentState;
-
+            
                 if (searchForFood.adjacentToFood())
                 {
                     //ChangeState(animal.es);
@@ -160,13 +164,11 @@ namespace AnimalsV2
             {
                 ChangeState(animal.sm);
             }
-            else if (highHydration() && !highEnergy()
-            ) //Prio 4, not low hydration but not high either + high energy -> find Water.
+            else if (!highHydration() && highEnergy()) //Prio 4, not low hydration but not high either + high energy -> find Water.
             {
                 ChangeState(animal.sw);
             }
-            else if (highHydration() && !highEnergy()
-            ) //Prio 5, not low energy but not high either + high hydration -> find Food.
+            else if (highHydration() && !highEnergy()) //Prio 5, not low energy but not high either + high hydration -> find Food.
             {
                 ChangeState(animal.sf);
             }
@@ -215,6 +217,7 @@ namespace AnimalsV2
 
         private static bool PredatorNearby(List<GameObject> allTargets)
         {
+            Debug.Log(allTargets.Count);
             return allTargets.Any(o => o.CompareTag("Predator"));
         }
         
@@ -272,7 +275,7 @@ namespace AnimalsV2
             eventPublisher.onSenseTickEvent -= MakeDecision;
         
             animalModel.actionPerceivedHostile -= HandleHostileTarget;
-            animalModel.actionPerceivedFriendly -= HandlePotentialMate;
+            animalModel.actionPerceivedFriendly -= HandleFriendlyTarget;
             animalModel.actionPerceivedFood -= HandleFoodTarget;
         }
 
@@ -284,17 +287,18 @@ namespace AnimalsV2
         private void HandleHostileTarget(GameObject target)
         {
             //hostileTargets.Add(target);
-            Debug.Log(target.name + " is hostile to " + gameObject.name);
+            hostileTargets.Add(target);
+            Debug.Log(target.name + " is hostile to " + animal.name);
         }
-        private void HandlePotentialMate(GameObject target)
+        private void HandleFriendlyTarget(GameObject target)
         {
-            //PotentialMates.Add(target);
-            Debug.Log(target.name + " is a potential mate to " + gameObject.name);
+            friendlyTargets.Add(target);
+            Debug.Log(target.name + " is a potential mate to " + animal.name);
         }
         private void HandleFoodTarget(GameObject target)
         {
-            //foodTargets.Add(target);
-            Debug.Log(target.name + " can be eaten by " + gameObject.name);
+            foodTargets.Add(target);
+            Debug.Log(target.name + " can be eaten by " + animal.name);
         }
 
 

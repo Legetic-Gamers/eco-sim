@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using AnimalsV2.States;
-using FSM;
 using UnityEngine;
 using UnityEngine.AI;
 using Random = UnityEngine.Random;
@@ -32,9 +31,8 @@ namespace AnimalsV2
         private AnimalController animalController;
 
 
-        [HideInInspector] 
+        
         public List<GameObject> heardTargets;
-        [HideInInspector] 
         public List<GameObject> visibleTargets;
         void Awake()
         {
@@ -48,7 +46,7 @@ namespace AnimalsV2
 
             //Create the FSM.
             Fsm = new FiniteStateMachine();
-            
+            AnimationController animationController = new AnimationController(this);
             
         }
 
@@ -63,7 +61,7 @@ namespace AnimalsV2
              idle = new Idle(this, Fsm);
              Fsm.Initialize(idle);
              
-             AnimationController animationController = new AnimationController(this);
+             
 
             
         }
@@ -73,8 +71,8 @@ namespace AnimalsV2
 
             //Get information from senses
             //animalModel.
-            heardTargets = animalController.heardTargets;
-            visibleTargets = animalController.visibleTargets;
+            // heardTargets = animalController.heardTargets;
+            // visibleTargets = animalController.visibleTargets;
             
             //Handle Input
             Fsm.HandleStatesInput();
