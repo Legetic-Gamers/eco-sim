@@ -1,21 +1,24 @@
 ﻿public class BearModel : AnimalModel
 {
-    public BearModel()
+    public BearModel() : base(new Traits(10, 300, 100, 100, 10,10,10,10,10,10,10,10, Traits.BehaviorType.Omnivore, Traits.Species.Bear),0)
     {
         // Set variables specific to bear
-        traits = new Traits(10, 10, 10, 10,10,10,10,10,10,10,10);
-        currentEnergy = 10;
-        hydration = 10;
-        reproductiveUrge = 0;
     }
 
+    public BearModel(Traits traits, int generation) : base(traits, generation)
+    {
+        
+    }
 
-    public BearModel(Traits traits)
+    public override AnimalModel Mate(AnimalModel otherParent)
     {
         this.traits = traits;
-        currentEnergy = 10;
-        hydration = 10;
-        reproductiveUrge = 0;
+        currentEnergy = 20;
+        hydration = 30;
+        reproductiveUrge = 40;
+        Traits childTraits = traits.Crossover(otherParent.traits);
+        //TODO logic to determine generation
+
+        return new BearModel(childTraits, 0);
     }
-    
 }

@@ -24,9 +24,12 @@ namespace AnimalsV2
         public static Vector3 RunToFromPoint(Transform animalTransform, Vector3 targetPoint,bool toPoint)
         {
             Vector3 pointToAnimalVector;
+            
+            
             // Set direction
             if (toPoint) pointToAnimalVector = targetPoint - animalTransform.position;
             else pointToAnimalVector = animalTransform.position - targetPoint;
+
             return animalTransform.position + Vector3.Normalize(pointToAnimalVector);
         }
         
@@ -66,7 +69,7 @@ namespace AnimalsV2
         /// this would result in smarter fleeing behavior.
         /// </summary>
         /// <param name="a"> Animal to calculate positions from. </param>
-        /// <returns></returns>
+        /// <returns> Vector3 </returns>
         public static Vector3 GetNearObjectsAveragePositionByTag(Animal a, String tag)
         {
             var allPercievedObjectsWithTag = GetAllPercievedObjectsWithTag(a, tag);
@@ -96,12 +99,8 @@ namespace AnimalsV2
             List<GameObject> allPercievedObjectsWithTag = new List<GameObject>();
             foreach (var o in allPercievedObjects)
             {
-                if (o.tag.Equals(tag))
-                {
-                    allPercievedObjectsWithTag.Add(o);
-                }
+                if (o.tag.Equals(tag)) allPercievedObjectsWithTag.Add(o);
             }
-
             return allPercievedObjectsWithTag;
         }
 

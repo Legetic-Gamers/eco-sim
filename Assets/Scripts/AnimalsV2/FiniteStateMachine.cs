@@ -14,7 +14,7 @@ namespace AnimalsV2
      /// Author: Alexander LV, Johan A
      /// Source: https://blog.playmedusa.com/a-finite-state-machine-in-c-for-unity3d/
      /// </summary>
-     public class StateMachine
+     public class FiniteStateMachine
     {
         public State CurrentState { get; private set; }
         
@@ -68,25 +68,17 @@ namespace AnimalsV2
             if (CurrentState != null) CurrentState.LogicUpdate();
             //Debug.Log(OnStateLogicUpdate.ToString());
             OnStateLogicUpdate?.Invoke(CurrentState);
-
         }
         
-       
-
         public virtual void HandleStatesInput()
         {
             if (CurrentState != null) CurrentState.HandleInput();
         }
         
-
         public virtual void UpdateStatesPhysics()
         {
             if (CurrentState != null) CurrentState.PhysicsUpdate();
             OnStatePhysicsUpdate?.Invoke(CurrentState);
         }
-
-      
-
-        
     }
 }

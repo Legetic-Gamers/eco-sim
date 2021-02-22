@@ -1,16 +1,22 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
+using AnimalsV2;
 using UnityEngine;
 
 public abstract class AnimalController : MonoBehaviour
 {
-    public AnimalModel animal;
+    public AnimalModel animalModel;
+
+    private Animal animal;
+
+    private TickEventPublisher tickEventPublisher;
+
+    public bool isControllable { get; set; } = false;
 
     /* /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\ */
     /*                                   Parameter handlers                                   */
     /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
-    
+
     /// <summary>
     /// Parameter levels are to constantly be ticking down.
     /// Using tickEvent so as to not need a separate yielding tick thread for each animal.
@@ -19,46 +25,37 @@ public abstract class AnimalController : MonoBehaviour
     ///
     /// Important to unsubscribe from the event publisher on death, however!
     /// </summary>
-    void DecrementEnergy() 
-    { 
-        animal.currentEnergy--; // currentEnergy -= Size * deltaTemp * Const
-        //Debug.Log("currentEnergy " + animal.currentEnergy + " " + gameObject.name);
+
+
+
+    private void VaryParameters()
+    {
+        /*
+         * - Size * (deltaTemp / tempResist) * Const
+         * - (Vision + Hearing + Smell) * Const
+         * - currentAge * Const
+         *
+         * when highEnergy (can be 0 or 1), also add:
+         * - Size * Speed * Const
+         *
+         * currentEnergy -= ( size * (deltaTemp / tempResist) + (vision + hearing + smell) + currentAge
+         *                  + (highEnergy * size * speed) ) * Const
+         */
+        animalModel.currentEnergy--;
+        animalModel.hydration -= 0.1f; 
+        animalModel.reproductiveUrge += 0.1f;
+        animalModel.age++; 
     }
 
-    void DecrementHydration()
-    {
-        animal.hydration--; 
-        //Debug.Log("thirstLevel " + animal.hydration + " " + gameObject.name);
-    }
-
-    void IncrementReproductiveUrge()
-    {
-        animal.reproductiveUrge++; 
-        //Debug.Log("reproductiveUrge " + animal.reproductiveUrge + " " + gameObject.name);
-    }
-
-    private void IncrementAge()
-    {
-        animal.age++; 
-        //Debug.Log(gameObject.name + " has lived for " + age*2 + " seconds.");
-        
-        if (animal.age > animal.traits.ageLimit) animal.isAlive = false;
-    }
     protected void EventSubscribe()
     {
-        FindObjectOfType<global::TickEventPublisher>().onParamTickEvent += DecrementEnergy;
-        FindObjectOfType<global::TickEventPublisher>().onParamTickEvent += DecrementHydration;
-        FindObjectOfType<global::TickEventPublisher>().onParamTickEvent += IncrementReproductiveUrge;
-        FindObjectOfType<global::TickEventPublisher>().onParamTickEvent += IncrementAge;
+        tickEventPublisher.onParamTickEvent += VaryParameters;
         
         Debug.Log(gameObject.name + " has subscribed to onParamTickEvent");
     }
     protected void EventUnsubscribe()
     {
-        FindObjectOfType<global::TickEventPublisher>().onParamTickEvent -= DecrementEnergy;
-        FindObjectOfType<global::TickEventPublisher>().onParamTickEvent -= DecrementHydration;
-        FindObjectOfType<global::TickEventPublisher>().onParamTickEvent -= IncrementReproductiveUrge;
-        FindObjectOfType<global::TickEventPublisher>().onParamTickEvent -= IncrementAge;
+        tickEventPublisher.onParamTickEvent -= VaryParameters;
         
         Debug.Log(gameObject.name + " has unsubscribed from onParamTickEvent.");
     }
@@ -66,6 +63,19 @@ public abstract class AnimalController : MonoBehaviour
     /* /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\ */
     /*                                          Other                                         */
     /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
+    
+    public bool IsSameSpecies(AnimalController otherAnimal)
+    {
+        try
+        {
+            return otherAnimal.animalModel.traits.species == animalModel.traits.species;
+        }
+        
+        catch (NullReferenceException)
+        {
+            return false;
+        }
+    }
 
     //TODO a rabbit should be able to have more than one offspring at a time
     void CreateOffspring(AnimalController otherParent)
@@ -74,31 +84,43 @@ public abstract class AnimalController : MonoBehaviour
         // Spawn child as a copy of the father at the position of the mother
         GameObject child = Instantiate(gameObject, gameObject.transform.position, gameObject.transform.rotation); //NOTE CHANGE SO THAT PREFAB IS USED
         // Generate the offspring traits
-        Traits childTraits = animal.traits.Crossover(otherParent.animal.traits);
+        AnimalModel childModel = animalModel.Mate(otherParent.animalModel);
         // Add coresponding controller
         AnimalController childAnimalController = child.AddComponent<BearController>();
         // Assign traits to child
-        childAnimalController.animal.traits = childTraits;
-
     }
     
     // both hostile and friendly targets, get from FieldOfView and HearingAbility
-    public List<GameObject> heardTargets = new List<GameObject>();
-    public List<GameObject> visibleTargets = new List<GameObject>();
+    //public List<GameObject> heardTargets = new List<GameObject>(); // obsolete
+    //public List<GameObject> visibleTargets = new List<GameObject>(); // obsolete
+    
+    public List<GameObject> visibleHostileTargets = new List<GameObject>();
+    public List<GameObject> visibleFriendlyTargets = new List<GameObject>();
+    public List<GameObject> visiblePreyTargets = new List<GameObject>();
+    
+    public List<GameObject> heardHostileTargets = new List<GameObject>();
+    public List<GameObject> heardFriendlyTargets = new List<GameObject>();
+    public List<GameObject> heardPreyTargets = new List<GameObject>();
     
     protected void Start()
     {
         Debug.Log("Start()");
         // subscribe to the OnTickEvent for parameter handling.
         EventSubscribe();
+
+        animal = GetComponent<Animal>();
+        animalModel = GetComponent<AnimalModel>();
+
+        DecisionMaker decisionMaker = new DecisionMaker(animal,this,animalModel,tickEventPublisher);
     }
+    
     
     //should be refactored so that this logic is in AnimalModel
     private void Update()
     {
-        if (animal.isAlive && animal.currentEnergy <= 0 && animal.hydration <= 0)
+        if (!animalModel.IsAlive())
         {
-            animal.isAlive = false; 
+            Debug.Log("Rabbit is ded");
             EventUnsubscribe();
             
             // probably doing this in deathState instead

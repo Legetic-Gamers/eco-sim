@@ -1,4 +1,3 @@
-using FSM;
 using UnityEngine;
 
 namespace AnimalsV2.States
@@ -6,14 +5,13 @@ namespace AnimalsV2.States
     public class Idle : State
     {
 
-        public Idle(Animal animal, StateMachine stateMachine) : base(animal, stateMachine)
-        {
-        }
+        public Idle(Animal animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine){}
 
         public override void Enter()
         {
             base.Enter();
-            //Debug.Log("ENTERING IDLE");
+            Debug.Log("Idling!");
+            currentStateAnimation = StateAnimation.Idle;
         }
 
         public override void HandleInput()
