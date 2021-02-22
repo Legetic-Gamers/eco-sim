@@ -9,10 +9,10 @@ using static AnimalsV2.StateAnimation;
 
 namespace AnimalsV2.States
 {
-    public class SearchForWater : Wander
+    public class GoToWater : Wander
     {
         private Vector3 waterPos;
-        public SearchForWater(Animal animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine) {}
+        public GoToWater(Animal animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine) {}
 
         public override void Enter()
         {

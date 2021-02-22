@@ -5,10 +5,10 @@ using UnityEngine;
 
 namespace AnimalsV2.States
 {
-    public class SearchForMate : Wander
+    public class GoToMate : Wander
     {
         private Vector3 matePos;
-        public SearchForMate(Animal animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine) {}
+        public GoToMate(Animal animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine) {}
 
         public override void Enter()
         {

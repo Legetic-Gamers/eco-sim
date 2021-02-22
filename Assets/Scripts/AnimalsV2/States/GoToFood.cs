@@ -6,10 +6,10 @@ using UnityEngine.AI;
 
 namespace AnimalsV2.States
 {
-    public class SearchForFood : Wander
+    public class GoToFood : Wander
     {
         private Vector3 foodPos;
-        public SearchForFood(Animal animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine) {}
+        public GoToFood(Animal animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine) {}
 
         public override void Enter()
         {

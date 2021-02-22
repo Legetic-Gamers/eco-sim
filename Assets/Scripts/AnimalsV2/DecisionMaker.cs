@@ -120,29 +120,29 @@ namespace AnimalsV2
                 Prioritize();
             }
             //Always finish eating/drinking/mating
-            else if (currentState is SearchForFood)
+            else if (currentState is GoToFood)
             {
-                SearchForFood searchForFood = (SearchForFood) currentState;
+                GoToFood goToFood = (GoToFood) currentState;
             
-                if (searchForFood.adjacentToFood())
+                if (goToFood.adjacentToFood())
                 {
                     //ChangeState(animal.es);
                 }
             }
-            else if (currentState is SearchForWater)
+            else if (currentState is GoToWater)
             {
-                SearchForWater searchForWater = (SearchForWater) currentState;
+                GoToWater goToWater = (GoToWater) currentState;
                 
-                if (searchForWater.adjacentToWater())
+                if (goToWater.adjacentToWater())
                 {
                     //TODO should be drinking
                     //ChangeState(animal.es);
                 }
             }
-            else if (currentState is SearchForMate)
+            else if (currentState is GoToMate)
             {
-                SearchForMate searchForMate = (SearchForMate) currentState;
-                if (searchForMate.adjacentToMate())
+                GoToMate goToMate = (GoToMate) currentState;
+                if (goToMate.adjacentToMate())
                 {
                     //TODO should be mating
                     //ChangeState(animal.es);
@@ -170,15 +170,18 @@ namespace AnimalsV2
             }
             else if (highHydration() && highEnergy() && wantingOffspring()) // Prio 3 (If we live good) search for mate.
             {
-                ChangeState(animal.sm);
+                //ChangeState(animal.sm);
+                ChangeState(animal.wander);
             }
             else if (!highHydration() && highEnergy()) //Prio 4, not low hydration but not high either + high energy -> find Water.
             {
-                ChangeState(animal.sw);
+                //ChangeState(animal.sw);
+                ChangeState(animal.wander);
             }
             else if (highHydration() && !highEnergy()) //Prio 5, not low energy but not high either + high hydration -> find Food.
             {
-                ChangeState(animal.sf);
+                //ChangeState(animal.sf);
+                ChangeState(animal.wander);
             }
             else // dont know what to do? -> Idle.
             {
@@ -236,11 +239,11 @@ namespace AnimalsV2
         
         private bool highEnergy()
         {
-            return animalModel.currentEnergy > 250;
+            return animalModel.currentEnergy > 20;
         }
         private bool lowEnergy()
         {
-            return animalModel.currentEnergy < 100;
+            return animalModel.currentEnergy < 10;
         }
         private bool hydrationFull()
         {
@@ -248,11 +251,11 @@ namespace AnimalsV2
         }
         private bool highHydration()
         {
-            return animalModel.hydration > 250;
+            return animalModel.hydration > 20;
         }
         private bool lowHydration()
         {
-            return animalModel.hydration < 100;
+            return animalModel.hydration < 10;
         }
         private bool wantingOffspring()
         {
