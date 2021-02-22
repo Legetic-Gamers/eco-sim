@@ -19,13 +19,7 @@ public class HearingAbility : MonoBehaviour
 
     public AnimalController animalController;
     public bool isPrey;
-    
-    public delegate void ScoutedTargetDelegate();
 
-    public event ScoutedTargetDelegate onHeardHostileEvent;
-    public event ScoutedTargetDelegate onHeardFriendlyEvent;
-    public event ScoutedTargetDelegate onHeardFoodEvent;
-   
     /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
 
     private void FindHeardTargets()
@@ -51,11 +45,11 @@ public class HearingAbility : MonoBehaviour
                 targets.Add(target);
                 
                 if (isPrey && targetAnimalController.animalModel.traits.IsCarnivore) 
-                    onHeardHostileEvent?.Invoke();
+                    animalController.animalModel.actionPerceivedHostile?.Invoke(target);
                 else if (!isPrey && targetAnimalController.animalModel.traits.IsHerbivore)
-                    onHeardFoodEvent?.Invoke();
+                    animalController.animalModel.actionPerceivedFood?.Invoke(target);
                 else if (animalController.IsSameSpecies(targetAnimalController))
-                    onHeardFriendlyEvent?.Invoke();
+                    animalController.animalModel.actionPerceivedFriendly?.Invoke(target);
             }
         }
     }

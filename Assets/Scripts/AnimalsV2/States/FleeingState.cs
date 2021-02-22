@@ -26,12 +26,6 @@ namespace AnimalsV2.States
             //currentStateAnimation = StateAnimation.Idle;
         }
 
-        public override void HandleInput()
-        {
-            base.HandleInput();
-            //Debug.Log("EXECUTING FLEEING");
-        }
-
         public override void LogicUpdate()
         {
             base.LogicUpdate();

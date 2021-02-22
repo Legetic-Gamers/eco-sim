@@ -1,15 +1,14 @@
-﻿using System.Collections.Generic;
+﻿/*
+ * Author: Alexander L.V
+ */
+
+using System.Collections.Generic;
 using System.Linq;
-using AnimalsV2;
 using AnimalsV2.States;
-using UnityEditor;
 using UnityEngine;
 
 namespace AnimalsV2
 {
-    
-    
-
     public class DecisionMaker
     {
         private AnimalController animalController;
@@ -28,8 +27,6 @@ namespace AnimalsV2
             
             EventSubscribe();
         }
-        
-
         
         /// <summary>
         /// Makes a decision based on the senses and the parameters of the animal (its perception of itself and its environment)
@@ -262,6 +259,10 @@ namespace AnimalsV2
         {
             eventPublisher.onParamTickEvent += MakeDecision;
             eventPublisher.onSenseTickEvent += MakeDecision;
+            
+            animalModel.actionPerceivedHostile += HandleHostileTarget;
+            animalModel.actionPerceivedFriendly += HandleFriendlyTarget;
+            animalModel.actionPerceivedFood += HandleFoodTarget;
         }
         
 
@@ -270,10 +271,33 @@ namespace AnimalsV2
             eventPublisher.onParamTickEvent -= MakeDecision;
             eventPublisher.onSenseTickEvent -= MakeDecision;
         
+            animalModel.actionPerceivedHostile -= HandleHostileTarget;
+            animalModel.actionPerceivedFriendly -= HandlePotentialMate;
+            animalModel.actionPerceivedFood -= HandleFoodTarget;
         }
-        
-        
-        
+
+        /// <summary>
+        /// Handle perceived target such that GetBestAction can then use it in deciding an action.
+        /// </summary>
+        /// <param name="target"> perceived target sent from either FieldOfView or HearingAbility,
+        /// which method that will be called depends on the type of target </param>
+        private void HandleHostileTarget(GameObject target)
+        {
+            //hostileTargets.Add(target);
+            Debug.Log(target.name + " is hostile to " + gameObject.name);
+        }
+        private void HandlePotentialMate(GameObject target)
+        {
+            //PotentialMates.Add(target);
+            Debug.Log(target.name + " is a potential mate to " + gameObject.name);
+        }
+        private void HandleFoodTarget(GameObject target)
+        {
+            //foodTargets.Add(target);
+            Debug.Log(target.name + " can be eaten by " + gameObject.name);
+        }
+
+
 
     }
 }

@@ -26,12 +26,6 @@ public class FieldOfView : MonoBehaviour
     public AnimalController animalController;
     private bool isPrey;
     
-    public delegate void ScoutedTargetDelegate();
-
-    public event ScoutedTargetDelegate onSeenHostileEvent;
-    public event ScoutedTargetDelegate onSeenFriendlyEvent;
-    public event ScoutedTargetDelegate onSeenFoodEvent; // either prey or plants
-
     /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
 
     private void FindVisibleTargets()
@@ -62,6 +56,7 @@ public class FieldOfView : MonoBehaviour
                 // if target is not obscured
                 if (!Physics.Raycast(transform.position, dirToTarget, distToTarget, obstacleMask))
                 {
+                    // obsolete with the invokes below
                     animalController.visibleTargets.Add(target);
                     // for custom editor FoVEditor
                     targets.Add(target);
@@ -70,7 +65,7 @@ public class FieldOfView : MonoBehaviour
                     {
                         case true: 
                             if (targetAnimalController.animalModel.traits.IsCarnivore) 
-                                onSeenHostileEvent?.Invoke();
+                                animalController.animalModel.actionPerceivedHostile?.Invoke(target);
                             /*
                              * not herbivore and not carnivore/omnivore (above) -> must be a plant.
                              * 
@@ -78,16 +73,16 @@ public class FieldOfView : MonoBehaviour
                              * and one for herbivores to see herbivores, predators, and plants
                              */
                             else if (!targetAnimalController.animalModel.traits.IsHerbivore) 
-                                onSeenFoodEvent?.Invoke();
+                                animalController.animalModel.actionPerceivedFood?.Invoke(target);
                             break;
                         case false: 
                             if (targetAnimalController.animalModel.traits.IsHerbivore)
-                                onSeenFoodEvent?.Invoke();
+                                animalController.animalModel.actionPerceivedFood?.Invoke(target);
                             break;
                     }
                     
                     if (animalController.IsSameSpecies(targetAnimalController))
-                        onSeenFriendlyEvent?.Invoke();
+                        animalController.animalModel.actionPerceivedFriendly?.Invoke(target);
                     
                 }
             }
