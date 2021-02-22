@@ -27,19 +27,6 @@ public abstract class AnimalController : MonoBehaviour
     /// </summary>
 
 
-    protected void Start()
-    {
-        Debug.Log("Start()");
-        
-        tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
-        Debug.Log(tickEventPublisher);
-        
-        EventSubscribe();
-
-        animal = GetComponent<Animal>();
-
-        DecisionMaker decisionMaker = new DecisionMaker(animal,this,animalModel,tickEventPublisher);
-    }
 
     private void VaryParameters()
     {
