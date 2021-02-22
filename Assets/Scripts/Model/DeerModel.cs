@@ -1,6 +1,6 @@
 ﻿public class DeerModel : AnimalModel
 {
-    public DeerModel() : base(new Traits(10, 300, 100, 10,10,10,10,10,10,10,10, Traits.BehaviorType.Herbivore, Traits.Species.Rabbit),0)
+    public DeerModel() : base(new Traits(10, 300, 100, 100, 10,10,10,10,10,10,10,10, Traits.BehaviorType.Herbivore, Traits.Species.Rabbit),0)
     {
         // Set variables specific to deer
     }

@@ -27,7 +27,7 @@ public class ParameterUI : MonoBehaviour
         AnimalController animalController = animal.GetComponent<AnimalController>();
         if (animalController)
         {
-            AnimalModel animal = animalController.animal;
+            AnimalModel animal = animalController.animalModel;
             health.value = animal.currentHealth / animal.traits.maxHealth;
             energy.value = (float)animal.currentEnergy / animal.traits.maxEnergy;
             hydration.value = animal.hydration;
