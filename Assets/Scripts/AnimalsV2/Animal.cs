@@ -48,7 +48,7 @@ namespace AnimalsV2
 
             //Create the FSM.
             Fsm = new FiniteStateMachine();
-            AnimationController animationController = new AnimationController(this);
+            
             
         }
 
@@ -62,6 +62,8 @@ namespace AnimalsV2
              fs = new FleeingState(this, Fsm);
              idle = new Idle(this, Fsm);
              Fsm.Initialize(idle);
+             
+             AnimationController animationController = new AnimationController(this);
 
             
         }
