@@ -20,13 +20,7 @@ public class HearingAbility : MonoBehaviour
 
     public AnimalController animalController;
     public bool isPrey;
-    
-    public delegate void ScoutedTargetDelegate();
 
-    public event ScoutedTargetDelegate onHeardHostileEvent;
-    public event ScoutedTargetDelegate onHeardFriendlyEvent;
-    public event ScoutedTargetDelegate onHeardFoodEvent;
-   
     /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
 
     private void FindHeardTargets()
@@ -47,16 +41,17 @@ public class HearingAbility : MonoBehaviour
             // don't add self
             if (target != gameObject && targetAnimalController != null)
             {
+                
                 animalController.heardTargets.Add(target);
                 // for custom editor HAEditor
                 targets.Add(target);
                 
-                if (isPrey && targetAnimalController.animal.traits.IsCarnivore) 
-                    onHeardHostileEvent?.Invoke();
-                else if (!isPrey && targetAnimalController.animal.traits.IsHerbivore)
-                    onHeardFoodEvent?.Invoke();
-                else if (animalController.IsSameSpecies(targetAnimalController))
-                    onHeardFriendlyEvent?.Invoke();
+                // if (isPrey && targetAnimalController.animalModel.traits.IsCarnivore) 
+                //     animalController.animalModel.actionPerceivedHostile?.Invoke(target);
+                // else if (!isPrey && targetAnimalController.animalModel.traits.IsHerbivore)
+                //     animalController.animalModel.actionPerceivedFood?.Invoke(target);
+                // else if (animalController.IsSameSpecies(targetAnimalController))
+                //     animalController.animalModel.actionPerceivedFriendly?.Invoke(target);
             }
         }
     }
@@ -64,11 +59,9 @@ public class HearingAbility : MonoBehaviour
     private void Start()
     {
         animalController = GetComponent<AnimalController>();
-        if (animalController.animal.traits.behaviorType == Traits.BehaviorType.Herbivore) isPrey = true;
-
-        Debug.Log(animalController.animal);
-        radius = animalController.animal.traits.hearingRadius;
+        if (animalController.animalModel.traits.behaviorType == Traits.BehaviorType.Herbivore) isPrey = true;
         
+        radius = animalController.animalModel.traits.hearingRadius;
         
         FindObjectOfType<global::TickEventPublisher>().onSenseTickEvent += FindHeardTargets;
     }
@@ -80,6 +73,6 @@ public class HearingAbility : MonoBehaviour
 
     private void FixedUpdate()
     {
-        radius = animalController.animal.traits.hearingRadius;
+        radius = animalController.animalModel.traits.hearingRadius;
     }
 }

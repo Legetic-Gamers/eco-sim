@@ -68,25 +68,17 @@ namespace AnimalsV2
             if (CurrentState != null) CurrentState.LogicUpdate();
             //Debug.Log(OnStateLogicUpdate.ToString());
             OnStateLogicUpdate?.Invoke(CurrentState);
-
         }
         
-       
-
         public virtual void HandleStatesInput()
         {
             if (CurrentState != null) CurrentState.HandleInput();
         }
         
-
         public virtual void UpdateStatesPhysics()
         {
             if (CurrentState != null) CurrentState.PhysicsUpdate();
             OnStatePhysicsUpdate?.Invoke(CurrentState);
         }
-
-      
-
-        
     }
 }

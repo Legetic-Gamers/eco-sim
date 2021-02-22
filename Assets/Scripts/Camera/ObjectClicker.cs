@@ -35,9 +35,9 @@ public class ObjectClicker : MonoBehaviour
     {
         // See if the gameobject has animalcontroller, if so; we want to show panel with traits
         AnimalController animalController = gameObject.GetComponent<AnimalController>();
-        if (animalController != null && animalController?.animal?.traits != null)
+        if (animalController != null && animalController?.animalModel?.traits != null)
         {
-            animalSelectPanel.SetTraitText(animalController.animal.traits, gameObject.name);
+            animalSelectPanel.SetTraitText(animalController.animalModel.traits, gameObject.name);
         }
         else
         {

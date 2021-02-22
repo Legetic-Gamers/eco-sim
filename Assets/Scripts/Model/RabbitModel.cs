@@ -2,7 +2,6 @@
 {
     public RabbitModel() : base(new Traits(10, 300, 100, 10,10,10,10,10,10,10,10, Traits.BehaviorType.Herbivore, Traits.Species.Rabbit),0)
     {
-
         // Rabbit specific initialization 
     }
     
