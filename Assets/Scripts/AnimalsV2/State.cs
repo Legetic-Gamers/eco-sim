@@ -3,7 +3,6 @@
  */
 
 using System;
-using FSM;
 
 namespace AnimalsV2
 {
@@ -28,13 +27,13 @@ namespace AnimalsV2
         protected StateAnimation currentStateAnimation = StateAnimation.Idle;
 
         protected Animal animal;
-        protected StateMachine stateMachine;
+        protected FiniteStateMachine finiteStateMachine;
 
 
-        protected State(Animal animal, StateMachine stateMachine)
+        protected State(Animal animal, FiniteStateMachine finiteStateMachine)
         {
             this.animal = animal;
-            this.stateMachine = stateMachine;
+            this.finiteStateMachine = finiteStateMachine;
         }
 
         //ENTER
@@ -63,7 +62,7 @@ namespace AnimalsV2
         {
         }
         
-        public override string ToString()
+        public string GetStateAnimation()
         {
             return currentStateAnimation.ToString();
         }

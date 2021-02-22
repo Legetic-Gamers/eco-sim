@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
 
 public class FieldOfView : MonoBehaviour
@@ -23,13 +24,17 @@ public class FieldOfView : MonoBehaviour
 
     [HideInInspector]
     public AnimalController animalController;
-
+    
     /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
 
     private void FindVisibleTargets()
     {
         // prevent adding duplicates
-        animalController.visibleTargets.Clear();
+        //animalController.visibleTargets.Clear(); // obsolete
+        
+        animalController.visibleHostileTargets.Clear();
+        animalController.visibleFriendlyTargets.Clear();
+        animalController.visiblePreyTargets.Clear();
         // for custom editor FoVEditor
         targets.Clear();
 
@@ -40,6 +45,7 @@ public class FieldOfView : MonoBehaviour
         for (int i = 0; i < targetsInRadius.Length; i++)
         {
             GameObject target = targetsInRadius[i].gameObject;
+            AnimalController targetAnimalController = target.GetComponent<AnimalController>();
             
             // don't add self
             if (target == gameObject) return;
@@ -53,9 +59,43 @@ public class FieldOfView : MonoBehaviour
                 // if target is not obscured
                 if (!Physics.Raycast(transform.position, dirToTarget, distToTarget, obstacleMask))
                 {
-                    animalController.visibleTargets.Add(target);
+                    // obsolete with the invokes below
+                    //animalController.visibleTargets.Add(target);
                     // for custom editor FoVEditor
                     targets.Add(target);
+
+                    switch (animalController.animalModel.traits.IsPrey)
+                    {
+                        case true:
+                            if (targetAnimalController.animalModel.traits.IsPredator)
+                            {
+                                animalController.visibleHostileTargets.Add(target);
+                                animalController.animalModel.actionPerceivedHostile?.Invoke(target);
+                            }
+                            /*
+                             * not herbivore and not carnivore/omnivore (above) -> must be a plant.
+                             * 
+                             * problem however is that plants don't have a behaviorType, so this will
+                             * lead to a NullReferenceException if we try to do the following if() statement
+                             */
+                            else if (!targetAnimalController.animalModel.traits.IsPrey)
+                            {
+                                // do something
+                            }
+                            break;
+                        case false:
+                            if (targetAnimalController.animalModel.traits.IsPrey)
+                            {
+                                animalController.visiblePreyTargets.Add(target);
+                            }
+                            break;
+                    }
+
+                    if (animalController.IsSameSpecies(targetAnimalController))
+                    {
+                        animalController.visibleFriendlyTargets.Add(target);
+                    }
+                    
                 }
             }
         }
@@ -76,15 +116,20 @@ public class FieldOfView : MonoBehaviour
     {
         animalController = GetComponent<AnimalController>();
         
-        angle = animalController.animal.traits.viewAngle;
-        radius = animalController.animal.traits.viewRadius;
+        angle = animalController.animalModel.traits.viewAngle;
+        radius = animalController.animalModel.traits.viewRadius;
 
         FindObjectOfType<global::TickEventPublisher>().onSenseTickEvent += FindVisibleTargets;
     }
 
+    private void OnDestroy()
+    {
+        FindObjectOfType<global::TickEventPublisher>().onSenseTickEvent -= FindVisibleTargets;
+    }
+
     private void FixedUpdate()
     {
-        angle = animalController.animal.traits.viewAngle;
-        radius = animalController.animal.traits.viewRadius;
+        angle = animalController.animalModel.traits.viewAngle;
+        radius = animalController.animalModel.traits.viewRadius;
     }
 }

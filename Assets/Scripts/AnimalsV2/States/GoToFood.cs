@@ -1,45 +1,53 @@
-using System.Collections;
-using System.Collections.Generic;
+/*
+ * Authors: Johan A., Alexander L.V.
+ */
 using UnityEngine;
-using FSM;
 using UnityEngine.AI;
 
-//Author: Alexander LV
-// Heavily Inspired by: https://blog.playmedusa.com/a-finite-state-machine-in-c-for-unity3d/
 namespace AnimalsV2.States
 {
-//State where the animal just sits/ stands still.
-//sealed just prevents other classes from inheriting
-    public class SearchForFood : State
+    public class GoToFood : Wander
     {
+        private Vector3 foodPos;
+        public GoToFood(Animal animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine) {}
 
-        public SearchForFood(Animal animal, StateMachine stateMachine) : base(animal, stateMachine)
-        {
-        }
-
-        public void Enter()
+        public override void Enter()
         {
             base.Enter();
-            Debug.Log("ENTERED SEARCHING FOR FOOD");
+            Debug.Log("Searching For Food");
             currentStateAnimation = StateAnimation.Running;
         }
 
-        public void HandleInput()
+        public override void HandleInput()
         {
             base.HandleInput();
-            
         }
 
         public override void LogicUpdate()
         {
             base.LogicUpdate();
             //Get average position of enemies and run away from it.
-            Vector3 foodPos = NavigationUtilities.GetNearestObjectPositionByTag(animal, "Food");
+            foodPos = NavigationUtilities.GetNearestObjectPositionByTag(animal, "Food");
             Vector3 pointToRunTo = NavigationUtilities.RunToFromPoint(animal.transform,foodPos,true);
             //Move the animal using the navmeshagent.
             NavMeshHit hit;
             NavMesh.SamplePosition(pointToRunTo,out hit,5,1 << NavMesh.GetAreaFromName("Walkable"));
             animal.agent.SetDestination(hit.position);
+        }
+
+        public bool adjacentToFood()
+        {
+            if (foodPos != null)
+            {
+               //return Vector3.Distance(animal.transform.position, foodPos) < 10;
+            }
+            else
+            {
+                return false;
+            }
+
+            return false;
+
         }
     }
 }

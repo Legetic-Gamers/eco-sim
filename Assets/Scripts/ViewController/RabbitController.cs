@@ -2,7 +2,7 @@
 {
     void Awake()
     {
-        animal = new RabbitModel();
+        animalModel = new RabbitModel();
     }
 
     
