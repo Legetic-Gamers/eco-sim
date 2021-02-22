@@ -40,16 +40,17 @@ public class HearingAbility : MonoBehaviour
             // don't add self
             if (target != gameObject)
             {
+                
                 animalController.heardTargets.Add(target);
                 // for custom editor HAEditor
                 targets.Add(target);
                 
-                if (isPrey && targetAnimalController.animalModel.traits.IsCarnivore) 
-                    animalController.animalModel.actionPerceivedHostile?.Invoke(target);
-                else if (!isPrey && targetAnimalController.animalModel.traits.IsHerbivore)
-                    animalController.animalModel.actionPerceivedFood?.Invoke(target);
-                else if (animalController.IsSameSpecies(targetAnimalController))
-                    animalController.animalModel.actionPerceivedFriendly?.Invoke(target);
+                // if (isPrey && targetAnimalController.animalModel.traits.IsCarnivore) 
+                //     animalController.animalModel.actionPerceivedHostile?.Invoke(target);
+                // else if (!isPrey && targetAnimalController.animalModel.traits.IsHerbivore)
+                //     animalController.animalModel.actionPerceivedFood?.Invoke(target);
+                // else if (animalController.IsSameSpecies(targetAnimalController))
+                //     animalController.animalModel.actionPerceivedFriendly?.Invoke(target);
             }
         }
     }

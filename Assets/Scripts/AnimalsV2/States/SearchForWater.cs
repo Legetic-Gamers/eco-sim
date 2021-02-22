@@ -4,6 +4,7 @@
 
 using UnityEngine;
 using UnityEngine.AI;
+using static AnimalsV2.StateAnimation;
 
 
 namespace AnimalsV2.States
@@ -13,19 +14,19 @@ namespace AnimalsV2.States
         private Vector3 waterPos;
         public SearchForWater(Animal animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine) {}
 
-        public void Enter()
+        public override void Enter()
         {
             base.Enter();
-            currentStateAnimation = StateAnimation.Running;
+            currentStateAnimation = Running;
             Debug.Log("Searching for water!");
         }
 
-        public void HandleInput()
+        public override void HandleInput()
         {
             base.HandleInput();
         }
 
-        public void LogicUpdate()
+        public override void LogicUpdate()
         {
             base.LogicUpdate();
             //Get average position of water and run toward it.

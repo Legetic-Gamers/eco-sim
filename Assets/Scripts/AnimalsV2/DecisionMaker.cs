@@ -18,9 +18,12 @@ namespace AnimalsV2
         private Animal animal;
         private FiniteStateMachine fsm;
         
-        public List<GameObject> hostileTargets;
-        public List<GameObject> friendlyTargets;
-        public List<GameObject> foodTargets;
+        // public List<GameObject> hostileTargets;
+        // public List<GameObject> friendlyTargets;
+        // public List<GameObject> foodTargets;
+
+        public List<GameObject> seenTargets;
+        public List<GameObject> heardTargets;
 
         public DecisionMaker(Animal animal, AnimalController animalController, AnimalModel animalModel,TickEventPublisher eventPublisher)
         {
@@ -31,9 +34,9 @@ namespace AnimalsV2
             this.eventPublisher = eventPublisher;
 
             //TESTING!!!!!!
-            hostileTargets = animal.heardTargets;
-            friendlyTargets = new List<GameObject>();
-            foodTargets = new List<GameObject>();
+            // hostileTargets = animal.heardTargets;
+            // friendlyTargets = new List<GameObject>();
+            // foodTargets = new List<GameObject>();
            
             
             EventSubscribe();
@@ -54,9 +57,14 @@ namespace AnimalsV2
 
         private void GetBestAction(AnimalModel parameters)
         {
+            seenTargets = animalController.visibleTargets;
+            heardTargets = animalController.heardTargets;
+            List<GameObject> allTargets = seenTargets.Concat(heardTargets).ToList();
+            Debug.Log(seenTargets.Count);
+            Debug.Log(heardTargets.Count);
             
-            bool predatorNearby = PredatorNearby(hostileTargets);
-            bool foodNearby = FoodNearby(foodTargets);
+            bool predatorNearby = PredatorNearby(allTargets);
+            bool foodNearby = FoodNearby(allTargets);
 
             
             //This is instead of using the state machine regularly.
@@ -217,7 +225,7 @@ namespace AnimalsV2
 
         private static bool PredatorNearby(List<GameObject> allTargets)
         {
-            Debug.Log(allTargets.Count);
+            
             return allTargets.Any(o => o.CompareTag("Predator"));
         }
         
@@ -262,21 +270,21 @@ namespace AnimalsV2
         {
             eventPublisher.onParamTickEvent += MakeDecision;
             eventPublisher.onSenseTickEvent += MakeDecision;
-            
-            animalModel.actionPerceivedHostile += HandleHostileTarget;
-            animalModel.actionPerceivedFriendly += HandleFriendlyTarget;
-            animalModel.actionPerceivedFood += HandleFoodTarget;
+            //
+            // animalModel.actionPerceivedHostile += HandleHostileTarget;
+            // animalModel.actionPerceivedFriendly += HandleFriendlyTarget;
+            // animalModel.actionPerceivedFood += HandleFoodTarget;
         }
         
-
+        
         private void EventUnsubscribe()
         {
             eventPublisher.onParamTickEvent -= MakeDecision;
             eventPublisher.onSenseTickEvent -= MakeDecision;
-        
-            animalModel.actionPerceivedHostile -= HandleHostileTarget;
-            animalModel.actionPerceivedFriendly -= HandleFriendlyTarget;
-            animalModel.actionPerceivedFood -= HandleFoodTarget;
+            //
+            // animalModel.actionPerceivedHostile -= HandleHostileTarget;
+            // animalModel.actionPerceivedFriendly -= HandleFriendlyTarget;
+            // animalModel.actionPerceivedFood -= HandleFoodTarget;
         }
 
         /// <summary>
@@ -284,22 +292,22 @@ namespace AnimalsV2
         /// </summary>
         /// <param name="target"> perceived target sent from either FieldOfView or HearingAbility,
         /// which method that will be called depends on the type of target </param>
-        private void HandleHostileTarget(GameObject target)
-        {
-            //hostileTargets.Add(target);
-            hostileTargets.Add(target);
-            Debug.Log(target.name + " is hostile to " + animal.name);
-        }
-        private void HandleFriendlyTarget(GameObject target)
-        {
-            friendlyTargets.Add(target);
-            Debug.Log(target.name + " is a potential mate to " + animal.name);
-        }
-        private void HandleFoodTarget(GameObject target)
-        {
-            foodTargets.Add(target);
-            Debug.Log(target.name + " can be eaten by " + animal.name);
-        }
+        // private void HandleHostileTarget(GameObject target)
+        // {
+        //     //hostileTargets.Add(target);
+        //     hostileTargets.Add(target);
+        //     Debug.Log(target.name + " is hostile to " + animal.name);
+        // }
+        // private void HandleFriendlyTarget(GameObject target)
+        // {
+        //     friendlyTargets.Add(target);
+        //     Debug.Log(target.name + " is a potential mate to " + animal.name);
+        // }
+        // private void HandleFoodTarget(GameObject target)
+        // {
+        //     foodTargets.Add(target);
+        //     Debug.Log(target.name + " can be eaten by " + animal.name);
+        // }
 
 
 

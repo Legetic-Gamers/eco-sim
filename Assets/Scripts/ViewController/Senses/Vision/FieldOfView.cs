@@ -61,28 +61,28 @@ public class FieldOfView : MonoBehaviour
                     // for custom editor FoVEditor
                     targets.Add(target);
 
-                    switch (isPrey)
-                    {
-                        case true: 
-                            if (targetAnimalController.animalModel.traits.IsCarnivore) 
-                                animalController.animalModel.actionPerceivedHostile?.Invoke(target);
-                            /*
-                             * not herbivore and not carnivore/omnivore (above) -> must be a plant.
-                             * 
-                             * should probably have two targetMask, one for predators to see only prey and other predators,
-                             * and one for herbivores to see herbivores, predators, and plants
-                             */
-                            else if (!targetAnimalController.animalModel.traits.IsHerbivore) 
-                                animalController.animalModel.actionPerceivedFood?.Invoke(target);
-                            break;
-                        case false: 
-                            if (targetAnimalController.animalModel.traits.IsHerbivore)
-                                animalController.animalModel.actionPerceivedFood?.Invoke(target);
-                            break;
-                    }
-                    
-                    if (animalController.IsSameSpecies(targetAnimalController))
-                        animalController.animalModel.actionPerceivedFriendly?.Invoke(target);
+                    // switch (isPrey)
+                    // {
+                    //     case true: 
+                    //         if (targetAnimalController.animalModel.traits.IsCarnivore) 
+                    //             animalController.animalModel.actionPerceivedHostile?.Invoke(target);
+                    //         /*
+                    //          * not herbivore and not carnivore/omnivore (above) -> must be a plant.
+                    //          * 
+                    //          * should probably have two targetMask, one for predators to see only prey and other predators,
+                    //          * and one for herbivores to see herbivores, predators, and plants
+                    //          */
+                    //         else if (!targetAnimalController.animalModel.traits.IsHerbivore) 
+                    //             animalController.animalModel.actionPerceivedFood?.Invoke(target);
+                    //         break;
+                    //     case false: 
+                    //         if (targetAnimalController.animalModel.traits.IsHerbivore)
+                    //             animalController.animalModel.actionPerceivedFood?.Invoke(target);
+                    //         break;
+                    // }
+                    //
+                    // if (animalController.IsSameSpecies(targetAnimalController))
+                    //     animalController.animalModel.actionPerceivedFriendly?.Invoke(target);
                     
                 }
             }

@@ -12,19 +12,19 @@ namespace AnimalsV2.States
     {
         public Wander(Animal animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine) {}
 
-        public void Enter()
+        public override void Enter()
         {
             base.Enter();
             Debug.Log("Entered Search");
             currentStateAnimation = StateAnimation.Running;
         }
 
-        public void HandleInput()
+        public override void HandleInput()
         {
             base.HandleInput();
         }
 
-        public override void LogicUpdate()
+        public  override void LogicUpdate()
         {
             base.LogicUpdate();
             if (animal.agent.remainingDistance < 1.0f)

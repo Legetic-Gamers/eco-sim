@@ -10,19 +10,19 @@ namespace AnimalsV2.States
         private Vector3 matePos;
         public SearchForMate(Animal animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine) {}
 
-        public void Enter()
+        public override void Enter()
         {
             base.Enter();
             Debug.Log("Searching for mate");
             currentStateAnimation = StateAnimation.Running;
         }
 
-        public void HandleInput()
+        public override void HandleInput()
         {
             base.HandleInput();
         }
 
-        public void LogicUpdate()
+        public override void LogicUpdate()
         {
             base.LogicUpdate();
             //Get average position of mate and run toward it.

@@ -3,10 +3,11 @@
     public BearModel()
     {
         // Set variables specific to bear
-        traits = new Traits(10, 300, 100,100, 10,10,10,10,10,10,10,10);
+        traits = new Traits(10, 300, 100,300, 10,10,10,10,10,10,10,3);
         currentEnergy = 300;
         hydration = 300;
-        reproductiveUrge = 0;
+        reproductiveUrge = 400;
+        traits.behaviorType = Traits.BehaviorType.Herbivore;
     }
 
 

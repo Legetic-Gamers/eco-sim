@@ -11,14 +11,14 @@ namespace AnimalsV2.States
         private Vector3 foodPos;
         public SearchForFood(Animal animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine) {}
 
-        public void Enter()
+        public override void Enter()
         {
             base.Enter();
             Debug.Log("Searching For Food");
             currentStateAnimation = StateAnimation.Running;
         }
 
-        public void HandleInput()
+        public override void HandleInput()
         {
             base.HandleInput();
         }
