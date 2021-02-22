@@ -24,14 +24,17 @@ public class FieldOfView : MonoBehaviour
 
     [HideInInspector]
     public AnimalController animalController;
-    private bool isPrey;
     
     /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
 
     private void FindVisibleTargets()
     {
         // prevent adding duplicates
-        animalController.visibleTargets.Clear();
+        //animalController.visibleTargets.Clear(); // obsolete
+        
+        animalController.visibleHostileTargets.Clear();
+        animalController.visibleFriendlyTargets.Clear();
+        animalController.visiblePreyTargets.Clear();
         // for custom editor FoVEditor
         targets.Clear();
 
@@ -57,32 +60,41 @@ public class FieldOfView : MonoBehaviour
                 if (!Physics.Raycast(transform.position, dirToTarget, distToTarget, obstacleMask))
                 {
                     // obsolete with the invokes below
-                    animalController.visibleTargets.Add(target);
+                    //animalController.visibleTargets.Add(target);
                     // for custom editor FoVEditor
                     targets.Add(target);
 
-                    // switch (isPrey)
-                    // {
-                    //     case true: 
-                    //         if (targetAnimalController.animalModel.traits.IsCarnivore) 
-                    //             animalController.animalModel.actionPerceivedHostile?.Invoke(target);
-                    //         /*
-                    //          * not herbivore and not carnivore/omnivore (above) -> must be a plant.
-                    //          * 
-                    //          * should probably have two targetMask, one for predators to see only prey and other predators,
-                    //          * and one for herbivores to see herbivores, predators, and plants
-                    //          */
-                    //         else if (!targetAnimalController.animalModel.traits.IsHerbivore) 
-                    //             animalController.animalModel.actionPerceivedFood?.Invoke(target);
-                    //         break;
-                    //     case false: 
-                    //         if (targetAnimalController.animalModel.traits.IsHerbivore)
-                    //             animalController.animalModel.actionPerceivedFood?.Invoke(target);
-                    //         break;
-                    // }
-                    //
-                    // if (animalController.IsSameSpecies(targetAnimalController))
-                    //     animalController.animalModel.actionPerceivedFriendly?.Invoke(target);
+                    switch (animalController.animalModel.traits.IsPrey)
+                    {
+                        case true:
+                            if (targetAnimalController.animalModel.traits.IsPredator)
+                            {
+                                animalController.visibleHostileTargets.Add(target);
+                                animalController.animalModel.actionPerceivedHostile?.Invoke(target);
+                            }
+                            /*
+                             * not herbivore and not carnivore/omnivore (above) -> must be a plant.
+                             * 
+                             * problem however is that plants don't have a behaviorType, so this will
+                             * lead to a NullReferenceException if we try to do the following if() statement
+                             */
+                            else if (!targetAnimalController.animalModel.traits.IsPrey)
+                            {
+                                // do something
+                            }
+                            break;
+                        case false:
+                            if (targetAnimalController.animalModel.traits.IsPrey)
+                            {
+                                animalController.visiblePreyTargets.Add(target);
+                            }
+                            break;
+                    }
+
+                    if (animalController.IsSameSpecies(targetAnimalController))
+                    {
+                        animalController.visibleFriendlyTargets.Add(target);
+                    }
                     
                 }
             }
@@ -103,8 +115,6 @@ public class FieldOfView : MonoBehaviour
     private void Start() 
     {
         animalController = GetComponent<AnimalController>();
-        
-        if (animalController.animalModel.traits.behaviorType == Traits.BehaviorType.Herbivore) isPrey = true;
         
         angle = animalController.animalModel.traits.viewAngle;
         radius = animalController.animalModel.traits.viewRadius;

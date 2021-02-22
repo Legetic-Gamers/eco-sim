@@ -104,9 +104,28 @@ public abstract class AnimalController : MonoBehaviour
     }
     
     // both hostile and friendly targets, get from FieldOfView and HearingAbility
-    public List<GameObject> heardTargets = new List<GameObject>();
-    public List<GameObject> visibleTargets = new List<GameObject>();
+    //public List<GameObject> heardTargets = new List<GameObject>(); // obsolete
+    //public List<GameObject> visibleTargets = new List<GameObject>(); // obsolete
     
+    public List<GameObject> visibleHostileTargets = new List<GameObject>();
+    public List<GameObject> visibleFriendlyTargets = new List<GameObject>();
+    public List<GameObject> visiblePreyTargets = new List<GameObject>();
+    
+    public List<GameObject> heardHostileTargets = new List<GameObject>();
+    public List<GameObject> heardFriendlyTargets = new List<GameObject>();
+    public List<GameObject> heardPreyTargets = new List<GameObject>();
+    
+    protected void Start()
+    {
+        Debug.Log("Start()");
+        // subscribe to the OnTickEvent for parameter handling.
+        EventSubscribe();
+
+        animal = GetComponent<Animal>();
+        animalModel = GetComponent<AnimalModel>();
+
+        DecisionMaker decisionMaker = new DecisionMaker(animal,this,animalModel,tickEventPublisher);
+    }
     
     
     //should be refactored so that this logic is in AnimalModel

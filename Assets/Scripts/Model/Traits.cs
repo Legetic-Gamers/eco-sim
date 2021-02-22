@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using Color = UnityEngine.Color;
 
 public class Traits
@@ -18,22 +19,42 @@ public class Traits
     {
         Bear,
         Wolf,
-        Rabbit
+        Rabbit,
+        Deer
     }
 
     public BehaviorType behaviorType { get; set; }
 
     public Species species { get; set; }
     
-    public bool IsCarnivore
+    public bool IsPredator
     {
-        get{ return behaviorType == BehaviorType.Carnivore
-                    || behaviorType == BehaviorType.Omnivore; }
+        get{
+            try
+            {
+                return behaviorType == BehaviorType.Carnivore
+                       || behaviorType == BehaviorType.Omnivore;
+
+            }
+            catch (NullReferenceException)
+            {
+                return false;
+            }   
+        }
         
     }
-    public bool IsHerbivore
+    public bool IsPrey
     {
-        get{ return behaviorType == BehaviorType.Herbivore;}
+        get{
+            try
+            {
+                return behaviorType == BehaviorType.Herbivore;
+            }
+            catch (NullReferenceException)
+            {
+                return false;
+            }
+        }
     }
 
     public  float size { get; set; }
