@@ -275,8 +275,6 @@ namespace AnimalsV2
             eventPublisher.onSenseTickEvent += MakeDecision;
             
             animalModel.actionPerceivedHostile += HandleHostileTarget;
-            // animalModel.actionPerceivedFriendly += HandleFriendlyTarget;
-            // animalModel.actionPerceivedFood += HandleFoodTarget;
         }
         
         
