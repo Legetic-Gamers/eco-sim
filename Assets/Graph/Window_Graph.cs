@@ -1,35 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
 
-// source: https://www.youtube.com/watch?v=ck72XNhxeS0&list=PLzDRvYVwl53v5ur4GluoabyckImZz3TVQ&index=1
+/// <summary>
+/// Draws a graph in the graphContainer.
+/// Use function ShowGraph to draw graph, and DestroyGraph to erase it.
+/// </summary>
 
-public class Window_Graph : MonoBehaviour{
+public class Window_Graph : MonoBehaviour
+{
 
+    [SerializeField] private int dotSize = 5;
+    [SerializeField] Color lineColor = new Color(1, 1, 1, .5f);
+    [SerializeField] float lineWidth = 2f; // line connecting dots
     
-    // TODO make dynamic x- and y-axis, scale entire graph, make visuals connect better with logic (ie rm hard coded lengths, replace w dynamic var)
-    //TODO clean spaghetti, fix constants, clean up comments, test & explore performance
+    [SerializeField] private float yBufferTop = 1.2f;
+    [SerializeField] private int firstX = 3;
+    [SerializeField] private int gridCountY = 10;
+    [SerializeField] private int gridCountX = 20;
+    [SerializeField] private Sprite circleSprite;
     
-
-    private int circleSize = 5;
-    Color lineColor = new Color(1,1,1, .5f); //rgb white, 50% transparent
-    float lineWidth = 1f; // line connecting dots
-    Vector2 origo = new Vector2(0, 0);
-
-    // circleSprite is for drawing circles in graph
-
-    [SerializeField] private Sprite circleSprite;  
     private RectTransform graphContainer;
     private RectTransform labelTemplateX;
     private RectTransform labelTemplateY;
     private RectTransform dashTemplateX;
     private RectTransform dashTemplateY;
     private List<GameObject> gameObjectList;
-    
 
-    private void Awake() {
+
+    private void Awake()
+    {
         graphContainer = transform.Find("graphContainer").GetComponent<RectTransform>();
         labelTemplateX = graphContainer.Find("labelTemplateX").GetComponent<RectTransform>();
         labelTemplateY = graphContainer.Find("labelTemplateY").GetComponent<RectTransform>();
@@ -37,129 +40,163 @@ public class Window_Graph : MonoBehaviour{
         dashTemplateY = graphContainer.Find("dashTemplateY").GetComponent<RectTransform>();
         gameObjectList = new List<GameObject>();
 
-        List<int> testList = new List<int>() {12, 28, 44, 55, 64, 72, 78, 83, 88};
-        ShowGraph(testList, (int _i) => "jhf" + _i, (float _f) => "" + Mathf.RoundToInt(_f));
-        ShowGraph(testList);
-
     }
+    
+    // Draws entire graph.
+    private void ShowGraph(List<int> valueList)
+    {
+        var sizeDelta = graphContainer.sizeDelta;
+        float graphHeight = sizeDelta.y;
+        float graphWidth = sizeDelta.x;
 
-    // Create circle at given coordinate.
+        AddGridX(valueList, graphWidth);
+        AddGridY(valueList, graphHeight);
+        DrawCurve(valueList, sizeDelta);
+        
+    }
+    
+    // Destroys the previous graph.
+    private void DestroyGraph()
+    {
+        foreach (GameObject gameObject in gameObjectList)
+        {
+            Destroy(gameObject);
+        }
 
-    private GameObject CreateCircle(Vector2 anchoredPosition) {
+        gameObjectList.Clear();
+    }
+    
+
+    private GameObject CreateCircle(Vector2 anchoredPosition)
+    {
         // create circle object, make it child of graph container, set its position in graph container.
 
         GameObject gameObject = new GameObject("circle", typeof(Image));
         gameObject.transform.SetParent(graphContainer, false);
         gameObject.GetComponent<Image>().sprite = circleSprite;
+        gameObject.GetComponent<Image>().color = lineColor;
         RectTransform rectTransform = gameObject.GetComponent<RectTransform>();
         rectTransform.anchoredPosition = anchoredPosition;
-        rectTransform.sizeDelta = new Vector2(circleSize, circleSize);
-        rectTransform.anchorMin = origo; // anchor point at lower left.
-        rectTransform.anchorMax = origo; // anchor point at lower left.
+        rectTransform.sizeDelta = new Vector2(dotSize, dotSize);
+        rectTransform.anchorMin = Vector2.zero; 
+        rectTransform.anchorMax = Vector2.zero; 
         return gameObject;
     }
 
-    private void ShowGraph(List<int> valueList, Func<int, string> getAxisLabelX = null, Func<float, string> getAxisLabelY = null) {
 
-        foreach (GameObject gameObject in gameObjectList) {
-            Destroy(gameObject);
-        }
-        gameObjectList.Clear();
+    
+    
+    // Draws lines between points.
+    private GameObject CreateDotConnection(Vector2 dotPositionA, Vector2 dotPositionB)
+    {
+        GameObject gameObject = new GameObject("dotConnection", typeof(Image));
+        gameObject.transform.SetParent(graphContainer, false);
+        gameObject.GetComponent<Image>().color = lineColor;
+        RectTransform rectTransform = gameObject.GetComponent<RectTransform>();
+        Vector2 dir = (dotPositionB - dotPositionA).normalized;
+        float distance = Vector2.Distance(dotPositionA, dotPositionB);
+        rectTransform.anchorMin = Vector2.zero;
+        rectTransform.anchorMax = Vector2.zero;
+        rectTransform.sizeDelta = new Vector2(distance, lineWidth);
+        rectTransform.anchoredPosition = dotPositionA + dir * distance / 2f; // center of two points A, B.
+        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+        rectTransform.localEulerAngles = new Vector3(0, 0, angle); // rotate connection line to angle between a and b
+        return gameObject;
 
-        int count = 0; // NOTE x starts iterating on 0
-        float graphHeight = graphContainer.sizeDelta.y;
-        float xSize = 50f;  //distance between points in x-axis.
-        float yMax = valueList[0]; // top of graph
-        float yMin = valueList[0];
-
-        foreach(int value in valueList) {
-            if(value > yMax)
-            yMax = value;
-            if (value < yMin)
-            yMin = value;
-        }
-
-        yMax = yMax + ((yMax - yMin) * 0.2f); // TODO buffer, fix
-        yMin = yMin - ((yMax - yMin) * 0.2f); //TODO Spaghetti intensifies...
-
-        if(getAxisLabelX == null) {
-            getAxisLabelX = delegate (int _i) {return _i.ToString(); };
-        }
-        if(getAxisLabelY == null) {
-            getAxisLabelY = delegate (float _f) {return Mathf.RoundToInt(_f).ToString(); };
-        }
-
-        
+    }
 
 
 
-        GameObject lastCircleGameObject = null;
+    // Draws the grid and labels of the X-axis.
+    private void AddGridX(List<int> valueList, float graphWidth)
+    {
 
-        foreach (int value in valueList) {
-            float xPosition = (count) * xSize;
-            float yPosition = ((value - yMin) / (yMax - yMin)) * graphHeight;
-            GameObject circleGameObject = CreateCircle(new Vector2(xPosition, yPosition));
-            gameObjectList.Add(circleGameObject);
+        int separatorCount = gridCountX;
+        int numberOfValues = valueList.Count;
+        int truncateFactor = (int)Math.Ceiling((numberOfValues)*1f / separatorCount);
+        float xDelta = graphWidth / numberOfValues;
+        int count = firstX;
+
+        foreach (int value in valueList)
+        {
+            float xPosition = (count-firstX) * xDelta;
+
+            if (xPosition > graphWidth)
+                break;
             
-            // if it is not the first point in graph: create a connection between this point and the previous.
-            if (lastCircleGameObject != null) {
-                GameObject dotConnectionGameObject = CreateDotConnection(lastCircleGameObject.GetComponent<RectTransform>().anchoredPosition,
-                circleGameObject.GetComponent<RectTransform>().anchoredPosition);
-                gameObjectList.Add(dotConnectionGameObject);
-            }
-            lastCircleGameObject = circleGameObject;
-
             RectTransform labelX = Instantiate(labelTemplateX);
             labelX.SetParent(graphContainer);
-            labelX.gameObject.SetActive(true); //template is not activated by default.
-            labelX.anchoredPosition = new Vector2 (xPosition, -7f); //TODO fix const
-            labelX.GetComponent<Text>().text = getAxisLabelX(count);
+            labelX.gameObject.SetActive(true); 
+            labelX.anchoredPosition = new Vector2(xPosition, -7f); 
+            labelX.GetComponent<Text>().text = count.ToString();
             gameObjectList.Add(labelX.gameObject);
 
             RectTransform dashX = Instantiate(dashTemplateX);
             dashX.SetParent(graphContainer);
-            dashX.gameObject.SetActive(true); //template is not activated by default.
-            dashX.anchoredPosition = new Vector2 (xPosition, -7f); //TODO fix const
+            dashX.gameObject.SetActive(true); 
+            dashX.anchoredPosition = new Vector2(xPosition, -2f); 
             gameObjectList.Add(dashX.gameObject);
-
-
-            count++;
+            
+            count += truncateFactor;
         }
 
-        int separatorCount = 10; //TODO fix const
-        for (int i = 0; i <= separatorCount; i++) {
+    }
+
+    // Draws the grid of the Y-axis, as well as the labels of the Y-axis.
+    void AddGridY(List<int> valueList, float graphHeight)
+    {
+        float yMax = valueList.Max() * yBufferTop;
+        int separatorCount = gridCountY;
+        for (int i = 0; i <= separatorCount; i++)
+        {
             RectTransform labelY = Instantiate(labelTemplateY);
             labelY.SetParent(graphContainer);
-            labelY.gameObject.SetActive(true); //template is not activated by default.
-            float normalizedValue = (i*1f)/separatorCount;
-            labelY.anchoredPosition = (new Vector2 (-7f, normalizedValue * graphHeight)); //TODO fix const
-            labelY.GetComponent<Text>().text = getAxisLabelY(yMin + (yMax - yMin) * normalizedValue );
+            labelY.gameObject.SetActive(true); 
+            float normalizedValue = (i * 1f) / separatorCount;
+            labelY.anchoredPosition = (new Vector2(-10f, normalizedValue * graphHeight));
+            labelY.GetComponent<Text>().text =
+                (yMax * normalizedValue).ToString("0.0"); 
             gameObjectList.Add(labelY.gameObject);
 
 
             RectTransform dashY = Instantiate(dashTemplateY);
             dashY.SetParent(graphContainer);
-            dashY.gameObject.SetActive(true); //template is not activated by default.
-            dashY.anchoredPosition = new Vector2 (-2f, normalizedValue * graphHeight); //TODO fix const
+            dashY.gameObject.SetActive(true); 
+            dashY.anchoredPosition = new Vector2(-2f, normalizedValue * graphHeight);
             gameObjectList.Add(dashY.gameObject);
         }
     }
 
-    private GameObject CreateDotConnection(Vector2 dotPositionA, Vector2 dotPositionB) {
-            GameObject gameObject = new GameObject("dotConnection", typeof(Image));
-            gameObject.transform.SetParent(graphContainer, false);
-            gameObject.GetComponent<Image>().color = lineColor; 
-            RectTransform rectTransform = gameObject.GetComponent<RectTransform>();
-            Vector2 dir = (dotPositionB - dotPositionA).normalized;
-            float distance = Vector2.Distance(dotPositionA, dotPositionB);
-            rectTransform.anchorMin = origo;
-            rectTransform.anchorMax = origo;
-            rectTransform.sizeDelta = new Vector2(distance, lineWidth); 
-            rectTransform.anchoredPosition = dotPositionA + dir * distance/2f;  // center of two points A, B.
-            float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-            rectTransform.localEulerAngles = new Vector3(0, 0, angle); // rotate connection line to angle between a and b
-            return gameObject;
+    // Draws the curve of the graph.
+    private void DrawCurve(List<int> valueList, Vector2 graphSize)
+    {
+        float graphHeight = graphSize.y;
+        float graphWidth = graphSize.x;
+        int numberOfValues = valueList.Count;
+        float xDelta = graphWidth / numberOfValues;
+        float yMax = valueList.Max() * yBufferTop;
+        int count = firstX;
+
+        GameObject lastCircleGameObject = null;
+
+        foreach (int value in valueList)
+        {
+            float xPosition = (count-firstX) * xDelta;
+            float yPosition = (value / yMax) * graphHeight;
+            GameObject circleGameObject = CreateCircle(new Vector2(xPosition, yPosition));
+            gameObjectList.Add(circleGameObject);
+
+            if (lastCircleGameObject != null)
+            {
+                GameObject dotConnectionGameObject = CreateDotConnection(
+                    lastCircleGameObject.GetComponent<RectTransform>().anchoredPosition,
+                    circleGameObject.GetComponent<RectTransform>().anchoredPosition);
+                gameObjectList.Add(dotConnectionGameObject);
+            }
+
+            lastCircleGameObject = circleGameObject;
+            count++;
+        }
 
     }
-
 }
