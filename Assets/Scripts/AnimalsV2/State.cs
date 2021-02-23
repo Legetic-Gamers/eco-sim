@@ -26,11 +26,11 @@ namespace AnimalsV2
         /// </summary>
         protected StateAnimation currentStateAnimation = StateAnimation.Idle;
 
-        protected Animal animal;
+        protected AnimalController animal;
         protected FiniteStateMachine finiteStateMachine;
 
 
-        protected State(Animal animal, FiniteStateMachine finiteStateMachine)
+        protected State(AnimalController animal, FiniteStateMachine finiteStateMachine)
         {
             this.animal = animal;
             this.finiteStateMachine = finiteStateMachine;

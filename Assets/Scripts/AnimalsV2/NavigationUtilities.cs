@@ -39,22 +39,18 @@ namespace AnimalsV2
         /// <param name="a"> Animal to find objects near.</param>
         /// <param name="tag"> String tag to find objects of. </param>
         /// <returns> 3D position of the nearest object. </returns>
-        public static Vector3 GetNearestObjectPositionByTag(Animal a, String tag)
+        public static Vector3 GetNearestObjectPosition(List<GameObject> allPercievedObjects, Vector3 thisPosition)
         {
-            var allPercievedObjectsWithTag = GetAllPercievedObjectsWithTag(a, tag);
-
-
-            Vector3 animalPosition = a.transform.position;
             //Return if not objects with tag found.
-            if (allPercievedObjectsWithTag.Count == 0) return animalPosition;
+            if (allPercievedObjects.Count == 0) return thisPosition;
             
             // Find closest object of all objects with tag
-            Vector3 nearbyObj = allPercievedObjectsWithTag[0].transform.position;
-            float closestDistance = Vector3.Distance(nearbyObj, animalPosition);
+            Vector3 nearbyObj = allPercievedObjects[0].transform.position;
+            float closestDistance = Vector3.Distance(nearbyObj, thisPosition);
             //Get the closest game object
-            foreach (GameObject g in allPercievedObjectsWithTag)
+            foreach (GameObject g in allPercievedObjects)
             {
-                float dist = Vector3.Distance(g.transform.position, animalPosition);
+                float dist = Vector3.Distance(g.transform.position, thisPosition);
                 if (dist < closestDistance)
                 {
                     closestDistance = dist;
@@ -70,39 +66,36 @@ namespace AnimalsV2
         /// </summary>
         /// <param name="a"> Animal to calculate positions from. </param>
         /// <returns> Vector3 </returns>
-        public static Vector3 GetNearObjectsAveragePositionByTag(Animal a, String tag)
+        public static Vector3 GetNearObjectsAveragePosition(List<GameObject> allPercievedObjects,Vector3 defaultPosition)
         {
-            var allPercievedObjectsWithTag = GetAllPercievedObjectsWithTag(a, tag);
-            
-            Vector3 animalPosition = a.transform.position;
             //Return if not objects with tag found.
-            if (allPercievedObjectsWithTag.Count == 0) return animalPosition;
+            if (allPercievedObjects.Count == 0) return defaultPosition;
             
             Vector3 averagePosition = new Vector3();
             
             //Calculate the average
-            foreach (GameObject g in allPercievedObjectsWithTag)  averagePosition += g.transform.position;
-            averagePosition /= a.heardTargets.Count;
+            foreach (GameObject g in allPercievedObjects)  averagePosition += g.transform.position;
+            averagePosition /= allPercievedObjects.Count;
             return averagePosition;
         }
 
-        /// <summary>
-        /// Find all nearby objects of an animal.
-        /// </summary>
-        /// <param name="a">Animal whose nearby objects to find</param>
-        /// <param name="tag">Tag of the objects to find</param>
-        /// <returns>A list of all nearby objects to the animal with specified tag.</returns>
-        private static List<GameObject> GetAllPercievedObjectsWithTag(Animal a, string tag)
-        {
-            // Find all nearby object of given type (Tag in Unity)
-            List<GameObject> allPercievedObjects = a.heardTargets.Concat(a.visibleTargets).ToList();
-            List<GameObject> allPercievedObjectsWithTag = new List<GameObject>();
-            foreach (var o in allPercievedObjects)
-            {
-                if (o.tag.Equals(tag)) allPercievedObjectsWithTag.Add(o);
-            }
-            return allPercievedObjectsWithTag;
-        }
+        // /// <summary>
+        // /// Find all nearby objects of an animal.
+        // /// </summary>
+        // /// <param name="a">Animal whose nearby objects to find</param>
+        // /// <param name="tag">Tag of the objects to find</param>
+        // /// <returns>A list of all nearby objects to the animal with specified tag.</returns>
+        // private static List<GameObject> GetAllPercievedObjectsWithTag(AnimalController a, string tag)
+        // {
+        //     // Find all nearby object of given type (Tag in Unity)
+        //     List<GameObject> allPercievedObjects = a.heardTargets.Concat(a.visibleTargets).ToList();
+        //     List<GameObject> allPercievedObjectsWithTag = new List<GameObject>();
+        //     foreach (var o in allPercievedObjects)
+        //     {
+        //         if (o.tag.Equals(tag)) allPercievedObjectsWithTag.Add(o);
+        //     }
+        //     return allPercievedObjectsWithTag;
+        // }
 
        
     }

@@ -13,14 +13,14 @@ namespace DataCollection
     public class Collector
     {
         // Each index is generation, value is the number of animals in that generation. 
-        public static List<Animal> totalAnimalsPerGeneration;
+        public static List<AnimalController> totalAnimalsPerGeneration;
         
         // Not supposed to be AnimalController, "Type of animal"
         public static Dictionary<AnimalController, int> numberOfEntitiesPerSpecies;
         
         private Collector()
         {
-            totalAnimalsPerGeneration = new List<Animal>();
+            totalAnimalsPerGeneration = new List<AnimalController>();
             numberOfEntitiesPerSpecies = new Dictionary<AnimalController, int>();
             EventSubscribe();
         }

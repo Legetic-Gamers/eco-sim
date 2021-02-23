@@ -8,7 +8,7 @@ namespace DataCollection
 {
     public class JsonFormatter
     {
-        public void WriteDataToFile(Animal[] animals)
+        public void WriteDataToFile(AnimalController[] animals)
         {
             string json = JsonUtility.ToJson(animals.ToString(), true);
             // TODO fix path

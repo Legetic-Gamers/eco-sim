@@ -9,7 +9,7 @@ namespace AnimalsV2.States
     public class GoToFood : Wander
     {
         private Vector3 foodPos;
-        public GoToFood(Animal animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine) {}
+        public GoToFood(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine) {}
 
         public override void Enter()
         {
@@ -27,7 +27,8 @@ namespace AnimalsV2.States
         {
             base.LogicUpdate();
             //Get average position of enemies and run away from it.
-            foodPos = NavigationUtilities.GetNearestObjectPositionByTag(animal, "Food");
+            //TODO MAKE SURE THAT SEEN FOOD IS THE LIST PASSED HERE.
+            foodPos = NavigationUtilities.GetNearestObjectPosition(animal.visiblePreyTargets, animal.transform.position);
             Vector3 pointToRunTo = NavigationUtilities.RunToFromPoint(animal.transform,foodPos,true);
             //Move the animal using the navmeshagent.
             NavMeshHit hit;

@@ -8,19 +8,19 @@ namespace AnimalsV2
 {
     public class AnimationController
     {
-        private Animal animal;
+        private AnimalController animal;
         private Animator animator;
 
         private float transitionSpeed = 0.2f;
 
 
-        public AnimationController(Animal animal)
+        public AnimationController(AnimalController animal)
         {
             //Get access to animal to animate
             this.animal = animal;
 
             //Get access to Animator to animate the animal.
-            animator = animal.GetComponent<Animator>();
+            animator = this.animal.GetComponent<Animator>();
 
             //Listen to state changes of the animals states to update animations.
             animal.Fsm.OnStateEnter += FSM_OnStateEnter;

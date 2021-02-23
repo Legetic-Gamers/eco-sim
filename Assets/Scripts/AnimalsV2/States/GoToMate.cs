@@ -1,6 +1,9 @@
 /*
  * Authors: Johan A., Alexander L.V.
  */
+
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace AnimalsV2.States
@@ -8,7 +11,7 @@ namespace AnimalsV2.States
     public class GoToMate : Wander
     {
         private Vector3 matePos;
-        public GoToMate(Animal animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine) {}
+        public GoToMate(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine) {}
 
         public override void Enter()
         {
@@ -26,7 +29,9 @@ namespace AnimalsV2.States
         {
             base.LogicUpdate();
             //Get average position of mate and run toward it.
-            matePos = NavigationUtilities.GetNearestObjectPositionByTag(animal, "Animal");
+            List<GameObject> allPercievedFriendlies =
+                animal.visibleFriendlyTargets.Concat(animal.heardFriendlyTargets).ToList();
+            matePos = NavigationUtilities.GetNearestObjectPosition(allPercievedFriendlies, animal.transform.position);
             Vector3 pointToRunTo = NavigationUtilities.RunToFromPoint(animal.transform,matePos,true);
             //Move the animal using the navmeshagent.
             UnityEngine.AI.NavMeshHit hit;

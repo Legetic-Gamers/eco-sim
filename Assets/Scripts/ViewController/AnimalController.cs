@@ -1,15 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
 using AnimalsV2;
+using AnimalsV2.States;
 using UnityEngine;
+using UnityEngine.AI;
 
 public abstract class AnimalController : MonoBehaviour
 {
     public AnimalModel animalModel;
 
-    private Animal animal;
-
     private TickEventPublisher tickEventPublisher;
+    
+    
+    public NavMeshAgent agent;
+    public FiniteStateMachine Fsm;
+    
+    public GoToMate sm;
+    public GoToFood sf;
+    public GoToWater sw;
+    public FleeingState fs;
+    public Eating es;
+    public Wander wander;
+    public Idle idle;
+
+  
 
     public bool isControllable { get; set; } = false;
 
@@ -102,17 +116,35 @@ public abstract class AnimalController : MonoBehaviour
     public List<GameObject> heardFriendlyTargets = new List<GameObject>();
     public List<GameObject> heardPreyTargets = new List<GameObject>();
     
+    
+    private void Awake()
+    {
+        
+            
+    }
     protected void Start()
     {
-        Debug.Log("Start()");
-        // subscribe to the OnTickEvent for parameter handling.
-        tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
+        // Init the NavMesh agent
+        agent = GetComponent<NavMeshAgent>();
+        agent.autoBraking = false;
+
+        //Create the FSM.
+        Fsm = new FiniteStateMachine();
+        AnimationController animationController = new AnimationController(this);
         
+        sf = new GoToFood(this, Fsm);
+        sw = new GoToWater(this, Fsm);
+        sm = new GoToMate(this, Fsm);
+        es = new Eating(this, Fsm);
+        fs = new FleeingState(this, Fsm);
+        wander = new Wander(this, Fsm);
+        idle = new Idle(this, Fsm);
+        Fsm.Initialize(idle);
+        
+        tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
         EventSubscribe();
-
-        animal = GetComponent<Animal>();
-
-        DecisionMaker decisionMaker = new DecisionMaker(animal,this,animalModel,tickEventPublisher);
+        
+        DecisionMaker decisionMaker = new DecisionMaker(this,animalModel,tickEventPublisher);
     }
     
     
@@ -126,6 +158,20 @@ public abstract class AnimalController : MonoBehaviour
             
             // probably doing this in deathState instead
             Destroy(gameObject, 2.0f);
+            
+            
         }
+        
+        //Handle Input
+        Fsm.HandleStatesInput();
+            
+        //Update Logic
+        Fsm.UpdateStatesLogic();
+    }
+    
+    private void FixedUpdate()
+    {
+        //Update physics
+        Fsm.UpdateStatesPhysics();
     }
 }

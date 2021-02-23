@@ -11,7 +11,7 @@ namespace AnimalsV2.States
     {
         private float timeLeft;
         private bool doneEating;
-        public Eating(Animal animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine)
+        public Eating(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine)
         {
             timeLeft = 3.0f;
             doneEating = false;

@@ -15,7 +15,6 @@ namespace AnimalsV2
         private AnimalController animalController;
         private AnimalModel animalModel;
         private TickEventPublisher eventPublisher;
-        private Animal animal;
         private FiniteStateMachine fsm;
         
         // public List<GameObject> hostileTargets;
@@ -25,10 +24,10 @@ namespace AnimalsV2
         public List<GameObject> seenTargets;
         public List<GameObject> heardTargets;
 
-        public DecisionMaker(Animal animal, AnimalController animalController, AnimalModel animalModel,TickEventPublisher eventPublisher)
+        public DecisionMaker(AnimalController animalController, AnimalModel animalModel,TickEventPublisher eventPublisher)
         {
-            this.animal = animal;
-            fsm = animal.Fsm;
+            
+            fsm = animalController.Fsm;
             this.animalController = animalController;
             this.animalModel = animalModel;
             this.eventPublisher = eventPublisher;
@@ -85,7 +84,7 @@ namespace AnimalsV2
             if (predatorNearby)
             {
                 //Debug.Log("RIP!");
-                ChangeState(animal.fs);
+                ChangeState(animalController.fs);
                 return;
             }
 
@@ -162,30 +161,30 @@ namespace AnimalsV2
             Debug.Log("Prio!");
             if (lowHydration()) //Prio 1 don't die from dehydration -> Find Water.
             {
-                ChangeState(animal.sw);
+                ChangeState(animalController.sw);
             }
             else if (lowEnergy()) //Prio 2 dont die from hunger -> Find Food.
             {
-                ChangeState(animal.sf);
+                ChangeState(animalController.sf);
             }
             else if (highHydration() && highEnergy() && wantingOffspring()) // Prio 3 (If we live good) search for mate.
             {
                 //ChangeState(animal.sm);
-                ChangeState(animal.wander);
+                ChangeState(animalController.wander);
             }
             else if (!highHydration() && highEnergy()) //Prio 4, not low hydration but not high either + high energy -> find Water.
             {
                 //ChangeState(animal.sw);
-                ChangeState(animal.wander);
+                ChangeState(animalController.wander);
             }
             else if (highHydration() && !highEnergy()) //Prio 5, not low energy but not high either + high hydration -> find Food.
             {
                 //ChangeState(animal.sf);
-                ChangeState(animal.wander);
+                ChangeState(animalController.wander);
             }
             else // dont know what to do? -> Idle.
             {
-                ChangeState(animal.idle);
+                ChangeState(animalController.idle);
             }
 
             Debug.Log(fsm.CurrentState.GetType());
@@ -293,12 +292,11 @@ namespace AnimalsV2
         /// which method that will be called depends on the type of target </param>
         private void HandleHostileTarget(GameObject target)
         {
-            ChangeState(animal.fs);
+            ChangeState(animalController.fs);
             
             // can do this instead of calling NavigationUtilities.GetNearestObjectPositionByTag
-            animal.fs.fleeingFromPos = target.transform.position
-                ;
-            Debug.Log(target.name + " is hostile to " + animal.name);
+            animalController.fs.fleeingFromPos = target.transform.position;
+            Debug.Log(target.name + " is hostile to " + animalController.name);
         }
 
 
