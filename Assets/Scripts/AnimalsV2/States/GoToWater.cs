@@ -9,7 +9,7 @@ using static AnimalsV2.StateAnimation;
 
 namespace AnimalsV2.States
 {
-    public class GoToWater : Wander
+    public class GoToWater : State
     {
         private Vector3 waterPos;
         public GoToWater(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine) {}

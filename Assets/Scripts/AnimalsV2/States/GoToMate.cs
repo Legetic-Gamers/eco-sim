@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace AnimalsV2.States
 {
-    public class GoToMate : Wander
+    public class GoToMate : State
     {
         private Vector3 matePos;
         public GoToMate(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine) {}

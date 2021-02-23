@@ -2,20 +2,24 @@
  * Author: Johan A.
  */
 
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace AnimalsV2.States
 {
 //State where the animal just sits/ stands still.
 //sealed just prevents other classes from inheriting
-    public class Wander : State
+    public class Wander : State 
     {
+        private List<State> priorities = new List<State>();
         public Wander(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine) {}
 
         public override void Enter()
         {
             base.Enter();
-            Debug.Log("Entered Search");
             currentStateAnimation = StateAnimation.Running;
         }
 
@@ -24,14 +28,18 @@ namespace AnimalsV2.States
             base.HandleInput();
         }
 
-        public  override void LogicUpdate()
+        public override void LogicUpdate()
         {
             base.LogicUpdate();
-            if (animal.agent.remainingDistance < 1.0f)
+            foreach (var VARIABLE in priorities)
             {
-                Vector3 position = new Vector3(Random.Range(-20.0f, 20.0f), 0, Random.Range(-20.0f, 20.0f));
-                animal.agent.SetDestination(position);
+                
             }
+        }
+
+        public void SetPriorities(List<State> priorities)
+        {
+            this.priorities = priorities;
         }
     }
 }

@@ -6,7 +6,7 @@ using UnityEngine.AI;
 
 namespace AnimalsV2.States
 {
-    public class GoToFood : Wander
+    public class GoToFood : State
     {
         private Vector3 foodPos;
         public GoToFood(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine) {}
