@@ -16,12 +16,13 @@ public abstract class AnimalController : MonoBehaviour
     public NavMeshAgent agent;
     public FiniteStateMachine Fsm;
     
-    public GoToMate sm;
+    /*public GoToMate sm;
     public GoToFood sf;
-    public GoToWater sw;
+    public GoToWater sw;*/
     public FleeingState fs;
     public Eating es;
     public Wander wander;
+    public GoTo gs;
     public Idle idle;
 
     float energyModifier = 0;
@@ -178,6 +179,8 @@ public abstract class AnimalController : MonoBehaviour
     public List<GameObject> visibleHostileTargets = new List<GameObject>();
     public List<GameObject> visibleFriendlyTargets = new List<GameObject>();
     public List<GameObject> visiblePreyTargets = new List<GameObject>();
+    public List<GameObject> visibleFoodTargets = new List<GameObject>();
+    public List<GameObject> visibleWaterTargets = new List<GameObject>();
     
     public List<GameObject> heardHostileTargets = new List<GameObject>();
     public List<GameObject> heardFriendlyTargets = new List<GameObject>();
@@ -193,12 +196,13 @@ public abstract class AnimalController : MonoBehaviour
         Fsm = new FiniteStateMachine();
         AnimationController animationController = new AnimationController(this);
         
-        sf = new GoToFood(this, Fsm);
+        /*sf = new GoToFood(this, Fsm);
         sw = new GoToWater(this, Fsm);
-        sm = new GoToMate(this, Fsm);
+        sm = new GoToMate(this, Fsm);*/
         es = new Eating(this, Fsm);
         fs = new FleeingState(this, Fsm);
         wander = new Wander(this, Fsm);
+        gs = new GoTo(this, Fsm);
         idle = new Idle(this, Fsm);
         Fsm.Initialize(idle);
         
@@ -220,7 +224,7 @@ public abstract class AnimalController : MonoBehaviour
         }
         
         //Handle Input
-        Fsm.HandleStatesInput();
+        //Fsm.HandleStatesInput();
             
         //Update Logic
         Fsm.UpdateStatesLogic();
@@ -234,6 +238,6 @@ public abstract class AnimalController : MonoBehaviour
     private void FixedUpdate()
     {
         //Update physics
-        Fsm.UpdateStatesPhysics();
+        //Fsm.UpdateStatesPhysics();
     }
 }
