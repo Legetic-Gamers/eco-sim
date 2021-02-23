@@ -12,7 +12,7 @@ namespace AnimalsV2.States
     public class GoToWater : Wander
     {
         private Vector3 waterPos;
-        public GoToWater(Animal animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine) {}
+        public GoToWater(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine) {}
 
         public override void Enter()
         {
@@ -30,7 +30,8 @@ namespace AnimalsV2.States
         {
             base.LogicUpdate();
             //Get average position of water and run toward it.
-            waterPos = NavigationUtilities.GetNearestObjectPositionByTag(animal, "Water");
+            //TODO MAKE SURE THAT SEEN WATER IS THE LIST PASSED HERE.
+            waterPos = NavigationUtilities.GetNearestObjectPosition(animal.visiblePreyTargets, animal.transform.position);
             Vector3 pointToRunTo = NavigationUtilities.RunToFromPoint(animal.transform,waterPos,true);
             //Move the animal using the navmeshagent.
             NavMeshHit hit;

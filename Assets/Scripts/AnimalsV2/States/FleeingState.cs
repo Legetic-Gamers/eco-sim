@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using AnimalsV2;
 using UnityEngine;
 using UnityEngine.AI;
@@ -10,7 +11,7 @@ namespace AnimalsV2.States
     public class FleeingState : State
     {
         private Vector3 averagePosition;
-        public FleeingState(Animal animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine) {}
+        public FleeingState(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine) {}
 
         public Vector3 fleeingFromPos;
         
@@ -36,7 +37,10 @@ namespace AnimalsV2.States
             //averagePosition = NavigationUtilities.GetNearestObjectPositionByTag(animal, "Predator");
             
             // alternative to the above
-            averagePosition = fleeingFromPos;
+            //averagePosition = fleeingFromPos;
+            List<GameObject> allHostileTargets = animal.heardHostileTargets.Concat(animal.visibleHostileTargets).ToList();
+
+            averagePosition = NavigationUtilities.GetNearObjectsAveragePosition(allHostileTargets, animal.transform.position);
             
             //Run run away from the position.
             //Default to just running forward.

@@ -10,7 +10,7 @@ namespace AnimalsV2.States
 //sealed just prevents other classes from inheriting
     public class Wander : State
     {
-        public Wander(Animal animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine) {}
+        public Wander(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine) {}
 
         public override void Enter()
         {

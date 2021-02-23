@@ -10,7 +10,7 @@ namespace AnimalsV2.States
     {
     
         private float timeLeft = 3.0f;
-        public Mating(Animal animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine) {}
+        public Mating(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine) {}
 
         public override void Enter()
         {
