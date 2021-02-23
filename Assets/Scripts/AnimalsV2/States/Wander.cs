@@ -46,7 +46,7 @@ namespace AnimalsV2.States
             
             if (animal.agent.remainingDistance < 1.0f)
             {
-                Vector3 position = new Vector3(Random.Range(-20.0f, 20.0f), 0, Random.Range(-20.0f, 20.0f));
+                Vector3 position = new Vector3(Random.Range(-30.0f, 30.0f), 0, Random.Range(-30.0f, 30.0f));
                 animal.agent.SetDestination(position);
             }
         }

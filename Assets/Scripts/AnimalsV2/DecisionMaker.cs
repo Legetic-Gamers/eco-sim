@@ -164,7 +164,7 @@ namespace AnimalsV2
         private void Prioritize()
         {
             List<string> prio = new List<string>();
-            Debug.Log("Prio!");
+            //Debug.Log("Prio!");
             if (lowHydration()) //Prio 1 don't die from dehydration -> Find Water.
             {
                 prio.Add("Water");
@@ -200,7 +200,7 @@ namespace AnimalsV2
                 ChangeState(animalController.wander);
             }
 
-            Debug.Log(fsm.CurrentState.GetType());
+            //Debug.Log(fsm.CurrentState.GetType());
         }
 
 
@@ -307,7 +307,7 @@ namespace AnimalsV2
         {
             ChangeState(animalController.fs);
             
-            Debug.Log(target.name + " is hostile to " + animalController.name);
+            //Debug.Log(target.name + " is hostile to " + animalController.name);
         }
 
 

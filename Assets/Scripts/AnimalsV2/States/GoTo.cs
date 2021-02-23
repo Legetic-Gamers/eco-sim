@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.AI;
+using static AnimalsV2.StateAnimation;
 
 namespace AnimalsV2.States
 {
@@ -14,6 +15,7 @@ namespace AnimalsV2.States
         public override void Enter()
         {
             base.Enter();
+            currentStateAnimation = Running;
         }
 
         public override void LogicUpdate()

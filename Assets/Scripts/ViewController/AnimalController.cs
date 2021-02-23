@@ -167,7 +167,7 @@ public abstract class AnimalController : MonoBehaviour
         }
         
         //Handle Input
-        Fsm.HandleStatesInput();
+        //Fsm.HandleStatesInput();
             
         //Update Logic
         Fsm.UpdateStatesLogic();
@@ -176,6 +176,6 @@ public abstract class AnimalController : MonoBehaviour
     private void FixedUpdate()
     {
         //Update physics
-        Fsm.UpdateStatesPhysics();
+        //Fsm.UpdateStatesPhysics();
     }
 }
