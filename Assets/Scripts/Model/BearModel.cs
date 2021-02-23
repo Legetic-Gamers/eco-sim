@@ -12,10 +12,6 @@
 
     public override AnimalModel Mate(AnimalModel otherParent)
     {
-        this.traits = traits;
-        currentEnergy = 20;
-        hydration = 30;
-        reproductiveUrge = 40;
         Traits childTraits = traits.Crossover(otherParent.traits);
         //TODO logic to determine generation
 

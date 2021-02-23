@@ -28,9 +28,9 @@ public class ParameterUI : MonoBehaviour
         if (animalController)
         {
             AnimalModel animal = animalController.animalModel;
-            health.value = animal.currentHealth / animal.traits.maxHealth;
-            energy.value = (float)animal.currentEnergy / animal.traits.maxEnergy;
-            hydration.value = animal.hydration;
+            health.value = animal.getHealthPercentage();
+            energy.value = animal.getEnergyPercentage();
+            hydration.value = animal.getHydrationPercentage();
             reproductiveUrge.value = animal.reproductiveUrge;
         }
     }
