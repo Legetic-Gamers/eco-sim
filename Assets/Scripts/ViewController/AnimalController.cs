@@ -15,12 +15,13 @@ public abstract class AnimalController : MonoBehaviour
     public NavMeshAgent agent;
     public FiniteStateMachine Fsm;
     
-    public GoToMate sm;
+    /*public GoToMate sm;
     public GoToFood sf;
-    public GoToWater sw;
+    public GoToWater sw;*/
     public FleeingState fs;
     public Eating es;
     public Wander wander;
+    public GoTo gs;
     public Idle idle;
 
   
@@ -134,12 +135,13 @@ public abstract class AnimalController : MonoBehaviour
         Fsm = new FiniteStateMachine();
         AnimationController animationController = new AnimationController(this);
         
-        sf = new GoToFood(this, Fsm);
+        /*sf = new GoToFood(this, Fsm);
         sw = new GoToWater(this, Fsm);
-        sm = new GoToMate(this, Fsm);
+        sm = new GoToMate(this, Fsm);*/
         es = new Eating(this, Fsm);
         fs = new FleeingState(this, Fsm);
         wander = new Wander(this, Fsm);
+        gs = new GoTo(this, Fsm);
         idle = new Idle(this, Fsm);
         Fsm.Initialize(idle);
         

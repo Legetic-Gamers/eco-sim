@@ -114,7 +114,7 @@ namespace AnimalsV2
                 Prioritize();
             }
             //Always finish eating/drinking/mating
-            else if (currentState is GoToFood)
+            /*else if (currentState is GoToFood)
             {
                 GoToFood goToFood = (GoToFood) currentState;
             
@@ -141,6 +141,16 @@ namespace AnimalsV2
                     //TODO should be mating
                     //ChangeState(animal.es);
                 }
+            }*/
+            else if(currentState is Wander)
+            {
+                Wander wander = (Wander) currentState;
+                GameObject target = wander.FoundObject();
+                if (target != null)
+                {
+                    animalController.gs.SetTarget(target);
+                    ChangeState(animalController.gs);
+                }
             }
 
         }
@@ -153,33 +163,41 @@ namespace AnimalsV2
         /// </summary>
         private void Prioritize()
         {
+            List<string> prio = new List<string>();
             Debug.Log("Prio!");
             if (lowHydration()) //Prio 1 don't die from dehydration -> Find Water.
             {
-                ChangeState(animalController.sw);
-            }
-            else if (lowEnergy()) //Prio 2 dont die from hunger -> Find Food.
-            {
-                ChangeState(animalController.sf);
-            }
-            else if (highHydration() && highEnergy() && wantingOffspring()) // Prio 3 (If we live good) search for mate.
-            {
-                //ChangeState(animal.sm);
+                prio.Add("Water");
+                animalController.wander.SetPriorities(prio);
                 ChangeState(animalController.wander);
             }
-            else if (!highHydration() && highEnergy()) //Prio 4, not low hydration but not high either + high energy -> find Water.
+            if (lowEnergy()) //Prio 2 dont die from hunger -> Find Food.
+            {
+                prio.Add("Food");
+                animalController.wander.SetPriorities(prio);
+                ChangeState(animalController.wander);
+            }
+            if (highHydration() && highEnergy() && wantingOffspring()) // Prio 3 (If we live good) search for mate.
+            {
+                prio.Insert(0,"Mate");
+                animalController.wander.SetPriorities(prio);
+                ChangeState(animalController.wander);
+            }
+            if (!highHydration() && highEnergy()) //Prio 4, not low hydration but not high either + high energy -> find Water.
             {
                 //ChangeState(animal.sw);
+                prio.Remove("Water");
+                prio.Insert(0,"Water");
+                animalController.wander.SetPriorities(prio);
                 ChangeState(animalController.wander);
             }
-            else if (highHydration() && !highEnergy()) //Prio 5, not low energy but not high either + high hydration -> find Food.
+            if (highHydration() && !highEnergy()) //Prio 5, not low energy but not high either + high hydration -> find Food.
             {
                 //ChangeState(animal.sf);
+                prio.Remove("Food");
+                prio.Insert(0, "Food");
+                animalController.wander.SetPriorities(prio);
                 ChangeState(animalController.wander);
-            }
-            else // dont know what to do? -> Idle.
-            {
-                ChangeState(animalController.idle);
             }
 
             Debug.Log(fsm.CurrentState.GetType());
