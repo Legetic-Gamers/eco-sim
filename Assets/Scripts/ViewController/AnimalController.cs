@@ -57,26 +57,14 @@ public abstract class AnimalController : MonoBehaviour
         {
             energyModifier = 1f;
             hydrationModifier = 1f;
-            reproductiveUrgeModifier = 0f;
+            reproductiveUrgeModifier = 1f;
             //Debug.Log("varying parameters depending on state: FleeingState");
-        } else if (state is GoToFood)
+        } else if (state is GoTo)
         {
             energyModifier = 0.1f;
             hydrationModifier = 0.1f;
             reproductiveUrgeModifier = 0.1f;
             //Debug.Log("varying parameters depending on state: GoToFood");
-        } else if (state is GoToMate)
-        {
-            energyModifier = 0.1f;
-            hydrationModifier = 0.1f;
-            reproductiveUrgeModifier = 0.2f;
-            //Debug.Log("varying parameters depending on state: GoToWater");
-        } else if (state is GoToWater)
-        {
-            energyModifier = 0.1f;
-            hydrationModifier = 0.1f;
-            reproductiveUrgeModifier = 0.1f;
-            //Debug.Log("varying parameters depending on state: Idle");
         } else if (state is Idle)
         {
             energyModifier = 0f;
@@ -117,7 +105,6 @@ public abstract class AnimalController : MonoBehaviour
         animalModel.reproductiveUrge += 0.1f;
         animalModel.age++;
         */
-
 
         animalModel.currentEnergy -= (animalModel.traits.size * 1) + (animalModel.traits.size * animalModel.currentSpeed) * energyModifier;
         animalModel.currentHydration -= (animalModel.traits.size * 1) + (animalModel.traits.size * animalModel.currentSpeed) * hydrationModifier;

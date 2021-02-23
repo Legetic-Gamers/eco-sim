@@ -134,12 +134,12 @@ public abstract class AnimalModel
 
     public float getHealthPercentage()
     {
-        return (float)currentHealth / traits.maxEnergy;
+        return currentHealth / traits.maxEnergy;
     }
 
     public float getEnergyPercentage()
     {
-        return (float) currentEnergy / traits.maxEnergy;
+        return currentEnergy / traits.maxEnergy;
     }
 
     public float getHydrationPercentage()
