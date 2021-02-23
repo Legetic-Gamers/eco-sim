@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.AI;
 
 public class TerrainChunk
 {
@@ -35,7 +36,7 @@ public class TerrainChunk
     MeshSettings meshSettings;
     Transform viewer;
 
-    public TerrainChunk(Vector2 coordinate, HeightMapSettings heightMapSettings, MeshSettings meshSettings, bool fixedTerrain, LODInfo[] detailLevels, int colliderLevelOfDetailIndex, Transform parent, Transform viewer, Material material)
+    public TerrainChunk(Vector2 coordinate, HeightMapSettings heightMapSettings, MeshSettings meshSettings, bool fixedTerrain, LODInfo[] detailLevels, int colliderLevelOfDetailIndex, Transform parent, Transform viewer, Material material, System.Action OnChunkLoaded = null)
     {
         this.coordinate = coordinate;
         this.detailLevels = detailLevels;
@@ -64,6 +65,8 @@ public class TerrainChunk
             terrainMesh = new TerrainMesh();
             terrainMesh.updateCallback += UpdateTerrainChunk;
             terrainMesh.updateCallback += SetCollisionMesh;
+            if (OnChunkLoaded != null)
+                terrainMesh.updateCallback += OnChunkLoaded;
             SetVisible(true);
         }
         else
