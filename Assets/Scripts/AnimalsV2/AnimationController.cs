@@ -27,13 +27,13 @@ namespace AnimalsV2
             animal.Fsm.OnStateLogicUpdate += FSM_OnStateLogicUpdate;
             animal.Fsm.OnStateExit += FSM_OnStateExit;
 
-            Debug.Log("AnimationController listening to FSM");
+            //Debug.Log("AnimationController listening to FSM");
         }
 
         //Animation parameters which need updating on state enter.
         private void FSM_OnStateEnter(State state)
         {
-            Debug.Log("Enter " + state.GetStateAnimation() +" Animation");
+            //Debug.Log("Enter " + state.GetStateAnimation() +" Animation");
 
             animator?.CrossFade("Base Layer." + state.GetStateAnimation(), transitionSpeed, 0);
         }

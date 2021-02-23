@@ -18,7 +18,7 @@ namespace AnimalsV2.States
         public override void Enter()
         {
             base.Enter();
-            Debug.Log("Fleeing!");
+            //Debug.Log("Fleeing!");
             currentStateAnimation = Running;
         }
 

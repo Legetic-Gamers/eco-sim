@@ -58,10 +58,10 @@ public class Traits
     }
 
     public  float size { get; set; }
-    public int maxEnergy { get; set; }
+    public float maxEnergy { get; set; }
     
-    public int maxHydration { get; set; }
-    public int maxHealth { get; set; } // optional
+    public float maxHydration { get; set; }
+    public float maxHealth { get; set; } // optional
     
     public float maxSpeed { get; set; }
     public float endurance { get; set; }
