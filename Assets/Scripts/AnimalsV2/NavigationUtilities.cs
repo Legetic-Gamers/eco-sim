@@ -39,14 +39,14 @@ namespace AnimalsV2
         /// <param name="a"> Animal to find objects near.</param>
         /// <param name="tag"> String tag to find objects of. </param>
         /// <returns> 3D position of the nearest object. </returns>
-        public static Vector3 GetNearestObjectPosition(List<GameObject> allPercievedObjects, Vector3 thisPosition)
+        public static GameObject GetNearestObjectPosition(List<GameObject> allPercievedObjects, Vector3 thisPosition)
         {
             //Return if not objects with tag found.
-            if (allPercievedObjects.Count == 0) return thisPosition;
+            if (allPercievedObjects.Count == 0) return null;
             
             // Find closest object of all objects with tag
-            Vector3 nearbyObj = allPercievedObjects[0].transform.position;
-            float closestDistance = Vector3.Distance(nearbyObj, thisPosition);
+            GameObject nearbyObj = allPercievedObjects[0];
+            float closestDistance = Vector3.Distance(nearbyObj.transform.position, thisPosition);
             //Get the closest game object
             foreach (GameObject g in allPercievedObjects)
             {
@@ -54,7 +54,7 @@ namespace AnimalsV2
                 if (dist < closestDistance)
                 {
                     closestDistance = dist;
-                    nearbyObj = g.transform.position;
+                    nearbyObj = g;
                 }
             }
             return nearbyObj;
