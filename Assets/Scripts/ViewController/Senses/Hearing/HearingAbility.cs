@@ -45,7 +45,9 @@ public class HearingAbility : MonoBehaviour
             AnimalController targetAnimalController = target.GetComponent<AnimalController>();
             
             // don't add self
-            if (target != gameObject && targetAnimalController != null)
+            if (target != gameObject && targetAnimalController != null 
+                                     && !target.gameObject.CompareTag("Food") 
+                                     && !target.gameObject.CompareTag("Water"))
             {
                 
                 //animalController.heardTargets.Add(target);
