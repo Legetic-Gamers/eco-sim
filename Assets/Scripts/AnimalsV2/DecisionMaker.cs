@@ -246,20 +246,20 @@ namespace AnimalsV2
         }
         private bool hydrationFull()
         {
-            return animalModel.hydration == animalModel.traits.maxHydration;
+            return animalModel.currentHydration == animalModel.traits.maxHydration;
         }
         private bool highHydration()
         {
-            return animalModel.hydration > 20;
+            return animalModel.currentHydration > 20;
         }
         private bool lowHydration()
         {
-            return animalModel.hydration < 10;
+            return animalModel.currentHydration < 10;
         }
         private bool wantingOffspring()
         {
             //reproductive urge greater than average of energy and hydration.
-            return animalModel.reproductiveUrge > (animalModel.currentEnergy + animalModel.hydration) / 2;
+            return animalModel.reproductiveUrge > (animalModel.currentEnergy + animalModel.currentHydration) / 2;
         }
         private bool lowHealth()
         {

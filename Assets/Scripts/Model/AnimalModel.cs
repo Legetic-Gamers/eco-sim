@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using AnimalsV2;
+using AnimalsV2.States;
 using UnityEngine;
 
 public abstract class AnimalModel
@@ -99,10 +101,12 @@ public abstract class AnimalModel
     /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
 
     public int age { get; set; }
-    public int currentHealth { get; set; }
-    public int currentEnergy { get; set; }
-    public float hydration { get; set; }
+    public float currentHealth { get; set; }
+    public float currentEnergy { get; set; }
+    public float currentHydration { get; set; }
     public float reproductiveUrge { get; set; }
+    
+    public float currentSpeed { get; set; }
     
     // decisionMaker subscribes to these actions
     public Action<GameObject> actionPerceivedHostile;
@@ -113,7 +117,7 @@ public abstract class AnimalModel
         age = 0;
         currentHealth = traits.maxHealth;
         currentEnergy = traits.maxEnergy;
-        hydration = 1f;
+        currentHydration = traits.maxHydration;
         reproductiveUrge = 0;
         this.traits = traits;
     }
@@ -123,9 +127,24 @@ public abstract class AnimalModel
 
     public bool IsAlive()
     {
-        return (currentHealth > 0 && currentEnergy > 0 && age < traits.ageLimit && hydration > 0);
+        return (currentHealth > 0 && currentEnergy > 0 && age < traits.ageLimit && currentHydration > 0);
     }
 
     public abstract AnimalModel Mate(AnimalModel otherParent);
+
+    public float getHealthPercentage()
+    {
+        return (float)currentHealth / traits.maxEnergy;
+    }
+
+    public float getEnergyPercentage()
+    {
+        return (float) currentEnergy / traits.maxEnergy;
+    }
+
+    public float getHydrationPercentage()
+    {
+        return currentHydration / traits.maxHydration;
+    }
 
 }

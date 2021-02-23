@@ -10,7 +10,8 @@ public abstract class AnimalController : MonoBehaviour
     public AnimalModel animalModel;
 
     private TickEventPublisher tickEventPublisher;
-    
+
+    public Action<State> stateChange;
     
     public NavMeshAgent agent;
     public FiniteStateMachine Fsm;
@@ -23,6 +24,9 @@ public abstract class AnimalController : MonoBehaviour
     public Wander wander;
     public Idle idle;
 
+    float energyModifier = 0;
+    float hydrationModifier = 0;
+    float reproductiveUrgeModifier = 0;
   
 
     public bool isControllable { get; set; } = false;
@@ -40,7 +44,58 @@ public abstract class AnimalController : MonoBehaviour
     /// Important to unsubscribe from the event publisher on death, however!
     /// </summary>
 
-
+    private void changeModifiers(State state)
+    {
+        if (state is Eating)
+        {
+            energyModifier = 0f;
+            hydrationModifier = 0.1f;
+            reproductiveUrgeModifier = 0.1f;
+            //Debug.Log("varying parameters depending on state: Eating");
+        } else if (state is FleeingState)
+        {
+            energyModifier = 1f;
+            hydrationModifier = 1f;
+            reproductiveUrgeModifier = 0f;
+            //Debug.Log("varying parameters depending on state: FleeingState");
+        } else if (state is GoToFood)
+        {
+            energyModifier = 0.1f;
+            hydrationModifier = 0.1f;
+            reproductiveUrgeModifier = 0.1f;
+            //Debug.Log("varying parameters depending on state: GoToFood");
+        } else if (state is GoToMate)
+        {
+            energyModifier = 0.1f;
+            hydrationModifier = 0.1f;
+            reproductiveUrgeModifier = 0.2f;
+            //Debug.Log("varying parameters depending on state: GoToWater");
+        } else if (state is GoToWater)
+        {
+            energyModifier = 0.1f;
+            hydrationModifier = 0.1f;
+            reproductiveUrgeModifier = 0.1f;
+            //Debug.Log("varying parameters depending on state: Idle");
+        } else if (state is Idle)
+        {
+            energyModifier = 0f;
+            hydrationModifier = 0.1f;
+            reproductiveUrgeModifier = 0.1f;
+            //Debug.Log("varying parameters depending on state: Mating");
+        } else if (state is Mating)
+        {
+            energyModifier = 0.2f;
+            hydrationModifier = 0.2f;
+            reproductiveUrgeModifier = 0f;
+            //Debug.Log("varying parameters depending on state: Wander");
+        } else if (state is Wander)
+        {
+            energyModifier = 0.1f;
+            hydrationModifier = 0.1f;
+            reproductiveUrgeModifier = 0.1f;
+            //Debug.Log("varying parameters depending on state: Wander");
+        }
+    }
 
     private void VaryParameters()
     {
@@ -55,21 +110,33 @@ public abstract class AnimalController : MonoBehaviour
          * currentEnergy -= ( size * (deltaTemp / tempResist) + (vision + hearing + smell) + currentAge
          *                  + (highEnergy * size * speed) ) * Const
          */
+        /*
         animalModel.currentEnergy--;
-        animalModel.hydration -= 0.1f; 
+        animalModel.currentHydration -= 0.1f; 
         animalModel.reproductiveUrge += 0.1f;
-        animalModel.age++; 
+        animalModel.age++;
+        */
+
+
+        animalModel.currentEnergy -= (animalModel.traits.size * 1) + (animalModel.traits.size * animalModel.currentSpeed) * energyModifier;
+        animalModel.currentHydration -= (animalModel.traits.size * 1) + (animalModel.traits.size * animalModel.currentSpeed) * hydrationModifier;
+        animalModel.reproductiveUrge += 0.1f * reproductiveUrgeModifier;
+        animalModel.age++;
     }
 
     protected void EventSubscribe()
     {
         tickEventPublisher.onParamTickEvent += VaryParameters;
+
+        Fsm.OnStateEnter += changeModifiers;
         
         Debug.Log(gameObject.name + " has subscribed to onParamTickEvent");
     }
     protected void EventUnsubscribe()
     {
         tickEventPublisher.onParamTickEvent -= VaryParameters;
+
+        Fsm.OnStateEnter -= changeModifiers;
         
         Debug.Log(gameObject.name + " has unsubscribed from onParamTickEvent.");
     }
@@ -116,12 +183,6 @@ public abstract class AnimalController : MonoBehaviour
     public List<GameObject> heardFriendlyTargets = new List<GameObject>();
     public List<GameObject> heardPreyTargets = new List<GameObject>();
     
-    
-    private void Awake()
-    {
-        
-            
-    }
     protected void Start()
     {
         // Init the NavMesh agent
@@ -154,12 +215,8 @@ public abstract class AnimalController : MonoBehaviour
         if (!animalModel.IsAlive())
         {
             Debug.Log("Rabbit is ded");
-            EventUnsubscribe();
-            
             // probably doing this in deathState instead
             Destroy(gameObject, 2.0f);
-            
-            
         }
         
         //Handle Input
@@ -168,7 +225,12 @@ public abstract class AnimalController : MonoBehaviour
         //Update Logic
         Fsm.UpdateStatesLogic();
     }
-    
+
+    public void OnDestroy()
+    {
+        EventUnsubscribe();
+    }
+
     private void FixedUpdate()
     {
         //Update physics
