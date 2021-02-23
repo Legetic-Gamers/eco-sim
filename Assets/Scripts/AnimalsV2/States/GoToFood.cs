@@ -28,7 +28,7 @@ namespace AnimalsV2.States
             base.LogicUpdate();
             //Get average position of enemies and run away from it.
             //TODO MAKE SURE THAT SEEN FOOD IS THE LIST PASSED HERE.
-            foodPos = NavigationUtilities.GetNearestObjectPosition(animal.visiblePreyTargets, animal.transform.position);
+            foodPos = NavigationUtilities.GetNearestObjectPosition(animal.visibleFoodTargets, animal.transform.position);
             Vector3 pointToRunTo = NavigationUtilities.RunToFromPoint(animal.transform,foodPos,true);
             //Move the animal using the navmeshagent.
             NavMeshHit hit;

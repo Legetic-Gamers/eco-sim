@@ -62,7 +62,7 @@ namespace AnimalsV2
                 .Concat(animalController.heardPreyTargets).ToList();
             
             // with allHostileTargets as a list only containing predators, can instead check that it is not empty
-            bool predatorNearby = PredatorNearby(allHostileTargets);
+            bool predatorNearby = false; // PredatorNearby(allHostileTargets);
             bool foodNearby = FoodNearby(allPreyTargets);
 
             
@@ -81,12 +81,7 @@ namespace AnimalsV2
             //Debug.Log(fsm.CurrentState.GetType());
             //No matter the current state, flee if getting eaten is iminent.
             //(fleeing is above and is therefore more prioritized)
-            if (predatorNearby)
-            {
-                //Debug.Log("RIP!");
-                ChangeState(animalController.fs);
-                return;
-            }
+            
 
             //TEST
             //ChangeState(animal.fs);
@@ -294,8 +289,6 @@ namespace AnimalsV2
         {
             ChangeState(animalController.fs);
             
-            // can do this instead of calling NavigationUtilities.GetNearestObjectPositionByTag
-            animalController.fs.fleeingFromPos = target.transform.position;
             Debug.Log(target.name + " is hostile to " + animalController.name);
         }
 
