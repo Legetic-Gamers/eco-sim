@@ -31,7 +31,7 @@ namespace AnimalsV2.States
             base.LogicUpdate();
             //Get average position of water and run toward it.
             //TODO MAKE SURE THAT SEEN WATER IS THE LIST PASSED HERE.
-            waterPos = NavigationUtilities.GetNearestObjectPosition(animal.visiblePreyTargets, animal.transform.position);
+            waterPos = NavigationUtilities.GetNearestObjectPosition(animal.visibleWaterTargets, animal.transform.position);
             Vector3 pointToRunTo = NavigationUtilities.RunToFromPoint(animal.transform,waterPos,true);
             //Move the animal using the navmeshagent.
             NavMeshHit hit;

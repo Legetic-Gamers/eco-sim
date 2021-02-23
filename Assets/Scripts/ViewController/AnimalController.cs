@@ -111,6 +111,8 @@ public abstract class AnimalController : MonoBehaviour
     public List<GameObject> visibleHostileTargets = new List<GameObject>();
     public List<GameObject> visibleFriendlyTargets = new List<GameObject>();
     public List<GameObject> visiblePreyTargets = new List<GameObject>();
+    public List<GameObject> visibleFoodTargets = new List<GameObject>();
+    public List<GameObject> visibleWaterTargets = new List<GameObject>();
     
     public List<GameObject> heardHostileTargets = new List<GameObject>();
     public List<GameObject> heardFriendlyTargets = new List<GameObject>();
