@@ -66,23 +66,27 @@ public class FieldOfView : MonoBehaviour
                     // for custom editor FoVEditor
                     targets.Add(target);
 
-                    switch (animalController.animalModel.traits.IsPrey)
+                    if (target.gameObject.CompareTag("Food"))
+                    {
+                        animalController.visibleFoodTargets.Add(target);
+                        
+                        return;
+                    }
+
+                    if (target.gameObject.CompareTag("Water"))
+                    {
+                        animalController.visibleWaterTargets.Add(target);
+                        return;
+                    }
+                    switch (animalController.animalModel.traits.IsPrey) // animal is prey
                     {
                         case true:
                             if (targetAnimalController.animalModel.traits.IsPredator)
                             {
                                 animalController.visibleHostileTargets.Add(target);
+                                
+                                // invoke might not be necessary
                                 animalController.animalModel.actionPerceivedHostile?.Invoke(target);
-                            }
-                            /*
-                             * not herbivore and not carnivore/omnivore (above) -> must be a plant.
-                             * 
-                             * problem however is that plants don't have a behaviorType, so this will
-                             * lead to a NullReferenceException if we try to do the following if() statement
-                             */
-                            else if (!targetAnimalController.animalModel.traits.IsPrey)
-                            {
-                                // do something
                             }
                             break;
                         case false:
