@@ -20,9 +20,9 @@ MonoBehaviour:
   - {r: 0.20974632, g: 0.5, b: 0.15801886, a: 0}
   baseStartHeights:
   - 0
-  - 0.051
-  - 0.091
-  - 0.366
+  - 0.112
+  - 0.25
+  - 0.524
   baseBlends:
   - 0
   - 0
