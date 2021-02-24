@@ -8,35 +8,23 @@ using UnityEngine;
 
 namespace DataCollection
 {
-    public class Collector : MonoBehaviour
+    public class Collector
     {
-        private void Awake()
+        public List<int> totalAnimalsAlive;
+        public Collector()
         {
             totalAnimalsAlive = new List<int>();
             totalAnimalsAlive.Add(GameObject.FindGameObjectsWithTag("Animal").Length);
-            tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
-            EventSubscribe();
         }
 
-        private TickEventPublisher tickEventPublisher;
-        
-        // Each index is generation, value is the number of animals in that generation. 
-        public List<int> totalAnimalsAlive;
-        
-
-        private void EventSubscribe()
+        public void Collect()
         {
-            tickEventPublisher.onCollectorUpdate += AddToTotal;
+            AddTotalAnimals();
         }
 
-        private void AddToTotal()
+        private void AddTotalAnimals()
         {
             totalAnimalsAlive.Add(GameObject.FindGameObjectsWithTag("Animal").Length);
-        }
-
-        private void EventUnsubscribe()
-        {
-            
         }
     }
 }    

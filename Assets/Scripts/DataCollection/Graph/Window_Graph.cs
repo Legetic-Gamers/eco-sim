@@ -31,8 +31,7 @@ public class Window_Graph : MonoBehaviour
     private RectTransform dashTemplateX;
     private RectTransform dashTemplateY;
     private List<GameObject> gameObjectList;
-
-    private DataHandler dh;
+    
     private void Awake()
     {
         graphContainer = transform.Find("graphContainer").GetComponent<RectTransform>();
@@ -41,7 +40,7 @@ public class Window_Graph : MonoBehaviour
         dashTemplateX = graphContainer.Find("dashTemplateX").GetComponent<RectTransform>();
         dashTemplateY = graphContainer.Find("dashTemplateY").GetComponent<RectTransform>();
         gameObjectList = new List<GameObject>();
-        dh = FindObjectOfType<DataHandler>();
+        DataHandler dh = FindObjectOfType<DataHandler>();
         dh.Display += ShowGraph;
     }
     

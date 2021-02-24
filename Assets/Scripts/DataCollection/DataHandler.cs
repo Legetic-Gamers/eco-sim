@@ -9,18 +9,19 @@ namespace DataCollection
     public class DataHandler : MonoBehaviour
     {
         private TickEventPublisher tickEventPublisher;
-        public Collector c;
+        private Collector c;
         public Action<List<int>> Display;
         private void Awake()
         {
+            c = new Collector();
             tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
-            tickEventPublisher.onCollectorUpdate += UpdateGraph;
+            tickEventPublisher.onCollectorUpdate += UpdateDataAndGraph;
         }
         
-        private void UpdateGraph()
+        private void UpdateDataAndGraph()
         {
+            c.Collect();
             if(c.totalAnimalsAlive != null) Display(c.totalAnimalsAlive);
-            
         }
     }
 }
