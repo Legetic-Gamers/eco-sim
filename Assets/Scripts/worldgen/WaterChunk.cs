@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class WaterChunk : MonoBehaviour
 {
@@ -8,6 +9,8 @@ public class WaterChunk : MonoBehaviour
     public GameObject waterObject;
     MeshFilter meshFilter;
     MeshRenderer meshRenderer;
+    BoxCollider collider;
+    NavMeshObstacle obstacle;
 
 
     public void Setup(Vector2 position, WaterSettings waterSettings, HeightMapSettings heightMapSettings, Vector3 scale,  Transform parent)
@@ -19,13 +22,21 @@ public class WaterChunk : MonoBehaviour
         waterObject.transform.parent = parent;
         meshFilter = waterObject.AddComponent<MeshFilter>();
         meshRenderer = waterObject.AddComponent<MeshRenderer>();
+        meshRenderer.material = waterSettings.material;
 
 
         meshFilter.mesh = GenerateMesh();
-        waterObject.AddComponent<WaterNoise>();
-        waterObject.GetComponent<WaterNoise>().settings = waterSettings;
+        //waterObject.AddComponent<WaterNoise>();
+        //waterObject.GetComponent<WaterNoise>().settings = waterSettings;
         waterObject.transform.localScale = scale;
         waterObject.transform.position += new Vector3(0, Mathf.Lerp(heightMapSettings.minHeight, heightMapSettings.maxHeight, waterSettings.waterLevel), 0);
+        collider = waterObject.AddComponent<BoxCollider>();
+        collider.size = new Vector3(1, 1, 1);
+        collider.center -= new Vector3(0, 0.5f, 0);
+
+        obstacle = waterObject.AddComponent<NavMeshObstacle>();
+        obstacle.carving = true;
+        
     }
 
     private void OnDestroy()
