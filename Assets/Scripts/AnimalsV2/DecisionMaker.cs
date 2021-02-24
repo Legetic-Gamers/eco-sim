@@ -194,11 +194,11 @@ namespace AnimalsV2
             animalController.wander.SetPriorities(prio);
             ChangeState(animalController.wander);
 
-            // foreach (var s in prio)
-            // {
-            //     Debug.Log(s);
-            // }
-            //
+            foreach (var s in prio)
+            {
+                Debug.Log(s);
+            }
+            
 
             //Debug.Log(fsm.CurrentState.GetType());
         }
@@ -251,11 +251,11 @@ namespace AnimalsV2
         
         private bool highEnergy()
         {
-            return animalModel.currentEnergy > 20;
+            return animalModel.currentEnergy / animalModel.traits.maxEnergy > 0.7f;
         }
         private bool lowEnergy()
         {
-            return animalModel.currentEnergy < 10;
+            return animalModel.currentEnergy / animalModel.traits.maxEnergy < 0.3f;
         }
         private bool hydrationFull()
         {
@@ -263,11 +263,11 @@ namespace AnimalsV2
         }
         private bool highHydration()
         {
-            return animalModel.currentHydration > 20;
+            return animalModel.currentHydration / animalModel.traits.maxHydration > 0.7f;
         }
         private bool lowHydration()
         {
-            return animalModel.currentHydration < 10;
+            return animalModel.currentHydration / animalModel.traits.maxHydration < 0.3f;
         }
         private bool wantingOffspring()
         {
