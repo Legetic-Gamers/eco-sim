@@ -123,7 +123,7 @@ public abstract class AnimalController : MonoBehaviour
         
         es.onEatFood += EatFood;
         
-        Debug.Log(gameObject.name + " has subscribed to onParamTickEvent");
+        //Debug.Log(gameObject.name + " has subscribed to onParamTickEvent");
     }
     protected void EventUnsubscribe()
     {

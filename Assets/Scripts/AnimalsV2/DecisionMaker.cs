@@ -87,6 +87,7 @@ namespace AnimalsV2
             //ChangeState(animal.fs);
 
             State currentState = fsm.CurrentState;
+            Debug.Log(currentState);
             
             //TODO getType should be replaced with ID or similar. THIS IS REALLY BAD PRACTICE I KNOW.
             if (currentState is Eating)
