@@ -6,8 +6,6 @@ using UnityEngine.AI;
 
 public class TerrainGenerator : MonoBehaviour
 {
-
-
     public enum TerrainMode
     {
         Endless,
