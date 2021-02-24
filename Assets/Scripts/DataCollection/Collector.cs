@@ -13,8 +13,7 @@ namespace DataCollection
         public List<int> totalAnimalsAlive;
         public Collector()
         {
-            totalAnimalsAlive = new List<int>();
-            totalAnimalsAlive.Add(GameObject.FindGameObjectsWithTag("Animal").Length);
+            totalAnimalsAlive = new List<int> {GameObject.FindGameObjectsWithTag("Animal").Length};
         }
 
         public void Collect()

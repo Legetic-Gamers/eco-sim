@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using static DataCollection.Collector;
 
@@ -10,6 +11,7 @@ namespace DataCollection
     {
         private TickEventPublisher tickEventPublisher;
         private Collector c;
+        //private Formatter f;
         public Action<List<int>> Display;
         private void Awake()
         {
@@ -21,7 +23,11 @@ namespace DataCollection
         private void UpdateDataAndGraph()
         {
             c.Collect();
-            if(c.totalAnimalsAlive != null) Display(c.totalAnimalsAlive);
+            if (c.totalAnimalsAlive != null)
+            {
+                Display(c.totalAnimalsAlive);
+                Task asyncTask = Formatter.WriteToFile(c.totalAnimalsAlive);
+            }
         }
     }
 }
