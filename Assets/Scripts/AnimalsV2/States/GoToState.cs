@@ -55,7 +55,7 @@ namespace AnimalsV2.States
 
         public bool arrivedAtTarget()
         {
-            if (targetObject != null)
+            if (animal != null && targetObject != null)
             {
                 return Vector3.Distance(animal.transform.position, targetObject.transform.position) < 1f;
             }
