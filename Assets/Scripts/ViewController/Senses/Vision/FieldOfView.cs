@@ -48,7 +48,7 @@ public class FieldOfView : MonoBehaviour
         for (int i = 0; i < targetsInRadius.Length; i++)
         {
             GameObject target = targetsInRadius[i].gameObject;
-            AnimalController targetAnimalController = target.GetComponent<AnimalController>();
+            
             
             // don't add self
             if (target == gameObject) return;
@@ -68,46 +68,58 @@ public class FieldOfView : MonoBehaviour
                     //animalController.visibleTargets.Add(target);
                     // for custom editor FoVEditor
                     targets.Add(target);
-                    
-                    if (target.gameObject.CompareTag("Food") && animalController.animalModel.traits.IsPrey)
-                    {
-                        
-                        animalController.visibleFoodTargets.Add(target);
-                        
-                        return;
-                    }
 
-                    if (target.gameObject.CompareTag("Water"))
-                    {
-                        animalController.visibleWaterTargets.Add(target);
-                        return;
-                    }
-                    switch (animalController.animalModel.traits.IsPrey) // animal is prey
-                    {
-                        case true:
-                            if (targetAnimalController.animalModel.traits.IsPredator)
-                            {
-                                animalController.visibleHostileTargets.Add(target);
-                                
-                                // invoke might not be necessary
-                                animalController.animalModel.actionPerceivedHostile?.Invoke(target);
-                            }
-                            break;
-                        case false:
-                            if (targetAnimalController.animalModel.traits.IsPrey)
-                            {
-                                animalController.visiblePreyTargets.Add(target);
-                            }
-                            break;
-                    }
+                    HandleTarget(target);
 
-                    if (animalController.IsSameSpecies(targetAnimalController))
-                    {
-                        animalController.visibleFriendlyTargets.Add(target);
-                    }
-                    
                 }
             }
+        }
+    }
+
+    private void HandleTarget(GameObject target)
+    {
+        AnimalController targetAnimalController = target.GetComponent<AnimalController>();
+
+        // see water
+        if (target.gameObject.CompareTag("Water"))
+        {
+            animalController.visibleWaterTargets.Add(target);
+            return;
+        }
+        
+        // see same species -> mate
+        if (animalController.IsSameSpecies(targetAnimalController))
+        {
+            animalController.visibleFriendlyTargets.Add(target);
+            return;
+        }
+        
+        // see predator
+        if (targetAnimalController.animalModel.traits.IsPredator)
+        {
+            animalController.visibleHostileTargets.Add(target);
+            animalController.animalModel.actionPerceivedHostile?.Invoke(target);
+            return;
+        }
+
+        switch (animalController.animalModel.traits.IsPrey)
+        {
+            // is predator
+            case true:
+                // see plant
+                if (target.gameObject.CompareTag("Food"))
+                {
+                    animalController.visibleFoodTargets.Add(target);
+                }
+                break;
+            // is predator
+            case false: 
+                // see prey
+                if (targetAnimalController.animalModel.traits.IsPrey)
+                {
+                    animalController.visibleFoodTargets.Add(target);
+                }
+                break;
         }
     }
 
