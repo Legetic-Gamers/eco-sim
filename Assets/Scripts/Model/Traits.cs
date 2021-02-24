@@ -26,36 +26,6 @@ public class Traits
     public BehaviorType behaviorType { get; set; }
 
     public Species species { get; set; }
-    
-    public bool IsPredator
-    {
-        get{
-            try
-            {
-                return behaviorType == BehaviorType.Carnivore
-                       || behaviorType == BehaviorType.Omnivore;
-
-            }
-            catch (NullReferenceException)
-            {
-                return false;
-            }   
-        }
-        
-    }
-    public bool IsPrey
-    {
-        get{
-            try
-            {
-                return behaviorType == BehaviorType.Herbivore;
-            }
-            catch (NullReferenceException)
-            {
-                return false;
-            }
-        }
-    }
 
     public  float size { get; set; }
     public float maxEnergy { get; set; }
