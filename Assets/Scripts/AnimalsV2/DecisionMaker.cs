@@ -113,35 +113,16 @@ namespace AnimalsV2
                 
                 Prioritize();
             }
-            //Always finish eating/drinking/mating
-            /*else if (currentState is GoToFood)
+            else if (currentState is GoToState)
             {
-                GoToFood goToFood = (GoToFood) currentState;
-            
-                if (goToFood.adjacentToFood())
+                GoToState goToState = (GoToState) currentState;
+                if (goToState.arrivedAtTarget())
                 {
-                    //ChangeState(animal.es);
+                    GameObject target = goToState.GetTarget();
+                    animalController.es.setConsumable(target);
+                    ChangeState(animalController.es);
                 }
             }
-            else if (currentState is GoToWater)
-            {
-                GoToWater goToWater = (GoToWater) currentState;
-                
-                if (goToWater.adjacentToWater())
-                {
-                    //TODO should be drinking
-                    //ChangeState(animal.es);
-                }
-            }
-            else if (currentState is GoToMate)
-            {
-                GoToMate goToMate = (GoToMate) currentState;
-                if (goToMate.adjacentToMate())
-                {
-                    //TODO should be mating
-                    //ChangeState(animal.es);
-                }
-            }*/
             else if(currentState is Wander)
             {
                 Wander wander = (Wander) currentState;

@@ -22,7 +22,7 @@ public abstract class AnimalController : MonoBehaviour
     public FleeingState fs;
     public Eating es;
     public Wander wander;
-    public GoTo gs;
+    public GoToState gs;
     public Idle idle;
 
     float energyModifier = 0;
@@ -59,7 +59,7 @@ public abstract class AnimalController : MonoBehaviour
             hydrationModifier = 1f;
             reproductiveUrgeModifier = 1f;
             //Debug.Log("varying parameters depending on state: FleeingState");
-        } else if (state is GoTo)
+        } else if (state is GoToState)
         {
             energyModifier = 0.1f;
             hydrationModifier = 0.1f;
@@ -189,7 +189,7 @@ public abstract class AnimalController : MonoBehaviour
         es = new Eating(this, Fsm);
         fs = new FleeingState(this, Fsm);
         wander = new Wander(this, Fsm);
-        gs = new GoTo(this, Fsm);
+        gs = new GoToState(this, Fsm);
         idle = new Idle(this, Fsm);
         Fsm.Initialize(idle);
         

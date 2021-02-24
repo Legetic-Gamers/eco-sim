@@ -11,6 +11,8 @@ namespace AnimalsV2.States
     {
         private float timeLeft;
         private bool doneEating;
+
+        private GameObject consumable;
         public Eating(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine)
         {
             timeLeft = 3.0f;
@@ -43,6 +45,11 @@ namespace AnimalsV2.States
         public bool foodIsEmpty()
         {
             return doneEating;
+        }
+
+        public void setConsumable(GameObject target)
+        {
+            consumable = target;
         }
     }
 }

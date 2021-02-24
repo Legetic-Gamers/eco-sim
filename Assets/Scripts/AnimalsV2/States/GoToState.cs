@@ -4,11 +4,12 @@ using static AnimalsV2.StateAnimation;
 
 namespace AnimalsV2.States
 {
-    public class GoTo : State
+    public class GoToState : State
     {
-        public GameObject targetObject;
+        private GameObject targetObject;
+        
 
-        public GoTo(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine)
+        public GoToState(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine)
         {
             
         }
@@ -41,6 +42,16 @@ namespace AnimalsV2.States
         public void SetTarget(GameObject t)
         {
             targetObject = t;
+        }
+        
+        public GameObject GetTarget()
+        {
+            return targetObject;
+        }
+
+        public bool arrivedAtTarget()
+        {
+            return Vector3.Distance(animal.transform.position, targetObject.transform.position) < 10;
         }
     }
 }
