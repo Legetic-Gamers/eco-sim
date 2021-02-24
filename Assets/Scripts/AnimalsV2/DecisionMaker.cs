@@ -62,7 +62,7 @@ namespace AnimalsV2
                 .Concat(animalController.heardPreyTargets).ToList();
             
             // with allHostileTargets as a list only containing predators, can instead check that it is not empty
-            bool predatorNearby = false; // PredatorNearby(allHostileTargets);
+            bool predatorNearby = false; //PredatorNearby(allHostileTargets);
             bool foodNearby = FoodNearby(allPreyTargets);
 
             
@@ -81,7 +81,10 @@ namespace AnimalsV2
             //Debug.Log(fsm.CurrentState.GetType());
             //No matter the current state, flee if getting eaten is iminent.
             //(fleeing is above and is therefore more prioritized)
-            
+            // if (predatorNearby)
+            // {
+            //     ChangeState(animalController.fs);
+            // }
 
             //TEST
             //ChangeState(animal.fs);
@@ -171,6 +174,18 @@ namespace AnimalsV2
                 prio.Add("Food");
                 
             }
+            
+            // if (!highHydration() && !highEnergy()) //Prio 6, not low energy but not high either + not low hydration but not high either -> find Water and then Food.
+            // {
+            //     //ChangeState(animal.sf);
+            //     prio.Remove("Food");
+            //     prio.Remove("Water");
+            //     
+            //     prio.Insert(0, "Food");
+            //     prio.Insert(0, "Water");
+            //     
+            // }
+            
             if (highHydration() && highEnergy() && wantingOffspring()) // Prio 3 (If we live good) search for mate.
             {
                 prio.Insert(0,"Mate");
@@ -190,6 +205,8 @@ namespace AnimalsV2
                 prio.Insert(0, "Food");
                 
             }
+            
+            
             
             animalController.wander.SetPriorities(prio);
             ChangeState(animalController.wander);
@@ -287,7 +304,7 @@ namespace AnimalsV2
         }
         
         
-        private void EventUnsubscribe()
+        public void EventUnsubscribe()
         {
             eventPublisher.onParamTickEvent -= MakeDecision;
             eventPublisher.onSenseTickEvent -= MakeDecision;
@@ -304,7 +321,7 @@ namespace AnimalsV2
         {
             ChangeState(animalController.fs);
             
-            //Debug.Log(target.name + " is hostile to " + animalController.name);
+            Debug.Log(target.name + " is hostile to " + animalController.name);
         }
 
 
