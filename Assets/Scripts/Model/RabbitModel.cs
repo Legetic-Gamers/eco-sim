@@ -2,7 +2,8 @@
 
 public class RabbitModel : AnimalModel,IEdible
 {
-    public RabbitModel() : base(new Traits(10, 100, 10, 100, 10,10,10,10,10,180,10,10, Traits.BehaviorType.Herbivore, Traits.Species.Rabbit),0)
+
+    public RabbitModel() : base(new Traits(10, 100, 100, 100, 10,10,100,10,10,180,10,10, Traits.BehaviorType.Herbivore, Traits.Species.Rabbit),0)
     {
         // Rabbit specific initialization 
     }
