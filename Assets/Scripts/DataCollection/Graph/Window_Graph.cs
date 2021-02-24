@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using DataCollection;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -30,7 +32,7 @@ public class Window_Graph : MonoBehaviour
     private RectTransform dashTemplateY;
     private List<GameObject> gameObjectList;
 
-
+    private DataHandler dh;
     private void Awake()
     {
         graphContainer = transform.Find("graphContainer").GetComponent<RectTransform>();
@@ -39,12 +41,14 @@ public class Window_Graph : MonoBehaviour
         dashTemplateX = graphContainer.Find("dashTemplateX").GetComponent<RectTransform>();
         dashTemplateY = graphContainer.Find("dashTemplateY").GetComponent<RectTransform>();
         gameObjectList = new List<GameObject>();
-
+        dh = FindObjectOfType<DataHandler>();
+        dh.Display += ShowGraph;
     }
     
     // Draws entire graph.
-    private void ShowGraph(List<int> valueList)
+    void ShowGraph(List<int> valueList)
     {
+        DestroyGraph();
         var sizeDelta = graphContainer.sizeDelta;
         float graphHeight = sizeDelta.y;
         float graphWidth = sizeDelta.x;
@@ -56,7 +60,9 @@ public class Window_Graph : MonoBehaviour
     }
     
     // Destroys the previous graph.
-    private void DestroyGraph()
+    
+
+    public void DestroyGraph()
     {
         foreach (GameObject gameObject in gameObjectList)
         {

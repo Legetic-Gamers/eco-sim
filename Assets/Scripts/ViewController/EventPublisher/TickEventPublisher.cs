@@ -17,7 +17,6 @@ public class TickEventPublisher : MonoBehaviour
 
     public event TickDelegate onParamTickEvent;
     public event TickDelegate onSenseTickEvent;
-    
     public event TickDelegate onCollectorUpdate;
 
     private IEnumerator ParamTickEvent()
@@ -41,7 +40,7 @@ public class TickEventPublisher : MonoBehaviour
     {
         while (true)
         {
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(5f);
             onCollectorUpdate?.Invoke();
         }
     }
