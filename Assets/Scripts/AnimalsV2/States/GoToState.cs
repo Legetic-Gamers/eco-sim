@@ -51,7 +51,7 @@ namespace AnimalsV2.States
 
         public bool arrivedAtTarget()
         {
-            return Vector3.Distance(animal.transform.position, targetObject.transform.position) < 10;
+            return Vector3.Distance(animal.transform.position, targetObject.transform.position) < 1f;
         }
     }
 }

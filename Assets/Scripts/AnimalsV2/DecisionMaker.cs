@@ -129,10 +129,18 @@ namespace AnimalsV2
                 GameObject target = wander.FoundObject();
                 if (target != null)
                 {
+                    
                     animalController.gs.SetTarget(target);
                     ChangeState(animalController.gs);
                 }
+                else
+                {
+                    //If no food found, try to reprioritize the search.
+                    Prioritize();
+                }
             }
+
+            //Debug.Log(currentState);
 
         }
         
@@ -149,37 +157,41 @@ namespace AnimalsV2
             if (lowHydration()) //Prio 1 don't die from dehydration -> Find Water.
             {
                 prio.Add("Water");
-                animalController.wander.SetPriorities(prio);
-                ChangeState(animalController.wander);
+                
             }
             if (lowEnergy()) //Prio 2 dont die from hunger -> Find Food.
             {
                 prio.Add("Food");
-                animalController.wander.SetPriorities(prio);
-                ChangeState(animalController.wander);
+                
             }
             if (highHydration() && highEnergy() && wantingOffspring()) // Prio 3 (If we live good) search for mate.
             {
                 prio.Insert(0,"Mate");
-                animalController.wander.SetPriorities(prio);
-                ChangeState(animalController.wander);
+                
             }
             if (!highHydration() && highEnergy()) //Prio 4, not low hydration but not high either + high energy -> find Water.
             {
                 //ChangeState(animal.sw);
                 prio.Remove("Water");
                 prio.Insert(0,"Water");
-                animalController.wander.SetPriorities(prio);
-                ChangeState(animalController.wander);
+                
             }
             if (highHydration() && !highEnergy()) //Prio 5, not low energy but not high either + high hydration -> find Food.
             {
                 //ChangeState(animal.sf);
                 prio.Remove("Food");
                 prio.Insert(0, "Food");
-                animalController.wander.SetPriorities(prio);
-                ChangeState(animalController.wander);
+                
             }
+            
+            animalController.wander.SetPriorities(prio);
+            ChangeState(animalController.wander);
+
+            // foreach (var s in prio)
+            // {
+            //     Debug.Log(s);
+            // }
+            //
 
             //Debug.Log(fsm.CurrentState.GetType());
         }

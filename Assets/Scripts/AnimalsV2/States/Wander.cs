@@ -41,6 +41,8 @@ namespace AnimalsV2.States
             base.LogicUpdate();
             var position1 = animal.transform.position;
             food = NavigationUtilities.GetNearestObjectPosition(animal.visibleFoodTargets, position1);
+            
+
             water = NavigationUtilities.GetNearestObjectPosition(animal.visibleWaterTargets, position1);
             mate = NavigationUtilities.GetNearestObjectPosition(animal.visibleFriendlyTargets, position1);
             

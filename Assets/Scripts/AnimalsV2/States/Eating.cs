@@ -13,6 +13,9 @@ namespace AnimalsV2.States
         private bool doneEating;
 
         private GameObject consumable;
+
+        public Action<GameObject> onEatFood;
+        
         public Eating(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine)
         {
             timeLeft = 3.0f;
@@ -35,21 +38,18 @@ namespace AnimalsV2.States
         public override void LogicUpdate()
         {
             base.LogicUpdate();
-            timeLeft -= Time.deltaTime;
-            if (timeLeft < 0)
-            {
-                doneEating = true;
-            }   
+             
         }
 
         public bool foodIsEmpty()
         {
-            return doneEating;
+            return consumable == null;
         }
 
         public void setConsumable(GameObject target)
         {
             consumable = target;
+            onEatFood?.Invoke(target);
         }
     }
 }

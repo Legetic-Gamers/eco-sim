@@ -46,17 +46,22 @@ namespace AnimalsV2
             
             // Find closest object of all objects with tag
             GameObject nearbyObj = allPercievedObjects[0];
-            float closestDistance = Vector3.Distance(nearbyObj.transform.position, thisPosition);
-            //Get the closest game object
-            foreach (GameObject g in allPercievedObjects)
+
+            if (nearbyObj != null)
             {
-                float dist = Vector3.Distance(g.transform.position, thisPosition);
-                if (dist < closestDistance)
+                float closestDistance = Vector3.Distance(nearbyObj.transform.position, thisPosition);
+                //Get the closest game object
+                foreach (GameObject g in allPercievedObjects)
                 {
-                    closestDistance = dist;
-                    nearbyObj = g;
+                    float dist = Vector3.Distance(g.transform.position, thisPosition);
+                    if (dist < closestDistance)
+                    {
+                        closestDistance = dist;
+                        nearbyObj = g;
+                    }
                 }
             }
+
             return nearbyObj;
         }
         

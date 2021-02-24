@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using AnimalsV2;
 using AnimalsV2.States;
+using Model;
 using UnityEngine;
 using UnityEngine.AI;
+using ViewController;
 
 public abstract class AnimalController : MonoBehaviour
 {
@@ -187,6 +189,10 @@ public abstract class AnimalController : MonoBehaviour
         sw = new GoToWater(this, Fsm);
         sm = new GoToMate(this, Fsm);*/
         es = new Eating(this, Fsm);
+        es.onEatFood += EatFood;
+        
+        
+        
         fs = new FleeingState(this, Fsm);
         wander = new Wander(this, Fsm);
         gs = new GoToState(this, Fsm);
@@ -226,5 +232,21 @@ public abstract class AnimalController : MonoBehaviour
     {
         //Update physics
         //Fsm.UpdateStatesPhysics();
+    }
+
+    private void EatFood(GameObject food)
+    {
+        
+        //Access food script to consume the food.
+        if (food.GetComponent<AnimalController>()?.animalModel is IEdible edibleAnimal)
+        {
+            
+            animalModel.currentEnergy += edibleAnimal.GetEaten();
+            
+        }else if (food.GetComponent<PlantController>()?.plantModel is IEdible ediblePlant)
+        {
+            animalModel.currentEnergy += ediblePlant.GetEaten();
+            
+        }
     }
 }

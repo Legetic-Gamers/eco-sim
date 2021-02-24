@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 public class FieldOfView : MonoBehaviour
 {
@@ -52,10 +53,12 @@ public class FieldOfView : MonoBehaviour
             // don't add self
             if (target == gameObject) return;
             
+            
             Vector3 dirToTarget = (target.transform.position - transform.position).normalized;
 
             if (Vector3.Angle(transform.forward, dirToTarget) < angle / 2)
             {
+                //Debug.Log(target.name);
                 float distToTarget = Vector3.Distance(transform.position, target.transform.position);
 
                 // if target is not obscured
@@ -65,9 +68,10 @@ public class FieldOfView : MonoBehaviour
                     //animalController.visibleTargets.Add(target);
                     // for custom editor FoVEditor
                     targets.Add(target);
-
-                    if (target.gameObject.CompareTag("Food"))
+                    
+                    if (target.gameObject.CompareTag("Food") && animalController.animalModel.traits.IsPrey)
                     {
+                        
                         animalController.visibleFoodTargets.Add(target);
                         
                         return;

@@ -104,8 +104,11 @@ public abstract class AnimalModel
     public float currentHydration { get; set; }
     public float reproductiveUrge { get; set; }
     
-    public float currentSpeed { get; set; }
     
+    public float currentSpeed { get; set; }
+
+    public bool isEaten = false;
+
     // decisionMaker subscribes to these actions
     public Action<GameObject> actionPerceivedHostile;
 
@@ -125,7 +128,7 @@ public abstract class AnimalModel
 
     public bool IsAlive()
     {
-        return (currentHealth > 0 && currentEnergy > 0 && age < traits.ageLimit && currentHydration > 0);
+        return (currentHealth > 0 && currentEnergy > 0 && age < traits.ageLimit && currentHydration > 0) || !isEaten;
     }
 
     public abstract AnimalModel Mate(AnimalModel otherParent);
