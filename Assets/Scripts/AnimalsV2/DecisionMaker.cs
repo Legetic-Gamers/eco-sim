@@ -5,6 +5,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using AnimalsV2.States;
+using AnimalsV2.States.AnimalsV2.States;
 using UnityEngine;
 
 namespace AnimalsV2
@@ -63,8 +64,6 @@ namespace AnimalsV2
             
             // with allHostileTargets as a list only containing predators, can instead check that it is not empty
             bool predatorNearby = false; //PredatorNearby(allHostileTargets);
-            bool foodNearby = FoodNearby(allPreyTargets);
-
             
             //This is instead of using the state machine regularly.
             //SortedDictionary<State, List<State>> stateGraph = StateConstraintsGraph();
@@ -90,7 +89,6 @@ namespace AnimalsV2
             //ChangeState(animal.fs);
 
             State currentState = fsm.CurrentState;
-            Debug.Log(currentState);
             
             //TODO getType should be replaced with ID or similar. THIS IS REALLY BAD PRACTICE I KNOW.
             if (currentState is Eating)
@@ -102,14 +100,24 @@ namespace AnimalsV2
                     Prioritize();
                 }
             
-            }else if (currentState is FleeingState && !predatorNearby)
+            } else if (currentState is Drinking)
+            {
+                Drinking drinkingState = (Drinking) currentState;
+                Prioritize();
+                
+            } else if (currentState is FleeingState)
             {
                 //FleeingState fleeingState = (FleeingState) currentState;
                 //Run until no predator nearby.
                 //Run a bit longer?
+
+                FleeingState fleeingState = (FleeingState) currentState;
+                if (fleeingState.HasFled())
+                {
+                    //if we arrive here there the animal has sucessfully fled
+                    Prioritize();    
+                }
                 
-                //if we arrive here predatorNearby is false.
-                Prioritize();
                 
             }
             else if (currentState is Idle)
@@ -120,12 +128,28 @@ namespace AnimalsV2
             else if (currentState is GoToState)
             {
                 GoToState goToState = (GoToState) currentState;
-                if(goToState.GetTarget() != null){
+                if(goToState.GetTarget() != null && goToState.GetAction() != null){
                     if (goToState.arrivedAtTarget())
                     {
                         GameObject target = goToState.GetTarget();
-                        animalController.es.setConsumable(target);
-                        ChangeState(animalController.es);
+                        string actionToDo = goToState.GetAction();
+
+                        switch (actionToDo)
+                        {
+                            case "eat":
+                                animalController.es.EatFood(target);
+                                ChangeState(animalController.es);
+                                break;
+                            case "drink":
+                                animalController.ds.DrinkWater(target);
+                                ChangeState(animalController.ds);
+                                break;
+                            case "mate":
+                                animalController.ms.Mate(target);
+                                ChangeState(animalController.ds);
+                                break;
+                        }
+                        
                     }
                 }
                 else
@@ -136,11 +160,11 @@ namespace AnimalsV2
             else if(currentState is Wander)
             {
                 Wander wander = (Wander) currentState;
-                GameObject target = wander.FoundObject();
-                if (target != null)
+                var targetAndAction = wander.FoundObject();
+                if (targetAndAction?.Item1 != null)
                 {
-                    
-                    animalController.gs.SetTarget(target);
+                    animalController.gs.SetTarget(targetAndAction.Item1);
+                    animalController.gs.SetActionOnArrive(targetAndAction.Item2);
                     ChangeState(animalController.gs);
                 }
                 else
@@ -148,10 +172,10 @@ namespace AnimalsV2
                     //If no food found, try to reprioritize the search.
                     Prioritize();
                 }
+            } else if (currentState is Mating)
+            {
+                Prioritize();
             }
-
-            //Debug.Log(currentState);
-
         }
         
         
@@ -211,9 +235,6 @@ namespace AnimalsV2
             animalController.wander.SetPriorities(prio);
             ChangeState(animalController.wander);
 
-            Debug.Log(prio.ToString());
-            
-
             //Debug.Log(fsm.CurrentState.GetType());
         }
 
@@ -247,17 +268,6 @@ namespace AnimalsV2
         //     return 
         // }
 
-        private static bool FoodNearby(List<GameObject> seenTargets)
-        {
-            return seenTargets.Any(o => o.CompareTag("Food"));
-        }
-
-        private static bool PredatorNearby(List<GameObject> allTargets)
-        {
-            
-            return allTargets.Any(o => o.CompareTag("Predator"));
-        }
-        
         private bool energyFull()
         {
             return animalModel.currentEnergy == animalModel.traits.maxEnergy;

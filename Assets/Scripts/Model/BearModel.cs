@@ -17,4 +17,14 @@
 
         return new BearModel(childTraits, 0);
     }
+    
+    public override bool CanEat<T>(T obj)
+    {
+        return obj is WolfModel || obj is RabbitModel || obj is DeerModel;
+    }
+    
+    public override bool IsSameSpecies<T>(T obj)
+    {
+        return obj is BearModel;
+    }
 }

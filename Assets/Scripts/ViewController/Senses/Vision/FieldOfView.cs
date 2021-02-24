@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
+using ViewController;
 using Debug = UnityEngine.Debug;
 
 public class FieldOfView : MonoBehaviour
@@ -66,16 +67,61 @@ public class FieldOfView : MonoBehaviour
                     // for custom editor FoVEditor
                     targets.Add(target);
 
-                    if(target.gameObject.CompareTag("Food") || target.gameObject.CompareTag("Water")) 
-                        HandleConsumableTarget(target);
+                    
+                    if(target.gameObject.CompareTag("Plant")) 
+                        HandlePlantTarget(target);
                     else if (target.gameObject.CompareTag("Animal")) 
                         HandleAnimalTarget(target);
-
+                    else if (target.gameObject.CompareTag("Water"))
+                        HandleWaterTarget(target);
+                    
                 }
             }
         }
     }
 
+    private void HandleAnimalTarget(GameObject target)
+    {
+        AnimalController targetAnimalController = target.GetComponent<AnimalController>();
+
+        if (targetAnimalController != null)
+        {
+            //if this animalModel can the targets animalModel: add to visibleFoodTargets
+            if (animalController.animalModel.CanEat(targetAnimalController.animalModel))
+            {
+                animalController.visibleFoodTargets.Add(target);
+                return;
+            }
+            //if the target is of same species: add to visibleFriendlyTargets
+            if (animalController.animalModel.IsSameSpecies(targetAnimalController.animalModel))
+            {
+                animalController.visibleFriendlyTargets.Add(target);
+                return;
+            }
+            //if the targets animalModel can eat this animalModel: add to visibleHostileTargets
+            if (targetAnimalController.animalModel.CanEat(animalController.animalModel))
+            {
+                animalController.visibleHostileTargets.Add(target);
+                animalController.animalModel.actionPerceivedHostile?.Invoke(target);
+                return;
+            }    
+        }
+    }
+    
+    private void HandleWaterTarget(GameObject target)
+    {
+        animalController.visibleWaterTargets.Add(target);
+    }
+
+    private void HandlePlantTarget(GameObject target)
+    {
+        PlantController targetPlantController = target.GetComponent<PlantController>();
+        if (targetPlantController != null && animalController.animalModel.CanEat(targetPlantController.plantModel))
+        {
+            animalController.visibleFoodTargets.Add(target);
+        }
+    }
+    /* I have created a replacement // Alexander Huang
     private void HandleConsumableTarget(GameObject target)
     {
         // see water
@@ -89,6 +135,9 @@ public class FieldOfView : MonoBehaviour
             animalController.visibleFoodTargets.Add(target);
         }
     }
+    */
+    
+    /* I have created a replacement // Alexander Huang
     private void HandleAnimalTarget(GameObject target)
     {
         AnimalController targetAnimalController = target.GetComponent<AnimalController>();
@@ -112,7 +161,7 @@ public class FieldOfView : MonoBehaviour
             animalController.visibleFoodTargets.Add(target);
         }
     }
-
+*/
     
 
     // get angle direction

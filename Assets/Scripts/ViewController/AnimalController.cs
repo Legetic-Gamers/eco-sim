@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using AnimalsV2;
 using AnimalsV2.States;
+using AnimalsV2.States.AnimalsV2.States;
 using Model;
 using UnityEngine;
 using UnityEngine.AI;
@@ -28,6 +29,8 @@ public abstract class AnimalController : MonoBehaviour
     public Wander wander;
     public GoToState gs;
     public Idle idle;
+    public Drinking ds;
+    public Mating ms;
 
     float energyModifier = 0;
     float hydrationModifier = 0;
@@ -55,7 +58,7 @@ public abstract class AnimalController : MonoBehaviour
         {
             energyModifier = 0f;
             hydrationModifier = 0.1f;
-            reproductiveUrgeModifier = 0.1f;
+            reproductiveUrgeModifier = 1f;
             //Debug.Log("varying parameters depending on state: Eating");
         } else if (state is FleeingState)
         {
@@ -67,13 +70,13 @@ public abstract class AnimalController : MonoBehaviour
         {
             energyModifier = 0.1f;
             hydrationModifier = 0.1f;
-            reproductiveUrgeModifier = 0.1f;
+            reproductiveUrgeModifier = 1;
             //Debug.Log("varying parameters depending on state: GoToFood");
         } else if (state is Idle)
         {
             energyModifier = 0f;
             hydrationModifier = 0.1f;
-            reproductiveUrgeModifier = 0.1f;
+            reproductiveUrgeModifier = 1;
             //Debug.Log("varying parameters depending on state: Mating");
         } else if (state is Mating)
         {
@@ -85,7 +88,7 @@ public abstract class AnimalController : MonoBehaviour
         {
             energyModifier = 0.1f;
             hydrationModifier = 0.1f;
-            reproductiveUrgeModifier = 0.1f;
+            reproductiveUrgeModifier = 1f;
             //Debug.Log("varying parameters depending on state: Wander");
         }
     }
@@ -123,7 +126,10 @@ public abstract class AnimalController : MonoBehaviour
         Fsm.OnStateEnter += changeModifiers;
         
         es.onEatFood += EatFood;
-        
+
+        ds.onDrinkWater += DrinkWater;
+
+        ms.onMate += Mate;
         //Debug.Log(gameObject.name + " has subscribed to onParamTickEvent");
     }
     protected void EventUnsubscribe()
@@ -133,6 +139,8 @@ public abstract class AnimalController : MonoBehaviour
         Fsm.OnStateEnter -= changeModifiers;
         
         es.onEatFood -= EatFood;
+
+        ds.onDrinkWater -= DrinkWater;
         
         animationController.UnSubscribe();
         decisionMaker.EventUnsubscribe();
@@ -144,6 +152,7 @@ public abstract class AnimalController : MonoBehaviour
     /*                                          Other                                         */
     /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
     
+    /*
     public bool IsSameSpecies(AnimalController otherAnimal)
     {
         try
@@ -161,20 +170,8 @@ public abstract class AnimalController : MonoBehaviour
         || animalModel.traits.behaviorType == Traits.BehaviorType.Omnivore;
 
     public bool IsPrey => animalModel.traits.behaviorType == Traits.BehaviorType.Herbivore;
+    */
 
-    //TODO a rabbit should be able to have more than one offspring at a time
-    void CreateOffspring(AnimalController otherParent)
-    {
-
-        // Spawn child as a copy of the father at the position of the mother
-        GameObject child = Instantiate(gameObject, gameObject.transform.position, gameObject.transform.rotation); //NOTE CHANGE SO THAT PREFAB IS USED
-        // Generate the offspring traits
-        AnimalModel childModel = animalModel.Mate(otherParent.animalModel);
-        // Add coresponding controller
-        AnimalController childAnimalController = child.AddComponent<BearController>();
-        // Assign traits to child
-    }
-    
     // both hostile and friendly targets, get from FieldOfView and HearingAbility
     //public List<GameObject> heardTargets = new List<GameObject>(); // obsolete
     //public List<GameObject> visibleTargets = new List<GameObject>(); // obsolete
@@ -212,6 +209,8 @@ public abstract class AnimalController : MonoBehaviour
         wander = new Wander(this, Fsm);
         gs = new GoToState(this, Fsm);
         idle = new Idle(this, Fsm);
+        ds = new Drinking(this, Fsm);
+        ms = new Mating(this, Fsm);
         Fsm.Initialize(idle);
         
         tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
@@ -263,5 +262,38 @@ public abstract class AnimalController : MonoBehaviour
             animalModel.currentEnergy += ediblePlant.GetEaten();
             
         }
+    }
+
+    private void DrinkWater(GameObject water)
+    {
+        if (water.gameObject.CompareTag("Water"))
+        {
+            animalModel.currentHydration = animalModel.traits.maxHydration;
+        }
+    }
+    
+    //TODO a rabbit should be able to have more than one offspring at a time
+    void Mate(GameObject target)
+    {
+
+        AnimalController targetAnimalController = target.GetComponent<AnimalController>();
+        
+        // make sure target has an AnimalController and that its animalModel is same species
+        if (targetAnimalController != null && targetAnimalController.animalModel.IsSameSpecies(animalModel))
+        {
+            
+            // Spawn child as a copy of the father at the position of the mother
+            GameObject child = Instantiate(gameObject, gameObject.transform.position, gameObject.transform.rotation); //NOTE CHANGE SO THAT PREFAB IS USED
+            // Generate the offspring traits
+            AnimalModel childModel = animalModel.Mate(targetAnimalController.animalModel);
+
+            child.GetComponent<AnimalController>().animalModel = childModel;
+            
+            
+            Debug.Log("MATE");
+            animalModel.reproductiveUrge = 0f;
+            targetAnimalController.animalModel.reproductiveUrge = 0f;
+        }
+        
     }
 }

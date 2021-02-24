@@ -14,10 +14,13 @@ namespace AnimalsV2.States
         public FleeingState(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine) {}
 
         public Vector3 fleeingFromPos;
+
+        private bool hasFled;
         
         public override void Enter()
         {
             base.Enter();
+            hasFled = false;
             //Debug.Log("Fleeing!");
             currentStateAnimation = Running;
         }
@@ -46,6 +49,11 @@ namespace AnimalsV2.States
             {
                  pointToRunTo = NavigationUtilities.RunToFromPoint(animal.transform,averagePosition,false);
             }
+            else
+            {
+                hasFled = true;
+            }
+                        
             
             // Move the animal using the NavMeshAgent.
             NavMeshHit hit;
@@ -53,6 +61,15 @@ namespace AnimalsV2.States
             animal.agent.SetDestination(hit.position);
         }
 
+        public override string ToString()
+        {
+            return "Fleeing";
+        }
 
+        public bool HasFled()
+        {
+            return hasFled;
+        }
+        
     }
 }

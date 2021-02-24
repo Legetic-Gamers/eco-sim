@@ -18,4 +18,15 @@
         //TODO logic to determine generation
         return new WolfModel(childTraits,0);
     }
+    
+    
+    public override bool CanEat<T>(T obj)
+    {
+        return obj is RabbitModel || obj is DeerModel;
+    }
+    
+    public override bool IsSameSpecies<T>(T obj)
+    {
+        return obj is DeerModel;
+    }
 }

@@ -8,6 +8,7 @@ TagManager:
   - Predator
   - Food
   - Water
+  - Plant
   layers:
   - Default
   - TransparentFX

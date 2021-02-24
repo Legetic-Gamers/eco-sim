@@ -50,11 +50,41 @@ public class HearingAbility : MonoBehaviour
                 // for custom editor HAEditor
                 targets.Add(target);
 
-                HandleTarget(target);
+                HandleAnimalTarget(target);
             }
         }
     }
 
+    private void HandleAnimalTarget(GameObject target)
+    {
+        AnimalController targetAnimalController = target.GetComponent<AnimalController>();
+
+        if (targetAnimalController != null)
+        {
+            //if this animalModel can the targets animalModel: add to visibleFoodTargets
+            if (animalController.animalModel.CanEat(targetAnimalController.animalModel))
+            {
+                animalController.heardPreyTargets.Add(target);
+                return;
+            }
+            //if the target is of same species: add to visibleFriendlyTargets
+            if (animalController.animalModel.IsSameSpecies(targetAnimalController.animalModel))
+            {
+                animalController.heardFriendlyTargets.Add(target);
+                return;
+            }
+            //if the targets animalModel can eat this animalModel: add to visibleHostileTargets
+            if (targetAnimalController.animalModel.CanEat(animalController.animalModel))
+            {
+                animalController.heardHostileTargets.Add(target);
+                animalController.animalModel.actionPerceivedHostile?.Invoke(target);
+                return;
+            }
+        }
+        
+    }
+    
+    /*
     private void HandleTarget(GameObject target)
     {
         // can't hear non-animals, i.e plants/water
@@ -79,7 +109,7 @@ public class HearingAbility : MonoBehaviour
             animalController.heardPreyTargets.Add(target);
         }
     }
-    
+    */
     private void Start()
     {
         tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();

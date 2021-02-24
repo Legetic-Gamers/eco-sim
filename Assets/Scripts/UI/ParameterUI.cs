@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class ParameterUI : MonoBehaviour
 {
     [SerializeField] private GameObject animal;
+    [SerializeField] private Text state;
     [SerializeField] private Slider health;
     [SerializeField] private Slider energy;
     [SerializeField] private Slider hydration;
@@ -13,6 +14,8 @@ public class ParameterUI : MonoBehaviour
 
     [HideInInspector]
     public Camera camera;
+    
+    
     
     // Start is called before the first frame update
     void Start()
@@ -29,10 +32,11 @@ public class ParameterUI : MonoBehaviour
         if (animalController)
         {
             AnimalModel animal = animalController.animalModel;
-            health.value = animal.getHealthPercentage();
-            energy.value = animal.getEnergyPercentage();
-            hydration.value = animal.getHydrationPercentage();
+            health.value = animal.GetHealthPercentage();
+            energy.value = animal.GetEnergyPercentage();
+            hydration.value = animal.GetHydrationPercentage();
             reproductiveUrge.value = animal.reproductiveUrge;
+            state.text = animalController.Fsm.CurrentState.ToString();
         }
     }
 }

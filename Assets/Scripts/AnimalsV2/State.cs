@@ -66,5 +66,7 @@ namespace AnimalsV2
         {
             return currentStateAnimation.ToString();
         }
+
+        public abstract string ToString();
     }
 }

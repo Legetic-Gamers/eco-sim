@@ -12,7 +12,7 @@ namespace AnimalsV2.States
         private float timeLeft;
         private bool doneEating;
 
-        private GameObject consumable;
+        private GameObject edible;
 
         public Action<GameObject> onEatFood;
         
@@ -43,13 +43,19 @@ namespace AnimalsV2.States
 
         public bool foodIsEmpty()
         {
-            return consumable == null;
+            return edible == null;
         }
 
-        public void setConsumable(GameObject target)
+        public void EatFood(GameObject target)
         {
-            consumable = target;
+            Debug.Log("MUNCH");
+            edible = target;
             onEatFood?.Invoke(target);
+        }
+
+        public override string ToString()
+        {
+            return "Eating";
         }
     }
 }

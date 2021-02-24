@@ -2,15 +2,19 @@
  * Authors: Johan A.
  */
 
+using System;
 using UnityEngine;
 
 namespace AnimalsV2.States
 {
     public class Mating : State
     {
-    
+        private AnimalController animalController;
+
+        public Action<GameObject> onMate;
+        
         private float timeLeft = 3.0f;
-        public Mating(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine) {}
+        public Mating(AnimalController animalController, FiniteStateMachine finiteStateMachine) : base(animalController, finiteStateMachine) {}
 
         public override void Enter()
         {
@@ -32,6 +36,16 @@ namespace AnimalsV2.States
             {
                 // Go back to Wander
             }
+        }
+
+        public void Mate(GameObject target)
+        {
+            onMate.Invoke(target);
+        }
+        
+        public override string ToString()
+        {
+            return "Mating";
         }
     }
 }

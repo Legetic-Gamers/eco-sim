@@ -7,6 +7,7 @@ namespace AnimalsV2.States
     public class GoToState : State
     {
         private GameObject targetObject;
+        private string action;
         
 
         public GoToState(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine)
@@ -47,12 +48,21 @@ namespace AnimalsV2.States
         {
             targetObject = t;
         }
+
+        public void SetActionOnArrive(string action)
+        {
+            this.action = action;
+        }
         
         public GameObject GetTarget()
         {
             return targetObject;
         }
 
+        public string GetAction()
+        {
+            return action;
+        }
         public bool arrivedAtTarget()
         {
             if (animal != null && targetObject != null)
@@ -61,6 +71,11 @@ namespace AnimalsV2.States
             }
 
             return false;
+        }
+        
+        public override string ToString()
+        {
+            return "Going to target";
         }
     }
 }

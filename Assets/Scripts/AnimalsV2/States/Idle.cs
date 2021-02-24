@@ -25,5 +25,10 @@ namespace AnimalsV2.States
             base.LogicUpdate();
             
         }
+        
+        public override string ToString()
+        {
+            return "Idle";
+        }
     }
 }

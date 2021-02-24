@@ -20,8 +20,6 @@ namespace AnimalsV2.States
         private GameObject food;
         private GameObject water;
         private GameObject mate;
-
-        public GameObject target;
         
         public Wander(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine) {}
 
@@ -53,20 +51,20 @@ namespace AnimalsV2.States
             }
         }
         
-        public GameObject FoundObject()
+        public Tuple<GameObject, string> FoundObject()
         {
             foreach (var p in priorities)
             {
                 switch (p)
                 {
                     case "Food":
-                        if (food != null) return food;
+                        if (food != null) return Tuple.Create(food, "eat");
                         break;
                     case "Water":
-                        if (water != null) return water;
+                        if (water != null) return Tuple.Create(water, "drink");
                         break;
                     case "Mate":
-                        if (mate != null) return mate;
+                        if (mate != null) return Tuple.Create(mate, "mate");
                         break;
                 }
             }
@@ -77,6 +75,11 @@ namespace AnimalsV2.States
         public void SetPriorities(List<String> priorities)
         {
             this.priorities = priorities;
+        }
+        
+        public override string ToString()
+        {
+            return "Wandering";
         }
     }
 }

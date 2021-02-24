@@ -1,4 +1,5 @@
-﻿using Model;
+﻿using System;
+using Model;
 
 public class RabbitModel : AnimalModel,IEdible
 {
@@ -24,5 +25,15 @@ public class RabbitModel : AnimalModel,IEdible
     {
         isEaten = true;
         return traits.size;
+    }
+
+    public override bool CanEat<T>(T obj)
+    {
+        return obj is PlantModel;
+    }
+
+    public override bool IsSameSpecies<T>(T obj)
+    {
+        return obj is RabbitModel;
     }
 }

@@ -1,4 +1,6 @@
-﻿public class DeerModel : AnimalModel
+﻿using Model;
+
+public class DeerModel : AnimalModel
 {
     public DeerModel() : base(new Traits(10, 300, 100, 100, 10,10,10,10,10,10,10,10, Traits.BehaviorType.Herbivore, Traits.Species.Rabbit),0)
     {
@@ -16,4 +18,15 @@
         //TODO logic for determining generation
         return new DeerModel(childTraits, 0);
     }
+    
+    public override bool CanEat<T>(T obj)
+    {
+        return obj is PlantModel;
+    }
+    
+    public override bool IsSameSpecies<T>(T obj)
+    {
+        return obj is DeerModel;
+    }
+    
 }

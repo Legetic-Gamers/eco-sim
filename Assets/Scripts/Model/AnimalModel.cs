@@ -119,7 +119,7 @@ public abstract class AnimalModel
         currentHealth = traits.maxHealth;
         currentEnergy = traits.maxEnergy;
         currentHydration = traits.maxHydration;
-        reproductiveUrge = 100;
+        reproductiveUrge = 0.2f;
         this.traits = traits;
     }
 
@@ -133,19 +133,23 @@ public abstract class AnimalModel
 
     public abstract AnimalModel Mate(AnimalModel otherParent);
 
-    public float getHealthPercentage()
+    public float GetHealthPercentage()
     {
         return currentHealth / traits.maxEnergy;
     }
 
-    public float getEnergyPercentage()
+    public float GetEnergyPercentage()
     {
         return currentEnergy / traits.maxEnergy;
     }
 
-    public float getHydrationPercentage()
+    public float GetHydrationPercentage()
     {
         return currentHydration / traits.maxHydration;
     }
+
+    public abstract bool CanEat<T>(T obj);
+
+    public abstract bool IsSameSpecies<T>(T obj);
 
 }
