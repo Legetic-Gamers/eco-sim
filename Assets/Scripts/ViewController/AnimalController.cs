@@ -18,6 +18,7 @@ public abstract class AnimalController : MonoBehaviour
     public NavMeshAgent agent;
     public FiniteStateMachine Fsm;
     private AnimationController animationController;
+    private DecisionMaker decisionMaker;
     
     /*public GoToMate sm;
     public GoToFood sf;
@@ -134,6 +135,7 @@ public abstract class AnimalController : MonoBehaviour
         es.onEatFood -= EatFood;
         
         animationController.UnSubscribe();
+        decisionMaker.EventUnsubscribe();
         
         Debug.Log(gameObject.name + " has unsubscribed from onParamTickEvent.");
     }
@@ -209,7 +211,7 @@ public abstract class AnimalController : MonoBehaviour
         tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
         EventSubscribe();
         
-        DecisionMaker decisionMaker = new DecisionMaker(this,animalModel,tickEventPublisher);
+        decisionMaker = new DecisionMaker(this,animalModel,tickEventPublisher);
     }
     
     

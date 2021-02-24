@@ -14,7 +14,7 @@ namespace ViewController
 
         public void Update()
         {
-            if (plantModel.isEaten)
+            if (plantModel != null && plantModel.isEaten)
             {
                 Destroy(gameObject);
             }
