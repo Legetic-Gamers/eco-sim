@@ -53,11 +53,14 @@ namespace AnimalsV2
                 //Get the closest game object
                 foreach (GameObject g in allPercievedObjects)
                 {
-                    float dist = Vector3.Distance(g.transform.position, thisPosition);
-                    if (dist < closestDistance)
+                    if (g != null)
                     {
-                        closestDistance = dist;
-                        nearbyObj = g;
+                        float dist = Vector3.Distance(g.transform.position, thisPosition);
+                        if (dist < closestDistance)
+                        {
+                            closestDistance = dist;
+                            nearbyObj = g;
+                        }
                     }
                 }
             }
@@ -79,7 +82,14 @@ namespace AnimalsV2
             Vector3 averagePosition = new Vector3();
             
             //Calculate the average
-            foreach (GameObject g in allPercievedObjects)  averagePosition += g.transform.position;
+            foreach (GameObject g in allPercievedObjects)
+            {
+                if (g != null)
+                {
+                    averagePosition += g.transform.position;
+                }
+
+            }
             averagePosition /= allPercievedObjects.Count;
             return averagePosition;
         }

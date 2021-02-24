@@ -17,6 +17,7 @@ public abstract class AnimalController : MonoBehaviour
     
     public NavMeshAgent agent;
     public FiniteStateMachine Fsm;
+    private AnimationController animationController;
     
     /*public GoToMate sm;
     public GoToFood sf;
@@ -120,6 +121,8 @@ public abstract class AnimalController : MonoBehaviour
 
         Fsm.OnStateEnter += changeModifiers;
         
+        es.onEatFood += EatFood;
+        
         Debug.Log(gameObject.name + " has subscribed to onParamTickEvent");
     }
     protected void EventUnsubscribe()
@@ -127,6 +130,10 @@ public abstract class AnimalController : MonoBehaviour
         tickEventPublisher.onParamTickEvent -= VaryParameters;
 
         Fsm.OnStateEnter -= changeModifiers;
+        
+        es.onEatFood -= EatFood;
+        
+        animationController.UnSubscribe();
         
         Debug.Log(gameObject.name + " has unsubscribed from onParamTickEvent.");
     }
@@ -141,7 +148,6 @@ public abstract class AnimalController : MonoBehaviour
         {
             return otherAnimal.animalModel.traits.species == animalModel.traits.species;
         }
-        
         catch (NullReferenceException)
         {
             return false;
@@ -175,6 +181,7 @@ public abstract class AnimalController : MonoBehaviour
     public List<GameObject> heardFriendlyTargets = new List<GameObject>();
     public List<GameObject> heardPreyTargets = new List<GameObject>();
     
+
     protected void Start()
     {
         // Init the NavMesh agent
@@ -183,13 +190,13 @@ public abstract class AnimalController : MonoBehaviour
 
         //Create the FSM.
         Fsm = new FiniteStateMachine();
-        AnimationController animationController = new AnimationController(this);
+        animationController = new AnimationController(this);
         
         /*sf = new GoToFood(this, Fsm);
         sw = new GoToWater(this, Fsm);
         sm = new GoToMate(this, Fsm);*/
         es = new Eating(this, Fsm);
-        es.onEatFood += EatFood;
+        
         
         
         

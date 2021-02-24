@@ -11,12 +11,13 @@ public class ParameterUI : MonoBehaviour
     [SerializeField] private Slider hydration;
     [SerializeField] private Slider reproductiveUrge;
 
+    [HideInInspector]
     public Camera camera;
     
     // Start is called before the first frame update
     void Start()
     {
-        
+        camera = Camera.main;
     }
 
     // Update is called once per frame

@@ -30,6 +30,13 @@ namespace AnimalsV2
             //Debug.Log("AnimationController listening to FSM");
         }
 
+        public void UnSubscribe()
+        {
+            animal.Fsm.OnStateEnter -= FSM_OnStateEnter;
+            animal.Fsm.OnStateLogicUpdate -= FSM_OnStateLogicUpdate;
+            animal.Fsm.OnStateExit -= FSM_OnStateExit;
+        }
+
         //Animation parameters which need updating on state enter.
         private void FSM_OnStateEnter(State state)
         {

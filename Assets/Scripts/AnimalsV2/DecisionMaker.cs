@@ -116,11 +116,18 @@ namespace AnimalsV2
             else if (currentState is GoToState)
             {
                 GoToState goToState = (GoToState) currentState;
-                if (goToState.arrivedAtTarget())
+                if(goToState.GetTarget() != null){
+                    if (goToState.arrivedAtTarget())
+                    {
+                        GameObject target = goToState.GetTarget();
+                        animalController.es.setConsumable(target);
+                        ChangeState(animalController.es);
+                    }
+                    
+                }
+                else
                 {
-                    GameObject target = goToState.GetTarget();
-                    animalController.es.setConsumable(target);
-                    ChangeState(animalController.es);
+                    Prioritize();
                 }
             }
             else if(currentState is Wander)
