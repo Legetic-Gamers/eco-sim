@@ -155,6 +155,12 @@ public abstract class AnimalController : MonoBehaviour
             return false;
         }
     }
+    
+    public bool IsPredator =>
+        animalModel.traits.behaviorType == Traits.BehaviorType.Carnivore
+        || animalModel.traits.behaviorType == Traits.BehaviorType.Omnivore;
+
+    public bool IsPrey => animalModel.traits.behaviorType == Traits.BehaviorType.Herbivore;
 
     //TODO a rabbit should be able to have more than one offspring at a time
     void CreateOffspring(AnimalController otherParent)

@@ -33,11 +33,7 @@ namespace AnimalsV2.States
         {
             base.LogicUpdate();
             
-            // Get average position of enemies 
-            //averagePosition = NavigationUtilities.GetNearestObjectPositionByTag(animal, "Predator");
-            
-            // alternative to the above
-            //averagePosition = fleeingFromPos;
+            // Get average position of enemies
             List<GameObject> allHostileTargets = animal.heardHostileTargets.Concat(animal.visibleHostileTargets).ToList();
 
             averagePosition = NavigationUtilities.GetNearObjectsAveragePosition(allHostileTargets, animal.transform.position);

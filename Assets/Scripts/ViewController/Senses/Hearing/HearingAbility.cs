@@ -42,32 +42,41 @@ public class HearingAbility : MonoBehaviour
         for (int i = 0; i < targetsInRadius.Length; i++)
         {
             GameObject target = targetsInRadius[i].gameObject;
-            AnimalController targetAnimalController = target.GetComponent<AnimalController>();
+            
             
             // don't add self
-            if (target != gameObject && targetAnimalController != null 
-                                     && !target.gameObject.CompareTag("Food") 
-                                     && !target.gameObject.CompareTag("Water"))
+            if (target != gameObject)
             {
-                
-                //animalController.heardTargets.Add(target);
                 // for custom editor HAEditor
                 targets.Add(target);
 
-                if (isPrey && targetAnimalController.animalModel.traits.IsPredator)
-                {
-                    animalController.heardHostileTargets.Add(target);
-                    animalController.animalModel.actionPerceivedHostile?.Invoke(target);
-                }
-                else if (!isPrey && targetAnimalController.animalModel.traits.IsPrey)
-                {
-                    animalController.heardPreyTargets.Add(target);
-                }
-                else if (animalController.IsSameSpecies(targetAnimalController))
-                {
-                    animalController.heardFriendlyTargets.Add(target);
-                }
+                HandleTarget(target);
             }
+        }
+    }
+
+    private void HandleTarget(GameObject target)
+    {
+        // can't hear non-animals, i.e plants/water
+        if (!target.gameObject.CompareTag("Animal")) return;
+        
+        AnimalController targetAC = target.GetComponent<AnimalController>();
+        
+        // hear same species -> mate
+        if (animalController.IsSameSpecies(targetAC))
+        {
+            animalController.heardFriendlyTargets.Add(target);
+        }
+        // hear predator
+        else if (targetAC.IsPredator)
+        {
+            animalController.heardHostileTargets.Add(target);
+            animalController.animalModel.actionPerceivedHostile?.Invoke(target);
+        }
+        // hear prey, self is predator
+        else if (animalController.IsPredator && targetAC.IsPrey)
+        {
+            animalController.heardPreyTargets.Add(target);
         }
     }
     

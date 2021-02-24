@@ -48,8 +48,7 @@ public class FieldOfView : MonoBehaviour
         for (int i = 0; i < targetsInRadius.Length; i++)
         {
             GameObject target = targetsInRadius[i].gameObject;
-            
-            
+
             // don't add self
             if (target == gameObject) return;
             
@@ -64,28 +63,35 @@ public class FieldOfView : MonoBehaviour
                 // if target is not obscured
                 if (!Physics.Raycast(transform.position, dirToTarget, distToTarget, obstacleMask))
                 {
-                    // obsolete with the invokes below
-                    //animalController.visibleTargets.Add(target);
                     // for custom editor FoVEditor
                     targets.Add(target);
 
-                    HandleTarget(target);
+                    if(target.gameObject.CompareTag("Food") || target.gameObject.CompareTag("Water")) 
+                        HandleConsumableTarget(target);
+                    else if (target.gameObject.CompareTag("Animal")) 
+                        HandleAnimalTarget(target);
 
                 }
             }
         }
     }
 
-    private void HandleTarget(GameObject target)
+    private void HandleConsumableTarget(GameObject target)
     {
-        AnimalController targetAnimalController = target.GetComponent<AnimalController>();
-
         // see water
         if (target.gameObject.CompareTag("Water"))
         {
             animalController.visibleWaterTargets.Add(target);
-            return;
         }
+        // see plant
+        else if (animalController.IsPrey && target.gameObject.CompareTag("Food"))
+        {
+            animalController.visibleFoodTargets.Add(target);
+        }
+    }
+    private void HandleAnimalTarget(GameObject target)
+    {
+        AnimalController targetAnimalController = target.GetComponent<AnimalController>();
         
         // see same species -> mate
         if (animalController.IsSameSpecies(targetAnimalController))
@@ -93,33 +99,17 @@ public class FieldOfView : MonoBehaviour
             animalController.visibleFriendlyTargets.Add(target);
             return;
         }
-        
         // see predator
-        if (targetAnimalController.animalModel.traits.IsPredator)
+        if (targetAnimalController.IsPredator)
         {
             animalController.visibleHostileTargets.Add(target);
             animalController.animalModel.actionPerceivedHostile?.Invoke(target);
             return;
         }
-
-        switch (animalController.animalModel.traits.IsPrey)
+        // see prey
+        if (animalController.IsPredator && targetAnimalController.IsPrey)
         {
-            // is predator
-            case true:
-                // see plant
-                if (target.gameObject.CompareTag("Food"))
-                {
-                    animalController.visibleFoodTargets.Add(target);
-                }
-                break;
-            // is predator
-            case false: 
-                // see prey
-                if (targetAnimalController.animalModel.traits.IsPrey)
-                {
-                    animalController.visibleFoodTargets.Add(target);
-                }
-                break;
+            animalController.visibleFoodTargets.Add(target);
         }
     }
 
