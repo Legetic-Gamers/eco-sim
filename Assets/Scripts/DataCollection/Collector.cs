@@ -4,34 +4,39 @@
 
 using System;
 using System.Collections.Generic;
-using AnimalsV2;
 using UnityEngine;
 
 namespace DataCollection
 {
-    [Serializable]
-    public class Collector
+    public class Collector : MonoBehaviour
     {
-        // Each index is generation, value is the number of animals in that generation. 
-        public static List<AnimalController> totalAnimalsPerGeneration;
-        
-        // Not supposed to be AnimalController, "Type of animal"
-        public static Dictionary<AnimalController, int> numberOfEntitiesPerSpecies;
-        
-        private Collector()
+        private void Awake()
         {
-            totalAnimalsPerGeneration = new List<AnimalController>();
-            numberOfEntitiesPerSpecies = new Dictionary<AnimalController, int>();
+            //numberOfEntitiesPerSpecies = new Dictionary<AnimalController, int>();
+            totalAnimalsAlive = new List<int>();
+            tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
             EventSubscribe();
         }
-        
+
+        private TickEventPublisher tickEventPublisher;
+        // Each index is generation, value is the number of animals in that generation. 
+        public static List<int> totalAnimalsAlive;
+
+        // Not supposed to be AnimalController, "Type of animal"
+        //public static Dictionary<AnimalController, int> numberOfEntitiesPerSpecies;
+
         private void EventSubscribe()
         {
-            /* 
-             * Subscribe on all events
-             */
+            tickEventPublisher.onCollectorUpdate += AddToTotal;
             Debug.Log("Collector has subscribed to data events. ");
         }
+
+        private void AddToTotal()
+        {
+            totalAnimalsAlive.Add(GameObject.FindGameObjectsWithTag("Animal").Length);
+            /*Debug.Log(totalAnimalsAlive.ToString());*/
+        }
+
         private void EventUnsubscribe()
         {
             /* 
@@ -39,7 +44,6 @@ namespace DataCollection
             */
             Debug.Log("Collector has unsubscribed to data events. ");
         }
-
         /*
          * TODO Add event function definitions which are subscribed to.
          * TDO On event write to JSON-file/s. 

@@ -1,18 +1,41 @@
 /*
  * Author: Johan A.
  */
-using AnimalsV2;
+
+using System;
+using System.IO;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace DataCollection
 {
-    public class JsonFormatter
+    public class JsonFormatter : MonoBehaviour
     {
-        public void WriteDataToFile(AnimalController[] animals)
+        private void Awake()
         {
-            string json = JsonUtility.ToJson(animals.ToString(), true);
-            // TODO fix path
-            System.IO.File.WriteAllText(@"D:\path.txt", json);
+            /*string json = JsonUtility.ToJson(animals.ToString(), true);*/
+            /*System.IO.File.WriteAllText(@"D:\path.txt", json);*/
+            string fileName = "test.txt";
+            string path = Path.GetFullPath(fileName);
+            Debug.Log(path);
+            
+            if (!File.Exists(path))
+            {
+                // Create a file to write to.
+                string[] createText = { "Hello", "And", "Welcome" };
+                Debug.Log("Writing2?");
+                File.WriteAllLines(path, createText);
+            }
+            
+            string appendText = "This is extra text" + Environment.NewLine;
+            File.AppendAllText(path, appendText);
+            
         }
+
+        /*public static async Task<> ExampleAsync()
+        {
+            using StreamWriter file = new("WriteLines2.txt", append: true);
+            await file.WriteLineAsync("Fourth line");
+        }*/
     }
 }
