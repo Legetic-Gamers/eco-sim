@@ -11,10 +11,10 @@ namespace DataCollection
 {
     public class JsonFormatter : MonoBehaviour
     {
-        private void Awake()
+        /*private void Awake()
         {
-            /*string json = JsonUtility.ToJson(animals.ToString(), true);*/
-            /*System.IO.File.WriteAllText(@"D:\path.txt", json);*/
+            /*string json = JsonUtility.ToJson(animals.ToString(), true);#1#
+            /*System.IO.File.WriteAllText(@"D:\path.txt", json);#1#
             string fileName = "test.txt";
             string path = Path.GetFullPath(fileName);
             Debug.Log(path);
@@ -27,6 +27,7 @@ namespace DataCollection
                 File.WriteAllLines(path, createText);
             }
             
+            
             string appendText = "This is extra text" + Environment.NewLine;
             File.AppendAllText(path, appendText);
             
@@ -36,6 +37,6 @@ namespace DataCollection
         {
             using StreamWriter file = new("WriteLines2.txt", append: true);
             await file.WriteLineAsync("Fourth line");
-        }*/
+        }#1#*/
     }
 }
