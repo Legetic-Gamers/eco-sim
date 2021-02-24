@@ -123,6 +123,8 @@ public class FieldOfView : MonoBehaviour
         }
     }
 
+    
+
     // get angle direction
     public Vector3 DirectionOfAngle(float angleInDegrees)
     {

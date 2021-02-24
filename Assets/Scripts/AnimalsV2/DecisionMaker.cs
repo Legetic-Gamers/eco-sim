@@ -124,7 +124,6 @@ namespace AnimalsV2
                         animalController.es.setConsumable(target);
                         ChangeState(animalController.es);
                     }
-                    
                 }
                 else
                 {
@@ -195,10 +194,7 @@ namespace AnimalsV2
             animalController.wander.SetPriorities(prio);
             ChangeState(animalController.wander);
 
-            foreach (var s in prio)
-            {
-                Debug.Log(s);
-            }
+            Debug.Log(prio.ToString());
             
 
             //Debug.Log(fsm.CurrentState.GetType());
