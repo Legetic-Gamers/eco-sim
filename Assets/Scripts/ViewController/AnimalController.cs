@@ -16,7 +16,13 @@ public abstract class AnimalController : MonoBehaviour
 
     public Action<State> stateChange;
     
+    // decisionMaker subscribes to these actions
+    public Action<GameObject> actionPerceivedHostile;
+    public Action actionDeath;
+    
+    [HideInInspector]
     public NavMeshAgent agent;
+    
     public FiniteStateMachine Fsm;
     private AnimationController animationController;
     private DecisionMaker decisionMaker;
@@ -24,13 +30,14 @@ public abstract class AnimalController : MonoBehaviour
     /*public GoToMate sm;
     public GoToFood sf;
     public GoToWater sw;*/
-    public FleeingState fs;
-    public Eating es;
-    public Wander wander;
-    public GoToState gs;
-    public Idle idle;
-    public Drinking ds;
-    public Mating ms;
+    public FleeingState fleeingState;
+    public Eating eatingState;
+    public Wander wanderState;
+    public GoToState goToState;
+    public Idle idleState;
+    public Drinking drinkingState;
+    public Mating matingState;
+    public Dead deadState;
 
     float energyModifier = 0;
     float hydrationModifier = 0;
@@ -125,11 +132,11 @@ public abstract class AnimalController : MonoBehaviour
 
         Fsm.OnStateEnter += changeModifiers;
         
-        es.onEatFood += EatFood;
+        eatingState.onEatFood += EatFood;
 
-        ds.onDrinkWater += DrinkWater;
+        drinkingState.onDrinkWater += DrinkWater;
 
-        ms.onMate += Mate;
+        matingState.onMate += Mate;
         //Debug.Log(gameObject.name + " has subscribed to onParamTickEvent");
     }
     protected void EventUnsubscribe()
@@ -138,9 +145,11 @@ public abstract class AnimalController : MonoBehaviour
 
         Fsm.OnStateEnter -= changeModifiers;
         
-        es.onEatFood -= EatFood;
+        eatingState.onEatFood -= EatFood;
 
-        ds.onDrinkWater -= DrinkWater;
+        drinkingState.onDrinkWater -= DrinkWater;
+
+        matingState.onMate -= Mate;
         
         animationController.UnSubscribe();
         decisionMaker.EventUnsubscribe();
@@ -178,7 +187,6 @@ public abstract class AnimalController : MonoBehaviour
     
     public List<GameObject> visibleHostileTargets = new List<GameObject>();
     public List<GameObject> visibleFriendlyTargets = new List<GameObject>();
-    public List<GameObject> visiblePreyTargets = new List<GameObject>();
     public List<GameObject> visibleFoodTargets = new List<GameObject>();
     public List<GameObject> visibleWaterTargets = new List<GameObject>();
     
@@ -200,18 +208,19 @@ public abstract class AnimalController : MonoBehaviour
         /*sf = new GoToFood(this, Fsm);
         sw = new GoToWater(this, Fsm);
         sm = new GoToMate(this, Fsm);*/
-        es = new Eating(this, Fsm);
+        eatingState = new Eating(this, Fsm);
         
         
         
         
-        fs = new FleeingState(this, Fsm);
-        wander = new Wander(this, Fsm);
-        gs = new GoToState(this, Fsm);
-        idle = new Idle(this, Fsm);
-        ds = new Drinking(this, Fsm);
-        ms = new Mating(this, Fsm);
-        Fsm.Initialize(idle);
+        fleeingState = new FleeingState(this, Fsm);
+        wanderState = new Wander(this, Fsm);
+        goToState = new GoToState(this, Fsm);
+        idleState = new Idle(this, Fsm);
+        drinkingState = new Drinking(this, Fsm);
+        matingState = new Mating(this, Fsm);
+        deadState = new Dead(this, Fsm);
+        Fsm.Initialize(idleState);
         
         tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
         EventSubscribe();
@@ -225,11 +234,14 @@ public abstract class AnimalController : MonoBehaviour
     {
         if (!animalModel.IsAlive())
         {
-            Debug.Log("Rabbit is ded");
-            Destroy(gameObject,0f);
-            
-        }
+            // invoke death state with method HandleDeath() in decisionmaker
+            actionDeath?.Invoke();
+            // Set state so that it can't change
+            Fsm.absorbingState = true;
+            // unsubscribe all events because we want only want to invoke it once.
+            actionDeath = null;
 
+        }
         Fsm.UpdateStatesLogic();
     }
 
@@ -250,13 +262,13 @@ public abstract class AnimalController : MonoBehaviour
         //Access food script to consume the food.
         if (food.GetComponent<AnimalController>()?.animalModel is IEdible edibleAnimal)
         {
-            
             animalModel.currentEnergy += edibleAnimal.GetEaten();
+            Destroy(food);
             
         }else if (food.GetComponent<PlantController>()?.plantModel is IEdible ediblePlant)
         {
             animalModel.currentEnergy += ediblePlant.GetEaten();
-            
+            Destroy(food);
         }
     }
 
@@ -289,5 +301,10 @@ public abstract class AnimalController : MonoBehaviour
             targetAnimalController.animalModel.reproductiveUrge = 0f;
         }
         
+    }
+    
+    public void DestroyGameObject(float delay)
+    {
+        Destroy(gameObject, delay);
     }
 }

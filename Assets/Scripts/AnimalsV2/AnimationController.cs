@@ -61,5 +61,10 @@ namespace AnimalsV2
             animator?.CrossFade("Base Layer." + state.GetStateAnimation(), transitionSpeed, 0);
             //animator.Play("Base Layer." + state,0);
         }
+
+        public void PlayAnimation(StateAnimation animation, float transitionSpeed)
+        {
+            animator.CrossFade("Base Layer." + animation, transitionSpeed, 0);
+        }
     }
 }

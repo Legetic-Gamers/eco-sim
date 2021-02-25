@@ -9,8 +9,6 @@ namespace AnimalsV2.States
         private GameObject targetObject;
         private string action;
         
-        //TODO fix so that if target is out of range, stop trying to go to that target. E.g. if a rabbit succesfully flees a wolf, wolf should not keep having rabbit as target
-
         public GoToState(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine)
         {
             
@@ -68,6 +66,7 @@ namespace AnimalsV2.States
         {
             if (animal != null && targetObject != null)
             {
+                // This is still not perfect. Atleast we check the reach radius of the animal, and apply a distance of 1f. This will cause problems if the target has a radius larger than 1f
                 return Vector3.Distance(animal.transform.position, targetObject.transform.position) < (animal.GetComponent<CharacterController>().radius + 1f);
             }
 

@@ -67,6 +67,7 @@ namespace AnimalsV2
             return currentStateAnimation.ToString();
         }
 
+        // used to display state in the UI
         public abstract string ToString();
     }
 }

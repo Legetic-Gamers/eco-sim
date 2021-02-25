@@ -77,7 +77,7 @@ public class HearingAbility : MonoBehaviour
             if (targetAnimalController.animalModel.CanEat(animalController.animalModel))
             {
                 animalController.heardHostileTargets.Add(target);
-                animalController.animalModel.actionPerceivedHostile?.Invoke(target);
+                animalController.actionPerceivedHostile?.Invoke(target);
                 return;
             }
         }
