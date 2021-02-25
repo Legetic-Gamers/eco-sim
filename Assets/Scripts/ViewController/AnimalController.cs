@@ -91,6 +91,7 @@ public abstract class AnimalController : MonoBehaviour
                     //Run fast if chasing
                     Debug.Log("CHASING");
                     speedModifier = Running_Speed;
+                    
                 }
             }
 

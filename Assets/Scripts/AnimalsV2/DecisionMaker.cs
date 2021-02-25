@@ -233,7 +233,6 @@ namespace AnimalsV2
             
             if (wantingOffspring()) // Prio 3 (If we live good) search for mate.
             {
-                Debug.Log("YESSSSS");
                 prio.Insert(0,"Mate");
                 
             }
