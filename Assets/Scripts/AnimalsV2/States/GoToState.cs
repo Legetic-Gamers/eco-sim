@@ -9,6 +9,7 @@ namespace AnimalsV2.States
         private GameObject targetObject;
         private string action;
         
+        //TODO fix so that if target is out of range, stop trying to go to that target. E.g. if a rabbit succesfully flees a wolf, wolf should not keep having rabbit as target
 
         public GoToState(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine)
         {

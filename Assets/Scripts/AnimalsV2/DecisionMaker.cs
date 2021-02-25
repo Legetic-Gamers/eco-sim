@@ -90,7 +90,6 @@ namespace AnimalsV2
 
             State currentState = fsm.CurrentState;
             
-            //TODO getType should be replaced with ID or similar. THIS IS REALLY BAD PRACTICE I KNOW.
             if (currentState is Eating)
             {
                 Eating eatingState = (Eating) currentState;
