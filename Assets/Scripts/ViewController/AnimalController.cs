@@ -57,7 +57,7 @@ public abstract class AnimalController : MonoBehaviour
         if (state is Eating)
         {
             energyModifier = 0f;
-            hydrationModifier = 0.1f;
+            hydrationModifier = 0.05f;
             reproductiveUrgeModifier = 1f;
             //Debug.Log("varying parameters depending on state: Eating");
         } else if (state is FleeingState)
@@ -69,13 +69,13 @@ public abstract class AnimalController : MonoBehaviour
         } else if (state is GoToState)
         {
             energyModifier = 0.1f;
-            hydrationModifier = 0.1f;
+            hydrationModifier = 0.05f;
             reproductiveUrgeModifier = 1;
             //Debug.Log("varying parameters depending on state: GoToFood");
         } else if (state is Idle)
         {
             energyModifier = 0f;
-            hydrationModifier = 0.1f;
+            hydrationModifier = 0.05f;
             reproductiveUrgeModifier = 1;
             //Debug.Log("varying parameters depending on state: Mating");
         } else if (state is Mating)
@@ -87,7 +87,7 @@ public abstract class AnimalController : MonoBehaviour
         } else if (state is Wander)
         {
             energyModifier = 0.1f;
-            hydrationModifier = 0.1f;
+            hydrationModifier = 0.05f;
             reproductiveUrgeModifier = 1f;
             //Debug.Log("varying parameters depending on state: Wander");
         }
@@ -227,7 +227,7 @@ public abstract class AnimalController : MonoBehaviour
         {
             Debug.Log("Rabbit is ded");
             // probably doing this in deathState instead
-            Destroy(gameObject, 2.0f);
+            Destroy(gameObject, 0f);
         }
         
         //Handle Input

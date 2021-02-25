@@ -107,7 +107,6 @@ namespace AnimalsV2
                 
             } else if (currentState is FleeingState)
             {
-                //FleeingState fleeingState = (FleeingState) currentState;
                 //Run until no predator nearby.
                 //Run a bit longer?
 

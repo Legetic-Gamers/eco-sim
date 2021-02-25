@@ -24,7 +24,7 @@ public class RabbitModel : AnimalModel,IEdible
     public float GetEaten()
     {
         isEaten = true;
-        return traits.size;
+        return 100f;
     }
 
     public override bool CanEat<T>(T obj)
