@@ -20,6 +20,13 @@ namespace AnimalsV2
         Dead
     }
 
+    public enum Priorities
+    {
+        Food,
+        Water,
+        Mate
+    }
+
     public abstract class State
     {
         /// <summary>

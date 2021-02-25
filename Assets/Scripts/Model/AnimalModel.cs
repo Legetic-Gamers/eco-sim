@@ -118,66 +118,35 @@ public abstract class AnimalModel
         this.traits = traits;
     }
 
-    // optional, can be set in the behavior model instead
-    // protected string foodType; // herbivore, carnivore, omnivore
-
-    public bool IsAlive()
-    {
-        return (currentHealth > 0 && currentEnergy > 0 && age < traits.ageLimit && currentHydration > 0);
-    }
+    public bool IsAlive => (currentHealth > 0 && currentEnergy > 0 && age < traits.ageLimit && currentHydration > 0);
+    
 
     public abstract AnimalModel Mate(AnimalModel otherParent);
 
-    public float GetHealthPercentage()
-    {
-        return currentHealth / traits.maxEnergy;
-    }
-
-    public float GetEnergyPercentage()
-    {
-        return currentEnergy / traits.maxEnergy;
-    }
-
-    public float GetHydrationPercentage()
-    {
-        return currentHydration / traits.maxHydration;
-    }
+    public float GetHealthPercentage => currentHealth / traits.maxEnergy;
     
+    public float GetEnergyPercentage => currentEnergy / traits.maxEnergy;
     
-    public bool energyFull()
-    {
-        return currentEnergy == traits.maxEnergy;
-    }
-        
-    public bool highEnergy()
-    {
-        return currentEnergy / traits.maxEnergy > 0.7f;
-    }
-    public bool lowEnergy()
-    {
-        return currentEnergy / traits.maxEnergy < 0.6f;
-    }
-    public bool hydrationFull()
-    {
-        return currentHydration == traits.maxHydration;
-    }
-    public bool highHydration()
-    {
-        return currentHydration / traits.maxHydration > 0.7f;
-    }
-    public bool lowHydration()
-    {
-        return currentHydration / traits.maxHydration < 0.5f;
-    }
-    public bool wantingOffspring()
-    {
+    public float GetHydrationPercentage => currentHydration / traits.maxHydration;
+    
+    public bool EnergyFull => currentEnergy == traits.maxEnergy;
+
+    public bool HighEnergy => currentEnergy / traits.maxEnergy > 0.7f;
+    
+    public bool LowEnergy => currentEnergy / traits.maxEnergy < 0.6f;
+    
+    public bool HydrationFull => currentHydration == traits.maxHydration;
+    
+    public bool HighHydration => currentHydration / traits.maxHydration > 0.7f;
+    
+    public bool LowHydration => currentHydration / traits.maxHydration < 0.5f;
+    
+    public bool WantingOffspring => 
         //reproductive urge greater than average of energy and hydration.
-        return reproductiveUrge > (currentEnergy + currentHydration) / 2;
-    }
-    public bool lowHealth()
-    {
-        return currentHealth < 30;
-    }
+        reproductiveUrge > (currentEnergy + currentHydration) / 2;
+    
+    public bool LowHealth => currentHealth < 30;
+    
     
 
     public abstract bool CanEat<T>(T obj);

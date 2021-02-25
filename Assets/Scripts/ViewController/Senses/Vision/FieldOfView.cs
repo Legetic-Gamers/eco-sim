@@ -34,8 +34,6 @@ public class FieldOfView : MonoBehaviour
     private void FindVisibleTargets()
     {
         // prevent adding duplicates
-        //animalController.visibleTargets.Clear(); // obsolete
-        
         animalController.visibleHostileTargets.Clear();
         animalController.visibleFriendlyTargets.Clear();
         animalController.visibleFoodTargets.Clear();
@@ -54,8 +52,7 @@ public class FieldOfView : MonoBehaviour
 
             // don't add self
             if (target == gameObject) return;
-            
-            
+
             Vector3 dirToTarget = (target.transform.position - transform.position).normalized;
 
             if (Vector3.Angle(transform.forward, dirToTarget) < angle / 2)
@@ -86,27 +83,21 @@ public class FieldOfView : MonoBehaviour
     {
         AnimalController targetAnimalController = target.GetComponent<AnimalController>();
 
-        if (targetAnimalController != null)
+        //if the targets animalModel can eat this animalModel: add to visibleHostileTargets
+        if (targetAnimalController.animalModel.CanEat(animalController.animalModel))
         {
-            //if this animalModel can the targets animalModel: add to visibleFoodTargets
-            if (animalController.animalModel.CanEat(targetAnimalController.animalModel))
-            {
-                animalController.visibleFoodTargets.Add(target);
-                return;
-            }
-            //if the target is of same species: add to visibleFriendlyTargets
-            if (animalController.animalModel.IsSameSpecies(targetAnimalController.animalModel))
-            {
-                animalController.visibleFriendlyTargets.Add(target);
-                return;
-            }
-            //if the targets animalModel can eat this animalModel: add to visibleHostileTargets
-            if (targetAnimalController.animalModel.CanEat(animalController.animalModel))
-            {
-                animalController.visibleHostileTargets.Add(target);
-                animalController.actionPerceivedHostile?.Invoke(target);
-                return;
-            }    
+            animalController.visibleHostileTargets.Add(target);
+            animalController.actionPerceivedHostile?.Invoke(target);
+        }  
+        //if this animalModel can the targets animalModel: add to visibleFoodTargets
+        else if (animalController.animalModel.CanEat(targetAnimalController.animalModel))
+        {
+            animalController.visibleFoodTargets.Add(target);
+        }
+        //if the target is of same species: add to visibleFriendlyTargets
+        else if (animalController.animalModel.IsSameSpecies(targetAnimalController.animalModel))
+        {
+            animalController.visibleFriendlyTargets.Add(target);
         }
     }
     
@@ -118,54 +109,12 @@ public class FieldOfView : MonoBehaviour
     private void HandlePlantTarget(GameObject target)
     {
         PlantController targetPlantController = target.GetComponent<PlantController>();
-        if (targetPlantController != null && animalController.animalModel.CanEat(targetPlantController.plantModel))
+        if (animalController.animalModel.CanEat(targetPlantController.plantModel))
         {
             animalController.visibleFoodTargets.Add(target);
         }
     }
-    /* I have created a replacement // Alexander Huang
-    private void HandleConsumableTarget(GameObject target)
-    {
-        // see water
-        if (target.gameObject.CompareTag("Water"))
-        {
-            animalController.visibleWaterTargets.Add(target);
-        }
-        // see plant
-        else if (animalController.IsPrey && target.gameObject.CompareTag("Food"))
-        {
-            animalController.visibleFoodTargets.Add(target);
-        }
-    }
-    */
     
-    /* I have created a replacement // Alexander Huang
-    private void HandleAnimalTarget(GameObject target)
-    {
-        AnimalController targetAnimalController = target.GetComponent<AnimalController>();
-        
-        // see same species -> mate
-        if (animalController.IsSameSpecies(targetAnimalController))
-        {
-            animalController.visibleFriendlyTargets.Add(target);
-            return;
-        }
-        // see predator
-        if (targetAnimalController.IsPredator)
-        {
-            animalController.visibleHostileTargets.Add(target);
-            animalController.animalModel.actionPerceivedHostile?.Invoke(target);
-            return;
-        }
-        // see prey
-        if (animalController.IsPredator && targetAnimalController.IsPrey)
-        {
-            animalController.visibleFoodTargets.Add(target);
-        }
-    }
-*/
-    
-
     // get angle direction
     public Vector3 DirectionOfAngle(float angleInDegrees)
     {

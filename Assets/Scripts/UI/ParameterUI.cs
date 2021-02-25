@@ -32,9 +32,9 @@ public class ParameterUI : MonoBehaviour
         if (animalController)
         {
             AnimalModel animal = animalController.animalModel;
-            health.value = animal.GetHealthPercentage();
-            energy.value = animal.GetEnergyPercentage();
-            hydration.value = animal.GetHydrationPercentage();
+            health.value = animal.GetHealthPercentage;
+            energy.value = animal.GetEnergyPercentage;
+            hydration.value = animal.GetHydrationPercentage;
             reproductiveUrge.value = animal.reproductiveUrge;
             state.text = animalController.Fsm.CurrentState.ToString();
         }

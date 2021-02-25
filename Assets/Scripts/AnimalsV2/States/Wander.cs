@@ -7,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static AnimalsV2.Priorities;
 using Random = UnityEngine.Random;
 
 namespace AnimalsV2.States
@@ -15,7 +16,7 @@ namespace AnimalsV2.States
 //sealed just prevents other classes from inheriting
     public class Wander : State 
     {
-        private List<String> priorities = new List<String>();
+        private List<Priorities> priorities = new List<Priorities>();
 
         private GameObject food;
         private GameObject water;
@@ -40,7 +41,6 @@ namespace AnimalsV2.States
             var position1 = animal.transform.position;
             food = NavigationUtilities.GetNearestObjectPosition(animal.visibleFoodTargets, position1);
             
-
             water = NavigationUtilities.GetNearestObjectPosition(animal.visibleWaterTargets, position1);
             mate = NavigationUtilities.GetNearestObjectPosition(animal.visibleFriendlyTargets, position1);
             if (animal.agent.isActiveAndEnabled)
@@ -54,20 +54,20 @@ namespace AnimalsV2.States
             }
         }
         
-        public Tuple<GameObject, string> FoundObject()
+        public Tuple<GameObject, Priorities> FoundObject()
         {
-            foreach (var p in priorities)
+            foreach (var priority in priorities)
             {
-                switch (p)
+                switch (priority)
                 {
-                    case "Food":
-                        if (food != null) return Tuple.Create(food, "eat");
+                    case Food:
+                        if (food != null) return Tuple.Create(food, Food);
                         break;
-                    case "Water":
-                        if (water != null) return Tuple.Create(water, "drink");
+                    case Water:
+                        if (water != null) return Tuple.Create(water, Water);
                         break;
-                    case "Mate":
-                        if (mate != null) return Tuple.Create(mate, "mate");
+                    case Mate:
+                        if (mate != null) return Tuple.Create(mate, Mate);
                         break;
                 }
             }
@@ -75,7 +75,7 @@ namespace AnimalsV2.States
             return null;
         }
 
-        public void SetPriorities(List<String> priorities)
+        public void SetPriorities(List<Priorities> priorities)
         {
             this.priorities = priorities;
         }

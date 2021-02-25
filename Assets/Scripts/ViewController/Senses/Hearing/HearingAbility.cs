@@ -50,7 +50,8 @@ public class HearingAbility : MonoBehaviour
                 // for custom editor HAEditor
                 targets.Add(target);
 
-                HandleAnimalTarget(target);
+                if (target.gameObject.CompareTag("Animal")) 
+                    HandleAnimalTarget(target);
             }
         }
     }
@@ -59,57 +60,24 @@ public class HearingAbility : MonoBehaviour
     {
         AnimalController targetAnimalController = target.GetComponent<AnimalController>();
 
-        if (targetAnimalController != null)
+        //if the targets animalModel can eat this animalModel: add to visibleHostileTargets
+        if (targetAnimalController.animalModel.CanEat(animalController.animalModel))
         {
-            //if this animalModel can the targets animalModel: add to visibleFoodTargets
-            if (animalController.animalModel.CanEat(targetAnimalController.animalModel))
-            {
-                animalController.heardPreyTargets.Add(target);
-                return;
-            }
-            //if the target is of same species: add to visibleFriendlyTargets
-            if (animalController.animalModel.IsSameSpecies(targetAnimalController.animalModel))
-            {
-                animalController.heardFriendlyTargets.Add(target);
-                return;
-            }
-            //if the targets animalModel can eat this animalModel: add to visibleHostileTargets
-            if (targetAnimalController.animalModel.CanEat(animalController.animalModel))
-            {
-                animalController.heardHostileTargets.Add(target);
-                animalController.actionPerceivedHostile?.Invoke(target);
-                return;
-            }
+            animalController.heardHostileTargets.Add(target);
+            animalController.actionPerceivedHostile?.Invoke(target);
         }
-        
-    }
-    
-    /*
-    private void HandleTarget(GameObject target)
-    {
-        // can't hear non-animals, i.e plants/water
-        if (!target.gameObject.CompareTag("Animal")) return;
-        
-        AnimalController targetAC = target.GetComponent<AnimalController>();
-        
-        // hear same species -> mate
-        if (animalController.IsSameSpecies(targetAC))
+        //if the target is of same species: add to visibleFriendlyTargets
+        else if (animalController.animalModel.IsSameSpecies(targetAnimalController.animalModel))
         {
             animalController.heardFriendlyTargets.Add(target);
         }
-        // hear predator
-        else if (targetAC.IsPredator)
-        {
-            animalController.heardHostileTargets.Add(target);
-            animalController.animalModel.actionPerceivedHostile?.Invoke(target);
-        }
-        // hear prey, self is predator
-        else if (animalController.IsPredator && targetAC.IsPrey)
+        //if this animalModel can the targets animalModel: add to visibleFoodTargets
+        else if (animalController.animalModel.CanEat(targetAnimalController.animalModel))
         {
             animalController.heardPreyTargets.Add(target);
         }
     }
-    */
+    
     private void Start()
     {
         tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
@@ -117,18 +85,16 @@ public class HearingAbility : MonoBehaviour
         animalController = GetComponent<AnimalController>();
         if (animalController.animalModel.traits.behaviorType == Traits.BehaviorType.Herbivore) isPrey = true;
         
+        // set animals hearing distance
         radius = animalController.animalModel.traits.hearingRadius;
         
+        // subscribe to Ticks
         tickEventPublisher.onSenseTickEvent += FindHeardTargets;
     }
 
     private void OnDestroy()
     {
+        // unsubscribe from Ticks
         tickEventPublisher.onSenseTickEvent -= FindHeardTargets;
-    }
-
-    private void FixedUpdate()
-    {
-        radius = animalController.animalModel.traits.hearingRadius;
     }
 }
