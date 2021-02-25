@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using AnimalsV2;
 using UnityEngine;
 using UnityEngine.AI;
@@ -53,12 +54,14 @@ namespace AnimalsV2.States
             {
                 hasFled = true;
             }
-                        
-            
-            // Move the animal using the NavMeshAgent.
-            NavMeshHit hit;
-            NavMesh.SamplePosition(pointToRunTo,out hit,5,1 << NavMesh.GetAreaFromName("Walkable"));
-            animal.agent.SetDestination(hit.position);
+
+            if (animal.agent.isActiveAndEnabled)
+            {
+                // Move the animal using the NavMeshAgent.
+                NavMeshHit hit;
+                NavMesh.SamplePosition(pointToRunTo, out hit, 5, 1 << NavMesh.GetAreaFromName("Walkable"));
+                animal.agent.SetDestination(hit.position);
+            }
         }
 
         public override string ToString()

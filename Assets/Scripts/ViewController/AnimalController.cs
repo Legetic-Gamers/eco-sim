@@ -226,14 +226,10 @@ public abstract class AnimalController : MonoBehaviour
         if (!animalModel.IsAlive())
         {
             Debug.Log("Rabbit is ded");
-            // probably doing this in deathState instead
-            Destroy(gameObject, 0f);
-        }
-        
-        //Handle Input
-        //Fsm.HandleStatesInput();
+            Destroy(gameObject,0f);
             
-        //Update Logic
+        }
+
         Fsm.UpdateStatesLogic();
     }
 
@@ -286,10 +282,8 @@ public abstract class AnimalController : MonoBehaviour
             GameObject child = Instantiate(gameObject, gameObject.transform.position, gameObject.transform.rotation); //NOTE CHANGE SO THAT PREFAB IS USED
             // Generate the offspring traits
             AnimalModel childModel = animalModel.Mate(targetAnimalController.animalModel);
-
             child.GetComponent<AnimalController>().animalModel = childModel;
-            
-            
+
             Debug.Log("MATE");
             animalModel.reproductiveUrge = 0f;
             targetAnimalController.animalModel.reproductiveUrge = 0f;

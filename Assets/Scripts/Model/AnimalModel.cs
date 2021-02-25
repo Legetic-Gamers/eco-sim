@@ -128,7 +128,7 @@ public abstract class AnimalModel
 
     public bool IsAlive()
     {
-        return (currentHealth > 0 && currentEnergy > 0 && age < traits.ageLimit && currentHydration > 0) && !isEaten;
+        return (currentHealth > 0 && currentEnergy > 0 && age < traits.ageLimit && currentHydration > 0 && !isEaten);
     }
 
     public abstract AnimalModel Mate(AnimalModel otherParent);

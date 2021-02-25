@@ -24,7 +24,7 @@ namespace AnimalsV2.States
         public override void LogicUpdate()
         {
             base.LogicUpdate();
-            if (targetObject != null)
+            if (animal.agent.isActiveAndEnabled && targetObject != null)
             {
                 Vector3 pointToRunTo =
                     NavigationUtilities.RunToFromPoint(animal.transform, targetObject.transform.position, true);
@@ -68,7 +68,7 @@ namespace AnimalsV2.States
         {
             if (animal != null && targetObject != null)
             {
-                return Vector3.Distance(animal.transform.position, targetObject.transform.position) < 1f;
+                return Vector3.Distance(animal.transform.position, targetObject.transform.position) < 2f;
             }
 
             return false;

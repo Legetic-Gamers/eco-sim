@@ -43,11 +43,14 @@ namespace AnimalsV2.States
 
             water = NavigationUtilities.GetNearestObjectPosition(animal.visibleWaterTargets, position1);
             mate = NavigationUtilities.GetNearestObjectPosition(animal.visibleFriendlyTargets, position1);
-            
-            if (animal.agent.remainingDistance < 1.0f)
+            if (animal.agent.isActiveAndEnabled)
             {
-                Vector3 position = new Vector3(Random.Range(-30.0f, 30.0f), 0, Random.Range(-30.0f, 30.0f));
-                animal.agent.SetDestination(position);
+                if (animal.agent.remainingDistance < 1.0f)
+                {
+                    Vector3 position = new Vector3(Random.Range(-30.0f, 30.0f), 0, Random.Range(-30.0f, 30.0f));
+                    animal.agent.SetDestination(position);
+                }
+
             }
         }
         

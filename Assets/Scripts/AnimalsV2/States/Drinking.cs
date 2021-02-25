@@ -7,21 +7,16 @@
     {
         public class Drinking : State
         {
-            private float timeLeft;
-            private bool doneDrinking;
-            
             public Action<GameObject> onDrinkWater;
         
             public Drinking(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine)
             {
-                timeLeft = 3.0f;
-                doneDrinking = false;
+                
             }
 
             public override void Enter()
             {
                 base.Enter();
-                //Debug.Log("Eating!");
                 currentStateAnimation = StateAnimation.Idle;
             }
 
