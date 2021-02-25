@@ -23,7 +23,7 @@ public abstract class AnimalController : MonoBehaviour
     [HideInInspector]
     public NavMeshAgent agent;
     
-    public FiniteStateMachine Fsm;
+    public FiniteStateMachine fsm;
     private AnimationController animationController;
     private DecisionMaker decisionMaker;
     
@@ -40,13 +40,13 @@ public abstract class AnimalController : MonoBehaviour
     public Dead deadState;
 
     //Constants
-    const float Jogging_Speed = 0.4f;
-    const float Running_Speed = 1f;
+    private const float JoggingSpeed = 0.4f;
+    private const float RunningSpeed = 1f;
 
-    float energyModifier = 0;
-    float hydrationModifier = 0;
-    float reproductiveUrgeModifier = 0;
-    float speedModifier = Jogging_Speed;//100% of maxSpeed in model
+    private float energyModifier;
+    private float hydrationModifier;
+    private float reproductiveUrgeModifier;
+    private float speedModifier = JoggingSpeed; //100% of maxSpeed in model
     
     public List<GameObject> visibleHostileTargets = new List<GameObject>();
     public List<GameObject> visibleFriendlyTargets = new List<GameObject>();
@@ -57,7 +57,7 @@ public abstract class AnimalController : MonoBehaviour
     public List<GameObject> heardFriendlyTargets = new List<GameObject>();
     public List<GameObject> heardPreyTargets = new List<GameObject>();
 
-    public bool isControllable { get; set; } = false;
+    public bool IsControllable { get; set; } = false;
 
     /* /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\ */
     /*                                   Parameter handlers                                   */
@@ -72,7 +72,7 @@ public abstract class AnimalController : MonoBehaviour
     /// Important to unsubscribe from the event publisher on death, however!
     /// </summary>
 
-    private void changeModifiers(State state)
+    private void ChangeModifiers(State state)
     {
         switch (state)
         {
@@ -86,7 +86,7 @@ public abstract class AnimalController : MonoBehaviour
                 energyModifier = 1f;
                 hydrationModifier = 1f;
                 reproductiveUrgeModifier = 1f;
-                speedModifier = Running_Speed;
+                speedModifier = RunningSpeed;
                 //Debug.Log("varying parameters depending on state: FleeingState");
                 break;
             case GoToState toState:
@@ -102,10 +102,10 @@ public abstract class AnimalController : MonoBehaviour
                 {
                     AnimalController targetController = target.GetComponent<AnimalController>();
                     //target is an animal and i can eat it -> we are chasing something.
-                    if (animalModel.CanEat(targetController.animalModel)){
+                    if (targetController != null && animalModel.CanEat(targetController.animalModel)){
                         //Run fast if chasing
                         Debug.Log("CHASING");
-                        speedModifier = Running_Speed;
+                        speedModifier = RunningSpeed;
                     
                     }
                 }
@@ -129,7 +129,7 @@ public abstract class AnimalController : MonoBehaviour
                 hydrationModifier = 0.05f;
                 reproductiveUrgeModifier = 1f;
             
-                speedModifier = Jogging_Speed;
+                speedModifier = JoggingSpeed;
                 //Debug.Log("varying parameters depending on state: Wander");
                 break;
         }
@@ -167,9 +167,9 @@ public abstract class AnimalController : MonoBehaviour
     {
         tickEventPublisher.onParamTickEvent += VaryParameters;
 
-        tickEventPublisher.onSenseTickEvent += Fsm.UpdateStatesLogic;
+        tickEventPublisher.onSenseTickEvent += fsm.UpdateStatesLogic;
         
-        Fsm.OnStateEnter += changeModifiers;
+        fsm.OnStateEnter += ChangeModifiers;
 
         eatingState.onEatFood += EatFood;
 
@@ -182,7 +182,7 @@ public abstract class AnimalController : MonoBehaviour
     {
         tickEventPublisher.onParamTickEvent -= VaryParameters;
 
-        Fsm.OnStateEnter -= changeModifiers;
+        fsm.OnStateEnter -= ChangeModifiers;
         
         eatingState.onEatFood -= EatFood;
 
@@ -267,18 +267,18 @@ public abstract class AnimalController : MonoBehaviour
         agent.speed = animalModel.currentSpeed;
 
         //Create the FSM.
-        Fsm = new FiniteStateMachine();
+        fsm = new FiniteStateMachine();
         animationController = new AnimationController(this);
         
-        eatingState = new Eating(this, Fsm);
-        fleeingState = new FleeingState(this, Fsm);
-        wanderState = new Wander(this, Fsm);
-        goToState = new GoToState(this, Fsm);
-        idleState = new Idle(this, Fsm);
-        drinkingState = new Drinking(this, Fsm);
-        matingState = new Mating(this, Fsm);
-        deadState = new Dead(this, Fsm);
-        Fsm.Initialize(idleState);
+        eatingState = new Eating(this, fsm);
+        fleeingState = new FleeingState(this, fsm);
+        wanderState = new Wander(this, fsm);
+        goToState = new GoToState(this, fsm);
+        idleState = new Idle(this, fsm);
+        drinkingState = new Drinking(this, fsm);
+        matingState = new Mating(this, fsm);
+        deadState = new Dead(this, fsm);
+        fsm.Initialize(idleState);
         
         tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
         EventSubscribe();
@@ -294,11 +294,10 @@ public abstract class AnimalController : MonoBehaviour
     {
         if (!animalModel.IsAlive)
         {
-
             // invoke death state with method HandleDeath() in decisionmaker
             actionDeath?.Invoke();
             // Set state so that it can't change
-            Fsm.absorbingState = true;
+            fsm.absorbingState = true;
             // unsubscribe all events because we want only want to invoke it once.
             actionDeath = null;
         }

@@ -36,7 +36,7 @@ public class ParameterUI : MonoBehaviour
             energy.value = animal.GetEnergyPercentage;
             hydration.value = animal.GetHydrationPercentage;
             reproductiveUrge.value = animal.reproductiveUrge;
-            state.text = animalController.Fsm.CurrentState.ToString();
+            state.text = animalController.fsm.CurrentState.ToString();
         }
     }
 }

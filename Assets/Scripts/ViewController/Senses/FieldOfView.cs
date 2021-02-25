@@ -20,10 +20,7 @@ public class FieldOfView : MonoBehaviour
     private LayerMask targetMask;
     [SerializeField]
     private LayerMask obstacleMask;
-
-    // custom editor needs this (otherwise will get an error), remove once custom editor is obsolete, or when stress testing
-    public List<GameObject> targets = new List<GameObject>();
-
+    
     [HideInInspector]
     public AnimalController animalController;
 
@@ -38,9 +35,6 @@ public class FieldOfView : MonoBehaviour
         animalController.visibleFriendlyTargets.Clear();
         animalController.visibleFoodTargets.Clear();
         animalController.visibleWaterTargets.Clear();
-
-        // for custom editor FoVEditor
-        targets.Clear();
 
         // add targets in list when they enter the sphere
         Collider[] targetsInRadius = Physics.OverlapSphere(transform.position, radius, targetMask);
@@ -63,17 +57,12 @@ public class FieldOfView : MonoBehaviour
                 // if target is not obscured
                 if (!Physics.Raycast(transform.position, dirToTarget, distToTarget, obstacleMask))
                 {
-                    // for custom editor FoVEditor
-                    targets.Add(target);
-
-                    
                     if(target.gameObject.CompareTag("Plant")) 
                         HandlePlantTarget(target);
                     else if (target.gameObject.CompareTag("Animal")) 
                         HandleAnimalTarget(target);
                     else if (target.gameObject.CompareTag("Water"))
                         HandleWaterTarget(target);
-                    
                 }
             }
         }

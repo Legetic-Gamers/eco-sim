@@ -14,10 +14,6 @@ public class HearingAbility : MonoBehaviour
     [SerializeField]
     private LayerMask targetMask;
 
-    // custom editor needs this (will get an error if using animalController's lists instead),
-    // remove once custom editor is obsolete, or when stress testing
-    public List<GameObject> targets = new List<GameObject>();
-
     public AnimalController animalController;
     public bool isPrey;
 
@@ -33,8 +29,6 @@ public class HearingAbility : MonoBehaviour
         animalController.heardHostileTargets.Clear();
         animalController.heardFriendlyTargets.Clear();
         animalController.heardPreyTargets.Clear();
-        // for custom editor HAEditor
-        targets.Clear();
 
         // add targets in list when they enter the sphere
         Collider[] targetsInRadius = Physics.OverlapSphere(transform.position, radius, targetMask);
@@ -47,9 +41,6 @@ public class HearingAbility : MonoBehaviour
             // don't add self
             if (target != gameObject)
             {
-                // for custom editor HAEditor
-                targets.Add(target);
-
                 if (target.gameObject.CompareTag("Animal")) 
                     HandleAnimalTarget(target);
             }

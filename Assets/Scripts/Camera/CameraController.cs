@@ -74,7 +74,7 @@ public class CameraController : MonoBehaviour
                 hasTarget = true;
                 target = hit.collider.gameObject;
                 if (target.GetComponent<AnimalController>() != null)
-                    target.GetComponent<AnimalController>().isControllable = true;
+                    target.GetComponent<AnimalController>().IsControllable = true;
                 
                 Debug.Log("Raycast hit " + target.name + "!");
             }
@@ -95,7 +95,7 @@ public class CameraController : MonoBehaviour
             hasTarget = false;
             target = null;
             if (target.GetComponent<AnimalController>() != null)
-                target.GetComponent<AnimalController>().isControllable = true;
+                target.GetComponent<AnimalController>().IsControllable = true;
             
             Camera.main.fieldOfView = 60;
         }

@@ -22,7 +22,7 @@ namespace AnimalsV2
         public DecisionMaker(AnimalController animalController, AnimalModel animalModel,TickEventPublisher eventPublisher)
         {
             
-            fsm = animalController.Fsm;
+            fsm = animalController.fsm;
             this.animalController = animalController;
             this.animalModel = animalModel;
             this.eventPublisher = eventPublisher;
@@ -300,7 +300,6 @@ namespace AnimalsV2
         {
             ChangeState(animalController.deadState);
         }
-
 
 
     }
