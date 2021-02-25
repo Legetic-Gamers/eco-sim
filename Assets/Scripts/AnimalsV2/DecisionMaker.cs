@@ -177,27 +177,15 @@ namespace AnimalsV2
                 
             }
             
-            // if (!highHydration() && !highEnergy()) //Prio 6, not low energy but not high either + not low hydration but not high either -> find Water and then Food.
-            // {
-            //     //ChangeState(animal.sf);
-            //     prio.Remove("Food");
-            //    is prio.Remove("Water");
-            //     
-            //     prio.Insert(0, "Food");
-            //     prio.Insert(0, "Water");
-            //     
-            // }
-            
-            if (animalModel.highHydration() && animalModel.highEnergy() && animalModel.wantingOffspring()) // Prio 3 (If we live good) search for mate.
+
+            if (!animalModel.highHydration() && !animalModel.highEnergy()) //Prio 6, not low energy but not high either + not low hydration but not high either -> find Water and then Food.
             {
-                prio.Insert(0,"Mate");
-                
-            }
-            if (!animalModel.highHydration() && animalModel.highEnergy()) //Prio 4, not low hydration but not high either + high energy -> find Water.
-            {
-                //ChangeState(animal.sw);
+                //ChangeState(animal.sf);
+                prio.Remove("Food");
                 prio.Remove("Water");
-                prio.Insert(0,"Water");
+                
+                prio.Insert(0, "Food");
+                prio.Insert(0, "Water");
                 
             }
             if (animalModel.highHydration() && !animalModel.highEnergy()) //Prio 5, not low energy but not high either + high hydration -> find Food.
@@ -208,6 +196,23 @@ namespace AnimalsV2
                 
             }
             
+            if (!animalModel.highHydration() && animalModel.highEnergy()) //Prio 4, not low hydration but not high either + high energy -> find Water.
+            {
+                //ChangeState(animal.sw);
+                prio.Remove("Water");
+                prio.Insert(0,"Water");
+                
+            }
+            
+            
+            
+            // if (wantingOffspring()) // Prio 3 (If we live good) search for mate.
+            // {
+            //     prio.Insert(0,"Mate");
+            //     
+            // }
+            
+            prio.Add("Mate");
             
             
             animalController.wanderState.SetPriorities(prio);

@@ -14,8 +14,9 @@ namespace AnimalsV2
     {
         Running,
         Walking,
-        LookingOut,
+        Attack,
         Idle,
+        Mating,
         Dead
     }
 

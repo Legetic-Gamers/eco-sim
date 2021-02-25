@@ -39,9 +39,16 @@ public abstract class AnimalController : MonoBehaviour
     public Mating matingState;
     public Dead deadState;
 
+    //Constants
+    const float Jogging_Speed = 0.4f;
+    const float Running_Speed = 1f;
+
     float energyModifier = 0;
     float hydrationModifier = 0;
     float reproductiveUrgeModifier = 0;
+    float speedModifier = Jogging_Speed;//100% of maxSpeed in model
+    
+    
   
 
     public bool isControllable { get; set; } = false;
@@ -72,12 +79,28 @@ public abstract class AnimalController : MonoBehaviour
             energyModifier = 1f;
             hydrationModifier = 1f;
             reproductiveUrgeModifier = 1f;
+            speedModifier = Running_Speed;
             //Debug.Log("varying parameters depending on state: FleeingState");
         } else if (state is GoToState)
         {
             energyModifier = 0.1f;
             hydrationModifier = 0.05f;
             reproductiveUrgeModifier = 1;
+
+            GoToState chaseState = (GoToState) state;
+            GameObject target = chaseState.GetTarget();
+            
+            if (target != null)
+            {
+                AnimalController targetController = target.GetComponent<AnimalController>();
+                //target is an animal and i can eat it -> we are chasing something.
+                if (targetController != null && animalModel.CanEat(targetController.animalModel)){
+                    //Run fast if chasing
+                    Debug.Log("CHASING");
+                    speedModifier = Running_Speed;
+                }
+            }
+
             //Debug.Log("varying parameters depending on state: GoToFood");
         } else if (state is Idle)
         {
@@ -96,6 +119,8 @@ public abstract class AnimalController : MonoBehaviour
             energyModifier = 0.1f;
             hydrationModifier = 0.05f;
             reproductiveUrgeModifier = 1f;
+            
+            speedModifier = Jogging_Speed;
             //Debug.Log("varying parameters depending on state: Wander");
         }
     }
@@ -120,10 +145,18 @@ public abstract class AnimalController : MonoBehaviour
         animalModel.age++;
         */
 
+        //https://www.uvm.edu/pdodds/research/papers/others/2017/hirt2017a.pdf
+        //above link for actual empirical max speed.
+        //
+        animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
+        //TODO, maybe move from here?
+        agent.speed = animalModel.currentSpeed;
+
         animalModel.currentEnergy -= (animalModel.traits.size * 1) + (animalModel.traits.size * animalModel.currentSpeed) * energyModifier;
         animalModel.currentHydration -= (animalModel.traits.size * 1) + (animalModel.traits.size * animalModel.currentSpeed) * hydrationModifier;
         animalModel.reproductiveUrge += 0.1f * reproductiveUrgeModifier;
         //animalModel.age++;
+        
     }
 
     protected void EventSubscribe()
@@ -154,7 +187,7 @@ public abstract class AnimalController : MonoBehaviour
         animationController.UnSubscribe();
         decisionMaker.EventUnsubscribe();
         
-        Debug.Log(gameObject.name + " has unsubscribed from onParamTickEvent.");
+        //Debug.Log(gameObject.name + " has unsubscribed from onParamTickEvent.");
     }
 
     /* /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\ */
@@ -208,11 +241,8 @@ public abstract class AnimalController : MonoBehaviour
         /*sf = new GoToFood(this, Fsm);
         sw = new GoToWater(this, Fsm);
         sm = new GoToMate(this, Fsm);*/
+
         eatingState = new Eating(this, Fsm);
-        
-        
-        
-        
         fleeingState = new FleeingState(this, Fsm);
         wanderState = new Wander(this, Fsm);
         goToState = new GoToState(this, Fsm);
@@ -221,25 +251,32 @@ public abstract class AnimalController : MonoBehaviour
         matingState = new Mating(this, Fsm);
         deadState = new Dead(this, Fsm);
         Fsm.Initialize(idleState);
+
         
         tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
         EventSubscribe();
+
+        SetPhenotype();
         
         decisionMaker = new DecisionMaker(this,animalModel,tickEventPublisher);
     }
+
     
-    
+
+
     //should be refactored so that this logic is in AnimalModel
     private void Update()
     {
         if (!animalModel.IsAlive())
         {
+
             // invoke death state with method HandleDeath() in decisionmaker
             actionDeath?.Invoke();
             // Set state so that it can't change
             Fsm.absorbingState = true;
             // unsubscribe all events because we want only want to invoke it once.
             actionDeath = null;
+
 
         }
         Fsm.UpdateStatesLogic();
@@ -254,6 +291,12 @@ public abstract class AnimalController : MonoBehaviour
     {
         //Update physics
         //Fsm.UpdateStatesPhysics();
+    }
+    
+    //Set animals appearance based on traits.
+    private void SetPhenotype()
+    {
+        gameObject.transform.localScale = new Vector3(1, 1, 1) * animalModel.traits.size;
     }
 
     private void EatFood(GameObject food)
@@ -295,8 +338,11 @@ public abstract class AnimalController : MonoBehaviour
             // Generate the offspring traits
             AnimalModel childModel = animalModel.Mate(targetAnimalController.animalModel);
             child.GetComponent<AnimalController>().animalModel = childModel;
+            //childModel.traits.size = 1f;
 
             Debug.Log("MATE");
+            
+            //Reset both reproductive urges.
             animalModel.reproductiveUrge = 0f;
             targetAnimalController.animalModel.reproductiveUrge = 0f;
         }
