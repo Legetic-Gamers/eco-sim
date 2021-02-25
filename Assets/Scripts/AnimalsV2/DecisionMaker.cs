@@ -292,8 +292,6 @@ namespace AnimalsV2
         private void HandleHostileTarget(GameObject target)
         {
             ChangeState(animalController.fleeingState);
-            
-            //Debug.Log(target.name + " is hostile to " + animalController.name);
         }
 
         private void HandleDeath()

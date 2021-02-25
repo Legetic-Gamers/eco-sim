@@ -165,8 +165,10 @@ public abstract class AnimalController : MonoBehaviour
 
     protected void EventSubscribe()
     {
+        // every 2 sec
         tickEventPublisher.onParamTickEvent += VaryParameters;
-
+        tickEventPublisher.onParamTickEvent += HandleDeathStatus;
+        // every 0.5 sec
         tickEventPublisher.onSenseTickEvent += fsm.UpdateStatesLogic;
         
         fsm.OnStateEnter += ChangeModifiers;
@@ -176,11 +178,14 @@ public abstract class AnimalController : MonoBehaviour
         drinkingState.onDrinkWater += DrinkWater;
 
         matingState.onMate += Mate;
-        //Debug.Log(gameObject.name + " has subscribed to onParamTickEvent");
     }
     protected void EventUnsubscribe()
     {
+        // every 2 sec
         tickEventPublisher.onParamTickEvent -= VaryParameters;
+        tickEventPublisher.onParamTickEvent -= HandleDeathStatus;
+        // every 0.5 sec
+        tickEventPublisher.onSenseTickEvent -= fsm.UpdateStatesLogic;
 
         fsm.OnStateEnter -= ChangeModifiers;
         
@@ -192,11 +197,9 @@ public abstract class AnimalController : MonoBehaviour
         
         animationController.UnSubscribe();
         decisionMaker.EventUnsubscribe();
-        
-        //Debug.Log(gameObject.name + " has unsubscribed from onParamTickEvent.");
     }
     
-    //Set animals appearance based on traits.
+    //Set animals size based on traits.
     private void SetPhenotype()
     {
         gameObject.transform.localScale = new Vector3(1, 1, 1) * animalModel.traits.size;
@@ -290,7 +293,7 @@ public abstract class AnimalController : MonoBehaviour
 
 
     //should be refactored so that this logic is in AnimalModel
-    private void Update()
+    private void HandleDeathStatus()
     {
         if (!animalModel.IsAlive)
         {

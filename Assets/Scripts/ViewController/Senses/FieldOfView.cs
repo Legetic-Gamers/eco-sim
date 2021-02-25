@@ -103,15 +103,6 @@ public class FieldOfView : MonoBehaviour
             animalController.visibleFoodTargets.Add(target);
         }
     }
-    
-    // get angle direction
-    public Vector3 DirectionOfAngle(float angleInDegrees)
-    {
-        // make it global
-        angleInDegrees += transform.eulerAngles.y;
-        
-        return new Vector3(Mathf.Sin(angleInDegrees * Mathf.Deg2Rad), 0, Mathf.Cos(angleInDegrees * Mathf.Deg2Rad));
-    }
 
     /* /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\ */
 
