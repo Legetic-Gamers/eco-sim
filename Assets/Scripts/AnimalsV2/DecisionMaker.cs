@@ -164,8 +164,6 @@ namespace AnimalsV2
             List<string> prio = new List<string>();
             //Debug.Log("Prio!");
             
-            
-            
             if (animalModel.lowHydration()) //Prio 1 don't die from dehydration -> Find Water.
             {
                 prio.Add("Water");
@@ -176,6 +174,7 @@ namespace AnimalsV2
                 prio.Add("Food");
                 
             }
+
             
 
             if (!animalModel.highHydration() && !animalModel.highEnergy()) //Prio 6, not low energy but not high either + not low hydration but not high either -> find Water and then Food.
@@ -204,15 +203,30 @@ namespace AnimalsV2
                 
             }
             
+            if (animalModel.lowEnergy()) //Prio 2 dont die from hunger -> Find Food.
+            {
+                prio.Remove("Food");
+                prio.Insert(0, "Food");
+                
+            }
+            
+            if (animalModel.lowHydration()) //Prio 1 don't die from dehydration -> Find Water.
+            {
+                prio.Remove("Water");
+                prio.Insert(0,"Water");
+                
+            }
             
             
-            // if (wantingOffspring()) // Prio 3 (If we live good) search for mate.
-            // {
-            //     prio.Insert(0,"Mate");
-            //     
-            // }
             
-            prio.Add("Mate");
+            if (wantingOffspring()) // Prio 3 (If we live good) search for mate.
+            {
+                Debug.Log("YESSSSS");
+                prio.Insert(0,"Mate");
+                
+            }
+            
+            //prio.Add("Mate");
             
             
             animalController.wanderState.SetPriorities(prio);
@@ -251,6 +265,14 @@ namespace AnimalsV2
         //     return 
         // }
         
+
+        private bool wantingOffspring()
+        {
+            //reproductive urge greater than average of energy and hydration.
+            //Debug.Log("urge: " + animalModel.reproductiveUrge + "   Average other: " + (animalModel.currentEnergy + animalModel.currentHydration) / 2);
+            return animalModel.reproductiveUrge > (animalModel.currentEnergy + animalModel.currentHydration) / (animalModel.traits.maxEnergy + animalModel.traits.maxHydration);
+        }
+
 
         //Instead of updating/Making choices every frame
         //Listen to when parameters or senses were updated.
