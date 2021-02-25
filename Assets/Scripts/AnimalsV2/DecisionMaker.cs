@@ -219,9 +219,8 @@ namespace AnimalsV2
             
             
             
-            if (wantingOffspring()) // Prio 3 (If we live good) search for mate.
+            if (animalModel.wantingOffspring()) // Prio 3 (If we live good) search for mate.
             {
-                Debug.Log("YESSSSS");
                 prio.Insert(0,"Mate");
                 
             }
@@ -264,14 +263,6 @@ namespace AnimalsV2
         //     
         //     return 
         // }
-        
-
-        private bool wantingOffspring()
-        {
-            //reproductive urge greater than average of energy and hydration.
-            //Debug.Log("urge: " + animalModel.reproductiveUrge + "   Average other: " + (animalModel.currentEnergy + animalModel.currentHydration) / 2);
-            return animalModel.reproductiveUrge > (animalModel.currentEnergy + animalModel.currentHydration) / (animalModel.traits.maxEnergy + animalModel.traits.maxHydration);
-        }
 
 
         //Instead of updating/Making choices every frame

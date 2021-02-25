@@ -178,6 +178,7 @@ public abstract class AnimalModel
     {
         return currentHealth < 30;
     }
+    
 
     public abstract bool CanEat<T>(T obj);
 
