@@ -40,7 +40,7 @@ public class TickEventPublisher : MonoBehaviour
     {
         while (true)
         {
-            yield return new WaitForSeconds(5f);
+            yield return new WaitForSeconds(1f);
             onCollectorUpdate?.Invoke();
         }
     }

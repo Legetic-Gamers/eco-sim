@@ -207,7 +207,7 @@ public abstract class AnimalController : MonoBehaviour
         {
             Debug.Log("Rabbit is ded");
             // probably doing this in deathState instead
-            Destroy(gameObject, 2.0f);
+            //Destroy(gameObject, 2.0f);
         }
         
         //Handle Input
