@@ -5,6 +5,7 @@ using System.Linq;
 using DataCollection;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 
 /// <summary>
@@ -22,20 +23,26 @@ public class Window_Graph : MonoBehaviour
     [SerializeField] private float yBufferTop = 1.2f;
     [SerializeField] private int firstX = 0;
     [SerializeField] private int gridCountY = 10;
-    [SerializeField] private int gridCountX = 20;
+    private static int _gridCountX = 10;
     [SerializeField] private Sprite circleSprite;
-    
+    [SerializeField] private float windowGraphSizeX = 1000;
+    [SerializeField] private float windowGraphSizeY = 700;
+    [SerializeField] private float graphContainerSizeX = 720;
+    [SerializeField] private float graphContainerSizeY = 405;
+
+    private RectTransform window_graph;
     private RectTransform graphContainer;
     private RectTransform labelTemplateX;
     private RectTransform labelTemplateY;
     private RectTransform dashTemplateX;
     private RectTransform dashTemplateY;
     private List<GameObject> gameObjectList;
-    
-    
-    
+
+
+
     private void Awake()
     {
+        window_graph = GetComponent<RectTransform>();
         graphContainer = transform.Find("graphContainer").GetComponent<RectTransform>();
         labelTemplateX = graphContainer.Find("labelTemplateX").GetComponent<RectTransform>();
         labelTemplateY = graphContainer.Find("labelTemplateY").GetComponent<RectTransform>();
@@ -43,10 +50,52 @@ public class Window_Graph : MonoBehaviour
         dashTemplateY = graphContainer.Find("dashTemplateY").GetComponent<RectTransform>();
         gameObjectList = new List<GameObject>();
         DataHandler dh = FindObjectOfType<DataHandler>();
-        dh.Display += ShowGraph;
+        SetSize();
+        //dh.Display += ShowGraph;
+        
+
     }
     
+    private float x = 0;
+    float delta = 1f;
+    private int count = 0;
+    List<int> testlist = new List<int>();
+
+    private void SetSize()
+    {
+        window_graph.sizeDelta = new Vector2(windowGraphSizeX, windowGraphSizeY);
+        graphContainer.sizeDelta = new Vector2(graphContainerSizeX, graphContainerSizeY);
+        dashTemplateX.sizeDelta = new Vector2(graphContainerSizeY + 2, 1);
+        dashTemplateY.sizeDelta = new Vector2(graphContainerSizeX + 2, 1);
+    }
+
+    public static int GetGridCountX()
+    {
+        return _gridCountX;
+    }
+
+    public static void SetGridCountX(int x)
+    {
+        _gridCountX = x;
+    }
     
+    private void Update()
+    {
+        x += Time.deltaTime;
+        if (x > delta && count <= 40)
+        {
+            DestroyGraph();
+            x = 0;
+            int r = Mathf.RoundToInt(Random.Range(0f, 20f + count));
+            ShowGraph(testlist);
+            testlist.Add(r);
+            count++;
+        }
+        
+        
+    }
+
+
     // Draws entire graph.
     void ShowGraph(List<int> valueList)
     {
@@ -121,7 +170,7 @@ public class Window_Graph : MonoBehaviour
     private void AddGridX(List<int> valueList, float graphWidth)
     {
 
-        int separatorCount = gridCountX;
+        int separatorCount = _gridCountX;
         int numberOfValues = valueList.Count;
         int truncateFactor = (int)Math.Ceiling((numberOfValues)*1f / separatorCount);
         float xDelta = graphWidth / numberOfValues;
