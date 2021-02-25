@@ -197,7 +197,7 @@ namespace AnimalsV2
                 
             }
             
-            if (!hydrationFull() && !energyFull()) //Prio 6, not low energy but not high either + not low hydration but not high either -> find Water and then Food.
+            if (!highHydration() && !highEnergy()) //Prio 6, not low energy but not high either + not low hydration but not high either -> find Water and then Food.
             {
                 //ChangeState(animal.sf);
                 prio.Remove("Food");
