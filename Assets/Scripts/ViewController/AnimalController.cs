@@ -33,7 +33,7 @@ public abstract class AnimalController : MonoBehaviour
     public Mating ms;
     
     //Constants
-    const float Jogging_Speed = 0.5f;
+    const float Jogging_Speed = 0.4f;
     const float Running_Speed = 1f;
 
     float energyModifier = 0;
@@ -142,7 +142,7 @@ public abstract class AnimalController : MonoBehaviour
         //above link for actual empirical max speed.
         //
         animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
-        //TODO, maybe move?
+        //TODO, maybe move from here?
         agent.speed = animalModel.currentSpeed;
 
         animalModel.currentEnergy -= (animalModel.traits.size * 1) + (animalModel.traits.size * animalModel.currentSpeed) * energyModifier;
@@ -323,6 +323,7 @@ public abstract class AnimalController : MonoBehaviour
             // Generate the offspring traits
             AnimalModel childModel = animalModel.Mate(targetAnimalController.animalModel);
             child.GetComponent<AnimalController>().animalModel = childModel;
+            
 
             Debug.Log("MATE");
             

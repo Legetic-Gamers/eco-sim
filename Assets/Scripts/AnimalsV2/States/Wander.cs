@@ -26,7 +26,7 @@ namespace AnimalsV2.States
         public override void Enter()
         {
             base.Enter();
-            currentStateAnimation = StateAnimation.Running;
+            currentStateAnimation = StateAnimation.Walking;
         }
 
         public override void HandleInput()

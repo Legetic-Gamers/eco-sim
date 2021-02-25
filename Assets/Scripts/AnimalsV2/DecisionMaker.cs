@@ -226,11 +226,13 @@ namespace AnimalsV2
             
             
             
-            if (highHydration() && highEnergy() && wantingOffspring()) // Prio 3 (If we live good) search for mate.
-            {
-                prio.Insert(0,"Mate");
-                
-            }
+            // if (wantingOffspring()) // Prio 3 (If we live good) search for mate.
+            // {
+            //     prio.Insert(0,"Mate");
+            //     
+            // }
+            
+            prio.Add("Mate");
             
             
             animalController.wander.SetPriorities(prio);
@@ -297,7 +299,7 @@ namespace AnimalsV2
         private bool wantingOffspring()
         {
             //reproductive urge greater than average of energy and hydration.
-            return animalModel.reproductiveUrge > (animalModel.currentEnergy + animalModel.currentHydration) / 2;
+            return animalModel.reproductiveUrge > (animalModel.currentEnergy + animalModel.currentHydration) / 3;
         }
         private bool lowHealth()
         {

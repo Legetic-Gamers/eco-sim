@@ -19,7 +19,7 @@ namespace AnimalsV2.States
         public override void Enter()
         {
             base.Enter();
-            currentStateAnimation = StateAnimation.LookingOut;
+            currentStateAnimation = StateAnimation.Mating;
         }
 
         public override void HandleInput()
