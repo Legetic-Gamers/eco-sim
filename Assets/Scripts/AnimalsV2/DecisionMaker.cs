@@ -186,16 +186,7 @@ namespace AnimalsV2
         {
             List<string> prio = new List<string>();
             //Debug.Log("Prio!");
-            if (lowHydration()) //Prio 1 don't die from dehydration -> Find Water.
-            {
-                prio.Add("Water");
-                
-            }
-            if (lowEnergy()) //Prio 2 dont die from hunger -> Find Food.
-            {
-                prio.Add("Food");
-                
-            }
+            
             
             if (!highHydration() && !highEnergy()) //Prio 6, not low energy but not high either + not low hydration but not high either -> find Water and then Food.
             {
@@ -224,15 +215,30 @@ namespace AnimalsV2
                 
             }
             
+            if (lowEnergy()) //Prio 2 dont die from hunger -> Find Food.
+            {
+                prio.Remove("Food");
+                prio.Insert(0, "Food");
+                
+            }
+            
+            if (lowHydration()) //Prio 1 don't die from dehydration -> Find Water.
+            {
+                prio.Remove("Water");
+                prio.Insert(0,"Water");
+                
+            }
             
             
-            // if (wantingOffspring()) // Prio 3 (If we live good) search for mate.
-            // {
-            //     prio.Insert(0,"Mate");
-            //     
-            // }
             
-            prio.Add("Mate");
+            if (wantingOffspring()) // Prio 3 (If we live good) search for mate.
+            {
+                Debug.Log("YESSSSS");
+                prio.Insert(0,"Mate");
+                
+            }
+            
+            //prio.Add("Mate");
             
             
             animalController.wander.SetPriorities(prio);
@@ -278,7 +284,7 @@ namespace AnimalsV2
         
         private bool highEnergy()
         {
-            return animalModel.currentEnergy / animalModel.traits.maxEnergy > 0.7f;
+            return animalModel.currentEnergy / animalModel.traits.maxEnergy > 0.95f;
         }
         private bool lowEnergy()
         {
@@ -290,7 +296,7 @@ namespace AnimalsV2
         }
         private bool highHydration()
         {
-            return animalModel.currentHydration / animalModel.traits.maxHydration > 0.7f;
+            return animalModel.currentHydration / animalModel.traits.maxHydration > 0.95f;
         }
         private bool lowHydration()
         {
@@ -299,7 +305,8 @@ namespace AnimalsV2
         private bool wantingOffspring()
         {
             //reproductive urge greater than average of energy and hydration.
-            return animalModel.reproductiveUrge > (animalModel.currentEnergy + animalModel.currentHydration) / 3;
+            //Debug.Log("urge: " + animalModel.reproductiveUrge + "   Average other: " + (animalModel.currentEnergy + animalModel.currentHydration) / 2);
+            return animalModel.reproductiveUrge > (animalModel.currentEnergy + animalModel.currentHydration) / (animalModel.traits.maxEnergy + animalModel.traits.maxHydration);
         }
         private bool lowHealth()
         {

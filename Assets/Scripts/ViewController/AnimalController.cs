@@ -225,6 +225,8 @@ public abstract class AnimalController : MonoBehaviour
         // Init the NavMesh agent
         agent = GetComponent<NavMeshAgent>();
         agent.autoBraking = false;
+        animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
+        agent.speed = animalModel.currentSpeed;
 
         //Create the FSM.
         Fsm = new FiniteStateMachine();
