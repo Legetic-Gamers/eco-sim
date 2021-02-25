@@ -323,7 +323,7 @@ public abstract class AnimalController : MonoBehaviour
             // Generate the offspring traits
             AnimalModel childModel = animalModel.Mate(targetAnimalController.animalModel);
             child.GetComponent<AnimalController>().animalModel = childModel;
-            
+            //childModel.traits.size = 1f;
 
             Debug.Log("MATE");
             
