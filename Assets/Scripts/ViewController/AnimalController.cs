@@ -116,7 +116,7 @@ public abstract class AnimalController : MonoBehaviour
         animalModel.currentEnergy -= (animalModel.traits.size * 1) + (animalModel.traits.size * animalModel.currentSpeed) * energyModifier;
         animalModel.currentHydration -= (animalModel.traits.size * 1) + (animalModel.traits.size * animalModel.currentSpeed) * hydrationModifier;
         animalModel.reproductiveUrge += 0.1f * reproductiveUrgeModifier;
-        animalModel.age++;
+        //animalModel.age++;
     }
 
     protected void EventSubscribe()

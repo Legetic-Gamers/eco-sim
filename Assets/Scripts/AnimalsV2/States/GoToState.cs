@@ -68,7 +68,7 @@ namespace AnimalsV2.States
         {
             if (animal != null && targetObject != null)
             {
-                return Vector3.Distance(animal.transform.position, targetObject.transform.position) < 2f;
+                return Vector3.Distance(animal.transform.position, targetObject.transform.position) < (animal.GetComponent<CharacterController>().radius + 1f);
             }
 
             return false;

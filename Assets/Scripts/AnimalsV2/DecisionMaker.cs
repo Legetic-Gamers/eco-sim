@@ -201,7 +201,7 @@ namespace AnimalsV2
             // {
             //     //ChangeState(animal.sf);
             //     prio.Remove("Food");
-            //     prio.Remove("Water");
+            //    is prio.Remove("Water");
             //     
             //     prio.Insert(0, "Food");
             //     prio.Insert(0, "Water");
@@ -277,7 +277,7 @@ namespace AnimalsV2
         }
         private bool lowEnergy()
         {
-            return animalModel.currentEnergy / animalModel.traits.maxEnergy < 0.3f;
+            return animalModel.currentEnergy / animalModel.traits.maxEnergy < 0.5f;
         }
         private bool hydrationFull()
         {
@@ -289,7 +289,7 @@ namespace AnimalsV2
         }
         private bool lowHydration()
         {
-            return animalModel.currentHydration / animalModel.traits.maxHydration < 0.3f;
+            return animalModel.currentHydration / animalModel.traits.maxHydration < 0.4f;
         }
         private bool wantingOffspring()
         {
@@ -329,7 +329,7 @@ namespace AnimalsV2
         {
             ChangeState(animalController.fs);
             
-            Debug.Log(target.name + " is hostile to " + animalController.name);
+            //Debug.Log(target.name + " is hostile to " + animalController.name);
         }
 
 
