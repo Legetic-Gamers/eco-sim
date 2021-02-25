@@ -20,7 +20,7 @@ public class Window_Graph : MonoBehaviour
     [SerializeField] float lineWidth = 2f; // line connecting dots
     
     [SerializeField] private float yBufferTop = 1.2f;
-    [SerializeField] private int firstX = 3;
+    [SerializeField] private int firstX = 0;
     [SerializeField] private int gridCountY = 10;
     [SerializeField] private int gridCountX = 20;
     [SerializeField] private Sprite circleSprite;
@@ -31,6 +31,8 @@ public class Window_Graph : MonoBehaviour
     private RectTransform dashTemplateX;
     private RectTransform dashTemplateY;
     private List<GameObject> gameObjectList;
+    
+    
     
     private void Awake()
     {
@@ -44,9 +46,12 @@ public class Window_Graph : MonoBehaviour
         dh.Display += ShowGraph;
     }
     
+    
     // Draws entire graph.
     void ShowGraph(List<int> valueList)
     {
+        if (valueList.Count == 0)
+            return;
         DestroyGraph();
         var sizeDelta = graphContainer.sizeDelta;
         float graphHeight = sizeDelta.y;
