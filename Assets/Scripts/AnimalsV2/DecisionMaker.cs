@@ -197,7 +197,17 @@ namespace AnimalsV2
                 
             }
             
-            
+            if (!hydrationFull() && !energyFull()) //Prio 6, not low energy but not high either + not low hydration but not high either -> find Water and then Food.
+            {
+                //ChangeState(animal.sf);
+                prio.Remove("Food");
+                prio.Remove("Water");
+                
+                prio.Insert(0, "Food");
+                prio.Insert(0, "Water");
+                
+            }
+
             if (highHydration() && !highEnergy()) //Prio 5, not low energy but not high either + high hydration -> find Food.
             {
                 //ChangeState(animal.sf);
@@ -214,16 +224,7 @@ namespace AnimalsV2
                 
             }
             
-            if (!highHydration() && !highEnergy()) //Prio 6, not low energy but not high either + not low hydration but not high either -> find Water and then Food.
-            {
-                //ChangeState(animal.sf);
-                prio.Remove("Food");
-                prio.Remove("Water");
-                
-                prio.Insert(0, "Food");
-                prio.Insert(0, "Water");
-                
-            }
+            
             
             if (highHydration() && highEnergy() && wantingOffspring()) // Prio 3 (If we live good) search for mate.
             {

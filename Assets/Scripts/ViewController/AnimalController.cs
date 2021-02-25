@@ -138,7 +138,10 @@ public abstract class AnimalController : MonoBehaviour
         animalModel.age++;
         */
 
-        animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier;
+        //https://www.uvm.edu/pdodds/research/papers/others/2017/hirt2017a.pdf
+        //above link for actual empirical max speed.
+        //
+        animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
         //TODO, maybe move?
         agent.speed = animalModel.currentSpeed;
 
@@ -230,23 +233,27 @@ public abstract class AnimalController : MonoBehaviour
         /*sf = new GoToFood(this, Fsm);
         sw = new GoToWater(this, Fsm);
         sm = new GoToMate(this, Fsm);*/
-        es = new Eating(this, Fsm);
         
         fs = new FleeingState(this, Fsm);
         wander = new Wander(this, Fsm);
         gs = new GoToState(this, Fsm);
         idle = new Idle(this, Fsm);
         ds = new Drinking(this, Fsm);
+        es = new Eating(this, Fsm);
         ms = new Mating(this, Fsm);
         Fsm.Initialize(idle);
         
         tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
         EventSubscribe();
+
+        SetPhenotype();
         
         decisionMaker = new DecisionMaker(this,animalModel,tickEventPublisher);
     }
+
     
-    
+
+
     //should be refactored so that this logic is in AnimalModel
     private void Update()
     {
@@ -269,6 +276,12 @@ public abstract class AnimalController : MonoBehaviour
     {
         //Update physics
         //Fsm.UpdateStatesPhysics();
+    }
+    
+    //Set animals appearance based on traits.
+    private void SetPhenotype()
+    {
+        gameObject.transform.localScale = new Vector3(1, 1, 1) * animalModel.traits.size;
     }
 
     private void EatFood(GameObject food)
@@ -312,6 +325,8 @@ public abstract class AnimalController : MonoBehaviour
             child.GetComponent<AnimalController>().animalModel = childModel;
 
             Debug.Log("MATE");
+            
+            //Reset both reproductive urges.
             animalModel.reproductiveUrge = 0f;
             targetAnimalController.animalModel.reproductiveUrge = 0f;
         }
