@@ -1,10 +1,35 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using AnimalsV2;
 using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
+    public Camera camera1;
+    public Camera camera2;
+    public GameObject ui;
+
+    public void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            //Swap enabled state to opposite one provided that only is on at a time
+            if (camera2.enabled)
+            {
+                camera2.enabled = false;
+                ui.gameObject.SetActive(false);
+                camera1.enabled = true;
+            }
+            else
+            {
+                ui.gameObject.SetActive(true);
+                camera1.enabled = false;
+                camera2.enabled = true;
+            }
+        }
+    }
+
     // Move
     public float speed = 25.0f;
     public float height = 5.0f;
@@ -43,11 +68,11 @@ public class CameraController : MonoBehaviour
             height = Mathf.Max(height, 0);
         }
         // Else scrolling will set the zoom level (FoV).
-        else 
+        /*else 
         {
             Camera.main.fieldOfView -= Input.GetAxis("Mouse ScrollWheel") * speed;
             Camera.main.fieldOfView = Mathf.Clamp(Camera.main.fieldOfView, 15, 100);
-        }
+        }*/
     }
 
     // Camera rotation
@@ -65,7 +90,7 @@ public class CameraController : MonoBehaviour
     // Raycast to get a target at mouse position
     private void GetTarget() 
     {
-        var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        /*var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit))
         {
@@ -78,7 +103,7 @@ public class CameraController : MonoBehaviour
                 
                 Debug.Log("Raycast hit " + target.name + "!");
             }
-        }
+        }*/
     }
 
     // Update is called once per frame
