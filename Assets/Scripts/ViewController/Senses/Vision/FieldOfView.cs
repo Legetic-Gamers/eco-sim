@@ -38,7 +38,9 @@ public class FieldOfView : MonoBehaviour
         
         animalController.visibleHostileTargets.Clear();
         animalController.visibleFriendlyTargets.Clear();
-        animalController.visiblePreyTargets.Clear();
+        animalController.visibleFoodTargets.Clear();
+        animalController.visibleWaterTargets.Clear();
+
         // for custom editor FoVEditor
         targets.Clear();
 
@@ -102,7 +104,7 @@ public class FieldOfView : MonoBehaviour
             if (targetAnimalController.animalModel.CanEat(animalController.animalModel))
             {
                 animalController.visibleHostileTargets.Add(target);
-                animalController.animalModel.actionPerceivedHostile?.Invoke(target);
+                animalController.actionPerceivedHostile?.Invoke(target);
                 return;
             }    
         }

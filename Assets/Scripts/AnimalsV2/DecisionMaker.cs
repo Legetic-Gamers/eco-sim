@@ -18,13 +18,6 @@ namespace AnimalsV2
         private TickEventPublisher eventPublisher;
         private FiniteStateMachine fsm;
         
-        // public List<GameObject> hostileTargets;
-        // public List<GameObject> friendlyTargets;
-        // public List<GameObject> foodTargets;
-
-        public List<GameObject> seenTargets;
-        public List<GameObject> heardTargets;
-
         public DecisionMaker(AnimalController animalController, AnimalModel animalModel,TickEventPublisher eventPublisher)
         {
             
@@ -33,12 +26,6 @@ namespace AnimalsV2
             this.animalModel = animalModel;
             this.eventPublisher = eventPublisher;
 
-            //TESTING!!!!!!
-            // hostileTargets = animal.heardTargets;
-            // friendlyTargets = new List<GameObject>();
-            // foodTargets = new List<GameObject>();
-           
-            
             EventSubscribe();
         }
         
@@ -57,14 +44,7 @@ namespace AnimalsV2
 
         private void GetBestAction(AnimalModel parameters)
         {
-            List<GameObject> allHostileTargets = animalController.visibleHostileTargets
-                .Concat(animalController.heardHostileTargets).ToList();
-            List<GameObject> allPreyTargets = animalController.visiblePreyTargets
-                .Concat(animalController.heardPreyTargets).ToList();
-            
-            // with allHostileTargets as a list only containing predators, can instead check that it is not empty
-            bool predatorNearby = false; //PredatorNearby(allHostileTargets);
-            
+
             //This is instead of using the state machine regularly.
             //SortedDictionary<State, List<State>> stateGraph = StateConstraintsGraph();
             
@@ -85,16 +65,13 @@ namespace AnimalsV2
             //     ChangeState(animalController.fs);
             // }
 
-            //TEST
-            //ChangeState(animal.fs);
-
             State currentState = fsm.CurrentState;
             
             if (currentState is Eating)
             {
                 Eating eatingState = (Eating) currentState;
                 //Eat until full or out of food.
-                if (eatingState.foodIsEmpty() || energyFull())
+                if (eatingState.foodIsEmpty() || animalModel.energyFull())
                 {
                     Prioritize();
                 }
@@ -135,16 +112,16 @@ namespace AnimalsV2
                         switch (actionToDo)
                         {
                             case "eat":
-                                animalController.es.EatFood(target);
-                                ChangeState(animalController.es);
+                                animalController.eatingState.EatFood(target);
+                                ChangeState(animalController.eatingState);
                                 break;
                             case "drink":
-                                animalController.ds.DrinkWater(target);
-                                ChangeState(animalController.ds);
+                                animalController.drinkingState.DrinkWater(target);
+                                ChangeState(animalController.drinkingState);
                                 break;
                             case "mate":
-                                animalController.ms.Mate(target);
-                                ChangeState(animalController.ds);
+                                animalController.matingState.Mate(target);
+                                ChangeState(animalController.drinkingState);
                                 break;
                         }
                         
@@ -161,9 +138,9 @@ namespace AnimalsV2
                 var targetAndAction = wander.FoundObject();
                 if (targetAndAction?.Item1 != null)
                 {
-                    animalController.gs.SetTarget(targetAndAction.Item1);
-                    animalController.gs.SetActionOnArrive(targetAndAction.Item2);
-                    ChangeState(animalController.gs);
+                    animalController.goToState.SetTarget(targetAndAction.Item1);
+                    animalController.goToState.SetActionOnArrive(targetAndAction.Item2);
+                    ChangeState(animalController.goToState);
                 }
                 else
                 {
@@ -187,8 +164,20 @@ namespace AnimalsV2
             List<string> prio = new List<string>();
             //Debug.Log("Prio!");
             
+            if (animalModel.lowHydration()) //Prio 1 don't die from dehydration -> Find Water.
+            {
+                prio.Add("Water");
+                
+            }
+            if (animalModel.lowEnergy()) //Prio 2 dont die from hunger -> Find Food.
+            {
+                prio.Add("Food");
+                
+            }
+
             
-            if (!highHydration() && !highEnergy()) //Prio 6, not low energy but not high either + not low hydration but not high either -> find Water and then Food.
+
+            if (!animalModel.highHydration() && !animalModel.highEnergy()) //Prio 6, not low energy but not high either + not low hydration but not high either -> find Water and then Food.
             {
                 //ChangeState(animal.sf);
                 prio.Remove("Food");
@@ -198,8 +187,7 @@ namespace AnimalsV2
                 prio.Insert(0, "Water");
                 
             }
-
-            if (highHydration() && !highEnergy()) //Prio 5, not low energy but not high either + high hydration -> find Food.
+            if (animalModel.highHydration() && !animalModel.highEnergy()) //Prio 5, not low energy but not high either + high hydration -> find Food.
             {
                 //ChangeState(animal.sf);
                 prio.Remove("Food");
@@ -207,7 +195,7 @@ namespace AnimalsV2
                 
             }
             
-            if (!highHydration() && highEnergy()) //Prio 4, not low hydration but not high either + high energy -> find Water.
+            if (!animalModel.highHydration() && animalModel.highEnergy()) //Prio 4, not low hydration but not high either + high energy -> find Water.
             {
                 //ChangeState(animal.sw);
                 prio.Remove("Water");
@@ -215,14 +203,14 @@ namespace AnimalsV2
                 
             }
             
-            if (lowEnergy()) //Prio 2 dont die from hunger -> Find Food.
+            if (animalModel.lowEnergy()) //Prio 2 dont die from hunger -> Find Food.
             {
                 prio.Remove("Food");
                 prio.Insert(0, "Food");
                 
             }
             
-            if (lowHydration()) //Prio 1 don't die from dehydration -> Find Water.
+            if (animalModel.lowHydration()) //Prio 1 don't die from dehydration -> Find Water.
             {
                 prio.Remove("Water");
                 prio.Insert(0,"Water");
@@ -231,7 +219,7 @@ namespace AnimalsV2
             
             
             
-            if (wantingOffspring()) // Prio 3 (If we live good) search for mate.
+            if (animalModel.wantingOffspring()) // Prio 3 (If we live good) search for mate.
             {
                 prio.Insert(0,"Mate");
                 
@@ -240,8 +228,8 @@ namespace AnimalsV2
             //prio.Add("Mate");
             
             
-            animalController.wander.SetPriorities(prio);
-            ChangeState(animalController.wander);
+            animalController.wanderState.SetPriorities(prio);
+            ChangeState(animalController.wanderState);
 
             //Debug.Log(fsm.CurrentState.GetType());
         }
@@ -276,41 +264,6 @@ namespace AnimalsV2
         //     return 
         // }
 
-        private bool energyFull()
-        {
-            return animalModel.currentEnergy == animalModel.traits.maxEnergy;
-        }
-        
-        private bool highEnergy()
-        {
-            return animalModel.currentEnergy / animalModel.traits.maxEnergy > 0.95f;
-        }
-        private bool lowEnergy()
-        {
-            return animalModel.currentEnergy / animalModel.traits.maxEnergy < 0.5f;
-        }
-        private bool hydrationFull()
-        {
-            return animalModel.currentHydration == animalModel.traits.maxHydration;
-        }
-        private bool highHydration()
-        {
-            return animalModel.currentHydration / animalModel.traits.maxHydration > 0.95f;
-        }
-        private bool lowHydration()
-        {
-            return animalModel.currentHydration / animalModel.traits.maxHydration < 0.4f;
-        }
-        private bool wantingOffspring()
-        {
-            //reproductive urge greater than average of energy and hydration.
-            //Debug.Log("urge: " + animalModel.reproductiveUrge + "   Average other: " + (animalModel.currentEnergy + animalModel.currentHydration) / 2);
-            return animalModel.reproductiveUrge > (animalModel.currentEnergy + animalModel.currentHydration) / (animalModel.traits.maxEnergy + animalModel.traits.maxHydration);
-        }
-        private bool lowHealth()
-        {
-            return animalModel.currentHealth < 30;
-        }
 
         //Instead of updating/Making choices every frame
         //Listen to when parameters or senses were updated.
@@ -319,7 +272,8 @@ namespace AnimalsV2
             eventPublisher.onParamTickEvent += MakeDecision;
             eventPublisher.onSenseTickEvent += MakeDecision;
             
-            animalModel.actionPerceivedHostile += HandleHostileTarget;
+            animalController.actionPerceivedHostile += HandleHostileTarget;
+            animalController.actionDeath += HandleDeath;
         }
         
         
@@ -328,7 +282,8 @@ namespace AnimalsV2
             eventPublisher.onParamTickEvent -= MakeDecision;
             eventPublisher.onSenseTickEvent -= MakeDecision;
             
-            animalModel.actionPerceivedHostile -= HandleHostileTarget;
+            animalController.actionPerceivedHostile -= HandleHostileTarget;
+            animalController.actionDeath -= HandleDeath;
         }
 
         /// <summary>
@@ -338,9 +293,14 @@ namespace AnimalsV2
         /// which method that will be called depends on the type of target </param>
         private void HandleHostileTarget(GameObject target)
         {
-            ChangeState(animalController.fs);
+            ChangeState(animalController.fleeingState);
             
             //Debug.Log(target.name + " is hostile to " + animalController.name);
+        }
+
+        private void HandleDeath()
+        {
+            ChangeState(animalController.deadState);
         }
 
 

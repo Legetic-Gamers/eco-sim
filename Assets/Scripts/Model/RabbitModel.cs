@@ -23,7 +23,6 @@ public class RabbitModel : AnimalModel,IEdible
 
     public float GetEaten()
     {
-        isEaten = true;
         return 100f;
     }
 

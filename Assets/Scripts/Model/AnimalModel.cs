@@ -107,11 +107,6 @@ public abstract class AnimalModel
     
     public float currentSpeed { get; set; }
 
-    public bool isEaten = false;
-
-    // decisionMaker subscribes to these actions
-    public Action<GameObject> actionPerceivedHostile;
-
     public AnimalModel(Traits traits, int generation)
     {
         // initializing parameters
@@ -128,7 +123,7 @@ public abstract class AnimalModel
 
     public bool IsAlive()
     {
-        return (currentHealth > 0 && currentEnergy > 0 && age < traits.ageLimit && currentHydration > 0 && !isEaten);
+        return (currentHealth > 0 && currentEnergy > 0 && age < traits.ageLimit && currentHydration > 0);
     }
 
     public abstract AnimalModel Mate(AnimalModel otherParent);
@@ -147,6 +142,43 @@ public abstract class AnimalModel
     {
         return currentHydration / traits.maxHydration;
     }
+    
+    
+    public bool energyFull()
+    {
+        return currentEnergy == traits.maxEnergy;
+    }
+        
+    public bool highEnergy()
+    {
+        return currentEnergy / traits.maxEnergy > 0.7f;
+    }
+    public bool lowEnergy()
+    {
+        return currentEnergy / traits.maxEnergy < 0.6f;
+    }
+    public bool hydrationFull()
+    {
+        return currentHydration == traits.maxHydration;
+    }
+    public bool highHydration()
+    {
+        return currentHydration / traits.maxHydration > 0.7f;
+    }
+    public bool lowHydration()
+    {
+        return currentHydration / traits.maxHydration < 0.5f;
+    }
+    public bool wantingOffspring()
+    {
+        //reproductive urge greater than average of energy and hydration.
+        return reproductiveUrge > (currentEnergy + currentHydration) / 2;
+    }
+    public bool lowHealth()
+    {
+        return currentHealth < 30;
+    }
+    
 
     public abstract bool CanEat<T>(T obj);
 
