@@ -2655,8 +2655,7 @@ MonoBehaviour:
     m_Bits: 256
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 0
-  targets: []
+    m_Bits: 4
   animalController: {fileID: 0}
 --- !u!114 &5945667779142240398
 MonoBehaviour:
@@ -2674,7 +2673,6 @@ MonoBehaviour:
   targetMask:
     serializedVersion: 2
     m_Bits: 256
-  targets: []
   animalController: {fileID: 0}
   isPrey: 0
 --- !u!114 &9127360419405430084
@@ -2692,7 +2690,6 @@ MonoBehaviour:
   agent: {fileID: 0}
   visibleHostileTargets: []
   visibleFriendlyTargets: []
-  visiblePreyTargets: []
   visibleFoodTargets: []
   visibleWaterTargets: []
   heardHostileTargets: []
