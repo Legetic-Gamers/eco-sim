@@ -23,18 +23,18 @@ namespace AnimalsV2
             animator = this.animal.GetComponent<Animator>();
 
             //Listen to state changes of the animals states to update animations.
-            animal.Fsm.OnStateEnter += FSM_OnStateEnter;
-            animal.Fsm.OnStateLogicUpdate += FSM_OnStateLogicUpdate;
-            animal.Fsm.OnStateExit += FSM_OnStateExit;
+            animal.fsm.OnStateEnter += FSM_OnStateEnter;
+            animal.fsm.OnStateLogicUpdate += FSM_OnStateLogicUpdate;
+            animal.fsm.OnStateExit += FSM_OnStateExit;
 
             //Debug.Log("AnimationController listening to FSM");
         }
 
         public void UnSubscribe()
         {
-            animal.Fsm.OnStateEnter -= FSM_OnStateEnter;
-            animal.Fsm.OnStateLogicUpdate -= FSM_OnStateLogicUpdate;
-            animal.Fsm.OnStateExit -= FSM_OnStateExit;
+            animal.fsm.OnStateEnter -= FSM_OnStateEnter;
+            animal.fsm.OnStateLogicUpdate -= FSM_OnStateLogicUpdate;
+            animal.fsm.OnStateExit -= FSM_OnStateExit;
         }
 
         //Animation parameters which need updating on state enter.
