@@ -1,9 +1,10 @@
+/*
+ * Author: Johan A. 
+ */
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using UnityEngine;
-using static DataCollection.Collector;
+using static DataCollection.Formatter;
 
 namespace DataCollection
 {
@@ -11,7 +12,6 @@ namespace DataCollection
     {
         private TickEventPublisher tickEventPublisher;
         private Collector c;
-        //private Formatter f;
         public Action<List<int>> Display;
         private void Awake()
         {
@@ -19,15 +19,19 @@ namespace DataCollection
             tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
             tickEventPublisher.onCollectorUpdate += UpdateDataAndGraph;
         }
-        
+
         private void UpdateDataAndGraph()
         {
             c.Collect();
-            if (c?.totalAnimalsAlive != null)
+            // Temp casting
+            List<int> statsInInteger = new List<int>();
+            foreach (var f in c.allStatsPerGeneration[0])
             {
-                Display(c.totalAnimalsAlive);
-                Task asyncTask = Formatter.WriteToFile(c.totalAnimalsAlive);
+                statsInInteger.Add((int) f);   
             }
+            
+            Display(statsInInteger);
+            WriteToFile(c.totalAnimalsAlive);
         }
     }
 }

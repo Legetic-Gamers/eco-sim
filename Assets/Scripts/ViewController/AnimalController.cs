@@ -20,6 +20,8 @@ public abstract class AnimalController : MonoBehaviour
     public Action<GameObject> actionPerceivedHostile;
     public Action actionDeath;
     
+    public Action<AnimalModel> onBirth;
+    
     [HideInInspector]
     public NavMeshAgent agent;
     
@@ -290,6 +292,7 @@ public abstract class AnimalController : MonoBehaviour
         SetPhenotype();
         
         decisionMaker = new DecisionMaker(this,animalModel,tickEventPublisher);
+        onBirth?.Invoke(animalModel);
     }
 
 
