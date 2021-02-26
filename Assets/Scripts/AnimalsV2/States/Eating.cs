@@ -48,7 +48,6 @@ namespace AnimalsV2.States
 
         public void EatFood(GameObject target)
         {
-            Debug.Log("MUNCH");
             edible = target;
             onEatFood?.Invoke(target);
         }

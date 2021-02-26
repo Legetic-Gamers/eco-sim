@@ -54,8 +54,7 @@ public class FieldOfView : MonoBehaviour
 
             // don't add self
             if (target == gameObject) return;
-            
-            
+
             Vector3 dirToTarget = (target.transform.position - transform.position).normalized;
 
             if (Vector3.Angle(transform.forward, dirToTarget) < angle / 2)
@@ -117,9 +116,11 @@ public class FieldOfView : MonoBehaviour
 
     private void HandlePlantTarget(GameObject target)
     {
+        Debug.Log("HERE1");
         PlantController targetPlantController = target.GetComponent<PlantController>();
         if (targetPlantController != null && animalController.animalModel.CanEat(targetPlantController.plantModel))
         {
+            Debug.Log("HERE2");
             animalController.visibleFoodTargets.Add(target);
         }
     }

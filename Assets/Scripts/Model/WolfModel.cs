@@ -1,6 +1,8 @@
-﻿public class WolfModel : AnimalModel
+﻿using Model;
+
+public class WolfModel : AnimalModel, IEdible
 {
-    public WolfModel() : base(new Traits(1f, 300, 100, 300, 6,10,25,10,10,180,10,10, Traits.BehaviorType.Carnivore, Traits.Species.Wolf),0)
+    public WolfModel() : base(new Traits(1f, 100, 100, 100, 6,10,25,10,10,180,10,10, Traits.BehaviorType.Carnivore, Traits.Species.Wolf),0)
     {
         // Wolf specific initialization 
     }
@@ -28,5 +30,10 @@
     public override bool IsSameSpecies<T>(T obj)
     {
         return obj is DeerModel;
+    }
+
+    public float GetEaten()
+    {
+        return 10f;
     }
 }
