@@ -5371,8 +5371,7 @@ MonoBehaviour:
     m_Bits: 256
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 0
-  targets: []
+    m_Bits: 4
   animalController: {fileID: 0}
 --- !u!114 &8785101678715966952
 MonoBehaviour:
@@ -5390,7 +5389,6 @@ MonoBehaviour:
   targetMask:
     serializedVersion: 2
     m_Bits: 256
-  targets: []
   animalController: {fileID: 0}
   isPrey: 0
 --- !u!1 &1571034971651392
