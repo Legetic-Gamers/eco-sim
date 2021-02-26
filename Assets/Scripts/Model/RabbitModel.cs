@@ -4,7 +4,7 @@ using Model;
 public class RabbitModel : AnimalModel,IEdible
 {
 
-    public RabbitModel() : base(new Traits(1f, 50, 100, 100, 3,10,100,10,10,180,10,10, Traits.BehaviorType.Herbivore, Traits.Species.Rabbit),0)
+    public RabbitModel() : base(new Traits(1f, 50, 100, 100, 3,10,100,10,10,180,5,3, Traits.BehaviorType.Herbivore, Traits.Species.Rabbit),0)
     {
         // Rabbit specific initialization 
     }
@@ -23,7 +23,7 @@ public class RabbitModel : AnimalModel,IEdible
 
     public float GetEaten()
     {
-        return 100f;
+        return traits.maxEnergy;
     }
 
     public override bool CanEat<T>(T obj)

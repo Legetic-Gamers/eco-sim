@@ -99,9 +99,24 @@ public abstract class AnimalModel
     /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
 
     public int age { get; set; }
-    public float currentHealth { get; set; }
-    public float currentEnergy { get; set; }
-    public float currentHydration { get; set; }
+    public float currentHealth
+    {
+        get { return currentHealth;}
+        //Cap health at max.
+        set { currentHealth = Math.Min(value,traits.maxHealth); }
+    }
+    public float currentEnergy { 
+        get { return currentEnergy;}
+        //Cap energy at max.
+        set { currentEnergy = Math.Min(value,traits.maxEnergy); } 
+    }
+    public float currentHydration { 
+        get { return currentHydration;}
+        //Cap hydration at max.
+        set { currentHydration = Math.Min(value,traits.maxHydration); }
+        
+    }
+    //There is no cap for reproductive urge.
     public float reproductiveUrge { get; set; }
     
     

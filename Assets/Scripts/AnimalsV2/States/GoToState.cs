@@ -50,11 +50,13 @@ namespace AnimalsV2.States
             //Override animation
             if (t != null)
             {
+                
                 AnimalController targetController = t.GetComponent<AnimalController>();
                 //target is an animal and i can eat it -> we are chasing something.
                 if (targetController != null && animal.animalModel.CanEat(targetController.animalModel)){
                     //Run fast if chasing
                     currentStateAnimation = Running;
+                    Debug.Log("Chasing!");
                     
                 }
             }
