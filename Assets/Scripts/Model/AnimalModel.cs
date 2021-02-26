@@ -151,7 +151,7 @@ public abstract class AnimalModel
         
     public bool highEnergy()
     {
-        return currentEnergy / traits.maxEnergy > 0.7f;
+        return currentEnergy / traits.maxEnergy > 0.95f;
     }
     public bool lowEnergy()
     {
@@ -163,7 +163,7 @@ public abstract class AnimalModel
     }
     public bool highHydration()
     {
-        return currentHydration / traits.maxHydration > 0.7f;
+        return currentHydration / traits.maxHydration > 0.95f;
     }
     public bool lowHydration()
     {
@@ -172,7 +172,7 @@ public abstract class AnimalModel
     public bool wantingOffspring()
     {
         //reproductive urge greater than average of energy and hydration.
-        return reproductiveUrge > (currentEnergy + currentHydration) / 2;
+        return reproductiveUrge > (currentEnergy + currentHydration) / (traits.maxEnergy + traits.maxHydration);
     }
     public bool lowHealth()
     {
