@@ -1,18 +1,40 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿
+using System;
+using JetBrains.Annotations;
 using UnityEngine;
 
-public class ButtonClick : MonoBehaviour 
+
+public class ButtonClick : Window_Graph
 {
-    public event EventHandler OnRedraw();
 
-    // Add updateEvent upon button pressed so that graph redraws whenever a button has been pressed.
+    public static event EventHandler OnButtonPressed;
 
-    public void OnButtonClick()
+    public void ButtonPressed()
     {
-        int i = Window_Graph.GetGridCountX();
-        i++;
-        Window_Graph.SetGridCountX(i);
+        OnButtonPressed?.Invoke(this, EventArgs.Empty);
+    }
+
+
+    public void OnButtonIncTruncate()
+    {
+        if (TruncateFactor < ValueList.Count)
+            TruncateFactor++;
+    }
+
+    public void OnButtonDecTruncate()
+    {
+        if (TruncateFactor > 1)
+            TruncateFactor--;
+    }
+
+    public void OnButtonIncGridY()
+    {
+        GridCountY++;
+    }
+
+    public void OnButtonDecGridY()
+    {
+        if (GridCountY > 1)
+            GridCountY--;
     }
 }
