@@ -26,36 +26,6 @@ public class Traits
     public BehaviorType behaviorType { get; set; }
 
     public Species species { get; set; }
-    
-    public bool IsPredator
-    {
-        get{
-            try
-            {
-                return behaviorType == BehaviorType.Carnivore
-                       || behaviorType == BehaviorType.Omnivore;
-
-            }
-            catch (NullReferenceException)
-            {
-                return false;
-            }   
-        }
-        
-    }
-    public bool IsPrey
-    {
-        get{
-            try
-            {
-                return behaviorType == BehaviorType.Herbivore;
-            }
-            catch (NullReferenceException)
-            {
-                return false;
-            }
-        }
-    }
 
     public  float size { get; set; }
     public float maxEnergy { get; set; }
@@ -130,7 +100,7 @@ public class Traits
     {
         Traits childTraits = new Traits(10,10,10,100, 10,10,10,10,10,10,10,10, otherParent.behaviorType, otherParent.species);
         //TODO crossover logic to generate a gene between trait of other parent and this.
-        return childTraits;
+        return otherParent;
         
         /*
         System.Random rnd = new System.Random();

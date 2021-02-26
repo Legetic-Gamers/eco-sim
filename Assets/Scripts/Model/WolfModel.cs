@@ -1,6 +1,8 @@
-﻿public class WolfModel : AnimalModel
+﻿using Model;
+
+public class WolfModel : AnimalModel, IEdible
 {
-    public WolfModel() : base(new Traits(10, 300, 100, 100, 10,10,10,10,10,10,10,10, Traits.BehaviorType.Carnivore, Traits.Species.Wolf),0)
+    public WolfModel() : base(new Traits(1f, 50, 100, 100, 6,10,25,10,10,180,10,5, Traits.BehaviorType.Carnivore, Traits.Species.Wolf),0)
     {
         // Wolf specific initialization 
     }
@@ -17,5 +19,21 @@
         Traits childTraits = traits.Crossover(otherParent.traits);
         //TODO logic to determine generation
         return new WolfModel(childTraits,0);
+    }
+    
+    
+    public override bool CanEat<T>(T obj)
+    {
+        return obj is RabbitModel || obj is DeerModel;
+    }
+    
+    public override bool IsSameSpecies<T>(T obj)
+    {
+        return obj is WolfModel;
+    }
+
+    public float GetEaten()
+    {
+        return traits.maxEnergy;
     }
 }

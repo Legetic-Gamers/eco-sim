@@ -18,6 +18,8 @@ namespace AnimalsV2
     {
         public State CurrentState { get; private set; }
         
+        // Used to identify an absorbing state, such that no other state can be entered, e.g. Dead.
+        public bool absorbingState;
         
         //State Change Listeners
         public event Action<State> OnStateEnter;
@@ -42,6 +44,8 @@ namespace AnimalsV2
         public void ChangeState(State newState)
         {
             if(newState == CurrentState) return;
+            // if the state is absorbing, meaning that state change is not possible, we return
+            if (absorbingState) return;
             
             if (CurrentState != null)
             {

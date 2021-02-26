@@ -23,7 +23,7 @@ namespace DataCollection
         private void UpdateDataAndGraph()
         {
             c.Collect();
-            if (c.totalAnimalsAlive != null)
+            if (c?.totalAnimalsAlive != null)
             {
                 Display(c.totalAnimalsAlive);
                 Task asyncTask = Formatter.WriteToFile(c.totalAnimalsAlive);
