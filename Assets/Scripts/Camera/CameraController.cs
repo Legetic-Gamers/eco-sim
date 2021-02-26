@@ -7,21 +7,22 @@ public class CameraController : MonoBehaviour
 {
     // Move
     public float speed = 25.0f;
-    public float height = 5.0f;
+    public float height = 2.0f;
 
     // Rotate
     private float pitch;
     private float yaw;
-    public Vector2 pitchMinMax = new Vector2(-20, 40);
+    public Vector2 pitchMinMax = new Vector2(-40, 60);
     public float sensitivity = 2.0f;
     
     // FollowTarget
-    [Tooltip("Must be a valid tag (including correct capitalization) for targeting to work.")]
-    public string targetTag = "Animal";
     private GameObject target;
     private readonly Vector3 yOffset = new Vector3(0, 2, 0);
 
-    private bool hasTarget = false;
+    private bool hasTarget;
+    
+    [SerializeField]
+    private AnimalSelectPanel animalSelectPanel;
     
     // WASD movement
     private void Move()
@@ -65,20 +66,42 @@ public class CameraController : MonoBehaviour
     // Raycast to get a target at mouse position
     private void GetTarget() 
     {
+        // Shoot ray from mouseposition in relative position to the camera
         var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        // Variable to store the hit
         RaycastHit hit;
-        if (Physics.Raycast(ray, out hit))
+        // If ray != null, out hit (store data in hit)
+        if (Physics.Raycast(ray, out hit, 100f))
         {
-            if (hit.collider.CompareTag(targetTag)) 
+            if (hit.transform != null && hit.transform.gameObject.name != "Plane")
             {
                 hasTarget = true;
                 target = hit.collider.gameObject;
-                if (target.GetComponent<AnimalController>() != null)
-                    target.GetComponent<AnimalController>().isControllable = true;
-                
-                Debug.Log("Raycast hit " + target.name + "!");
+                // Print the name of the object
+                PrintName(target);
+                // Method to handle the hit
+                HandleHit(target);
             }
         }
+    }
+    
+    private void HandleHit(GameObject gameObject)
+    {
+        // See if the gameobject has animalcontroller, if so; we want to show panel with traits
+        AnimalController animalController = gameObject.GetComponent<AnimalController>();
+        if (animalController != null && animalController?.animalModel?.traits != null)
+        {
+            animalSelectPanel.SetTraitText(animalController.animalModel.traits, gameObject.name);
+        }
+        else
+        {
+            animalSelectPanel.Hide();
+        }
+    }
+    
+    private void PrintName(GameObject go)
+    {
+        Debug.Log("You clicked this object: " + go.name);
     }
 
     // Update is called once per frame
@@ -94,8 +117,6 @@ public class CameraController : MonoBehaviour
         {
             hasTarget = false;
             target = null;
-            if (target.GetComponent<AnimalController>() != null)
-                target.GetComponent<AnimalController>().isControllable = true;
             
             Camera.main.fieldOfView = 60;
         }

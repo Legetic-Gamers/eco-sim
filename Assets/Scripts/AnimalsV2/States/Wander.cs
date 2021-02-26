@@ -7,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static AnimalsV2.Priorities;
 using Random = UnityEngine.Random;
 
 namespace AnimalsV2.States
@@ -15,20 +16,18 @@ namespace AnimalsV2.States
 //sealed just prevents other classes from inheriting
     public class Wander : State 
     {
-        private List<String> priorities = new List<String>();
+        private List<Priorities> priorities = new List<Priorities>();
 
         private GameObject food;
         private GameObject water;
         private GameObject mate;
-
-        public GameObject target;
         
         public Wander(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine) {}
 
         public override void Enter()
         {
             base.Enter();
-            currentStateAnimation = StateAnimation.Running;
+            currentStateAnimation = StateAnimation.Walking;
         }
 
         public override void HandleInput()
@@ -41,30 +40,34 @@ namespace AnimalsV2.States
             base.LogicUpdate();
             var position1 = animal.transform.position;
             food = NavigationUtilities.GetNearestObjectPosition(animal.visibleFoodTargets, position1);
+            
             water = NavigationUtilities.GetNearestObjectPosition(animal.visibleWaterTargets, position1);
             mate = NavigationUtilities.GetNearestObjectPosition(animal.visibleFriendlyTargets, position1);
-            
-            if (animal.agent.remainingDistance < 1.0f)
+            if (animal.agent.isActiveAndEnabled)
             {
-                Vector3 position = new Vector3(Random.Range(-30.0f, 30.0f), 0, Random.Range(-30.0f, 30.0f));
-                animal.agent.SetDestination(position);
+                if (animal.agent.remainingDistance < 1.0f)
+                {
+                    Vector3 position = new Vector3(Random.Range(-30.0f, 30.0f), 0, Random.Range(-30.0f, 30.0f));
+                    animal.agent.SetDestination(position);
+                }
+
             }
         }
         
-        public GameObject FoundObject()
+        public Tuple<GameObject, Priorities> FoundObject()
         {
-            foreach (var p in priorities)
+            foreach (var priority in priorities)
             {
-                switch (p)
+                switch (priority)
                 {
-                    case "Food":
-                        if (food != null) return food;
+                    case Food:
+                        if (food != null) return Tuple.Create(food, Food);
                         break;
-                    case "Water":
-                        if (water != null) return water;
+                    case Water:
+                        if (water != null) return Tuple.Create(water, Water);
                         break;
-                    case "Mate":
-                        if (mate != null) return mate;
+                    case Mate:
+                        if (mate != null) return Tuple.Create(mate, Mate);
                         break;
                 }
             }
@@ -72,9 +75,14 @@ namespace AnimalsV2.States
             return null;
         }
 
-        public void SetPriorities(List<String> priorities)
+        public void SetPriorities(List<Priorities> priorities)
         {
             this.priorities = priorities;
+        }
+        
+        public override string ToString()
+        {
+            return "Wandering";
         }
     }
 }

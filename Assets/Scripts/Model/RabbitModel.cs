@@ -1,6 +1,10 @@
-﻿public class RabbitModel : AnimalModel
+﻿using System;
+using Model;
+
+public class RabbitModel : AnimalModel,IEdible
 {
-    public RabbitModel() : base(new Traits(10, 30, 10, 30, 10,10,10,10,10,10,10,10, Traits.BehaviorType.Herbivore, Traits.Species.Rabbit),0)
+
+    public RabbitModel() : base(new Traits(1f, 50, 100, 100, 3,10,100,10,10,180,5,3, Traits.BehaviorType.Herbivore, Traits.Species.Rabbit),0)
     {
         // Rabbit specific initialization 
     }
@@ -15,5 +19,20 @@
         Traits childTraits = traits.Crossover(otherParent.traits);
         //TODO logic for determining generation
         return new RabbitModel(childTraits, 0);
+    }
+
+    public float GetEaten()
+    {
+        return traits.maxEnergy;
+    }
+
+    public override bool CanEat<T>(T obj)
+    {
+        return obj is PlantModel;
+    }
+
+    public override bool IsSameSpecies<T>(T obj)
+    {
+        return obj is RabbitModel;
     }
 }

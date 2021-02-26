@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using AnimalsV2;
 using UnityEngine;
 using UnityEngine.AI;
@@ -14,10 +15,13 @@ namespace AnimalsV2.States
         public FleeingState(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine) {}
 
         public Vector3 fleeingFromPos;
+
+        private bool hasFled;
         
         public override void Enter()
         {
             base.Enter();
+            hasFled = false;
             //Debug.Log("Fleeing!");
             currentStateAnimation = Running;
         }
@@ -33,11 +37,7 @@ namespace AnimalsV2.States
         {
             base.LogicUpdate();
             
-            // Get average position of enemies 
-            //averagePosition = NavigationUtilities.GetNearestObjectPositionByTag(animal, "Predator");
-            
-            // alternative to the above
-            //averagePosition = fleeingFromPos;
+            // Get average position of enemies
             List<GameObject> allHostileTargets = animal.heardHostileTargets.Concat(animal.visibleHostileTargets).ToList();
 
             averagePosition = NavigationUtilities.GetNearObjectsAveragePosition(allHostileTargets, animal.transform.position);
@@ -50,13 +50,29 @@ namespace AnimalsV2.States
             {
                  pointToRunTo = NavigationUtilities.RunToFromPoint(animal.transform,averagePosition,false);
             }
-            
-            // Move the animal using the NavMeshAgent.
-            NavMeshHit hit;
-            NavMesh.SamplePosition(pointToRunTo,out hit,5,1 << NavMesh.GetAreaFromName("Walkable"));
-            animal.agent.SetDestination(hit.position);
+            else
+            {
+                hasFled = true;
+            }
+
+            if (animal.agent.isActiveAndEnabled)
+            {
+                // Move the animal using the NavMeshAgent.
+                NavMeshHit hit;
+                NavMesh.SamplePosition(pointToRunTo, out hit, 5, 1 << NavMesh.GetAreaFromName("Walkable"));
+                animal.agent.SetDestination(hit.position);
+            }
         }
 
+        public override string ToString()
+        {
+            return "Fleeing";
+        }
 
+        public bool HasFled()
+        {
+            return hasFled;
+        }
+        
     }
 }
