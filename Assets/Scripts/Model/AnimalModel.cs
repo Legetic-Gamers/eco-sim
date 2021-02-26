@@ -197,6 +197,8 @@ public abstract class AnimalModel
     
     public float GetHydrationPercentage => currentHydration / traits.maxHydration;
     
+    public float GetSpeedPercentage => currentSpeed / traits.maxSpeed;
+    
     public bool EnergyFull => currentEnergy == traits.maxEnergy;
 
     public bool HighEnergy => currentEnergy / traits.maxEnergy > 0.9f;

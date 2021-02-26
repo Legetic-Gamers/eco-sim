@@ -104,7 +104,6 @@ public abstract class AnimalController : MonoBehaviour
                     //target is an animal and i can eat it -> we are chasing something.
                     if (targetController != null && animalModel.CanEat(targetController.animalModel)){
                         //Run fast if chasing
-                        Debug.Log("CHASING");
                         speedModifier = RunningSpeed;
                     
                     }
@@ -178,6 +177,8 @@ public abstract class AnimalController : MonoBehaviour
         drinkingState.onDrinkWater += DrinkWater;
 
         matingState.onMate += Mate;
+        
+        animationController.EventSubscribe();
     }
     protected void EventUnsubscribe()
     {

@@ -16,7 +16,7 @@ namespace AnimalsV2.States
         public override void Enter()
         {
             base.Enter();
-            currentStateAnimation = Running;
+            
         }
 
         public override void LogicUpdate()
@@ -47,6 +47,7 @@ namespace AnimalsV2.States
         {
             targetObject = t;
             
+            currentStateAnimation = Walking;
             //Override animation
             if (t != null)
             {
@@ -56,7 +57,7 @@ namespace AnimalsV2.States
                 if (targetController != null && animal.animalModel.CanEat(targetController.animalModel)){
                     //Run fast if chasing
                     currentStateAnimation = Running;
-                    Debug.Log("Chasing!");
+                    Debug.Log(currentStateAnimation.ToString());
                     
                 }
             }
