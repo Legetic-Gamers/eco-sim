@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
+using Object = System.Object;
 
 namespace DataCollection
 {
@@ -20,33 +21,19 @@ namespace DataCollection
         
         /*
         public List<float> sizePerGeneration;
-        public List<float> maxEnergyPerGeneration;
-        public List<float> maxHelathPerGeneration;
-        public List<float> maxHydrationPerGeneration;
+        public List<int> maxEnergyPerGeneration;
+        public List<int> maxHelathPerGeneration;
+        public List<int> maxHydrationPerGeneration;
         public List<float> maxSpeedPerGeneration;
         public List<float> edurancePerGeneration;
-        public List<float> ageLimitPerGeneration;
+        public List<int> ageLimitPerGeneration;
         public List<float> temperatureResistPerGeneration;
         public List<float> desirabilityResistPerGeneration;
         public List<float> viewAnglePerGeneration;
         public List<float> viewRadiusPerGeneration;
         public List<float> hearingRadiusPerGeneration;
-        public List<float> behaviorTypePerGeneration;
-        public List<float> speciesPerGeneration;
-        */
-        /*
-        float size,
-        int maxEnergy, 
-        int maxHealth,
-        int maxHydration,
-        float maxSpeed,
-        float endurance, 
-        int ageLimit, 
-        float temperatureResist, 
-        float desirability, 
-        float viewAngle, 
-        float viewRadius, 
-        float hearingRadius,
+        public List<BehaviorType> behaviorTypePerGeneration;
+        public List<Species> speciesPerGeneration;
         BehaviorType behaviorType,
         Species species
         */
@@ -56,8 +43,12 @@ namespace DataCollection
         /// </summary>
         public Collector()
         {
-            allStatsPerGeneration = new List<List<float>>(14);
-            totalAnimalsAlive = new List<int> {GameObject.FindGameObjectsWithTag("Animal").Length};
+            allStatsPerGeneration = new List<List<float>>(12);
+            for (int i = 0; i < 12; i++)
+            {
+                allStatsPerGeneration.Add(new List<float>(1));
+            }
+            //totalAnimalsAlive = new List<int> {GameObject.FindGameObjectsWithTag("Animal").Length};
             totalAnimalsAlivePerGeneration = new List<int> {GameObject.FindGameObjectsWithTag("Animal").Length};
         }
         
@@ -66,35 +57,43 @@ namespace DataCollection
         /// </summary>
         public void Collect()
         {
-            GameObject[] allAnimalsAlive = GameObject.FindGameObjectsWithTag("Animal");
+            //GameObject[] allAnimalsAlive = GameObject.FindGameObjectsWithTag("Animal");
             //AddTotalAnimals();
-            AddToTraits(allAnimalsAlive);
         }
 
-        public void AddToTraits(GameObject[] allAnimals)
+        public void AddNewAnimal(AnimalModel am)
         {
-            List<float> tratisInAnimal = ConvertTraitsToList(am.traits);
-            totalAnimalsAlivePerGeneration[am.generation] += 1;
+            int gen = am.generation;
+            totalAnimalsAlivePerGeneration[gen] += 1;
+            List<float> traitsInAnimal = ConvertTraitsToList(am.traits);
+            
             int index = 0;
-            foreach (var list in allStatsPerGeneration)
+            foreach (List<float> statList in allStatsPerGeneration)
             {
-                list[am.generation] = list[am.generation] + tratisInAnimal[index];
+                if (gen > statList.Count) statList.AddRange(Enumerable.Repeat<float>(0,statList.Count-gen));
+                else statList[gen] = statList[gen]+ traitsInAnimal[index];
                 index += 1;
             }
         }
 
         private List<float> ConvertTraitsToList(Traits classTraits)
         {
-            List<float> traits = new List<float>();
-            List<object> traitObjects = traits.GetType()
-                .GetFields()
-                .Select(field => field.GetValue(traits))
-                .ToList();
-            foreach (var t in traitObjects)
+            // Yikes, did not find another working way
+            List<float> traits = new List<float>
             {
-                if (t.GetType().IsPrimitive) traits[0] = (float) t;
-            }
-
+                classTraits.size,
+                classTraits.maxEnergy,
+                classTraits.maxHealth,
+                classTraits.maxHydration,
+                classTraits.maxSpeed,
+                classTraits.endurance,
+                classTraits.ageLimit,
+                classTraits.temperatureResist,
+                classTraits.desirability,
+                classTraits.viewAngle,
+                classTraits.viewRadius,
+                classTraits.hearingRadius,
+            };
             return traits;
         }
 

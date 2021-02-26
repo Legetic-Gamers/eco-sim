@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using AnimalsV2;
 using AnimalsV2.States;
 using AnimalsV2.States.AnimalsV2.States;
+using DataCollection;
 using Model;
 using UnityEngine;
 using UnityEngine.AI;
@@ -13,6 +14,7 @@ public abstract class AnimalController : MonoBehaviour
     public AnimalModel animalModel;
 
     private TickEventPublisher tickEventPublisher;
+    private DataHandler datahandler;
 
     public Action<State> stateChange;
     
@@ -288,7 +290,11 @@ public abstract class AnimalController : MonoBehaviour
         
         tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
         EventSubscribe();
-
+        
+        // Could be done via events...
+        datahandler = FindObjectOfType<DataHandler>();
+        datahandler.LogNewAnimal(animalModel);
+        
         SetPhenotype();
         
         decisionMaker = new DecisionMaker(this,animalModel,tickEventPublisher);

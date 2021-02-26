@@ -20,17 +20,21 @@ namespace DataCollection
             tickEventPublisher.onCollectorUpdate += UpdateDataAndGraph;
         }
 
+        public void LogNewAnimal(AnimalModel animalModel)
+        {
+            c.AddNewAnimal(animalModel);
+        }
+
         private void UpdateDataAndGraph()
         {
             c.Collect();
             // Temp casting
-            List<int> statsInInteger = new List<int>();
-            foreach (var f in c.allStatsPerGeneration[0])
+            List<int> sizePerGeneration = new List<int>();
+            foreach (float f in c.allStatsPerGeneration[0])
             {
-                statsInInteger.Add((int) f);   
+                sizePerGeneration.Add((int) f);
             }
-            
-            Display(statsInInteger);
+            Display(sizePerGeneration);
             WriteToFile(c.totalAnimalsAlive);
         }
     }
