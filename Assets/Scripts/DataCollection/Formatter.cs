@@ -14,7 +14,7 @@ namespace DataCollection
     {
         public static async Task WriteToFile<T>(List<T> data)
         {
-            string fileName = "Assets/Scripts/DataCollection/test.json";
+            string fileName = "Assets/Scripts/DataCollection/Export/test.json";
             string path = Path.Combine(Directory.GetCurrentDirectory(), fileName);
 
             if (!File.Exists(path))
