@@ -195,7 +195,7 @@ public abstract class AnimalController : MonoBehaviour
 
         matingState.onMate -= Mate;
         
-        animationController.UnSubscribe();
+        animationController.EventUnsubscribe();
         decisionMaker.EventUnsubscribe();
     }
     

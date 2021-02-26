@@ -99,28 +99,81 @@ public abstract class AnimalModel
     /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
 
     public int age { get; set; }
-    public float currentHealth
+    
+    //CLAMPING (SETTING A LIMIT) TO ALL LIMITED PARAMETERS.
+    private float _currentHealth;
+    public float currentHealth { 
+        get { return _currentHealth; }
+        set
+        {
+            if (traits == null)
+            {
+                _currentHealth = value;
+            }
+            else
+            {
+                _currentHealth = Mathf.Clamp(value, 0, traits.maxHealth);
+                //Debug.Log("Current: " + _currentHealth + " max: " + traits.maxEnergy);
+            }
+        }
+    }
+
+    private float _currentEnergy;
+    public float currentEnergy
     {
-        get { return currentHealth;}
-        //Cap health at max.
-        set { currentHealth = Math.Min(value,traits.maxHealth); }
+        get { return _currentEnergy; }
+        set
+        {
+            if (traits == null)
+            {
+                _currentEnergy = value;
+            }
+            else
+            {
+                _currentEnergy = Mathf.Clamp(value, 0, traits.maxEnergy); 
+            }
+        }
     }
-    public float currentEnergy { 
-        get { return currentEnergy;}
-        //Cap energy at max.
-        set { currentEnergy = Math.Min(value,traits.maxEnergy); } 
+
+    private float _currentHydration;
+    public float currentHydration
+    {
+        get { return _currentHydration; }
+        set
+        {
+            if (traits == null)
+            {
+                _currentHydration = value;
+            }
+            else
+            {
+                _currentHydration = Mathf.Clamp(value, 0, traits.maxHydration);
+            }
+        }
     }
-    public float currentHydration { 
-        get { return currentHydration;}
-        //Cap hydration at max.
-        set { currentHydration = Math.Min(value,traits.maxHydration); }
-        
+
+    private float _currentSpeed;
+    public float currentSpeed
+    {
+        get { return _currentSpeed; }
+        set
+        {
+            if (traits == null)
+            {
+                _currentSpeed = value;
+            }
+            else
+            {
+                _currentSpeed = Mathf.Clamp(value, 0, traits.maxSpeed);
+            }
+        }
     }
-    //There is no cap for reproductive urge.
+    
+    //No limit on reproductive urge.
     public float reproductiveUrge { get; set; }
     
     
-    public float currentSpeed { get; set; }
+    
 
     public AnimalModel(Traits traits, int generation)
     {

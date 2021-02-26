@@ -97,11 +97,11 @@ public class FieldOfView : MonoBehaviour
 
     private void HandlePlantTarget(GameObject target)
     {
-        Debug.Log("HERE1");
+        //Debug.Log("HERE1");
         PlantController targetPlantController = target.GetComponent<PlantController>();
         if (animalController.animalModel.CanEat(targetPlantController.plantModel))
         {
-            Debug.Log("HERE2");
+            //Debug.Log("HERE2");
             animalController.visibleFoodTargets.Add(target);
         }
     }
