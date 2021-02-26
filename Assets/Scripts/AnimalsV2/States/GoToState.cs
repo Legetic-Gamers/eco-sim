@@ -57,7 +57,7 @@ namespace AnimalsV2.States
                 if (targetController != null && animal.animalModel.CanEat(targetController.animalModel)){
                     //Run fast if chasing
                     currentStateAnimation = Running;
-                    Debug.Log(currentStateAnimation.ToString());
+                    //Debug.Log(currentStateAnimation.ToString());
                     
                 }
             }

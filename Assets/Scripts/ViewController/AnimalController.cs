@@ -247,7 +247,7 @@ public abstract class AnimalController : MonoBehaviour
             child.GetComponent<AnimalController>().animalModel = childModel;
             //childModel.traits.size = 1f;
 
-            Debug.Log("MATE");
+            //Debug.Log("MATE");
             
             //Reset both reproductive urges.
             animalModel.reproductiveUrge = 0f;
