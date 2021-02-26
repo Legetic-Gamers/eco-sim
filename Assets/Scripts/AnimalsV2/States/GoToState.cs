@@ -7,7 +7,7 @@ namespace AnimalsV2.States
     public class GoToState : State
     {
         private GameObject targetObject;
-        private string action;
+        private Priorities action;
         
         public GoToState(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine)
         {
@@ -60,7 +60,7 @@ namespace AnimalsV2.States
             }
         }
 
-        public void SetActionOnArrive(string action)
+        public void SetActionOnArrive(Priorities action)
         {
             this.action = action;
         }
@@ -70,7 +70,7 @@ namespace AnimalsV2.States
             return targetObject;
         }
 
-        public string GetAction()
+        public Priorities GetAction()
         {
             return action;
         }

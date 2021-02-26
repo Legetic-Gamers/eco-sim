@@ -23,7 +23,7 @@ public abstract class AnimalController : MonoBehaviour
     [HideInInspector]
     public NavMeshAgent agent;
     
-    public FiniteStateMachine Fsm;
+    public FiniteStateMachine fsm;
     private AnimationController animationController;
     private DecisionMaker decisionMaker;
     
@@ -40,18 +40,24 @@ public abstract class AnimalController : MonoBehaviour
     public Dead deadState;
 
     //Constants
-    const float Jogging_Speed = 0.4f;
-    const float Running_Speed = 1f;
+    private const float JoggingSpeed = 0.4f;
+    private const float RunningSpeed = 1f;
 
-    float energyModifier = 0;
-    float hydrationModifier = 0;
-    float reproductiveUrgeModifier = 0;
-    float speedModifier = Jogging_Speed;//100% of maxSpeed in model
+    private float energyModifier;
+    private float hydrationModifier;
+    private float reproductiveUrgeModifier;
+    private float speedModifier = JoggingSpeed; //100% of maxSpeed in model
     
+    public List<GameObject> visibleHostileTargets = new List<GameObject>();
+    public List<GameObject> visibleFriendlyTargets = new List<GameObject>();
+    public List<GameObject> visibleFoodTargets = new List<GameObject>();
+    public List<GameObject> visibleWaterTargets = new List<GameObject>();
     
-  
+    public List<GameObject> heardHostileTargets = new List<GameObject>();
+    public List<GameObject> heardFriendlyTargets = new List<GameObject>();
+    public List<GameObject> heardPreyTargets = new List<GameObject>();
 
-    public bool isControllable { get; set; } = false;
+    public bool IsControllable { get; set; } = false;
 
     /* /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\ */
     /*                                   Parameter handlers                                   */
@@ -66,63 +72,66 @@ public abstract class AnimalController : MonoBehaviour
     /// Important to unsubscribe from the event publisher on death, however!
     /// </summary>
 
-    private void changeModifiers(State state)
+    private void ChangeModifiers(State state)
     {
-        if (state is Eating)
+        switch (state)
         {
-            energyModifier = 0f;
-            hydrationModifier = 0.05f;
-            reproductiveUrgeModifier = 1f;
-            //Debug.Log("varying parameters depending on state: Eating");
-        } else if (state is FleeingState)
-        {
-            energyModifier = 1f;
-            hydrationModifier = 1f;
-            reproductiveUrgeModifier = 1f;
-            speedModifier = Running_Speed;
-            //Debug.Log("varying parameters depending on state: FleeingState");
-        } else if (state is GoToState)
-        {
-            energyModifier = 0.1f;
-            hydrationModifier = 0.05f;
-            reproductiveUrgeModifier = 1;
-
-            GoToState chaseState = (GoToState) state;
-            GameObject target = chaseState.GetTarget();
-            
-            if (target != null)
+            case Eating _:
+                energyModifier = 0f;
+                hydrationModifier = 0.05f;
+                reproductiveUrgeModifier = 1f;
+                //Debug.Log("varying parameters depending on state: Eating");
+                break;
+            case FleeingState _:
+                energyModifier = 1f;
+                hydrationModifier = 1f;
+                reproductiveUrgeModifier = 1f;
+                speedModifier = RunningSpeed;
+                //Debug.Log("varying parameters depending on state: FleeingState");
+                break;
+            case GoToState toState:
             {
-                AnimalController targetController = target.GetComponent<AnimalController>();
-                //target is an animal and i can eat it -> we are chasing something.
-                if (targetController != null && animalModel.CanEat(targetController.animalModel)){
-                    //Run fast if chasing
-                    Debug.Log("CHASING");
-                    speedModifier = Running_Speed;
-                    
-                }
-            }
+                energyModifier = 0.1f;
+                hydrationModifier = 0.05f;
+                reproductiveUrgeModifier = 1;
 
-            //Debug.Log("varying parameters depending on state: GoToFood");
-        } else if (state is Idle)
-        {
-            energyModifier = 0f;
-            hydrationModifier = 0.05f;
-            reproductiveUrgeModifier = 1;
-            //Debug.Log("varying parameters depending on state: Mating");
-        } else if (state is Mating)
-        {
-            energyModifier = 0.2f;
-            hydrationModifier = 0.2f;
-            reproductiveUrgeModifier = 0f;
-            //Debug.Log("varying parameters depending on state: Wander");
-        } else if (state is Wander)
-        {
-            energyModifier = 0.1f;
-            hydrationModifier = 0.05f;
-            reproductiveUrgeModifier = 1f;
+                GoToState chaseState = toState;
+                GameObject target = chaseState.GetTarget();
             
-            speedModifier = Jogging_Speed;
-            //Debug.Log("varying parameters depending on state: Wander");
+                if (target != null)
+                {
+                    AnimalController targetController = target.GetComponent<AnimalController>();
+                    //target is an animal and i can eat it -> we are chasing something.
+                    if (targetController != null && animalModel.CanEat(targetController.animalModel)){
+                        //Run fast if chasing
+                        Debug.Log("CHASING");
+                        speedModifier = RunningSpeed;
+                    
+                    }
+                }
+                //Debug.Log("varying parameters depending on state: GoToFood");
+                break;
+            }
+            case Idle _:
+                energyModifier = 0f;
+                hydrationModifier = 0.05f;
+                reproductiveUrgeModifier = 1;
+                //Debug.Log("varying parameters depending on state: Mating");
+                break;
+            case Mating _:
+                energyModifier = 0.2f;
+                hydrationModifier = 0.2f;
+                reproductiveUrgeModifier = 0f;
+                //Debug.Log("varying parameters depending on state: Wander");
+                break;
+            case Wander _:
+                energyModifier = 0.1f;
+                hydrationModifier = 0.05f;
+                reproductiveUrgeModifier = 1f;
+            
+                speedModifier = JoggingSpeed;
+                //Debug.Log("varying parameters depending on state: Wander");
+                break;
         }
     }
 
@@ -139,12 +148,6 @@ public abstract class AnimalController : MonoBehaviour
          * currentEnergy -= ( size * (deltaTemp / tempResist) + (vision + hearing + smell) + currentAge
          *                  + (highEnergy * size * speed) ) * Const
          */
-        /*
-        animalModel.currentEnergy--;
-        animalModel.currentHydration -= 0.1f; 
-        animalModel.reproductiveUrge += 0.1f;
-        animalModel.age++;
-        */
 
         //https://www.uvm.edu/pdodds/research/papers/others/2017/hirt2017a.pdf
         //above link for actual empirical max speed.
@@ -162,22 +165,29 @@ public abstract class AnimalController : MonoBehaviour
 
     protected void EventSubscribe()
     {
+        // every 2 sec
         tickEventPublisher.onParamTickEvent += VaryParameters;
-
-        Fsm.OnStateEnter += changeModifiers;
+        tickEventPublisher.onParamTickEvent += HandleDeathStatus;
+        // every 0.5 sec
+        tickEventPublisher.onSenseTickEvent += fsm.UpdateStatesLogic;
         
+        fsm.OnStateEnter += ChangeModifiers;
+
         eatingState.onEatFood += EatFood;
 
         drinkingState.onDrinkWater += DrinkWater;
 
         matingState.onMate += Mate;
-        //Debug.Log(gameObject.name + " has subscribed to onParamTickEvent");
     }
     protected void EventUnsubscribe()
     {
+        // every 2 sec
         tickEventPublisher.onParamTickEvent -= VaryParameters;
+        tickEventPublisher.onParamTickEvent -= HandleDeathStatus;
+        // every 0.5 sec
+        tickEventPublisher.onSenseTickEvent -= fsm.UpdateStatesLogic;
 
-        Fsm.OnStateEnter -= changeModifiers;
+        fsm.OnStateEnter -= ChangeModifiers;
         
         eatingState.onEatFood -= EatFood;
 
@@ -187,116 +197,9 @@ public abstract class AnimalController : MonoBehaviour
         
         animationController.UnSubscribe();
         decisionMaker.EventUnsubscribe();
-        
-        //Debug.Log(gameObject.name + " has unsubscribed from onParamTickEvent.");
-    }
-
-    /* /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\ */
-    /*                                          Other                                         */
-    /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
-    
-    /*
-    public bool IsSameSpecies(AnimalController otherAnimal)
-    {
-        try
-        {
-            return otherAnimal.animalModel.traits.species == animalModel.traits.species;
-        }
-        catch (NullReferenceException)
-        {
-            return false;
-        }
     }
     
-    public bool IsPredator =>
-        animalModel.traits.behaviorType == Traits.BehaviorType.Carnivore
-        || animalModel.traits.behaviorType == Traits.BehaviorType.Omnivore;
-
-    public bool IsPrey => animalModel.traits.behaviorType == Traits.BehaviorType.Herbivore;
-    */
-
-    // both hostile and friendly targets, get from FieldOfView and HearingAbility
-    //public List<GameObject> heardTargets = new List<GameObject>(); // obsolete
-    //public List<GameObject> visibleTargets = new List<GameObject>(); // obsolete
-    
-    public List<GameObject> visibleHostileTargets = new List<GameObject>();
-    public List<GameObject> visibleFriendlyTargets = new List<GameObject>();
-    public List<GameObject> visibleFoodTargets = new List<GameObject>();
-    public List<GameObject> visibleWaterTargets = new List<GameObject>();
-    
-    public List<GameObject> heardHostileTargets = new List<GameObject>();
-    public List<GameObject> heardFriendlyTargets = new List<GameObject>();
-    public List<GameObject> heardPreyTargets = new List<GameObject>();
-    
-
-    protected void Start()
-    {
-        // Init the NavMesh agent
-        agent = GetComponent<NavMeshAgent>();
-        agent.autoBraking = false;
-        animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
-        agent.speed = animalModel.currentSpeed;
-
-        //Create the FSM.
-        Fsm = new FiniteStateMachine();
-        animationController = new AnimationController(this);
-        
-        /*sf = new GoToFood(this, Fsm);
-        sw = new GoToWater(this, Fsm);
-        sm = new GoToMate(this, Fsm);*/
-
-        eatingState = new Eating(this, Fsm);
-        fleeingState = new FleeingState(this, Fsm);
-        wanderState = new Wander(this, Fsm);
-        goToState = new GoToState(this, Fsm);
-        idleState = new Idle(this, Fsm);
-        drinkingState = new Drinking(this, Fsm);
-        matingState = new Mating(this, Fsm);
-        deadState = new Dead(this, Fsm);
-        Fsm.Initialize(idleState);
-
-        
-        tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
-        EventSubscribe();
-
-        SetPhenotype();
-        
-        decisionMaker = new DecisionMaker(this,animalModel,tickEventPublisher);
-    }
-
-    
-
-
-    //should be refactored so that this logic is in AnimalModel
-    private void Update()
-    {
-        if (!animalModel.IsAlive())
-        {
-
-            // invoke death state with method HandleDeath() in decisionmaker
-            actionDeath?.Invoke();
-            // Set state so that it can't change
-            Fsm.absorbingState = true;
-            // unsubscribe all events because we want only want to invoke it once.
-            actionDeath = null;
-
-
-        }
-        Fsm.UpdateStatesLogic();
-    }
-
-    public void OnDestroy()
-    {
-        EventUnsubscribe();
-    }
-
-    private void FixedUpdate()
-    {
-        //Update physics
-        //Fsm.UpdateStatesPhysics();
-    }
-    
-    //Set animals appearance based on traits.
+    //Set animals size based on traits.
     private void SetPhenotype()
     {
         gameObject.transform.localScale = new Vector3(1, 1, 1) * animalModel.traits.size;
@@ -349,11 +252,70 @@ public abstract class AnimalController : MonoBehaviour
             animalModel.reproductiveUrge = 0f;
             targetAnimalController.animalModel.reproductiveUrge = 0f;
         }
-        
     }
-    
+
     public void DestroyGameObject(float delay)
     {
         Destroy(gameObject, delay);
     }
+    
+    /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
+    
+    protected void Start()
+    {
+        // Init the NavMesh agent
+        agent = GetComponent<NavMeshAgent>();
+        agent.autoBraking = false;
+        animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
+        agent.speed = animalModel.currentSpeed;
+
+        //Create the FSM.
+        fsm = new FiniteStateMachine();
+        animationController = new AnimationController(this);
+        
+        eatingState = new Eating(this, fsm);
+        fleeingState = new FleeingState(this, fsm);
+        wanderState = new Wander(this, fsm);
+        goToState = new GoToState(this, fsm);
+        idleState = new Idle(this, fsm);
+        drinkingState = new Drinking(this, fsm);
+        matingState = new Mating(this, fsm);
+        deadState = new Dead(this, fsm);
+        fsm.Initialize(idleState);
+        
+        tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
+        EventSubscribe();
+
+        SetPhenotype();
+        
+        decisionMaker = new DecisionMaker(this,animalModel,tickEventPublisher);
+    }
+
+
+    //should be refactored so that this logic is in AnimalModel
+    private void HandleDeathStatus()
+    {
+        if (!animalModel.IsAlive)
+        {
+            // invoke death state with method HandleDeath() in decisionmaker
+            actionDeath?.Invoke();
+            // Set state so that it can't change
+            fsm.absorbingState = true;
+            // unsubscribe all events because we want only want to invoke it once.
+            actionDeath = null;
+        }
+    }
+
+    public void OnDestroy()
+    {
+        EventUnsubscribe();
+    }
+
+    private void FixedUpdate()
+    {
+        //Update physics
+        //Fsm.UpdateStatesPhysics();
+    }
+    
+    
 }
