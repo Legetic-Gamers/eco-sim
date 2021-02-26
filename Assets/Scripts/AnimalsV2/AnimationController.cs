@@ -47,7 +47,7 @@ namespace AnimalsV2
         {
             //Debug.Log("Enter " + state.GetStateAnimation() +" Animation");
 
-            animator.SetFloat("runningSpeed",animal.animalModel.GetSpeedPercentage);
+            //animator.SetFloat("runningSpeed",animal.animalModel.GetSpeedPercentage);
             animator?.CrossFade("Base Layer." + state.GetStateAnimation(), transitionSpeed, 0);
         }
 
