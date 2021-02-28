@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using AnimalsV2;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {

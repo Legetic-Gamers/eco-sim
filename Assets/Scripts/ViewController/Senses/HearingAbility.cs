@@ -15,7 +15,6 @@ public class HearingAbility : MonoBehaviour
     private LayerMask targetMask;
 
     public AnimalController animalController;
-    public bool isPrey;
 
     private TickEventPublisher tickEventPublisher;
 
@@ -74,8 +73,6 @@ public class HearingAbility : MonoBehaviour
         tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
         
         animalController = GetComponent<AnimalController>();
-        if (animalController.animalModel.traits.behaviorType == Traits.BehaviorType.Herbivore) isPrey = true;
-        
         // set animals hearing distance
         radius = animalController.animalModel.traits.hearingRadius;
         

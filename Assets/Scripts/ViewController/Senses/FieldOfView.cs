@@ -77,6 +77,9 @@ public class FieldOfView : MonoBehaviour
         {
             animalController.visibleHostileTargets.Add(target);
             animalController.actionPerceivedHostile?.Invoke(target);
+            animalController.visibleFriendlyTargets.Clear();
+            animalController.visibleFoodTargets.Clear();
+            animalController.visibleWaterTargets.Clear();
         }  
         //if this animalModel can the targets animalModel: add to visibleFoodTargets
         else if (animalController.animalModel.CanEat(targetAnimalController.animalModel))
