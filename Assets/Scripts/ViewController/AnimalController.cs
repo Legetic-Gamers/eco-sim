@@ -291,9 +291,9 @@ public abstract class AnimalController : MonoBehaviour
         tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
         EventSubscribe();
         
-        // Could be done via events...
-        datahandler = FindObjectOfType<DataHandler>();
-        datahandler.LogNewAnimal(animalModel);
+        // Find the data handler and notify birth.
+        DataHandler dh = FindObjectOfType<DataHandler>();
+        dh.LogNewAnimal(animalModel);
         
         SetPhenotype();
         

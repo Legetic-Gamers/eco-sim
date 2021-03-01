@@ -2,24 +2,23 @@
  * Author: Johan A.
  */
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using UnityEngine;
-using Object = System.Object;
 
 namespace DataCollection
 {
     public class Collector
     {
-        public List<int> totalAnimalsAlive;
+        // Sampled in time domain, number of animals in the scene. 
+        public  List<int> totalAnimalsAlive;
         
         //Index is generation
         public List<int> totalAnimalsAlivePerGeneration;
         public List<List<float>> allStatsPerGeneration;
         
         /*
+        These lists are contained in allStatsPerGeneration in order:
         public List<float> sizePerGeneration;
         public List<int> maxEnergyPerGeneration;
         public List<int> maxHelathPerGeneration;
@@ -43,39 +42,53 @@ namespace DataCollection
         /// </summary>
         public Collector()
         {
+            // Initialize allStatsPerGeneration as list of lists, with the first (0 th) generation set to 0 for all traits. 
             allStatsPerGeneration = new List<List<float>>(12);
             for (int i = 0; i < 12; i++)
             {
-                allStatsPerGeneration.Add(new List<float>(1));
+                allStatsPerGeneration.Add(new List<float>{0});
             }
-            //totalAnimalsAlive = new List<int> {GameObject.FindGameObjectsWithTag("Animal").Length};
+            totalAnimalsAlive = new List<int> {GameObject.FindGameObjectsWithTag("Animal").Length};
             totalAnimalsAlivePerGeneration = new List<int> {GameObject.FindGameObjectsWithTag("Animal").Length};
         }
         
         /// <summary>
-        /// Overloaded Collect methods
+        /// Collect is called at even time intervals by the TickEventPublisher
         /// </summary>
         public void Collect()
         {
-            //GameObject[] allAnimalsAlive = GameObject.FindGameObjectsWithTag("Animal");
-            //AddTotalAnimals();
+            AddTotalAnimals();
         }
-
-        public void AddNewAnimal(AnimalModel am)
+        
+        /// <summary>
+        /// Collect each animal model containing its traits. 
+        /// </summary>
+        /// <param name="am"> Animal Model containing traits.</param>
+        public void Collect(AnimalModel am)
         {
             int gen = am.generation;
+            
+            //TODO Choose between animals alive per time step or generation. 
             totalAnimalsAlivePerGeneration[gen] += 1;
+            
+            // Convert the traits to a list which we can easily access. 
             List<float> traitsInAnimal = ConvertTraitsToList(am.traits);
             
+            // Add the traits of the animal to each global statistics list. (Extent the list if the generation increases)
             int index = 0;
             foreach (List<float> statList in allStatsPerGeneration)
             {
-                if (gen > statList.Count) statList.AddRange(Enumerable.Repeat<float>(0,statList.Count-gen));
-                else statList[gen] = statList[gen]+ traitsInAnimal[index];
-                index += 1;
+                if (gen > statList.Capacity) statList.AddRange(Enumerable.Repeat<float>(0, statList.Count - gen));
+                statList[gen] += traitsInAnimal[index];
+                index++;
             }
         }
-
+        
+        /// <summary>
+        /// Converts the class traits to a regular list of floats for easy access. 
+        /// </summary>
+        /// <param name="classTraits"> Type Traits; Traits of an animal model</param>
+        /// <returns> List containing the float value of each trait, see top of class for order of traits. </returns>
         private List<float> ConvertTraitsToList(Traits classTraits)
         {
             // Yikes, did not find another working way
@@ -96,7 +109,10 @@ namespace DataCollection
             };
             return traits;
         }
-
+        
+        /// <summary>
+        /// Check the entire scene for all objects with the "Animal" tag and add at the end of the time series list. 
+        /// </summary>
         private void AddTotalAnimals()
         {
             totalAnimalsAlive.Add(GameObject.FindGameObjectsWithTag("Animal").Length);
