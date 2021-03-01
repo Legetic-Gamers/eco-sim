@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using AnimalsV2;
 using AnimalsV2.States;
 using AnimalsV2.States.AnimalsV2.States;
+using DataCollection;
 using Model;
 using UnityEngine;
 using UnityEngine.AI;
@@ -13,12 +14,15 @@ public abstract class AnimalController : MonoBehaviour
     public AnimalModel animalModel;
 
     private TickEventPublisher tickEventPublisher;
+    private DataHandler datahandler;
 
     public Action<State> stateChange;
     
     // decisionMaker subscribes to these actions
     public Action<GameObject> actionPerceivedHostile;
     public Action actionDeath;
+    
+    public Action<AnimalModel> onBirth;
     
     [HideInInspector]
     public NavMeshAgent agent;
@@ -286,10 +290,15 @@ public abstract class AnimalController : MonoBehaviour
         
         tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
         EventSubscribe();
-
+        
+        // Find the data handler and notify birth.
+        DataHandler dh = FindObjectOfType<DataHandler>();
+        dh.LogNewAnimal(animalModel);
+        
         SetPhenotype();
         
         decisionMaker = new DecisionMaker(this,animalModel,tickEventPublisher);
+        onBirth?.Invoke(animalModel);
     }
 
 
