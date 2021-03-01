@@ -13,8 +13,10 @@ namespace DataCollection
         // Sampled in time domain, number of animals in the scene. 
         public  List<int> totalAnimalsAlive;
         
-        //Index is generation
+        // Index is generation
         public List<int> totalAnimalsAlivePerGeneration;
+        
+        // Each index contains the mean of that generation, starting from 0. 
         public List<List<float>> allStatsPerGeneration;
         
         /*
@@ -33,12 +35,10 @@ namespace DataCollection
         public List<float> hearingRadiusPerGeneration;
         public List<BehaviorType> behaviorTypePerGeneration;
         public List<Species> speciesPerGeneration;
-        BehaviorType behaviorType,
-        Species species
         */
         
         /// <summary>
-        /// Constructor for a collector. Mostly initialize lists. 
+        /// Constructor for a collector. Mostly initialize lists. TODO Add constant for mean or median calculation. 
         /// </summary>
         public Collector()
         {
@@ -67,10 +67,7 @@ namespace DataCollection
         public void Collect(AnimalModel am)
         {
             int gen = am.generation;
-            
-            //TODO Choose between animals alive per time step or generation. 
-            totalAnimalsAlivePerGeneration[gen] += 1;
-            
+
             // Convert the traits to a list which we can easily access. 
             List<float> traitsInAnimal = ConvertTraitsToList(am.traits);
             
@@ -79,9 +76,12 @@ namespace DataCollection
             foreach (List<float> statList in allStatsPerGeneration)
             {
                 if (gen > statList.Capacity) statList.AddRange(Enumerable.Repeat<float>(0, statList.Count - gen));
-                statList[gen] += traitsInAnimal[index];
+                statList[gen] = (statList[gen] * totalAnimalsAlivePerGeneration[gen] + traitsInAnimal[index]) / (totalAnimalsAlivePerGeneration[gen] + 1);
                 index++;
             }
+            
+            //TODO Choose between animals alive per time step or generation. 
+            totalAnimalsAlivePerGeneration[gen] += 1;
         }
         
         /// <summary>
