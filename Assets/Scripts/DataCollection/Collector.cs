@@ -8,6 +8,7 @@ using UnityEngine;
 
 namespace DataCollection
 {
+    // TODO Add standard deviation, variance and quartiles 
     public class Collector
     {
         // Sampled in time domain, number of animals in the scene. 

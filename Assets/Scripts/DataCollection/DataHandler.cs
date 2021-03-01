@@ -61,7 +61,7 @@ namespace DataCollection
         /// <returns></returns>
         private async Task ExportDataToFile(int listNumber)
         {
-            await WriteToFile(c.allStatsPerGeneration[listNumber], traitNames[listNumber]);
+            //await WriteToFile(c.allStatsPerGeneration[listNumber], traitNames[listNumber]);
         }
 
         /// <summary>
@@ -82,7 +82,7 @@ namespace DataCollection
         private List<int> ConvertFloatListToIntList(List<float> list)
         {
             List<int> integerList = new List<int>();
-            foreach (float f in c.allStatsPerGeneration[0])
+            foreach (float f in list)
             {
                 list.Add((int) f);
             }
