@@ -79,13 +79,13 @@ public abstract class AnimalController : MonoBehaviour
             case Eating _:
                 energyModifier = 0f;
                 hydrationModifier = 0.05f;
-                reproductiveUrgeModifier = 1f;
+                reproductiveUrgeModifier = 0.05f;
                 //Debug.Log("varying parameters depending on state: Eating");
                 break;
             case FleeingState _:
-                energyModifier = 1f;
+                energyModifier = 0.3f;
                 hydrationModifier = 1f;
-                reproductiveUrgeModifier = 1f;
+                reproductiveUrgeModifier = 0;
                 speedModifier = RunningSpeed;
                 //Debug.Log("varying parameters depending on state: FleeingState");
                 break;
@@ -93,7 +93,7 @@ public abstract class AnimalController : MonoBehaviour
             {
                 energyModifier = 0.1f;
                 hydrationModifier = 0.05f;
-                reproductiveUrgeModifier = 1;
+                reproductiveUrgeModifier = 0.05f;
 
                 GoToState chaseState = toState;
                 GameObject target = chaseState.GetTarget();
@@ -124,9 +124,9 @@ public abstract class AnimalController : MonoBehaviour
                 //Debug.Log("varying parameters depending on state: Wander");
                 break;
             case Wander _:
-                energyModifier = 0.1f;
+                energyModifier = 0.05f;
                 hydrationModifier = 0.05f;
-                reproductiveUrgeModifier = 1f;
+                reproductiveUrgeModifier = 0.05f;
             
                 speedModifier = JoggingSpeed;
                 //Debug.Log("varying parameters depending on state: Wander");
