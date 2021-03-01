@@ -81,3 +81,6 @@ crashlytics-build.properties
 /.idea
 
 Packages/packages-lock.json
+
+# Export generated files
+/Export/*.json
