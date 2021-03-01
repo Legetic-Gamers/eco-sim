@@ -17,7 +17,10 @@ namespace DataCollection
         public List<int> totalAnimalsAlivePerGeneration;
         
         // Each index contains the mean of that generation, starting from 0. 
-        public List<List<float>> allStatsPerGeneration;
+        public List<List<float>> rabbitStatsPerGen;
+        public List<List<float>> wolfStatsPerGen;
+        public List<List<float>> deerStatsPerGen;
+        public List<List<float>> bearStatsPerGen;
         
         /*
         These lists are contained in allStatsPerGeneration in order:
@@ -43,11 +46,16 @@ namespace DataCollection
         public Collector()
         {
             // Initialize allStatsPerGeneration as list of lists, with the first (0 th) generation set to 0 for all traits. 
-            allStatsPerGeneration = new List<List<float>>(12);
-            for (int i = 0; i < 12; i++)
-            {
-                allStatsPerGeneration.Add(new List<float>{0});
-            }
+            rabbitStatsPerGen = new List<List<float>>(12);
+            wolfStatsPerGen = new List<List<float>>(12);
+            deerStatsPerGen = new List<List<float>>(12);
+            bearStatsPerGen = new List<List<float>>(12);
+            
+            for (int i = 0; i < 12; i++) rabbitStatsPerGen.Add(new List<float>{0});
+            for (int i = 0; i < 12; i++) wolfStatsPerGen.Add(new List<float>{0});
+            for (int i = 0; i < 12; i++) deerStatsPerGen.Add(new List<float>{0});
+            for (int i = 0; i < 12; i++) bearStatsPerGen.Add(new List<float>{0});
+
             totalAnimalsAlive = new List<int> {GameObject.FindGameObjectsWithTag("Animal").Length};
             totalAnimalsAlivePerGeneration = new List<int> {GameObject.FindGameObjectsWithTag("Animal").Length};
         }
@@ -67,13 +75,31 @@ namespace DataCollection
         public void Collect(AnimalModel am)
         {
             int gen = am.generation;
+            
+            // Changes the referenced list depending on the species of the animal. 
+            List<List<float>> currentList = new List<List<float>>();
+            switch (am.traits.species)
+            {
+                case Traits.Species.Rabbit:
+                    currentList = rabbitStatsPerGen;
+                    break;
+                case Traits.Species.Wolf:
+                    currentList = wolfStatsPerGen;
+                    break;
+                case Traits.Species.Deer:
+                    currentList = deerStatsPerGen;
+                    break;
+                case Traits.Species.Bear:
+                    currentList = bearStatsPerGen;
+                    break;
+            }
 
             // Convert the traits to a list which we can easily access. 
             List<float> traitsInAnimal = ConvertTraitsToList(am.traits);
             
             // Add the traits of the animal to each global statistics list. (Extent the list if the generation increases)
             int index = 0;
-            foreach (List<float> statList in allStatsPerGeneration)
+            foreach (List<float> statList in currentList)
             {
                 if (gen > statList.Capacity) statList.AddRange(Enumerable.Repeat<float>(0, statList.Count - gen));
                 statList[gen] = (statList[gen] * totalAnimalsAlivePerGeneration[gen] + traitsInAnimal[index]) / (totalAnimalsAlivePerGeneration[gen] + 1);
