@@ -2,7 +2,7 @@
 
 public class DeerModel : AnimalModel, IEdible
 {
-    public DeerModel() : base(new Traits(1, 100, 100, 100, 6,10,10,10,10,10,10,10),0)
+    public DeerModel() : base(new Traits(3, 100, 100, 100, 6,10,100,10,10,180,10,10),0)
     {
         // Set variables specific to deer
     }

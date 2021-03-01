@@ -168,17 +168,17 @@ namespace AnimalsV2
         private void Prioritize()
         {
             List<Priorities> prio = new List<Priorities>();
-            //Debug.Log("Prio!");
+            
+            if (animalModel.LowEnergy) //Prio 2 dont die from hunger -> Find Food.
+            {
+                prio.Remove(Food);
+                prio.Insert(0, Food);
+            }
             
             if (animalModel.LowHydration) //Prio 1 don't die from dehydration -> Find Water.
             {
-                prio.Add(Water);
-                
-            }
-            if (animalModel.LowEnergy) //Prio 2 dont die from hunger -> Find Food.
-            {
-                prio.Add(Food);
-                
+                prio.Remove(Water);
+                prio.Insert(0,Water);
             }
 
             if (!animalModel.HighHydration && !animalModel.HighEnergy) //Prio 6, not low energy but not high either + not low hydration but not high either -> find Water and then Food.
@@ -206,20 +206,6 @@ namespace AnimalsV2
                 prio.Insert(0,Water);
                 
             }
-            
-            if (animalModel.LowEnergy) //Prio 2 dont die from hunger -> Find Food.
-            {
-                prio.Remove(Food);
-                prio.Insert(0, Food);
-                
-            }
-            
-            if (animalModel.LowHydration) //Prio 1 don't die from dehydration -> Find Water.
-            {
-                prio.Remove(Water);
-                prio.Insert(0,Water);
-                
-            }
 
             if (animalModel.WantingOffspring) // Prio 3 (If we live good) search for mate.
             {
@@ -227,7 +213,6 @@ namespace AnimalsV2
                 
             }
             
-            //prio.Add("Mate");
             
             animalController.wanderState.SetPriorities(prio);
             ChangeState(animalController.wanderState);

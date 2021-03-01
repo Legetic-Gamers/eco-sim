@@ -88,7 +88,7 @@ public class CameraController : MonoBehaviour
         AnimalController animalController = gameObject.GetComponent<AnimalController>();
         if (animalController != null && animalController?.animalModel?.traits != null)
         {
-            animalSelectPanel.SetTraitText(animalController.animalModel.traits, gameObject.name);
+            animalSelectPanel.SetTraitText(animalController.animalModel.traits, animalController.gameObject.name);
         }
         else
         {

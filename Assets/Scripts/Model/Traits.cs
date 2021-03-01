@@ -40,7 +40,6 @@ public class Traits
     */
 
     public Traits(
-
         float size,
         float maxEnergy, 
         float maxHealth,
@@ -56,10 +55,6 @@ public class Traits
     {
 
         this.size = size;
-
-        //this.behaviorType = behaviorType;
-        //this.species = species;
-
         this.maxEnergy = maxEnergy;
         this.maxHealth = maxHealth;
         this.maxHydration = maxHydration;

@@ -158,7 +158,7 @@ public abstract class AnimalController : MonoBehaviour
         animalModel.currentEnergy -= (animalModel.traits.size * 1) + (animalModel.traits.size * animalModel.currentSpeed) * energyModifier;
         animalModel.currentHydration -= (animalModel.traits.size * 1) + (animalModel.traits.size * animalModel.currentSpeed) * hydrationModifier;
         animalModel.reproductiveUrge += 0.1f * reproductiveUrgeModifier;
-        //animalModel.age++;
+        animalModel.age++;
         
     }
 
@@ -203,7 +203,8 @@ public abstract class AnimalController : MonoBehaviour
     //Set animals size based on traits.
     private void SetPhenotype()
     {
-        gameObject.transform.localScale = new Vector3(1, 1, 1) * animalModel.traits.size;
+        
+        gameObject.transform.localScale = getNormalizedScale() * animalModel.traits.size;
     }
 
     private void EatFood(GameObject food)
@@ -317,6 +318,8 @@ public abstract class AnimalController : MonoBehaviour
         //Update physics
         //Fsm.UpdateStatesPhysics();
     }
-    
-    
+
+    // method that defines a scale that is normalized and in relativity to a rabbits scale
+    public abstract Vector3 getNormalizedScale();
+
 }

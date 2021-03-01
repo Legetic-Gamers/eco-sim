@@ -2,7 +2,7 @@
 
 public class WolfModel : AnimalModel, IEdible
 {
-    public WolfModel() : base(new Traits(1f, 50, 100, 100, 6,10,25,10,10,180,10,5),0)
+    public WolfModel() : base(new Traits(3f, 100, 100, 100, 6,10,100,10,10,180,10,5),0)
     {
         // Wolf specific initialization 
     }
