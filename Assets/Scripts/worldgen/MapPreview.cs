@@ -18,6 +18,7 @@ public class MapPreview : MonoBehaviour
     public MeshSettings meshSettings;
     public HeightMapSettings heightMapSettings;
     public TextureData textureSettings;
+    public WaterSettings waterSettings;
 
     public Material terrainMaterial;
 
@@ -38,6 +39,7 @@ public class MapPreview : MonoBehaviour
         else if (drawMode == DrawMode.Mesh)
         {
             DrawMesh(MeshGenerator.GenerateTerrainMesh(heightMap.values, meshSettings, editorPreviewLevelOfDetail));
+            
         }
         else if (drawMode == DrawMode.Falloff)
         {
@@ -59,6 +61,10 @@ public class MapPreview : MonoBehaviour
         meshFilter.sharedMesh = meshData.CreateMesh();
         textureRender.gameObject.SetActive(false);
         meshFilter.gameObject.SetActive(true);
+        if(waterSettings.generateWater)
+        {
+            
+        }
     }
 
     private void OnValuesUpdated()
@@ -72,6 +78,26 @@ public class MapPreview : MonoBehaviour
     private void OnTextureValuesUpdated()
     {
         textureSettings.ApplyToMaterial(terrainMaterial);
+    }
+
+    private void OnWaterUpdated()
+    {
+        if (meshFilter.gameObject.GetComponent<WaterChunk>() != null)
+        {
+            var waterChunks = meshFilter.gameObject.GetComponents<WaterChunk>();
+            foreach (var waterChunk in waterChunks)
+            {
+                DestroyImmediate(waterChunk.waterObject);
+                DestroyImmediate(waterChunk);
+            }
+        }
+        if(waterSettings.generateWater)
+            meshFilter.gameObject.AddComponent<WaterChunk>().Setup(Vector2.zero, waterSettings, heightMapSettings, meshRenderer.bounds.size, meshFilter.gameObject.transform);
+    }
+
+    private void OnDestroy()
+    {
+       
     }
 
     private void OnValidate()
@@ -90,6 +116,11 @@ public class MapPreview : MonoBehaviour
         {
             textureSettings.OnValuesUpdated -= OnTextureValuesUpdated;
             textureSettings.OnValuesUpdated += OnTextureValuesUpdated;
+        }
+        if(waterSettings != null)
+        {
+            waterSettings.OnValuesUpdated -= OnWaterUpdated;
+            waterSettings.OnValuesUpdated += OnWaterUpdated;
         }
     }
 }
