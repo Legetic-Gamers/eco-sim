@@ -25,7 +25,7 @@ public abstract class AnimalController : MonoBehaviour
     
     public FiniteStateMachine fsm;
     private AnimationController animationController;
-    private DecisionMaker decisionMaker;
+    //private DecisionMaker decisionMaker;
     
     /*public GoToMate sm;
     public GoToFood sf;
@@ -197,7 +197,7 @@ public abstract class AnimalController : MonoBehaviour
         matingState.onMate -= Mate;
         
         animationController.EventUnsubscribe();
-        decisionMaker.EventUnsubscribe();
+        //decisionMaker.EventUnsubscribe();
     }
     
     //Set animals size based on traits.
@@ -289,7 +289,7 @@ public abstract class AnimalController : MonoBehaviour
 
         SetPhenotype();
         
-        decisionMaker = new DecisionMaker(this,animalModel,tickEventPublisher);
+        //decisionMaker = new DecisionMaker(this,animalModel,tickEventPublisher);
     }
 
 
