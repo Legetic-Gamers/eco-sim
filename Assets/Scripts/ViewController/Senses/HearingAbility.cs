@@ -14,6 +14,7 @@ public class HearingAbility : MonoBehaviour
     [SerializeField]
     private LayerMask targetMask;
 
+    [HideInInspector]
     public AnimalController animalController;
 
     private TickEventPublisher tickEventPublisher;

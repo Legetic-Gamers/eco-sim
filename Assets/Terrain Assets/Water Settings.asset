@@ -9,11 +9,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9add6675c1c689e4fb59c8e34dcf3b81, type: 3}
-  m_Name: Mesh Settings
+  m_Script: {fileID: 11500000, guid: 31a9e2de875411041a39dc4e3ac04741, type: 3}
+  m_Name: Water Settings
   m_EditorClassIdentifier: 
   autoUpdate: 1
-  meshScale: 1
-  useFlatShading: 1
-  chunkSizeIndex: 8
-  flatShadedChunkSizeIndex: 2
+  generateWater: 1
+  waterLevel: 0.363
+  size: 1
+  gridSize: 16
+  power: 12.15
+  scale: 36.64
+  timeScale: 3.04
+  material: {fileID: 2100000, guid: 1bf102809a7cc4a409c724d892b1fecb, type: 2}
