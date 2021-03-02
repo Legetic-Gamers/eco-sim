@@ -8,6 +8,8 @@ public class WaterSettings : UpdatableData
     public bool generateWater = true;
     [Range(0, 1)]
     public float waterLevel;
+    [Range(0, 1)]
+    public float waterVertexDiff = 0.1f;
     public float size = 1;
     public int gridSize = 16;
     public float power = 3;
