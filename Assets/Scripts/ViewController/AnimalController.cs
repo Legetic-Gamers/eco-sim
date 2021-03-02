@@ -84,7 +84,7 @@ public abstract class AnimalController : MonoBehaviour
                 break;
             case FleeingState _:
                 energyModifier = 0.3f;
-                hydrationModifier = 1f;
+                hydrationModifier = 0.3f;
                 reproductiveUrgeModifier = 0;
                 speedModifier = RunningSpeed;
                 //Debug.Log("varying parameters depending on state: FleeingState");

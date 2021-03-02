@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using AnimalsV2;
 using UnityEngine;
 using UnityEngine.AI;
@@ -40,6 +41,17 @@ namespace AnimalsV2.States
             // Get average position of enemies
             List<GameObject> allHostileTargets = animal.heardHostileTargets.Concat(animal.visibleHostileTargets).ToList();
 
+            // if no hostile targets, hasFled = true TODO Keep fleeing a little longer so that the animals doesnt just turn around directl
+            if (allHostileTargets.Count <= 0)
+            {
+                Task.Run(async delegate
+                {
+                    await Task.Delay(5000);
+                    hasFled = true;
+                });
+
+            }
+
             averagePosition = NavigationUtilities.GetNearObjectsAveragePosition(allHostileTargets, animal.transform.position);
             
             //Run run away from the position.
@@ -49,10 +61,6 @@ namespace AnimalsV2.States
             if (averagePosition != animal.transform.position)
             {
                  pointToRunTo = NavigationUtilities.RunToFromPoint(animal.transform,averagePosition,false);
-            }
-            else
-            {
-                hasFled = true;
             }
 
             if (animal.agent.isActiveAndEnabled)
