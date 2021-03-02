@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using AnimalsV2;
 using AnimalsV2.States;
 using AnimalsV2.States.AnimalsV2.States;
@@ -21,6 +22,7 @@ public class AnimalBrainAgent : Agent
     
     //
     [SerializeField] private GameObject world;
+    
 
     //We could have multiple brains, EX:
     // Brain to use when no wall is present
@@ -53,6 +55,43 @@ public class AnimalBrainAgent : Agent
         // sensor.AddObservation(transform.localPosition);
         // sensor.AddObservation(targetTransform.localPosition);
         //
+        
+        
+        //parameters of the Animal = 5
+        sensor.AddObservation(animalModel.currentEnergy);
+        sensor.AddObservation(animalModel.currentSpeed);
+        sensor.AddObservation(animalModel.currentHydration);
+        sensor.AddObservation(animalModel.currentHealth);
+        sensor.AddObservation(animalModel.reproductiveUrge);
+        
+        
+        //Perceptions of the Animal (3 (x,y,z) * 3) = 9
+        ////////////////////////////////////////////////////////////////////////////////////
+        //TODO change from just first to something smarter.
+        GameObject firstFood = animalController?.visibleFoodTargets[0];
+        if (firstFood != null)
+        {
+            Vector3 firstFoodPosition = firstFood.transform.position;
+            sensor.AddObservation(firstFoodPosition);
+        }
+        
+        //TODO change from just first to something smarter. (Right now just get first heard or seen)
+        GameObject firstMate = animalController?.visibleFriendlyTargets.Concat(animalController?.heardFriendlyTargets).ToList()[0];
+        if (firstMate != null)
+        {
+            Vector3 firstMatePosition = firstMate.transform.position;
+            sensor.AddObservation(firstMatePosition);
+        }
+        
+        //TODO change from just first to something smarter. (Right now just get first heard or seen)
+        GameObject firstHostile = animalController?.visibleHostileTargets.Concat(animalController?.heardHostileTargets).ToList()[0];
+        if (firstHostile != null)
+        {
+            Vector3 firstHostilePosition = firstHostile.transform.position;
+            sensor.AddObservation(firstHostilePosition);
+        }
+        /////////////////////////////////////////////////////////////////////////////////////
+        
     }
 
     public override void OnActionReceived(float[] vectorAction)
@@ -64,6 +103,8 @@ public class AnimalBrainAgent : Agent
         //
         // float moveSpeed = 10f;
         // transform.localPosition += new Vector3(moveX, 0, moveZ) * Time.deltaTime * moveSpeed;
+
+        PerformBestAction(vectorAction);
     }
 
     //TESTING
@@ -101,16 +142,20 @@ public class AnimalBrainAgent : Agent
     /// 
     /// </summary>
     /// <returns></returns>
-    private void MakeDecision()
-    {
-        //TODO STATE should be called ACTION instead?!
-        GetBestAction(animalModel);
-    }
+    // private void MakeDecision()
+    // {
+    //     //TODO STATE should be called ACTION instead?!
+    //     GetBestAction(animalModel);
+    // }
 
-    private void GetBestAction(AnimalModel parameters)
+    private void PerformBestAction(float[] vectorAction)
     {
-        //This is instead of using the state machine regularly.
+        //Parse the brain action results (which action is most wanted by the brain?)
+        //TODO
+        
+        
 
+        //
         State currentState = fsm.CurrentState;
 
         switch (currentState)
@@ -215,37 +260,37 @@ public class AnimalBrainAgent : Agent
 
     //Instead of updating/Making choices every frame
     //Listen to when parameters or senses were updated.
-    // private void EventSubscribe()
-    // {
-    //     eventPublisher.onParamTickEvent += MakeDecision;
-    //     eventPublisher.onSenseTickEvent += MakeDecision;
-    //     
-    //     animalController.actionPerceivedHostile += HandleHostileTarget;
-    //     animalController.actionDeath += HandleDeath;
-    // }
-    //
-    //
-    // public void EventUnsubscribe()
-    // {
-    //     eventPublisher.onParamTickEvent -= MakeDecision;
-    //     eventPublisher.onSenseTickEvent -= MakeDecision;
-    //     
-    //     animalController.actionPerceivedHostile -= HandleHostileTarget;
-    //     animalController.actionDeath -= HandleDeath;
-    // }
+    private void EventSubscribe()
+    {
+        // eventPublisher.onParamTickEvent += MakeDecision;
+        // eventPublisher.onSenseTickEvent += MakeDecision;
+        
+        animalController.actionPerceivedHostile += HandleHostileTarget;
+        animalController.actionDeath += HandleDeath;
+    }
+    
+    
+    public void EventUnsubscribe()
+    {
+        // eventPublisher.onParamTickEvent -= MakeDecision;
+        // eventPublisher.onSenseTickEvent -= MakeDecision;
+        
+        animalController.actionPerceivedHostile -= HandleHostileTarget;
+        animalController.actionDeath -= HandleDeath;
+    }
 
     /// <summary>
     /// Handle perceived target such that GetBestAction can then use it in deciding an action.
     /// </summary>
     /// <param name="target"> perceived target sent from either FieldOfView or HearingAbility,
     /// which method that will be called depends on the type of target </param>
-    // private void HandleHostileTarget(GameObject target)
-    // {
-    //     ChangeState(animalController.fleeingState);
-    // }
-    //
-    // private void HandleDeath()
-    // {
-    //     ChangeState(animalController.deadState);
-    // }
+    private void HandleHostileTarget(GameObject target)
+    {
+        ChangeState(animalController.fleeingState);
+    }
+    
+    private void HandleDeath()
+    {
+        ChangeState(animalController.deadState);
+    }
 }
