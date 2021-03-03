@@ -24,13 +24,21 @@ namespace AnimalsV2.States
             base.LogicUpdate();
             if (animal.agent.isActiveAndEnabled && targetObject != null)
             {
-                Vector3 pointToRunTo =
-                    NavigationUtilities.RunToFromPoint(animal.transform, targetObject.transform.position, true);
-                //Move the animal using the navmeshagent.
-                NavMeshHit hit;
-                NavMesh.SamplePosition(pointToRunTo, out hit, 5, 1 << NavMesh.GetAreaFromName("Walkable"));
-                animal.agent.SetDestination(hit.position);
+                //check so that the target is within viewRadius, if not set targetObject = null (which leads to fleeingstate being exited in decision maker)
+                if(Vector3.Distance(animal.transform.position, targetObject.transform.position) <= animal.animalModel.traits.viewRadius)
+                {
+                    Vector3 pointToRunTo =
+                        NavigationUtilities.RunToFromPoint(animal.transform, targetObject.transform.position, true);
+                    //Move the animal using the navmeshagent.
+                    NavMeshHit hit;
+                    NavMesh.SamplePosition(pointToRunTo, out hit, 5, 1 << NavMesh.GetAreaFromName("Walkable"));
+                    animal.agent.SetDestination(hit.position);
+                }   else
+                {
+                    targetObject = null;
+                }
             }
+            
         }
 
         public override void PhysicsUpdate()

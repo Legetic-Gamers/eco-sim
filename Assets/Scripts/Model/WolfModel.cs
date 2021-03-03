@@ -2,7 +2,7 @@
 
 public class WolfModel : AnimalModel, IEdible
 {
-    public WolfModel() : base(new Traits(1f, 50, 100, 100, 6,10,25,10,10,180,10,5, Traits.BehaviorType.Carnivore, Traits.Species.Wolf),0)
+    public WolfModel() : base(new Traits(3f, 200, 100, 100, 6,10,100,10,10,180,10,5),0)
     {
         // Wolf specific initialization 
     }
@@ -16,7 +16,8 @@ public class WolfModel : AnimalModel, IEdible
 
     public override AnimalModel Mate(AnimalModel otherParent)
     {
-        Traits childTraits = traits.Crossover(otherParent.traits);
+        Traits childTraits = traits.Crossover(otherParent.traits, age, otherParent.age);
+        childTraits.Mutatation();
         //TODO logic to determine generation
         return new WolfModel(childTraits,0);
     }
