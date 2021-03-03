@@ -264,9 +264,9 @@ public abstract class AnimalController : MonoBehaviour
 
     public void Awake()
     {
+        Debug.Log("AnimalControler Awake");
         //Create the FSM.
         fsm = new FiniteStateMachine();
-        
         
         eatingState = new Eating(this, fsm);
         fleeingState = new FleeingState(this, fsm);

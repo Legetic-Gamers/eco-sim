@@ -29,11 +29,14 @@ public class AnimalBrainAgent : Agent
     //public NNModel smallWallBrain;
     // Brain to use when a wall requiring a block to jump over is present
     //public NNModel bigWallBrain;
-    public override void Initialize()
+    public void Start()
     {
+        Debug.Log("Brain Awake");
+
         animalController = GetComponent<AnimalController>();
         fsm = animalController.fsm;
         animalModel = animalController.animalModel;
+        
         //this.eventPublisher = eventPublisher;
 
         world = FindObjectOfType<World>();
@@ -63,6 +66,7 @@ public class AnimalBrainAgent : Agent
 
         //parameters of the Animal = 5
         //Right now these are continous, might need to be discrete (using lowEnergy() ex.) to represent conditions.
+        Debug.Log(animalModel.ToString());
         sensor.AddObservation(animalModel.currentEnergy);
         sensor.AddObservation(animalModel.currentSpeed);
         sensor.AddObservation(animalModel.currentHydration);
