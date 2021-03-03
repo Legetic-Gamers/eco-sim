@@ -92,13 +92,15 @@ public abstract class AnimalModel
     /// </summary>
     
     public int generation { get; set; }
+    
+    public int nProducedOffspring { get; set; }
     public Traits traits { get; set; }
     
     /* /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\ */
     /*                                       Parameters                                       */
     /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
 
-    public int age { get; set; }
+    public float age { get; set; }
     
     //CLAMPING (SETTING A LIMIT) TO ALL LIMITED PARAMETERS.
     private float _currentHealth;

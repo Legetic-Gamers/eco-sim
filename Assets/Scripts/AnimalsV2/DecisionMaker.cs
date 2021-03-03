@@ -2,6 +2,7 @@
  * Author: Alexander L.V
  */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using AnimalsV2.States;
@@ -11,7 +12,7 @@ using static AnimalsV2.Priorities;
 
 namespace AnimalsV2
 {
-    public class DecisionMaker
+    public class DecisionMaker : MonoBehaviour
     {
         //TODO REDUCE DEPENDENCIES.
         private AnimalController animalController;
@@ -19,17 +20,27 @@ namespace AnimalsV2
         private TickEventPublisher eventPublisher;
         private FiniteStateMachine fsm;
         
-        public DecisionMaker(AnimalController animalController, AnimalModel animalModel,TickEventPublisher eventPublisher)
-        {
-            
-            fsm = animalController.fsm;
-            this.animalController = animalController;
-            this.animalModel = animalModel;
-            this.eventPublisher = eventPublisher;
+        // public DecisionMaker(AnimalController animalController, AnimalModel animalModel,TickEventPublisher eventPublisher)
+        // {
+        //     
+        //     fsm = animalController.fsm;
+        //     this.animalController = animalController;
+        //     this.animalModel = animalModel;
+        //     this.eventPublisher = eventPublisher;
+        //
+        //     EventSubscribe();
+        // }
 
+        public void Start()
+        {
+            animalController = GetComponent<AnimalController>();
+            fsm = animalController.fsm;
+            animalModel = animalController.animalModel;
+            eventPublisher = FindObjectOfType<global::TickEventPublisher>();
+            
             EventSubscribe();
         }
-        
+
         /// <summary>
         /// Makes a decision based on the senses and the parameters of the animal (its perception of itself and its environment)
         /// to make a decision of an action to take.

@@ -27,9 +27,7 @@ public abstract class AnimalController : MonoBehaviour
     private AnimationController animationController;
     //private DecisionMaker decisionMaker;
     
-    /*public GoToMate sm;
-    public GoToFood sf;
-    public GoToWater sw;*/
+    //States
     public FleeingState fleeingState;
     public Eating eatingState;
     public Wander wanderState;
@@ -43,6 +41,7 @@ public abstract class AnimalController : MonoBehaviour
     private const float JoggingSpeed = 0.4f;
     private const float RunningSpeed = 1f;
 
+    //Modifiers
     private float energyModifier;
     private float hydrationModifier;
     private float reproductiveUrgeModifier;
@@ -150,7 +149,6 @@ public abstract class AnimalController : MonoBehaviour
 
         //https://www.uvm.edu/pdodds/research/papers/others/2017/hirt2017a.pdf
         //above link for actual empirical max speed.
-        //
         animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
         //TODO, maybe move from here?
         agent.speed = animalModel.currentSpeed;
@@ -158,7 +156,9 @@ public abstract class AnimalController : MonoBehaviour
         animalModel.currentEnergy -= (animalModel.traits.size * 1) + (animalModel.traits.size * animalModel.currentSpeed) * energyModifier;
         animalModel.currentHydration -= (animalModel.traits.size * 1) + (animalModel.traits.size * animalModel.currentSpeed) * hydrationModifier;
         animalModel.reproductiveUrge += 0.1f * reproductiveUrgeModifier;
-        //animalModel.age++;
+        
+        //The age will increase 1 per 1 second.
+        animalModel.age+= Time.deltaTime;
         
     }
 
@@ -249,9 +249,11 @@ public abstract class AnimalController : MonoBehaviour
 
             //Debug.Log("MATE");
             
-            //Reset both reproductive urges.
+            //Reset both reproductive urges. And increase number of produced offspring
             animalModel.reproductiveUrge = 0f;
+            animalModel.nProducedOffspring = animalModel.nProducedOffspring + 1;
             targetAnimalController.animalModel.reproductiveUrge = 0f;
+            targetAnimalController.animalModel.nProducedOffspring = targetAnimalController.animalModel.nProducedOffspring + 1;
         }
     }
 
@@ -261,18 +263,12 @@ public abstract class AnimalController : MonoBehaviour
     }
     
     /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
-    
-    protected void Start()
-    {
-        // Init the NavMesh agent
-        agent = GetComponent<NavMeshAgent>();
-        agent.autoBraking = false;
-        animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
-        agent.speed = animalModel.currentSpeed;
 
+    public void Awake()
+    {
         //Create the FSM.
         fsm = new FiniteStateMachine();
-        animationController = new AnimationController(this);
+        
         
         eatingState = new Eating(this, fsm);
         fleeingState = new FleeingState(this, fsm);
@@ -283,6 +279,18 @@ public abstract class AnimalController : MonoBehaviour
         matingState = new Mating(this, fsm);
         deadState = new Dead(this, fsm);
         fsm.Initialize(idleState);
+        
+        animationController = new AnimationController(this);
+    }
+
+    protected void Start()
+    {
+        // Init the NavMesh agent
+        agent = GetComponent<NavMeshAgent>();
+        agent.autoBraking = false;
+        animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
+        agent.speed = animalModel.currentSpeed;
+        
         
         tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
         EventSubscribe();
