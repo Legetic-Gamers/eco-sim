@@ -2,6 +2,7 @@
 {
     void Awake()
     {
+        base.Awake();
         animalModel = new WolfModel();
     }
 

@@ -5249,6 +5249,7 @@ GameObject:
   - component: {fileID: 1932977675138034824}
   - component: {fileID: 3398314273756797995}
   - component: {fileID: 8785101678715966952}
+  - component: {fileID: 4440942249907535268}
   m_Layer: 8
   m_Name: Deer
   m_TagString: Animal
@@ -5391,6 +5392,18 @@ MonoBehaviour:
     m_Bits: 256
   animalController: {fileID: 0}
   isPrey: 0
+--- !u!114 &4440942249907535268
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1567582185033856}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c71b720863ec4e7a8484c019f6979fe3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1571034971651392
 GameObject:
   m_ObjectHideFlags: 0
