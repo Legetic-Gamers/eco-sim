@@ -345,8 +345,8 @@ public class AnimalBrainAgent : Agent
     {
         int offspringConstant = 20;
         
-        
-        AddReward( animalModel.traits.ageLimit - animalModel.age);
+        //Penalize for every year not lived.
+        AddReward( animalModel.age - animalModel.traits.ageLimit );
         ChangeState(animalController.deadState);
         
         EndEpisode();
