@@ -132,10 +132,7 @@ public class AnimalBrainAgent : Agent
         }
     }
 
-    //To set reward we could use biological fitness = fertile ofspring produced = Good reward
-    //Penalty could be set upon death. Perhaps based on how many fertile offspring produced in lifetime and
-    //how long the rabbit lived?
-
+    
     private void OnTriggerEnter(Collider other)
     {
         // if (other.TryGetComponent<Goal>(out Goal goal))
@@ -333,11 +330,19 @@ public class AnimalBrainAgent : Agent
         ChangeState(animalController.fleeingState);
     }
 
+    //To set reward we could use biological fitness = fertile ofspring produced = Good reward
+    //addreward offspringConstant (could be like 20, depends on age)
+    //This should be added on reproduce? so need event for that?
+    
+    //Penalty could be set upon death. Perhaps based on how many fertile offspring produced in lifetime and
+    //how long the rabbit lived?
+
     private void HandleDeath()
     {
         int offspringConstant = 20;
         
-        AddReward(animalModel.nProducedOffspring * offspringConstant  + animalModel.age);
+        
+        AddReward( animalModel.traits.ageLimit - animalModel.age);
         ChangeState(animalController.deadState);
         
         EndEpisode();

@@ -249,11 +249,9 @@ public abstract class AnimalController : MonoBehaviour
 
             //Debug.Log("MATE");
             
-            //Reset both reproductive urges. And increase number of produced offspring
+            //Reset both reproductive urges. 
             animalModel.reproductiveUrge = 0f;
-            animalModel.nProducedOffspring = animalModel.nProducedOffspring + 1;
             targetAnimalController.animalModel.reproductiveUrge = 0f;
-            targetAnimalController.animalModel.nProducedOffspring = targetAnimalController.animalModel.nProducedOffspring + 1;
         }
     }
 
