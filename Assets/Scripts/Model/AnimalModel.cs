@@ -93,7 +93,7 @@ public abstract class AnimalModel
     
     public int generation { get; set; }
     
-    public int nProducedOffspring { get; set; }
+    
     public Traits traits { get; set; }
     
     /* /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\ */
