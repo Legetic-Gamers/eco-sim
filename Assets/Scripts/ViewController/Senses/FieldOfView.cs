@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
-using UnityEngine;
+﻿using UnityEngine;
 using ViewController;
-using Debug = UnityEngine.Debug;
 
 public class FieldOfView : MonoBehaviour
 {
@@ -46,6 +41,7 @@ public class FieldOfView : MonoBehaviour
 
             // don't add self
             if (target == gameObject) return;
+            
 
             Vector3 dirToTarget = (target.transform.position - transform.position).normalized;
 
@@ -57,12 +53,18 @@ public class FieldOfView : MonoBehaviour
                 // if target is not obscured
                 if (!Physics.Raycast(transform.position, dirToTarget, distToTarget, obstacleMask))
                 {
-                    if(target.gameObject.CompareTag("Plant")) 
+                    if (target.gameObject.CompareTag("Plant"))
+                    {
                         HandlePlantTarget(target);
-                    else if (target.gameObject.CompareTag("Animal")) 
+                    }
+                    else if (target.gameObject.CompareTag("Animal"))
+                    {
                         HandleAnimalTarget(target);
+                    } 
                     else if (target.gameObject.CompareTag("Water"))
+                    {
                         HandleWaterTarget(target);
+                    }
                 }
             }
         }
@@ -77,6 +79,7 @@ public class FieldOfView : MonoBehaviour
         {
             animalController.visibleHostileTargets.Add(target);
             animalController.actionPerceivedHostile?.Invoke(target);
+
         }  
         //if this animalModel can the targets animalModel: add to visibleFoodTargets
         else if (animalController.animalModel.CanEat(targetAnimalController.animalModel))
@@ -124,10 +127,5 @@ public class FieldOfView : MonoBehaviour
     {
         tickEventPublisher.onSenseTickEvent -= FindVisibleTargets;
     }
-
-    private void FixedUpdate()
-    {
-        angle = animalController.animalModel.traits.viewAngle;
-        radius = animalController.animalModel.traits.viewRadius;
-    }
+    
 }
