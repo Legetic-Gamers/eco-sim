@@ -11,7 +11,7 @@ public class MapPreview : MonoBehaviour
 
     public enum DrawMode
     {
-        NoiseMap, Mesh, Falloff
+        NoiseMap, Mesh, Falloff, ObjectPlacementMap
     };
     public DrawMode drawMode;
 
@@ -39,11 +39,16 @@ public class MapPreview : MonoBehaviour
         else if (drawMode == DrawMode.Mesh)
         {
             DrawMesh(MeshGenerator.GenerateTerrainMesh(heightMap.values, meshSettings, editorPreviewLevelOfDetail));
-            
+
         }
         else if (drawMode == DrawMode.Falloff)
         {
             DrawTexture(TextureGenerator.TextureFromHeightMap(new HeightMap(FalloffGenerator.GenerateFalloffMap(meshSettings.numVertsPerLine), 0, 1)));
+        }
+        else if (drawMode == DrawMode.ObjectPlacementMap)
+        {
+            var list = PoissonDiskSampling.GeneratePoisson(200, 200, 10f, 10).ToArray();
+            DrawTexture(TextureGenerator.TextureFromVector2List(list, 200, 200));
         }
     }
 
@@ -51,7 +56,6 @@ public class MapPreview : MonoBehaviour
     {
         textureRender.sharedMaterial.mainTexture = texture;
         textureRender.transform.localScale = new Vector3(texture.width, 1, texture.height) / 10f;
-
         textureRender.gameObject.SetActive(true);
         meshFilter.gameObject.SetActive(false);
     }
@@ -61,9 +65,9 @@ public class MapPreview : MonoBehaviour
         meshFilter.sharedMesh = meshData.CreateMesh();
         textureRender.gameObject.SetActive(false);
         meshFilter.gameObject.SetActive(true);
-        if(waterSettings.generateWater)
+        if (waterSettings.generateWater)
         {
-            
+
         }
     }
 
@@ -91,13 +95,13 @@ public class MapPreview : MonoBehaviour
                 DestroyImmediate(waterChunk);
             }
         }
-        if(waterSettings.generateWater)
+        if (waterSettings.generateWater)
             meshFilter.gameObject.AddComponent<WaterChunk>().Setup(Vector2.zero, waterSettings, heightMapSettings, meshRenderer.bounds.size, meshFilter.gameObject.transform);
     }
 
     private void OnDestroy()
     {
-       
+
     }
 
     private void OnValidate()
@@ -117,7 +121,7 @@ public class MapPreview : MonoBehaviour
             textureSettings.OnValuesUpdated -= OnTextureValuesUpdated;
             textureSettings.OnValuesUpdated += OnTextureValuesUpdated;
         }
-        if(waterSettings != null)
+        if (waterSettings != null)
         {
             waterSettings.OnValuesUpdated -= OnWaterUpdated;
             waterSettings.OnValuesUpdated += OnWaterUpdated;
