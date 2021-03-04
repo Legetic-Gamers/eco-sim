@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using AnimalsV2;
 using UnityEngine;
 using UnityEngine.AI;
@@ -13,9 +14,7 @@ namespace AnimalsV2.States
     {
         private Vector3 averagePosition;
         public FleeingState(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine) {}
-
-        public Vector3 fleeingFromPos;
-
+        
         private bool hasFled;
         
         public override void Enter()
@@ -52,7 +51,11 @@ namespace AnimalsV2.States
             }
             else
             {
-                finiteStateMachine.ChangeState(animal.wanderState);
+                Task.Run(async () =>
+                {
+                    await Task.Delay(2000);
+                    finiteStateMachine.ChangeState(animal.wanderState);
+                });
             }
 
             if (animal.agent.isActiveAndEnabled)

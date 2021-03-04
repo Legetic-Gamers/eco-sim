@@ -37,14 +37,14 @@ namespace AnimalsV2.States
                     animal.agent.SetDestination(hit.position);
                     if (Vector3.Distance(animal.gameObject.transform.position, foundMate.transform.position) <= 2f)
                     {
-                        finiteStateMachine.ChangeState(animal.matingState);
+                        finiteStateMachine.ChangeState(animal.matingStateState);
                     }    
                 }
                 
             }
             else
             {
-                finiteStateMachine.ChangeState(animal.wanderState);
+                finiteStateMachine.GoToDefaultState();
             }
         }
         
@@ -57,14 +57,14 @@ namespace AnimalsV2.States
 
         public override bool MeetRequirements()
         {
-            return animal.visibleFriendlyTargets.Count > 0 && !(finiteStateMachine.CurrentState is Mating) && GetFoundMate() != null;
+            return animal.visibleFriendlyTargets.Count > 0 && !(finiteStateMachine.CurrentState is MatingState) && GetFoundMate() != null;
         }
 
         private GameObject GetFoundMate()
         {
             foreach(GameObject potentialMate in animal.visibleFriendlyTargets)
             {
-                if (potentialMate.TryGetComponent(out AnimalController potentialMateAnimalController) && potentialMateAnimalController.animalModel.WantingOffspring)
+                if (potentialMate != null && potentialMate.TryGetComponent(out AnimalController potentialMateAnimalController) && potentialMateAnimalController.animalModel.WantingOffspring)
                 {
                     return potentialMateAnimalController.gameObject;
                 }

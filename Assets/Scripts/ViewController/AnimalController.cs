@@ -31,7 +31,7 @@ public abstract class AnimalController : MonoBehaviour
     public Wander wanderState;
     public Idle idleState;
     public GoToWater goToWaterState;
-    public Mating matingState;
+    public MatingState matingStateState;
     public Dead deadState;
     public DrinkingState drinkingState;
     public EatingState eatingState;
@@ -173,7 +173,7 @@ public abstract class AnimalController : MonoBehaviour
 
         drinkingState.onDrinkWater += DrinkWater;
 
-        matingState.onMate += Mate;
+        matingStateState.onMate += Mate;
         
         animationController.EventSubscribe();
     }
@@ -191,7 +191,7 @@ public abstract class AnimalController : MonoBehaviour
 
         drinkingState.onDrinkWater -= DrinkWater;
 
-        matingState.onMate -= Mate;
+        matingStateState.onMate -= Mate;
         
         animationController.EventUnsubscribe();
     }
@@ -266,12 +266,12 @@ public abstract class AnimalController : MonoBehaviour
         wanderState = new Wander(this, fsm);
         idleState = new Idle(this, fsm);
         goToWaterState = new GoToWater(this, fsm);
-        matingState = new Mating(this, fsm);
+        matingStateState = new MatingState(this, fsm);
         deadState = new Dead(this, fsm);
         drinkingState = new DrinkingState(this, fsm);
         eatingState = new EatingState(this, fsm);
         goToMate = new GoToMate(this, fsm);
-        fsm.Initialize(idleState);
+        fsm.Initialize(wanderState);
         
         animationController = new AnimationController(this);
     }
