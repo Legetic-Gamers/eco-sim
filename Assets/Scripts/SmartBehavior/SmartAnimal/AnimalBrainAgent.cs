@@ -179,6 +179,10 @@ public class AnimalBrainAgent : Agent
             case Eating state:
             {
                 Eating eatingState = state;
+                
+                AddReward(+10);
+                EndEpisode();
+                Debug.Log("END EPISODE");
                 //Eat until full or out of food.
                 if (eatingState.foodIsEmpty() || animalModel.EnergyFull)
                 {
@@ -222,6 +226,7 @@ public class AnimalBrainAgent : Agent
                         switch (actionToDo)
                         {
                             case Food:
+                                Debug.Log("Eat da food");
                                 animalController.eatingState.EatFood(target);
                                 ChangeState(animalController.eatingState);
                                 break;
@@ -235,7 +240,7 @@ public class AnimalBrainAgent : Agent
                                 break;
                         }
                         
-                        Prioritize(vectorAction);
+                        
                     }
                 }
                 else
@@ -251,7 +256,7 @@ public class AnimalBrainAgent : Agent
                 var targetAndAction = wander.FoundObject();
                 if (targetAndAction?.Item1 != null)
                 {
-                    Debug.Log(gameObject + " ---- " +targetAndAction.Item1);
+                    //Debug.Log(gameObject + " ---- " +targetAndAction.Item1);
 
                     animalController.goToState.SetTarget(targetAndAction.Item1);
                     animalController.goToState.SetActionOnArrive(targetAndAction.Item2);
