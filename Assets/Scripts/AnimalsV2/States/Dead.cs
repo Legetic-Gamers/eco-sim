@@ -41,8 +41,9 @@
 
             public override bool MeetRequirements()
             {
-                return false;
+                return true;
             }
+            
         }
     }
 }

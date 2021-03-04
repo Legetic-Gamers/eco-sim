@@ -18,7 +18,7 @@ namespace AnimalsV2.States
         {
             base.Enter();
             currentStateAnimation = StateAnimation.Attack;
-            
+            GetNearestFood();
         }
 
         public override void LogicUpdate()
@@ -30,7 +30,7 @@ namespace AnimalsV2.States
             }
             else
             {
-                finiteStateMachine.ChangeState(animal.wanderState);
+                finiteStateMachine.GoToDefaultState();
             }
         }
         
@@ -38,7 +38,7 @@ namespace AnimalsV2.States
         public void EatFood(GameObject target)
         {
             onEatFood?.Invoke(target);
-            finiteStateMachine.ChangeState(animal.wanderState);
+            finiteStateMachine.GoToDefaultState();
         }
 
         public override string ToString()

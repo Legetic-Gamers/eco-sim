@@ -18,6 +18,8 @@ namespace AnimalsV2
     {
         public State CurrentState { get; private set; }
         
+        private State defaultState { get; set; }
+        
         // Used to identify an absorbing state, such that no other state can be entered, e.g. Dead.
         public bool absorbingState;
         
@@ -33,6 +35,7 @@ namespace AnimalsV2
         /// <param name="startingState"> State to start in (Idle) </param>
         public void Initialize(State startingState)
         {
+            defaultState = startingState;
             ChangeState(startingState);
             
         }
@@ -52,8 +55,7 @@ namespace AnimalsV2
                 CurrentState.Exit();
                 OnStateExit?.Invoke(CurrentState);
             }
-            Debug.Log("From: " + CurrentState);
-            Debug.Log("To: " + newState);
+
             //Change state
             CurrentState = newState;
             if (CurrentState != null)
@@ -80,6 +82,11 @@ namespace AnimalsV2
         {
             if (CurrentState != null) CurrentState.PhysicsUpdate();
             OnStatePhysicsUpdate?.Invoke(CurrentState);
+        }
+
+        public void GoToDefaultState()
+        {
+            ChangeState(defaultState);
         }
     }
 }

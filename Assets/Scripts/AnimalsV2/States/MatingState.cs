@@ -7,14 +7,14 @@ using UnityEngine;
 
 namespace AnimalsV2.States
 {
-    public class Mating : State
+    public class MatingState : State
     {
         private AnimalController animalController;
 
         public Action<GameObject> onMate;
         
         private float timeLeft = 3.0f;
-        public Mating(AnimalController animalController, FiniteStateMachine finiteStateMachine) : base(animalController, finiteStateMachine) {}
+        public MatingState(AnimalController animalController, FiniteStateMachine finiteStateMachine) : base(animalController, finiteStateMachine) {}
 
         public override void Enter()
         {
@@ -37,7 +37,7 @@ namespace AnimalsV2.States
             }
             else
             {
-                finiteStateMachine.ChangeState(animal.wanderState);
+                finiteStateMachine.GoToDefaultState();
             }
         }
 

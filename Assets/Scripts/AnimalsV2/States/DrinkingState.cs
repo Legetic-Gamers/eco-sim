@@ -23,6 +23,7 @@ namespace AnimalsV2.States
         {
             base.Enter();
             currentStateAnimation = StateAnimation.Idle;
+            GetNearestWater();
         }
 
         public override void LogicUpdate()
@@ -35,7 +36,7 @@ namespace AnimalsV2.States
             }
             else
             {
-                finiteStateMachine.ChangeState(animal.wanderState);
+                finiteStateMachine.GoToDefaultState();
             }
         }
         
@@ -43,7 +44,7 @@ namespace AnimalsV2.States
         public void DrinkWater(GameObject target)
         {
             onDrinkWater?.Invoke(target);
-            finiteStateMachine.ChangeState(animal.wanderState);
+            finiteStateMachine.GoToDefaultState();
         }
 
         public override string ToString()

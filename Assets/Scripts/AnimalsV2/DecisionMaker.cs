@@ -34,56 +34,9 @@ namespace AnimalsV2
         private void MakeDecision()
         {
             // no decision making while fleeing!
-            if (fsm.CurrentState is FleeingState) return;
-
-                if (animalModel.LowHydration) //Prio 1 don't die from dehydration -> Find Water.
-            {
-                ChangeState(animalController.goToWaterState); 
-                return;
-            }
-            if (animalModel.LowEnergy) //Prio 2 dont die from hunger -> Find Food.
-            {
-                ChangeState(animalController.goToFoodState);        
-                return;
-            }
-
-            if (!animalModel.HighHydration && !animalModel.HighEnergy) //Prio 6, not low energy but not high either + not low hydration but not high either -> find Water and then Food.
-            {
-                ChangeState(animalController.goToWaterState);
-                return;
-                
-            }
-            if (animalModel.HighHydration && !animalModel.HighEnergy) //Prio 5, not low energy but not high either + high hydration -> find Food.
-            {
-                ChangeState(animalController.goToFoodState);
-                return;
-            }
-            
-            if (!animalModel.HighHydration && animalModel.HighEnergy) //Prio 4, not low hydration but not high either + high energy -> find Water.
-            {
-                ChangeState(animalController.goToWaterState);
-                return;
-            }
-            
-            if (animalModel.LowEnergy) //Prio 2 dont die from hunger -> Find Food.
-            {
-                ChangeState(animalController.goToFoodState);
-                return;
-            }
-            
-            if (animalModel.LowHydration) //Prio 1 don't die from dehydration -> Find Water.
-            {
-                ChangeState(animalController.goToWaterState);
-                return;
-            }
-            
-            if (animalModel.WantingOffspring) // Prio 3 (If we live good) search for mate.
-            {
-                ChangeState(animalController.matingState);
-                return;
-
-            }
-            ChangeState(animalController.wanderState);
+            if (fsm.CurrentState is FleeingState || fsm.CurrentState is EatingState || fsm.CurrentState is DrinkingState || fsm.CurrentState is MatingState) return;
+            Prioritize();
+           
 
         }
 
@@ -155,10 +108,24 @@ namespace AnimalsV2
             
             //prio.Add("Mate");
             
-            animalController.wanderState.SetPriorities(prio);
-            ChangeState(animalController.wanderState);
+            foreach (var priority in prio)
+            {
+                switch (priority)
+                {
+                    case Food:
+                        ChangeState(animalController.goToFoodState);
+                        break;
+                    case Water:
+                        ChangeState(animalController.goToWaterState);
+                        break;
+                    case Mate:
+                        ChangeState(animalController.goToMate);
+                        break;
+                }
+            }
+            
+            //ChangeState(animalController.wanderState);
 
-            //Debug.Log(fsm.CurrentState.GetType());
         }
         
         private void ChangeState(State newState)

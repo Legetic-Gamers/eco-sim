@@ -79,5 +79,6 @@ namespace AnimalsV2
         public abstract string ToString();
 
         public abstract bool MeetRequirements();
+        
     }
 }
