@@ -12,12 +12,12 @@ namespace AnimalsV2.States
     {
         public GoToFood(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine)
         {
+            currentStateAnimation = StateAnimation.Running;
         }
 
         public override void Enter()
         {
             base.Enter();
-            currentStateAnimation = StateAnimation.Walking;
         }
 
         public override void HandleInput()

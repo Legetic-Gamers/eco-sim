@@ -85,6 +85,10 @@ public abstract class AnimalController : MonoBehaviour
                 {
                     speedModifier = RunningSpeed;
                 }
+                else
+                {
+                    speedModifier = JoggingSpeed;
+                }
                 //Debug.Log("varying parameters depending on state: Eating");
                 break;
             case FleeingState _:

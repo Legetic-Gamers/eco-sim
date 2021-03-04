@@ -2,11 +2,8 @@
  * Author: Alexander L.V
  */
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using AnimalsV2.States;
-using AnimalsV2.States.AnimalsV2.States;
 using UnityEngine;
 using static AnimalsV2.Priorities;
 
@@ -36,9 +33,6 @@ namespace AnimalsV2
             // no decision making while fleeing!
             if (fsm.CurrentState is FleeingState || fsm.CurrentState is EatingState || fsm.CurrentState is DrinkingState || fsm.CurrentState is MatingState) return;
             Prioritize();
-           
-
-            ChangeState(animalController.wanderState);
         }
 
         /// <summary>
@@ -117,11 +111,11 @@ namespace AnimalsV2
                     case Mate:
                         ChangeState(animalController.goToMate);
                         break;
+                    default:
+                        fsm.GoToDefaultState();
+                        break;
                 }
             }
-            
-            //ChangeState(animalController.wanderState);
-
 
         }
 

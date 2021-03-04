@@ -7,12 +7,12 @@ namespace AnimalsV2.States
     {
         public GoToMate(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine)
         {
+            currentStateAnimation = StateAnimation.Walking;
         }
 
         public override void Enter()
         {
             base.Enter();
-            currentStateAnimation = StateAnimation.Walking;
         }
 
         public override void HandleInput()

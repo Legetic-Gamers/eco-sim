@@ -12,12 +12,12 @@ namespace AnimalsV2.States
         
         public EatingState(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine)
         {
+            currentStateAnimation = StateAnimation.Attack;
         }
 
         public override void Enter()
         {
             base.Enter();
-            currentStateAnimation = StateAnimation.Attack;
             GetNearestFood();
         }
 
