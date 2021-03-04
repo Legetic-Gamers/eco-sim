@@ -37,7 +37,6 @@ namespace AnimalsV2
         {
             defaultState = startingState;
             ChangeState(startingState);
-            
         }
 
         /// <summary>

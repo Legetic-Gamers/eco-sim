@@ -42,7 +42,6 @@ namespace AnimalsV2
         private void Prioritize()
         {
             List<Priorities> prio = new List<Priorities>();
-            //Debug.Log("Prio!");
 
             if (animalModel.LowHydration) //Prio 1 don't die from dehydration -> Find Water.
             {
