@@ -52,7 +52,7 @@ namespace AnimalsV2.States
             }
             else
             {
-                hasFled = true;
+                finiteStateMachine.ChangeState(animal.wanderState);
             }
 
             if (animal.agent.isActiveAndEnabled)
@@ -69,10 +69,9 @@ namespace AnimalsV2.States
             return "Fleeing";
         }
 
-        public bool HasFled()
+        public override bool MeetRequirements()
         {
-            return hasFled;
+            return true;
         }
-        
     }
 }
