@@ -31,21 +31,51 @@ namespace AnimalsV2.States
         public override void LogicUpdate()
         {
             base.LogicUpdate();
-            timeLeft -= Time.deltaTime;
-            if (timeLeft < 0)
+            if (MeetRequirements())
             {
-                // Go back to Wander
+                Mate(GetFoundMate());
+            }
+            else
+            {
+                finiteStateMachine.ChangeState(animal.wanderState);
             }
         }
 
         public void Mate(GameObject target)
         {
-            onMate.Invoke(target);
+            onMate?.Invoke(target);
+            finiteStateMachine.ChangeState(animal.wanderState);
         }
         
         public override string ToString()
         {
             return "Mating";
+        }
+
+        public override bool MeetRequirements()
+        {
+            return GetFoundMate() != null && FoundMateIsClose();
+        }
+        
+        private GameObject GetFoundMate()
+        {
+            foreach(GameObject potentialMate in animal.visibleFriendlyTargets)
+            {
+                if (potentialMate.TryGetComponent(out AnimalController potentialMateAnimalController))
+                {
+                    if (potentialMateAnimalController.animalModel.WantingOffspring)
+                    {
+                        return potentialMateAnimalController.gameObject;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        private bool FoundMateIsClose()
+        {
+            return Vector3.Distance(GetFoundMate().transform.position, animal.transform.position) <= 2f;
         }
     }
 }

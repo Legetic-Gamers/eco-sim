@@ -8,6 +8,7 @@ using Unity.Barracuda;
 using Unity.MLAgents;
 using Unity.MLAgents.Sensors;
 using UnityEngine;
+using UnityEngine.AI;
 using static AnimalsV2.Priorities;
 
 public class AnimalBrainAgent : Agent
@@ -36,9 +37,6 @@ public class AnimalBrainAgent : Agent
         animalController = GetComponent<AnimalController>();
         fsm = animalController.fsm;
         animalModel = animalController.animalModel;
-        
-        //this.eventPublisher = eventPublisher;
-
         world = FindObjectOfType<World>();
         
         EventSubscribe();
@@ -66,53 +64,13 @@ public class AnimalBrainAgent : Agent
 
         //parameters of the Animal = 5
         //Right now these are continous, might need to be discrete (using lowEnergy() ex.) to represent conditions.
-        Debug.Log(animalModel.ToString());
         sensor.AddObservation(animalModel.currentEnergy);
         sensor.AddObservation(animalModel.currentSpeed);
         sensor.AddObservation(animalModel.currentHydration);
         sensor.AddObservation(animalModel.currentHealth);
         sensor.AddObservation(animalModel.reproductiveUrge);
 
-
-        //Perceptions of the Animal (3 (x,y,z) * 3) = 9
-        ////////////////////////////////////////////////////////////////////////////////////
-        //TODO change from just first to something smarter.
-        // GameObject firstFood = animalController?.visibleFoodTargets?[0];
-        // if (firstFood != null)
-        // {
-        //     Vector3 firstFoodPosition = firstFood.transform.position;
-        //     sensor.AddObservation(firstFoodPosition);
-        // }
-        //
-        // //TODO change from just first to something smarter. (Right now just get first heard or seen)
-        // List<GameObject> mates = animalController?.visibleFriendlyTargets?.Concat(animalController?.heardFriendlyTargets)
-        //     .ToList();
-        // if (mates.Count > 0)
-        // {
-        //     GameObject firstMate = mates[0];
-        //     if (firstMate != null)
-        //     {
-        //         Vector3 firstMatePosition = firstMate.transform.position;
-        //         sensor.AddObservation(firstMatePosition);
-        //     }
-        // }
-        //
-        // //TODO change from just first to something smarter. (Right now just get first heard or seen)
-        // List<GameObject> hostiles = animalController?.visibleHostileTargets.Concat(animalController?.heardHostileTargets)
-        //     .ToList();
-        //
-        // if (hostiles.Count > 0)
-        // {
-        //     GameObject firstHostile = hostiles[0];
-        //     if (firstHostile != null)
-        //     {
-        //         Vector3 firstHostilePosition = firstHostile.transform.position;
-        //         sensor.AddObservation(firstHostilePosition);
-        //     }
-        // }
-        /////////////////////////////////////////////////////////////////////////////////////
-
-        //TOTAL = 14, set in "Vector Observation" of "Behavior Parameters" in inspector.
+        
     }
 
     //Called Every time the ML agent decides to take an action.
@@ -126,35 +84,8 @@ public class AnimalBrainAgent : Agent
     //Used for testing, gives us control over the output from the ML algortihm.
     public override void Heuristic(float[] actionsOut)
     {
-        //Change search prio based on key input.
-        for (int i = 0; i < 10; ++i)
-        {
-            if (Input.GetKey("" + i))
-            {
-                actionsOut[0] = Mathf.Clamp(i, 0, 2);
-            }
-        }
+        
     }
-
-    
-    private void OnTriggerEnter(Collider other)
-    {
-        // if (other.TryGetComponent<Goal>(out Goal goal))
-        // {
-        //     SetReward(1f);
-        //     floorMeshRenderer.material = winMaterial;
-        //     EndEpisode();
-        // }
-        //
-        // if (other.TryGetComponent<Wall>(out Wall wall))
-        // {
-        //     SetReward(-1f);
-        //     floorMeshRenderer.material = loseMaterial;
-        //     EndEpisode();
-        // }
-    }
-
-    List<Priorities> prio = new List<Priorities>();
 
     /// <summary>
     /// Set constraints based on current State.
@@ -163,138 +94,8 @@ public class AnimalBrainAgent : Agent
     /// <returns></returns>
     private void PerformBestAction(float[] vectorAction)
     {
-        State currentState = fsm?.CurrentState;
+        
 
-        //Debug.Log(currentState);
-
-        switch (currentState)
-        {
-            case Eating state:
-            {
-                Eating eatingState = state;
-                //Eat until full or out of food.
-                if (eatingState.foodIsEmpty() || animalModel.EnergyFull)
-                {
-                    Prioritize(vectorAction);
-                }
-
-                break;
-            }
-            case Drinking state:
-            {
-                Drinking drinkingState = state;
-                Prioritize(vectorAction);
-                break;
-            }
-            case FleeingState state:
-            {
-                //Run until no predator nearby.
-                //Run a bit longer?
-
-                FleeingState fleeingState = state;
-                if (fleeingState.HasFled())
-                {
-                    //if we arrive here there the animal has sucessfully fled
-                    Prioritize(vectorAction);
-                }
-
-                break;
-            }
-            case Idle _:
-                Prioritize(vectorAction);
-                break;
-            case GoToState state:
-            {
-                GoToState goToState = state;
-                if (goToState.GetTarget() != null && goToState.GetAction() != null)
-                {
-                    if (goToState.arrivedAtTarget())
-                    {
-                        GameObject target = goToState.GetTarget();
-                        Priorities actionToDo = goToState.GetAction();
-
-                        switch (actionToDo)
-                        {
-                            case Food:
-                                animalController.eatingState.EatFood(target);
-                                ChangeState(animalController.eatingState);
-                                break;
-                            case Water:
-                                animalController.drinkingState.DrinkWater(target);
-                                ChangeState(animalController.drinkingState);
-                                break;
-                            case Mate:
-                                animalController.matingState.Mate(target);
-                                ChangeState(animalController.drinkingState);
-                                break;
-                        }
-                    }
-                }
-                else
-                {
-                    Prioritize(vectorAction);
-                }
-
-                break;
-            }
-            case Wander state:
-            {
-                Wander wander = state;
-                var targetAndAction = wander.FoundObject();
-                if (targetAndAction?.Item1 != null)
-                {
-                    animalController.goToState.SetTarget(targetAndAction.Item1);
-                    animalController.goToState.SetActionOnArrive(targetAndAction.Item2);
-                    ChangeState(animalController.goToState);
-                }
-                else
-                {
-                    //If no food found, try to reprioritize the search.
-                    Prioritize(vectorAction);
-                }
-
-                break;
-            }
-            case Mating _:
-            {
-                Prioritize(vectorAction);
-                break;
-            }
-        }
-    }
-
-    /// <summary>
-    /// Prioritizes what to look for based on the ML Brain.
-    /// </summary>
-    /// <param name="vectorAction"></param>
-    private void Prioritize(float[] vectorAction)
-    {
-        //Parse the brain action results (which action is most wanted by the brain?)
-        //0 = search for food, 1 = water, 2 = mate.
-        //TODO this is not complete probably
-        switch (vectorAction[0])
-        {
-            case 0:
-                //Reinsert food at top.
-                prio.Remove(Food);
-                prio.Insert(0, Food);
-
-                break;
-            case 1:
-                //Reinsert Water at top.
-                prio.Remove(Water);
-                prio.Insert(0, Water);
-                break;
-            case 2:
-                //Reinsert Mate at top.
-                prio.Remove(Mate);
-                prio.Insert(0, Mate);
-                break;
-        }
-
-        Debug.Log(prio[0].ToString());
-        animalController.wanderState.SetPriorities(prio);
-        ChangeState(animalController.wanderState);
     }
 
     private void ChangeState(State newState)
@@ -310,7 +111,6 @@ public class AnimalBrainAgent : Agent
         // eventPublisher.onParamTickEvent += MakeDecision;
         // eventPublisher.onSenseTickEvent += MakeDecision;
 
-        animalController.actionPerceivedHostile += HandleHostileTarget;
         animalController.actionDeath += HandleDeath;
     }
 
@@ -320,7 +120,6 @@ public class AnimalBrainAgent : Agent
         // eventPublisher.onParamTickEvent -= MakeDecision;
         // eventPublisher.onSenseTickEvent -= MakeDecision;
 
-        animalController.actionPerceivedHostile -= HandleHostileTarget;
         animalController.actionDeath -= HandleDeath;
     }
 
@@ -329,10 +128,7 @@ public class AnimalBrainAgent : Agent
     /// </summary>
     /// <param name="target"> perceived target sent from either FieldOfView or HearingAbility,
     /// which method that will be called depends on the type of target </param>
-    private void HandleHostileTarget(GameObject target)
-    {
-        ChangeState(animalController.fleeingState);
-    }
+
 
     //To set reward we could use biological fitness = fertile ofspring produced = Good reward
     //addreward offspringConstant (could be like 20, depends on age)
@@ -353,5 +149,60 @@ public class AnimalBrainAgent : Agent
         
 
         EventUnsubscribe();
+    }
+    
+    
+    public void Update()
+    {
+        if (Input.GetKey(KeyCode.UpArrow))
+        {
+            print("up");
+            Vector3 position = gameObject.transform.position;
+            position.x = position.x + 1f;
+            NavMeshHit hit;
+            NavMesh.SamplePosition(position, out hit, 5, 1 << NavMesh.GetAreaFromName("Walkable"));
+            animalController.agent.SetDestination(hit.position);
+        } else if (Input.GetKey(KeyCode.DownArrow))
+        {
+            Vector3 position = gameObject.transform.position;
+            position.x = position.x - 1f;
+            NavMeshHit hit;
+            NavMesh.SamplePosition(position, out hit, 5, 1 << NavMesh.GetAreaFromName("Walkable"));
+            animalController.agent.SetDestination(hit.position);
+            print("down");
+        } else if (Input.GetKey(KeyCode.LeftArrow))
+        {
+            Vector3 position = gameObject.transform.position;
+            position.z = position.z + 1f;
+            NavMeshHit hit;
+            NavMesh.SamplePosition(position, out hit, 5, 1 << NavMesh.GetAreaFromName("Walkable"));
+            animalController.agent.SetDestination(hit.position);
+            print("left");
+        } else if (Input.GetKey(KeyCode.RightArrow))
+        {
+            Vector3 position = gameObject.transform.position;
+            position.z = position.z - 1f;
+            NavMeshHit hit;
+            NavMesh.SamplePosition(position, out hit, 5, 1 << NavMesh.GetAreaFromName("Walkable"));
+            animalController.agent.SetDestination(hit.position);
+            print("right");
+        } else if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            ChangeState(animalController.goToFoodState);
+            print("1");
+        } else if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            ChangeState(animalController.goToWaterState);
+            print("2");
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            ChangeState(animalController.wanderState);
+            print("3");
+        } else if (Input.GetKeyDown(KeyCode.Alpha4))
+        {
+            ChangeState(animalController.fleeingState);
+            print("4");
+        }
     }
 }

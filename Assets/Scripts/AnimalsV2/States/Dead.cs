@@ -38,6 +38,11 @@
             {
                 return "Dead";
             }
+
+            public override bool MeetRequirements()
+            {
+                return false;
+            }
         }
     }
 }

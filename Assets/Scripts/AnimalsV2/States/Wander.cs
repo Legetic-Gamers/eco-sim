@@ -3,10 +3,9 @@
  */
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
+using UnityEngine.AI;
 using static AnimalsV2.Priorities;
 using Random = UnityEngine.Random;
 
@@ -53,7 +52,20 @@ namespace AnimalsV2.States
 
             }
         }
-        
+
+        public static Vector3 RandomNavSphere(Vector3 origin, float dist, int layermask)
+        {
+            Vector3 randDirection = Random.insideUnitSphere * dist;
+
+            randDirection += origin;
+
+            NavMeshHit navHit;
+
+            NavMesh.SamplePosition(randDirection, out navHit, dist, layermask);
+
+            return navHit.position;
+        }
+
         public Tuple<GameObject, Priorities> FoundObject()
         {
             foreach (var priority in priorities)
@@ -83,6 +95,11 @@ namespace AnimalsV2.States
         public override string ToString()
         {
             return "Wandering";
+        }
+
+        public override bool MeetRequirements()
+        {
+            return true;
         }
     }
 }

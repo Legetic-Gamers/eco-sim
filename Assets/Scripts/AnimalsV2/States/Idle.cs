@@ -30,5 +30,10 @@ namespace AnimalsV2.States
         {
             return "Idle";
         }
+
+        public override bool MeetRequirements()
+        {
+            return true;
+        }
     }
 }
