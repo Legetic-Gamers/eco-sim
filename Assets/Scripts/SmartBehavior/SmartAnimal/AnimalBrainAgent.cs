@@ -180,8 +180,8 @@ public class AnimalBrainAgent : Agent
             {
                 Eating eatingState = state;
                 
-                AddReward(+10);
-                EndEpisode();
+                AddReward(+1);
+                
                 Debug.Log("END EPISODE");
                 //Eat until full or out of food.
                 if (eatingState.foodIsEmpty() || animalModel.EnergyFull)
@@ -193,6 +193,7 @@ public class AnimalBrainAgent : Agent
             }
             case Drinking state:
             {
+                AddReward(+1);
                 Prioritize(vectorAction);
                 break;
             }
@@ -272,6 +273,7 @@ public class AnimalBrainAgent : Agent
             }
             case Mating _:
             {
+                AddReward(50);
                 Prioritize(vectorAction);
                 break;
             }
@@ -367,6 +369,6 @@ public class AnimalBrainAgent : Agent
         //ChangeState(animalController.deadState);
         //EventUnsubscribe();
         
-        //EndEpisode();
+        EndEpisode();
     }
 }
