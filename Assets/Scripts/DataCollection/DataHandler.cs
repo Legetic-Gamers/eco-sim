@@ -32,6 +32,7 @@ namespace DataCollection
             "viewAngle", 
             "viewRadius", 
             "hearingRadius",
+            "age"
         };
         
         /// <summary>
@@ -51,17 +52,22 @@ namespace DataCollection
         /// <param name="animalModel"> Model of animal to log the traits of. </param>
         public void LogNewAnimal(AnimalModel animalModel)
         {
-            c.Collect(animalModel);
+            c.CollectBirth(animalModel);
+        }
+        
+        public void LogDeadAnimal(AnimalModel animalModel)
+        {
+            c.CollectDeath(animalModel);
         }
         
         /// <summary>
         /// Uses the Formatter to print a list in json format in /Export. name will match trait name. 
         /// </summary>
-        /// <param name="listNumber"> List to be printed. See Traits class for order. 0 to 11 </param>
+        /// <param name="listNumber"> List to be printed. See Traits class for order. 0 to 12 </param>
         /// <returns></returns>
         private async Task ExportDataToFile(int listNumber)
         {
-            //await WriteToFile(c.allStatsPerGeneration[listNumber], traitNames[listNumber]);
+            await WriteToFile(c.rabbitStatsPerGen[listNumber], traitNames[listNumber]);
         }
 
         /// <summary>
@@ -71,7 +77,7 @@ namespace DataCollection
         {
             c.Collect();
             //Display(ConvertFloatListToIntList(c.allStatsPerGeneration[0]));
-            //ExportDataToFile(4);
+            ExportDataToFile(12);
         }
         
         /// <summary>

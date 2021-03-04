@@ -37,8 +37,8 @@ namespace DataCollection
         public List<float> viewAnglePerGeneration;
         public List<float> viewRadiusPerGeneration;
         public List<float> hearingRadiusPerGeneration;
-        public List<BehaviorType> behaviorTypePerGeneration;
-        public List<Species> speciesPerGeneration;
+        
+        public List<int> agePerGeneration;
         */
         
         /// <summary>
@@ -47,15 +47,15 @@ namespace DataCollection
         public Collector()
         {
             // Initialize allStatsPerGeneration as list of lists, with the first (0 th) generation set to 0 for all traits. 
-            rabbitStatsPerGen = new List<List<float>>(12);
-            wolfStatsPerGen = new List<List<float>>(12);
-            deerStatsPerGen = new List<List<float>>(12);
-            bearStatsPerGen = new List<List<float>>(12);
+            rabbitStatsPerGen = new List<List<float>>(13);
+            wolfStatsPerGen = new List<List<float>>(13);
+            deerStatsPerGen = new List<List<float>>(13);
+            bearStatsPerGen = new List<List<float>>(13);
             
-            for (int i = 0; i < 12; i++) rabbitStatsPerGen.Add(new List<float>{0});
-            for (int i = 0; i < 12; i++) wolfStatsPerGen.Add(new List<float>{0});
-            for (int i = 0; i < 12; i++) deerStatsPerGen.Add(new List<float>{0});
-            for (int i = 0; i < 12; i++) bearStatsPerGen.Add(new List<float>{0});
+            for (int i = 0; i < 13; i++) rabbitStatsPerGen.Add(new List<float>{0});
+            for (int i = 0; i < 13; i++) wolfStatsPerGen.Add(new List<float>{0});
+            for (int i = 0; i < 13; i++) deerStatsPerGen.Add(new List<float>{0});
+            for (int i = 0; i < 13; i++) bearStatsPerGen.Add(new List<float>{0});
 
             totalAnimalsAlive = new List<int> {GameObject.FindGameObjectsWithTag("Animal").Length};
             totalAnimalsAlivePerGeneration = new List<int> {GameObject.FindGameObjectsWithTag("Animal").Length};
@@ -73,24 +73,24 @@ namespace DataCollection
         /// Collect each animal model containing its traits. 
         /// </summary>
         /// <param name="am"> Animal Model containing traits.</param>
-        public void Collect(AnimalModel am)
+        public void CollectBirth(AnimalModel am)
         {
             int gen = am.generation;
             
             // Changes the referenced list depending on the species of the animal. 
             List<List<float>> currentList = new List<List<float>>();
-            switch (am.traits.species)
+            switch (am)
             {
-                case Traits.Species.Rabbit:
+                case RabbitModel _:
                     currentList = rabbitStatsPerGen;
                     break;
-                case Traits.Species.Wolf:
+                case WolfModel _:
                     currentList = wolfStatsPerGen;
                     break;
-                case Traits.Species.Deer:
+                case DeerModel _:
                     currentList = deerStatsPerGen;
                     break;
-                case Traits.Species.Bear:
+                case BearModel _:
                     currentList = bearStatsPerGen;
                     break;
             }
@@ -100,7 +100,7 @@ namespace DataCollection
             
             // Add the traits of the animal to each global statistics list. (Extent the list if the generation increases)
             int index = 0;
-            foreach (List<float> statList in currentList)
+            foreach (List<float> statList in currentList.Take(12))
             {
                 if (gen > statList.Capacity) statList.AddRange(Enumerable.Repeat<float>(0, statList.Count - gen));
                 statList[gen] = (statList[gen] * totalAnimalsAlivePerGeneration[gen] + traitsInAnimal[index]) / (totalAnimalsAlivePerGeneration[gen] + 1);
@@ -109,6 +109,31 @@ namespace DataCollection
             
             //TODO Choose between animals alive per time step or generation. 
             totalAnimalsAlivePerGeneration[gen] += 1;
+        }
+
+        public void CollectDeath(AnimalModel am)
+        {
+            int gen = am.generation;
+            
+            // Changes the referenced list depending on the species of the animal. 
+            List<List<float>> currentList = new List<List<float>>();
+            switch (am)
+            {
+                case RabbitModel _:
+                    currentList = rabbitStatsPerGen;
+                    break;
+                case WolfModel _:
+                    currentList = wolfStatsPerGen;
+                    break;
+                case DeerModel _:
+                    currentList = deerStatsPerGen;
+                    break;
+                case BearModel _:
+                    currentList = bearStatsPerGen;
+                    break;
+            }
+            currentList[13][gen] = (currentList[13][gen] * totalAnimalsAlivePerGeneration[gen] + am.age)/ (totalAnimalsAlivePerGeneration[gen] + 1);
+            totalAnimalsAlivePerGeneration[gen] -= 1;
         }
         
         /// <summary>
