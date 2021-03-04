@@ -1,6 +1,6 @@
 ﻿public class BearModel : AnimalModel
 {
-    public BearModel() : base(new Traits(1, 300, 100, 100, 5,10,10,10,10,10,10,10, Traits.BehaviorType.Herbivore, Traits.Species.Deer),0)
+    public BearModel() : base(new Traits(1, 100, 100, 100, 5,10,10,10,10,180,10,10, Traits.BehaviorType.Herbivore, Traits.Species.Deer),0)
     {
         // Set variables specific to bear
     }

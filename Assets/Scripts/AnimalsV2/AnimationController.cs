@@ -22,8 +22,6 @@ namespace AnimalsV2
             //Get access to Animator to animate the animal.
             animator = this.animal.GetComponent<Animator>();
 
-            
-
             //Debug.Log("AnimationController listening to FSM");
         }
 

@@ -14,12 +14,16 @@ namespace AnimalsV2.States
         public Action<GameObject> onMate;
         
         private float timeLeft = 3.0f;
-        public MatingState(AnimalController animalController, FiniteStateMachine finiteStateMachine) : base(animalController, finiteStateMachine) {}
+
+        public MatingState(AnimalController animalController, FiniteStateMachine finiteStateMachine) : base(
+            animalController, finiteStateMachine)
+        {
+            currentStateAnimation = StateAnimation.Mating;
+        }
 
         public override void Enter()
         {
             base.Enter();
-            currentStateAnimation = StateAnimation.Mating;
         }
 
         public override void HandleInput()
