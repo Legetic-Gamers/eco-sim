@@ -80,7 +80,8 @@ crashlytics-build.properties
 #Rider
 /.idea
 
-#ML-Agents Virtual Environment
+#ML-Agents Virtual Environment and Results
 /venv
+/results
 
 Packages/packages-lock.json
