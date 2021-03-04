@@ -83,13 +83,13 @@ public abstract class AnimalController : MonoBehaviour
             case Eating _:
                 energyModifier = 0f;
                 hydrationModifier = 0.05f;
-                reproductiveUrgeModifier = 1f;
+                reproductiveUrgeModifier = 0.05f;
                 //Debug.Log("varying parameters depending on state: Eating");
                 break;
             case FleeingState _:
-                energyModifier = 1f;
-                hydrationModifier = 1f;
-                reproductiveUrgeModifier = 1f;
+                energyModifier = 0.3f;
+                hydrationModifier = 0.3f;
+                reproductiveUrgeModifier = 0;
                 speedModifier = RunningSpeed;
                 //Debug.Log("varying parameters depending on state: FleeingState");
                 break;
@@ -97,7 +97,7 @@ public abstract class AnimalController : MonoBehaviour
             {
                 energyModifier = 0.1f;
                 hydrationModifier = 0.05f;
-                reproductiveUrgeModifier = 1;
+                reproductiveUrgeModifier = 0.05f;
 
                 GoToState chaseState = toState;
                 GameObject target = chaseState.GetTarget();
@@ -128,9 +128,9 @@ public abstract class AnimalController : MonoBehaviour
                 //Debug.Log("varying parameters depending on state: Wander");
                 break;
             case Wander _:
-                energyModifier = 0.1f;
+                energyModifier = 0.05f;
                 hydrationModifier = 0.05f;
-                reproductiveUrgeModifier = 1f;
+                reproductiveUrgeModifier = 0.05f;
             
                 speedModifier = JoggingSpeed;
                 //Debug.Log("varying parameters depending on state: Wander");
@@ -162,7 +162,7 @@ public abstract class AnimalController : MonoBehaviour
         animalModel.currentEnergy -= (animalModel.traits.size * 1) + (animalModel.traits.size * animalModel.currentSpeed) * energyModifier;
         animalModel.currentHydration -= (animalModel.traits.size * 1) + (animalModel.traits.size * animalModel.currentSpeed) * hydrationModifier;
         animalModel.reproductiveUrge += 0.1f * reproductiveUrgeModifier;
-        //animalModel.age++;
+        animalModel.age++;
         
     }
 
@@ -207,7 +207,8 @@ public abstract class AnimalController : MonoBehaviour
     //Set animals size based on traits.
     private void SetPhenotype()
     {
-        gameObject.transform.localScale = new Vector3(1, 1, 1) * animalModel.traits.size;
+        
+        gameObject.transform.localScale = getNormalizedScale() * animalModel.traits.size;
     }
 
     private void EatFood(GameObject food)
@@ -326,6 +327,8 @@ public abstract class AnimalController : MonoBehaviour
         //Update physics
         //Fsm.UpdateStatesPhysics();
     }
-    
-    
+
+    // method that defines a scale that is normalized and in relativity to a rabbits scale
+    public abstract Vector3 getNormalizedScale();
+
 }
