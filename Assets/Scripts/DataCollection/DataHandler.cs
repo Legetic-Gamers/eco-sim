@@ -3,6 +3,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 using static DataCollection.Formatter;
@@ -53,6 +54,7 @@ namespace DataCollection
         public void LogNewAnimal(AnimalModel animalModel)
         {
             c.CollectBirth(animalModel);
+            Debug.Log(c.rabbitStatsPerGenMean[0][0]);
         }
         
         public void LogDeadAnimal(AnimalModel animalModel)
@@ -67,7 +69,7 @@ namespace DataCollection
         /// <returns></returns>
         private async Task ExportDataToFile(int listNumber)
         {
-            await WriteToFile(c.rabbitStatsPerGen[listNumber], traitNames[listNumber]);
+            await WriteToFile(c.rabbitStatsPerGenVar[listNumber], traitNames[listNumber]);
         }
 
         /// <summary>
@@ -77,7 +79,7 @@ namespace DataCollection
         {
             c.Collect();
             //Display(ConvertFloatListToIntList(c.allStatsPerGeneration[0]));
-            ExportDataToFile(12);
+            ExportDataToFile(0);
         }
         
         /// <summary>
