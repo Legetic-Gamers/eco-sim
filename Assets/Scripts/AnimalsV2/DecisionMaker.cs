@@ -33,7 +33,10 @@ namespace AnimalsV2
 
         private void MakeDecision()
         {
-            if (animalModel.LowHydration) //Prio 1 don't die from dehydration -> Find Water.
+            // no decision making while fleeing!
+            if (fsm.CurrentState is FleeingState) return;
+
+                if (animalModel.LowHydration) //Prio 1 don't die from dehydration -> Find Water.
             {
                 ChangeState(animalController.goToWaterState); 
                 return;
