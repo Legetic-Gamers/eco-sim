@@ -19,9 +19,13 @@ public class World : MonoBehaviour
 
     public float range;
 
+    public float foodRespawnRate;
+
     public void Awake()
     {
         ResetWorld();
+        //ResetWorld();
+        InvokeRepeating("SpawnNewFood", foodRespawnRate, foodRespawnRate);
     }
 
     private void CreateObjects(int num, GameObject type)
@@ -49,6 +53,12 @@ public class World : MonoBehaviour
         
         CreateObjects(numFood, food);
         CreateObjects(numWater, water);
+    }
+    
+    private void SpawnNewFood()
+    {
+        CreateObjects(numFood, food);
+        
     }
     
 }
