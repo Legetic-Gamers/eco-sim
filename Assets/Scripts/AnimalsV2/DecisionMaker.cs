@@ -154,6 +154,7 @@ namespace AnimalsV2
                     var targetAndAction = wander.FoundObject();
                     if (targetAndAction?.Item1 != null)
                     {
+
                         animalController.goToState.SetTarget(targetAndAction.Item1);
                         animalController.goToState.SetActionOnArrive(targetAndAction.Item2);
                         ChangeState(animalController.goToState);

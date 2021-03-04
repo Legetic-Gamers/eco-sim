@@ -43,6 +43,16 @@ namespace AnimalsV2.States
             
             water = NavigationUtilities.GetNearestObjectPosition(animal.visibleWaterTargets, position1);
             mate = NavigationUtilities.GetNearestObjectPosition(animal.visibleFriendlyTargets, position1);
+            if (mate != null)
+            {
+                //Friendlies are only potential mates if this and target also want offspring.
+                if (!mate.GetComponent<AnimalController>().animalModel.WantingOffspring || !animal.animalModel.WantingOffspring)
+                {
+                    mate = null;
+                }
+
+            }
+
             if (animal.agent.isActiveAndEnabled)
             {
                 if (animal.agent.remainingDistance < 1.0f)

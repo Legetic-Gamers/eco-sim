@@ -21,6 +21,7 @@ public class AnimalBrainAgent : Agent
     //
      private World world;
 
+     private List<Priorities> prio;
 
     //We could have multiple brains, EX:
     // Brain to use when no wall is present
@@ -31,7 +32,7 @@ public class AnimalBrainAgent : Agent
     //public NNModel bigWallBrain;
     public void Start()
     {
-        Debug.Log("Brain Awake");
+        //Debug.Log("Brain Awake");
 
         animalController = GetComponent<AnimalController>();
         fsm = animalController.fsm;
@@ -40,6 +41,12 @@ public class AnimalBrainAgent : Agent
         //this.eventPublisher = eventPublisher;
 
         world = FindObjectOfType<World>();
+        
+        //Init prio list
+        prio = new List<Priorities>();
+        prio.Add(Water);
+        prio.Add(Food);
+        prio.Add(Mate);
         
         EventSubscribe();
     }
@@ -55,8 +62,8 @@ public class AnimalBrainAgent : Agent
         transform.localPosition = new Vector3(Random.Range(-9.5f, 9.5f), 0, Random.Range(-9.5f, 9.5f));
         transform.rotation = Quaternion.Euler(new Vector3(0f, Random.Range(0, 360)));
 
-        world.ResetWorld();
-        //transform.localPosition = new Vector3(Random.Range(-4.5f,0f),0,Random.Range(-3f,1.3f));
+        //world.ResetWorld();
+        
     }
 
     //Collecting observations that the ML agent should base its calculations on.
@@ -66,7 +73,7 @@ public class AnimalBrainAgent : Agent
 
         //parameters of the Animal = 5
         //Right now these are continous, might need to be discrete (using lowEnergy() ex.) to represent conditions.
-        Debug.Log(animalModel.ToString());
+        
         sensor.AddObservation(animalModel.currentEnergy);
         sensor.AddObservation(animalModel.currentSpeed);
         sensor.AddObservation(animalModel.currentHydration);
@@ -154,7 +161,7 @@ public class AnimalBrainAgent : Agent
         // }
     }
 
-    List<Priorities> prio = new List<Priorities>();
+    
 
     /// <summary>
     /// Set constraints based on current State.
@@ -182,7 +189,6 @@ public class AnimalBrainAgent : Agent
             }
             case Drinking state:
             {
-                Drinking drinkingState = state;
                 Prioritize(vectorAction);
                 break;
             }
@@ -212,7 +218,7 @@ public class AnimalBrainAgent : Agent
                     {
                         GameObject target = goToState.GetTarget();
                         Priorities actionToDo = goToState.GetAction();
-
+                        
                         switch (actionToDo)
                         {
                             case Food:
@@ -225,9 +231,11 @@ public class AnimalBrainAgent : Agent
                                 break;
                             case Mate:
                                 animalController.matingState.Mate(target);
-                                ChangeState(animalController.drinkingState);
+                                ChangeState(animalController.matingState);
                                 break;
                         }
+                        
+                        Prioritize(vectorAction);
                     }
                 }
                 else
@@ -243,6 +251,8 @@ public class AnimalBrainAgent : Agent
                 var targetAndAction = wander.FoundObject();
                 if (targetAndAction?.Item1 != null)
                 {
+                    Debug.Log(gameObject + " ---- " +targetAndAction.Item1);
+
                     animalController.goToState.SetTarget(targetAndAction.Item1);
                     animalController.goToState.SetActionOnArrive(targetAndAction.Item2);
                     ChangeState(animalController.goToState);
@@ -292,7 +302,7 @@ public class AnimalBrainAgent : Agent
                 break;
         }
 
-        Debug.Log(prio[0].ToString());
+        //Debug.Log(prio[0].ToString());
         animalController.wanderState.SetPriorities(prio);
         ChangeState(animalController.wanderState);
     }
@@ -307,7 +317,7 @@ public class AnimalBrainAgent : Agent
     //Listen to when parameters or senses were updated.
     private void EventSubscribe()
     {
-        // eventPublisher.onParamTickEvent += MakeDecision;
+        //eventPublisher.onParamTickEvent += MakeDecision;
         // eventPublisher.onSenseTickEvent += MakeDecision;
 
         animalController.actionPerceivedHostile += HandleHostileTarget;
@@ -343,15 +353,15 @@ public class AnimalBrainAgent : Agent
 
     private void HandleDeath()
     {
-        int offspringConstant = 20;
-        
+
         //Penalize for every year not lived.
         AddReward( animalModel.age - animalModel.traits.ageLimit );
-        ChangeState(animalController.deadState);
         
-        EndEpisode();
+        //Dont destroy agent, for training purposes.
+        //TODO comment back after training
+        //ChangeState(animalController.deadState);
+        //EventUnsubscribe();
         
-
-        EventUnsubscribe();
+        //EndEpisode();
     }
 }

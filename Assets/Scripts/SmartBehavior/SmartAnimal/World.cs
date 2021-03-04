@@ -1,7 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.MLAgents;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 /// <summary>
 /// This class is heavily inspired by (mostly copied) from the ML-Toolkit FoodCollectorArea class.
@@ -17,7 +19,11 @@ public class World : MonoBehaviour
 
     public float range;
 
-    
+    public void Awake()
+    {
+        ResetWorld();
+    }
+
     private void CreateObjects(int num, GameObject type)
     {
         for (int i = 0; i < num; i++)

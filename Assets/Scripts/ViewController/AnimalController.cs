@@ -246,8 +246,7 @@ public abstract class AnimalController : MonoBehaviour
             AnimalModel childModel = animalModel.Mate(targetAnimalController.animalModel);
             child.GetComponent<AnimalController>().animalModel = childModel;
             //childModel.traits.size = 1f;
-
-            //Debug.Log("MATE");
+            
             
             //Reset both reproductive urges. 
             animalModel.reproductiveUrge = 0f;
@@ -264,7 +263,7 @@ public abstract class AnimalController : MonoBehaviour
 
     public void Awake()
     {
-        Debug.Log("AnimalControler Awake");
+        //Debug.Log("AnimalControler Awake");
         //Create the FSM.
         fsm = new FiniteStateMachine();
         
