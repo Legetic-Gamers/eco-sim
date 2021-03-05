@@ -43,10 +43,10 @@ namespace AnimalsV2
         /// Changing states. 
         /// </summary>
         /// <param name="newState"> State to change into. </param>
-        public void ChangeState(State newState)
+        public bool ChangeState(State newState)
         {
             // if the state is absorbing, meaning that state change is not possible or newState == CurrentState or newState does not meet requirements, we return
-            if(newState == CurrentState || absorbingState || !newState.MeetRequirements()) return;
+            if(newState == CurrentState || absorbingState || !newState.MeetRequirements()) return false;
             
             if (CurrentState != null)
             {
@@ -62,8 +62,10 @@ namespace AnimalsV2
                 //Enter new state
                 CurrentState.Enter();
                 OnStateEnter?.Invoke(CurrentState);
+                return true;
+                
             }
-            
+            return false;
         }
         
         public void  UpdateStatesLogic() {

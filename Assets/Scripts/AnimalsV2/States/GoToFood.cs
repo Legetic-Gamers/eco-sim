@@ -34,7 +34,8 @@ namespace AnimalsV2.States
         public override void LogicUpdate()
         {
             base.LogicUpdate();
-            
+
+            Debug.Log("GOING TO FOOD");
             nearbyFood.Clear();
             //Get all potential food
             if (animal.visibleFoodTargets !=null)// first list may be null
@@ -76,7 +77,10 @@ namespace AnimalsV2.States
 
         public override bool MeetRequirements()
         {
-            
+            if (animal.visibleFoodTargets !=null)// first list may be null
+                nearbyFood=nearbyFood.Concat(animal.visibleFoodTargets).ToList();
+            if (animal.heardPreyTargets != null)// second list may be null
+                nearbyFood= nearbyFood.Concat(animal.heardPreyTargets).ToList();
             return nearbyFood.Count > 0 && !(finiteStateMachine.CurrentState is EatingState);
         }
     }
