@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using AnimalsV2;
 using UnityEngine;
 using UnityEngine.AI;
@@ -12,47 +13,49 @@ namespace AnimalsV2.States
     public class FleeingState : State
     {
         private Vector3 averagePosition;
-        public FleeingState(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine) {}
 
-        public Vector3 fleeingFromPos;
+        public FleeingState(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal,
+            finiteStateMachine)
+        {
+            currentStateAnimation = Running;
+        }
 
-        private bool hasFled;
+        // own timer (note it's unit is number of LogicalUpdate ticks. This is the number of ticks in which the state will hold after MeetRequirements becomes false. We want the animal to run a little more than just outside of percieved predators space
+        private float timer;
+        private const float startTimerValue = 3f;
         
         public override void Enter()
         {
             base.Enter();
-            hasFled = false;
-            //Debug.Log("Fleeing!");
-            currentStateAnimation = Running;
+            timer = startTimerValue;
         }
 
         public override void Exit()
         {
             base.Exit();
-            //Debug.Log("EXITING FLEEING");
-            //currentStateAnimation = StateAnimation.Idle;
         }
 
         public override void LogicUpdate()
         {
             base.LogicUpdate();
-            
             // Get average position of enemies
             List<GameObject> allHostileTargets = animal.heardHostileTargets.Concat(animal.visibleHostileTargets).ToList();
-
+                
             averagePosition = NavigationUtilities.GetNearObjectsAveragePosition(allHostileTargets, animal.transform.position);
             
             //Run run away from the position.
             //Default to just running forward.
             Vector3 pointToRunTo = animal.transform.position + animal.transform.forward;
-            //If there was nothing to run from found.
+            
+            //If we found a hostile averagePosition we set new vector and reset timer
             if (averagePosition != animal.transform.position)
             {
-                 pointToRunTo = NavigationUtilities.RunToFromPoint(animal.transform,averagePosition,false);
+                timer = startTimerValue;
+                pointToRunTo = NavigationUtilities.RunToFromPoint(animal.transform,averagePosition,false);
             }
             else
             {
-                hasFled = true;
+                timer--;
             }
 
             if (animal.agent.isActiveAndEnabled)
@@ -62,6 +65,13 @@ namespace AnimalsV2.States
                 NavMesh.SamplePosition(pointToRunTo, out hit, 5, 1 << NavMesh.GetAreaFromName("Walkable"));
                 animal.agent.SetDestination(hit.position);
             }
+
+            // if timer has ran out, we change to default state
+            if (timer <= 0)
+            {
+                finiteStateMachine.GoToDefaultState();
+            }
+
         }
 
         public override string ToString()
@@ -69,10 +79,9 @@ namespace AnimalsV2.States
             return "Fleeing";
         }
 
-        public bool HasFled()
+        public override bool MeetRequirements()
         {
-            return hasFled;
+            return animal.heardHostileTargets.Concat(animal.visibleHostileTargets).ToList().Count > 0;
         }
-        
     }
 }
