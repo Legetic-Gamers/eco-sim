@@ -16,6 +16,7 @@ namespace AnimalsV2.States
         public GoToFood(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine)
         {
             currentStateAnimation = StateAnimation.Walking;
+            
             nearbyFood = new List<GameObject>();
         }
 
@@ -33,12 +34,17 @@ namespace AnimalsV2.States
         public override void LogicUpdate()
         {
             base.LogicUpdate();
+            
+            nearbyFood.Clear();
+            //Get all potential food
+            if (animal.visibleFoodTargets !=null)// first list may be null
+                nearbyFood=nearbyFood.Concat(animal.visibleFoodTargets).ToList();
+            if (animal.heardPreyTargets != null)// second list may be null
+                nearbyFood= nearbyFood.Concat(animal.heardPreyTargets).ToList(); 
+            
             if (MeetRequirements())
             {
-                if (animal.visibleFoodTargets !=null)// first list may be null
-                    nearbyFood=nearbyFood.Concat(animal.visibleFoodTargets).ToList();
-                if (animal.heardPreyTargets != null)// second list may be null
-                    nearbyFood= nearbyFood.Concat(animal.heardPreyTargets).ToList(); 
+                
                 
                 GameObject closestFood = NavigationUtilities.GetNearestObjectPosition(nearbyFood, animal.transform.position);
                 if (closestFood != null && animal.agent.isActiveAndEnabled)
