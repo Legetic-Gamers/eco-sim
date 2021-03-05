@@ -4,12 +4,12 @@ using static AnimalsV2.StateAnimation;
 
 namespace AnimalsV2.States
 {
-    public class GoToState : State
+    public class SearchingState : State
     {
         private GameObject targetObject;
         private Priorities action;
         
-        public GoToState(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine)
+        public SearchingState(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine)
         {
             
         }

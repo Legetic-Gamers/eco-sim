@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace AnimalsV2
 {
@@ -32,7 +33,17 @@ namespace AnimalsV2
 
             return animalTransform.position + Vector3.Normalize(pointToAnimalVector);
         }
-        
+
+        public static void NavigateToPoint(AnimalController animal,Vector3 position)
+        {
+            NavMeshHit hit;
+            //TODO this maxDistance is what is causing rabbits to dance sometimes, if poisition cant be found.
+            if (NavMesh.SamplePosition(position, out hit, 20, 1 << NavMesh.GetAreaFromName("Walkable")))
+            {
+                animal.agent.SetDestination(hit.position);
+            }
+        }
+
         /// <summary>
         /// Gives nearest object (of type with Tag in unity) to a given animal.
         /// </summary>

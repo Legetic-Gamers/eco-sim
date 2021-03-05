@@ -22,7 +22,7 @@ namespace AnimalsV2.States
         public override void Enter()
         {
             base.Enter();
-            currentStateAnimation = StateAnimation.Idle;
+            currentStateAnimation = StateAnimation.Attack;
             GetNearestWater();
         }
 

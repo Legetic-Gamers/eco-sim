@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace AnimalsV2.States
@@ -12,12 +14,13 @@ namespace AnimalsV2.States
         
         public EatingState(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine)
         {
-            currentStateAnimation = StateAnimation.Attack;
+            
         }
 
         public override void Enter()
         {
             base.Enter();
+            currentStateAnimation = StateAnimation.Attack;
             GetNearestFood();
         }
 
@@ -58,7 +61,13 @@ namespace AnimalsV2.States
         private GameObject GetNearestFood()
         {
             Vector3 position = animal.transform.position;
-            return NavigationUtilities.GetNearestObjectPosition(animal.visibleFoodTargets, position);
+            List<GameObject> nearbyFood = new List<GameObject>();
+            if (animal.visibleFoodTargets !=null)// first list may be null
+                    nearbyFood=nearbyFood.Concat(animal.visibleFoodTargets).ToList();
+                if (animal.heardPreyTargets != null)// second list may be null
+                    nearbyFood= nearbyFood.Concat(animal.heardPreyTargets).ToList(); 
+            
+            return NavigationUtilities.GetNearestObjectPosition(nearbyFood, position);
         }
         
         
