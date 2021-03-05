@@ -21,24 +21,33 @@ namespace AnimalsV2.States
         {
             base.Enter();
             currentStateAnimation = StateAnimation.Attack;
-            GetNearestFood();
+            animal.agent.isStopped = true;
+            //GetNearestFood();
+            EatFood();
+            animal.agent.isStopped = false;
         }
 
         public override void LogicUpdate()
         {
-            base.LogicUpdate();
-            if (MeetRequirements())
-            {
-                EatFood(target);
-            }
-            else
-            {
-                finiteStateMachine.GoToDefaultState();
-            }
+            // base.LogicUpdate();
+            // if (MeetRequirements())
+            // {
+            //     EatFood(target);
+            // }
+            // else
+            // {
+            //     finiteStateMachine.GoToDefaultState();
+            // }
         }
         
+        //New
+        public void SetTarget(GameObject target)
+        {
+            this.target = target;
+        }
 
-        public void EatFood(GameObject target)
+        //public void EatFood(GameObject target)
+        public void EatFood()
         {
             onEatFood?.Invoke(target);
             finiteStateMachine.GoToDefaultState();
@@ -51,24 +60,25 @@ namespace AnimalsV2.States
 
         public override bool MeetRequirements()
         {
-            Vector3 position = animal.transform.position;
-            target = GetNearestFood();
-            if (target == null) return false;
-            bool isCloseEnough = Vector3.Distance(target.transform.position, position) <= 2f;
-            return animal.visibleFoodTargets.Count > 0 && isCloseEnough;
+            //Vector3 position = animal.transform.position;
+            //target = GetNearestFood();
+            //if (target == null) return false;
+            //bool isCloseEnough = Vector3.Distance(target.transform.position, position) <= 2f;
+            //return animal.visibleFoodTargets.Count > 0 && isCloseEnough;
+            return target != null;
         }
 
-        private GameObject GetNearestFood()
-        {
-            Vector3 position = animal.transform.position;
-            List<GameObject> nearbyFood = new List<GameObject>();
-            if (animal.visibleFoodTargets !=null)// first list may be null
-                    nearbyFood=nearbyFood.Concat(animal.visibleFoodTargets).ToList();
-                if (animal.heardPreyTargets != null)// second list may be null
-                    nearbyFood= nearbyFood.Concat(animal.heardPreyTargets).ToList(); 
-            
-            return NavigationUtilities.GetNearestObjectPosition(nearbyFood, position);
-        }
+        // private GameObject GetNearestFood()
+        // {
+        //     Vector3 position = animal.transform.position;
+        //     List<GameObject> nearbyFood = new List<GameObject>();
+        //     if (animal.visibleFoodTargets !=null)// first list may be null
+        //             nearbyFood=nearbyFood.Concat(animal.visibleFoodTargets).ToList();
+        //         if (animal.heardPreyTargets != null)// second list may be null
+        //             nearbyFood= nearbyFood.Concat(animal.heardPreyTargets).ToList(); 
+        //     
+        //     return NavigationUtilities.GetNearestObjectPosition(nearbyFood, position);
+        // }
         
         
     }

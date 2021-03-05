@@ -126,7 +126,56 @@ public class AnimalBrainAgent : Agent
     //Used for testing, gives us control over the output from the ML algortihm.
     public override void Heuristic(float[] actionsOut)
     {
-        
+        if (Input.GetKey(KeyCode.UpArrow))
+        {
+            print("up");
+            Vector3 position = gameObject.transform.position;
+            position.x = position.x + 1f;
+            NavMeshHit hit;
+            NavMesh.SamplePosition(position, out hit, 5, 1 << NavMesh.GetAreaFromName("Walkable"));
+            animalController.agent.SetDestination(hit.position);
+        } else if (Input.GetKey(KeyCode.DownArrow))
+        {
+            Vector3 position = gameObject.transform.position;
+            position.x = position.x - 1f;
+            NavMeshHit hit;
+            NavMesh.SamplePosition(position, out hit, 5, 1 << NavMesh.GetAreaFromName("Walkable"));
+            animalController.agent.SetDestination(hit.position);
+            print("down");
+        } else if (Input.GetKey(KeyCode.LeftArrow))
+        {
+            Vector3 position = gameObject.transform.position;
+            position.z = position.z + 1f;
+            NavMeshHit hit;
+            NavMesh.SamplePosition(position, out hit, 5, 1 << NavMesh.GetAreaFromName("Walkable"));
+            animalController.agent.SetDestination(hit.position);
+            print("left");
+        } else if (Input.GetKey(KeyCode.RightArrow))
+        {
+            Vector3 position = gameObject.transform.position;
+            position.z = position.z - 1f;
+            NavMeshHit hit;
+            NavMesh.SamplePosition(position, out hit, 5, 1 << NavMesh.GetAreaFromName("Walkable"));
+            animalController.agent.SetDestination(hit.position);
+            print("right");
+        } else if (Input.GetKey(KeyCode.Alpha1))
+        {
+            ChangeState(animalController.goToFoodState);
+            print("1");
+        } else if (Input.GetKey(KeyCode.Alpha2))
+        {
+            ChangeState(animalController.goToWaterState);
+            print("2");
+        }
+        else if (Input.GetKey(KeyCode.Alpha3))
+        {
+            ChangeState(animalController.wanderState);
+            print("3");
+        } else if (Input.GetKey(KeyCode.Alpha4))
+        {
+            ChangeState(animalController.fleeingState);
+            print("4");
+        }
     }
 
     /// <summary>
@@ -199,55 +248,6 @@ public class AnimalBrainAgent : Agent
     
     public void Update()
     {
-        if (Input.GetKey(KeyCode.UpArrow))
-        {
-            print("up");
-            Vector3 position = gameObject.transform.position;
-            position.x = position.x + 1f;
-            NavMeshHit hit;
-            NavMesh.SamplePosition(position, out hit, 5, 1 << NavMesh.GetAreaFromName("Walkable"));
-            animalController.agent.SetDestination(hit.position);
-        } else if (Input.GetKey(KeyCode.DownArrow))
-        {
-            Vector3 position = gameObject.transform.position;
-            position.x = position.x - 1f;
-            NavMeshHit hit;
-            NavMesh.SamplePosition(position, out hit, 5, 1 << NavMesh.GetAreaFromName("Walkable"));
-            animalController.agent.SetDestination(hit.position);
-            print("down");
-        } else if (Input.GetKey(KeyCode.LeftArrow))
-        {
-            Vector3 position = gameObject.transform.position;
-            position.z = position.z + 1f;
-            NavMeshHit hit;
-            NavMesh.SamplePosition(position, out hit, 5, 1 << NavMesh.GetAreaFromName("Walkable"));
-            animalController.agent.SetDestination(hit.position);
-            print("left");
-        } else if (Input.GetKey(KeyCode.RightArrow))
-        {
-            Vector3 position = gameObject.transform.position;
-            position.z = position.z - 1f;
-            NavMeshHit hit;
-            NavMesh.SamplePosition(position, out hit, 5, 1 << NavMesh.GetAreaFromName("Walkable"));
-            animalController.agent.SetDestination(hit.position);
-            print("right");
-        } else if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            ChangeState(animalController.goToFoodState);
-            print("1");
-        } else if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            ChangeState(animalController.goToWaterState);
-            print("2");
-        }
-        else if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            ChangeState(animalController.wanderState);
-            print("3");
-        } else if (Input.GetKeyDown(KeyCode.Alpha4))
-        {
-            ChangeState(animalController.fleeingState);
-            print("4");
-        }
+        
     }
 }

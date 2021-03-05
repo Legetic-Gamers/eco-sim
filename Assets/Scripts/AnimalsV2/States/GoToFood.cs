@@ -45,6 +45,7 @@ namespace AnimalsV2.States
             
             if (MeetRequirements())
             {
+                
                 GameObject closestFood = NavigationUtilities.GetNearestObjectPosition(nearbyFood, animal.transform.position);
                 if (closestFood != null && animal.agent.isActiveAndEnabled)
                 {
@@ -56,6 +57,7 @@ namespace AnimalsV2.States
                     // animal.agent.SetDestination(hit.position);
                     if (Vector3.Distance(animal.transform.position, closestFood.transform.position) <= 2f)
                     {
+                        animal.eatingState.SetTarget(closestFood);
                         finiteStateMachine.ChangeState(animal.eatingState);
                     }  
                     

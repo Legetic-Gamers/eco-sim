@@ -111,7 +111,6 @@ namespace AnimalsV2
                             return;
                         }
 
-
                         break;
                     case Water:
                         if (ChangeState(animalController.goToWaterState))
@@ -119,7 +118,6 @@ namespace AnimalsV2
                             return;
                         }
                         
-
                         break;
                     case Mate:
                         if (ChangeState(animalController.goToMate))
