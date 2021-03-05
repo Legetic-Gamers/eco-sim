@@ -21,9 +21,7 @@ namespace AnimalsV2
 
             //Get access to Animator to animate the animal.
             animator = this.animal.GetComponent<Animator>();
-
-            
-
+            animator.Play("Base Layer." + StateAnimation.Walking,0);
             //Debug.Log("AnimationController listening to FSM");
         }
 
@@ -71,7 +69,6 @@ namespace AnimalsV2
         {
             //Debug.Log("Exit " + state.GetStateAnimation() +" Animation");
             animator?.CrossFade("Base Layer." + state.GetStateAnimation(), transitionSpeed, 0);
-            //animator.Play("Base Layer." + state,0);
         }
 
         public void PlayAnimation(StateAnimation animation, float transitionSpeed)

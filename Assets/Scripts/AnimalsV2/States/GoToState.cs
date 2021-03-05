@@ -92,5 +92,10 @@ namespace AnimalsV2.States
         {
             return "Going to target";
         }
+
+        public override bool MeetRequirements()
+        {
+            return true;
+        }
     }
 }

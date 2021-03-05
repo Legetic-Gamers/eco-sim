@@ -25,17 +25,18 @@ public abstract class AnimalController : MonoBehaviour
     
     public FiniteStateMachine fsm;
     private AnimationController animationController;
-    //private DecisionMaker decisionMaker;
     
     //States
     public FleeingState fleeingState;
-    public Eating eatingState;
+    public GoToFood goToFoodState;
     public Wander wanderState;
-    public GoToState goToState;
     public Idle idleState;
-    public Drinking drinkingState;
-    public Mating matingState;
+    public GoToWater goToWaterState;
+    public MatingState matingStateState;
     public Dead deadState;
+    public DrinkingState drinkingState;
+    public EatingState eatingState;
+    public GoToMate goToMate;
 
     //Constants
     private const float JoggingSpeed = 0.4f;
@@ -75,10 +76,20 @@ public abstract class AnimalController : MonoBehaviour
     {
         switch (state)
         {
-            case Eating _:
+            case GoToFood _:
                 energyModifier = 0f;
                 hydrationModifier = 0.05f;
                 reproductiveUrgeModifier = 1f;
+
+                //TODO bad practice, hard coded values, this is temporary
+                if (animalModel is BearModel || animalModel is WolfModel)
+                {
+                    speedModifier = RunningSpeed;
+                }
+                else
+                {
+                    speedModifier = JoggingSpeed;
+                }
                 //Debug.Log("varying parameters depending on state: Eating");
                 break;
             case FleeingState _:
@@ -88,26 +99,12 @@ public abstract class AnimalController : MonoBehaviour
                 speedModifier = RunningSpeed;
                 //Debug.Log("varying parameters depending on state: FleeingState");
                 break;
-            case GoToState toState:
+            case GoToWater _:
             {
                 energyModifier = 0.1f;
                 hydrationModifier = 0.05f;
                 reproductiveUrgeModifier = 1;
 
-                GoToState chaseState = toState;
-                GameObject target = chaseState.GetTarget();
-            
-                if (target != null)
-                {
-                    AnimalController targetController = target.GetComponent<AnimalController>();
-                    //target is an animal and i can eat it -> we are chasing something.
-                    if (targetController != null && animalModel.CanEat(targetController.animalModel)){
-                        //Run fast if chasing
-                        speedModifier = RunningSpeed;
-                    
-                    }
-                }
-                //Debug.Log("varying parameters depending on state: GoToFood");
                 break;
             }
             case Idle _:
@@ -116,7 +113,7 @@ public abstract class AnimalController : MonoBehaviour
                 reproductiveUrgeModifier = 1;
                 //Debug.Log("varying parameters depending on state: Mating");
                 break;
-            case Mating _:
+            case GoToMate _:
                 energyModifier = 0.2f;
                 hydrationModifier = 0.2f;
                 reproductiveUrgeModifier = 0f;
@@ -129,6 +126,11 @@ public abstract class AnimalController : MonoBehaviour
             
                 speedModifier = JoggingSpeed;
                 //Debug.Log("varying parameters depending on state: Wander");
+                break;
+            case Dead _:
+                energyModifier = 0f;
+                hydrationModifier = 0f;
+                reproductiveUrgeModifier = 0f;
                 break;
         }
     }
@@ -176,7 +178,7 @@ public abstract class AnimalController : MonoBehaviour
 
         drinkingState.onDrinkWater += DrinkWater;
 
-        matingState.onMate += Mate;
+        matingStateState.onMate += Mate;
         
         animationController.EventSubscribe();
     }
@@ -194,10 +196,9 @@ public abstract class AnimalController : MonoBehaviour
 
         drinkingState.onDrinkWater -= DrinkWater;
 
-        matingState.onMate -= Mate;
+        matingStateState.onMate -= Mate;
         
         animationController.EventUnsubscribe();
-        //decisionMaker.EventUnsubscribe();
     }
     
     //Set animals size based on traits.
@@ -246,7 +247,8 @@ public abstract class AnimalController : MonoBehaviour
             AnimalModel childModel = animalModel.Mate(targetAnimalController.animalModel);
             child.GetComponent<AnimalController>().animalModel = childModel;
             //childModel.traits.size = 1f;
-            
+
+            //Debug.Log("MATE");
             
             //Reset both reproductive urges. 
             animalModel.reproductiveUrge = 0f;
@@ -263,19 +265,20 @@ public abstract class AnimalController : MonoBehaviour
 
     public void Awake()
     {
-        //Debug.Log("AnimalControler Awake");
         //Create the FSM.
         fsm = new FiniteStateMachine();
         
-        eatingState = new Eating(this, fsm);
+        goToFoodState = new GoToFood(this, fsm);
         fleeingState = new FleeingState(this, fsm);
         wanderState = new Wander(this, fsm);
-        goToState = new GoToState(this, fsm);
         idleState = new Idle(this, fsm);
-        drinkingState = new Drinking(this, fsm);
-        matingState = new Mating(this, fsm);
+        goToWaterState = new GoToWater(this, fsm);
+        matingStateState = new MatingState(this, fsm);
         deadState = new Dead(this, fsm);
-        fsm.Initialize(idleState);
+        drinkingState = new DrinkingState(this, fsm);
+        eatingState = new EatingState(this, fsm);
+        goToMate = new GoToMate(this, fsm);
+        fsm.Initialize(wanderState);
         
         animationController = new AnimationController(this);
     }
@@ -294,7 +297,6 @@ public abstract class AnimalController : MonoBehaviour
 
         SetPhenotype();
         
-        //decisionMaker = new DecisionMaker(this,animalModel,tickEventPublisher);
     }
 
 
@@ -322,6 +324,4 @@ public abstract class AnimalController : MonoBehaviour
         //Update physics
         //Fsm.UpdateStatesPhysics();
     }
-    
-    
 }
