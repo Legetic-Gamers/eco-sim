@@ -3,20 +3,31 @@
  */
 
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace DataCollection
 {
     public class Collector
     {
-        // Sampled in time domain, number of animals in the scene. 
-        public  List<int> totalAnimalsAlive;
-        
-        //Index is generation
+        // Index is generation
         public List<int> totalAnimalsAlivePerGeneration;
-        public List<List<float>> allStatsPerGeneration;
+
+        // Each index contains the mean of that generation, starting from 0. 
+        public List<List<float>> rabbitStatsPerGenMean;
+        public List<List<float>> wolfStatsPerGenMean;
+        public List<List<float>> deerStatsPerGenMean;
+        public List<List<float>> bearStatsPerGenMean;
         
+        public List<List<float>> rabbitStatsPerGenVar;
+        public List<List<float>> wolfStatsPerGenVar;
+        public List<List<float>> deerStatsPerGenVar;
+        public List<List<float>> bearStatsPerGenVar;
+        
+        public List<float> rabbitTotalAlivePerGen;
+        public List<float> wolfTotalAlivePerGen;
+        public List<float> deerTotalAlivePerGen;
+        public List<float> bearTotalAlivePerGen;
+
         /*
         These lists are contained in allStatsPerGeneration in order:
         public List<float> sizePerGeneration;
@@ -31,25 +42,47 @@ namespace DataCollection
         public List<float> viewAnglePerGeneration;
         public List<float> viewRadiusPerGeneration;
         public List<float> hearingRadiusPerGeneration;
-        public List<BehaviorType> behaviorTypePerGeneration;
-        public List<Species> speciesPerGeneration;
-        BehaviorType behaviorType,
-        Species species
-        */
         
+        public List<int> agePerGeneration;
+        */
+
         /// <summary>
         /// Constructor for a collector. Mostly initialize lists. 
         /// </summary>
         public Collector()
         {
             // Initialize allStatsPerGeneration as list of lists, with the first (0 th) generation set to 0 for all traits. 
-            allStatsPerGeneration = new List<List<float>>(12);
-            for (int i = 0; i < 12; i++)
-            {
-                allStatsPerGeneration.Add(new List<float>{0});
-            }
-            totalAnimalsAlive = new List<int> {GameObject.FindGameObjectsWithTag("Animal").Length};
+            rabbitStatsPerGenMean = new List<List<float>>(13);
+            wolfStatsPerGenMean = new List<List<float>>(13);
+            deerStatsPerGenMean = new List<List<float>>(13);
+            bearStatsPerGenMean = new List<List<float>>(13);
+            
+            rabbitStatsPerGenVar = new List<List<float>>(13);
+            wolfStatsPerGenVar = new List<List<float>>(13);
+            deerStatsPerGenVar = new List<List<float>>(13);
+            bearStatsPerGenVar = new List<List<float>>(13);
+            
+            for (int i = 0; i < 13; i++) rabbitStatsPerGenMean.Add(new List<float>{0});
+            for (int i = 0; i < 13; i++) wolfStatsPerGenMean.Add(new List<float>{0});
+            for (int i = 0; i < 13; i++) deerStatsPerGenMean.Add(new List<float>{0});
+            for (int i = 0; i < 13; i++) bearStatsPerGenMean.Add(new List<float>{0});
+            
+            for (int i = 0; i < 13; i++) rabbitStatsPerGenVar.Add(new List<float>{0});
+            for (int i = 0; i < 13; i++) wolfStatsPerGenVar.Add(new List<float>{0});
+            for (int i = 0; i < 13; i++) deerStatsPerGenVar.Add(new List<float>{0});
+            for (int i = 0; i < 13; i++) bearStatsPerGenVar.Add(new List<float>{0});
+
             totalAnimalsAlivePerGeneration = new List<int> {GameObject.FindGameObjectsWithTag("Animal").Length};
+            
+            rabbitTotalAlivePerGen = new List<float>();
+            wolfTotalAlivePerGen = new List<float>();
+            deerTotalAlivePerGen = new List<float>();
+            bearTotalAlivePerGen = new List<float>();
+            
+            rabbitTotalAlivePerGen.Add(0);
+            wolfTotalAlivePerGen.Add(0);
+            deerTotalAlivePerGen.Add(0);
+            bearTotalAlivePerGen.Add(0);
         }
         
         /// <summary>
@@ -64,26 +97,86 @@ namespace DataCollection
         /// Collect each animal model containing its traits. 
         /// </summary>
         /// <param name="am"> Animal Model containing traits.</param>
-        public void Collect(AnimalModel am)
+        public void CollectBirth(AnimalModel am)
         {
             int gen = am.generation;
             
-            //TODO Choose between animals alive per time step or generation. 
-            totalAnimalsAlivePerGeneration[gen] += 1;
-            
+            // Changes the referenced lists depending on the species of the animal. 
+            (List<List<float>> animalMean, List<List<float>> animalVar, List<float> animalTotal) = GetAnimalList(am);
+
             // Convert the traits to a list which we can easily access. 
-            List<float> traitsInAnimal = ConvertTraitsToList(am.traits);
-            
-            // Add the traits of the animal to each global statistics list. (Extent the list if the generation increases)
-            int index = 0;
-            foreach (List<float> statList in allStatsPerGeneration)
+            var traitsInAnimal = ConvertTraitsToList(am.traits);
+
+            // Mean and variance running update
+            int indexTrait = 0;
+            for (int trait = 0; trait < 12; trait++)
             {
-                if (gen > statList.Capacity) statList.AddRange(Enumerable.Repeat<float>(0, statList.Count - gen));
-                statList[gen] += traitsInAnimal[index];
-                index++;
+                (float mean, float var) =
+                    GetNewMeanVariance(animalMean[trait][gen],animalVar[trait][gen], traitsInAnimal[indexTrait], animalTotal[gen]);
+                animalMean[trait][gen] = mean;
+                animalVar[trait][gen] = var;
+                indexTrait++;
             }
+            
+            animalTotal[gen] += 1;
+            totalAnimalsAlivePerGeneration[gen] += 1;
         }
-        
+
+        /// <summary>
+        /// Update the age statistics when animals die. 
+        /// </summary>
+        /// <param name="am"> Animal Model of killed animal. </param>
+        public void CollectDeath(AnimalModel am)
+        {
+            int gen = am.generation;
+            
+            // Changes the referenced lists depending on the species of the animal. 
+            (List<List<float>> animalMean, List<List<float>> animalVar, List<float> animalTotal) = GetAnimalList(am);
+
+            (float mean, float var) =
+                GetNewMeanVariance(animalMean[12][gen], animalVar[12][gen], am.age, animalTotal[gen]);
+                
+            animalMean[12][gen] = mean;
+            animalVar[12][gen] = var;
+        }
+
+        /// <summary>
+        /// Gets the corresponding statistical lists to each animal model type.
+        /// </summary>
+        /// <param name="am"> Animal Model to get lists for </param>
+        /// <returns> Tuple with mean, variance and total animals alive for that animal type.</returns>
+        private (List<List<float>> m, List<List<float>> v, List<float> t) GetAnimalList(AnimalModel am)
+        {
+            List<List<float>> meanList = new List<List<float>>();
+            List<List<float>> varList = new List<List<float>>();
+            List<float> totalList = new List<float>();
+            switch (am)
+                {
+                    case RabbitModel _:
+                        meanList = rabbitStatsPerGenMean;
+                        varList = rabbitStatsPerGenVar;
+                        totalList = rabbitTotalAlivePerGen;
+                        break;
+                    case WolfModel _:
+                        meanList = wolfStatsPerGenMean;
+                        varList = wolfStatsPerGenVar;
+                        totalList = wolfTotalAlivePerGen;
+                        break;
+                    case DeerModel _:
+                        meanList = deerStatsPerGenMean;
+                        varList = deerStatsPerGenVar;
+                        totalList = deerTotalAlivePerGen;
+                        break;
+                    case BearModel _:
+                        meanList = bearStatsPerGenMean;
+                        varList = bearStatsPerGenVar;
+                        totalList = bearTotalAlivePerGen;
+                        break;
+                }
+
+            return (meanList, varList, totalList);
+        }
+
         /// <summary>
         /// Converts the class traits to a regular list of floats for easy access. 
         /// </summary>
@@ -91,7 +184,6 @@ namespace DataCollection
         /// <returns> List containing the float value of each trait, see top of class for order of traits. </returns>
         private List<float> ConvertTraitsToList(Traits classTraits)
         {
-            // Yikes, did not find another working way
             List<float> traits = new List<float>
             {
                 classTraits.size,
@@ -115,8 +207,24 @@ namespace DataCollection
         /// </summary>
         private void AddTotalAnimals()
         {
-            totalAnimalsAlive.Add(GameObject.FindGameObjectsWithTag("Animal").Length);
+            //totalAnimalsAlive.Add(GameObject.FindGameObjectsWithTag("Animal").Length);
         }
-
+        
+        /// <summary>
+        /// Calculates the running mean and variance of a given data set.
+        /// </summary>
+        /// <param name="m"> Current mean in the set. </param>
+        /// <param name="s"> Current variance in the set. </param>
+        /// <param name="valueToAdd"> Value to be added to the set. </param>
+        /// <param name="populationSize"> Number of samples in set. </param>
+        /// <returns> Tuple with the updated mean and variance. </returns>
+        // source: https://www.johndcook.com/blog/standard_deviation/
+        private (float m, float v) GetNewMeanVariance(float m, float s,float valueToAdd, float populationSize)
+        {
+            float oldM = m;
+            m = m + (valueToAdd - m) / populationSize;
+            s = s + (valueToAdd - m) * (valueToAdd - oldM);
+            return (m, s / (populationSize - 1));
+        }
     }
 }    
