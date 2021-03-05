@@ -6,6 +6,7 @@ using AnimalsV2.States;
 using AnimalsV2.States.AnimalsV2.States;
 using Unity.Barracuda;
 using Unity.MLAgents;
+using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
 using UnityEngine;
 using UnityEngine.AI;
@@ -116,16 +117,18 @@ public class AnimalBrainAgent : Agent
     }
 
     //Called Every time the ML agent decides to take an action.
-    public override void OnActionReceived(float[] vectorAction)
+    public override void OnActionReceived(ActionBuffers vectorAction)
     {
         base.OnActionReceived(vectorAction);
 
-        PerformBestAction(vectorAction);
+        
     }
 
     //Used for testing, gives us control over the output from the ML algortihm.
-    public override void Heuristic(float[] actionsOut)
+    public override void Heuristic(in ActionBuffers actionsOut)
     {
+        base.Heuristic(in actionsOut);
+        
         if (Input.GetKey(KeyCode.UpArrow))
         {
             print("up");
@@ -161,33 +164,28 @@ public class AnimalBrainAgent : Agent
         } else if (Input.GetKey(KeyCode.Alpha1))
         {
             ChangeState(animalController.goToFoodState);
-            print("1");
+            print("Look for food.");
         } else if (Input.GetKey(KeyCode.Alpha2))
         {
             ChangeState(animalController.goToWaterState);
-            print("2");
+            print("Look for Water.");
+        }else if (Input.GetKey(KeyCode.Alpha3))
+        {
+            ChangeState(animalController.goToMate);
+            print("Look for Mate.");
         }
-        else if (Input.GetKey(KeyCode.Alpha3))
+        else if (Input.GetKey(KeyCode.Alpha4))
         {
             ChangeState(animalController.wanderState);
-            print("3");
-        } else if (Input.GetKey(KeyCode.Alpha4))
+            print("Wander.");
+        } else if (Input.GetKey(KeyCode.Alpha5))
         {
             ChangeState(animalController.fleeingState);
-            print("4");
+            print("Flee!");
         }
     }
 
-    /// <summary>
-    /// Set constraints based on current State.
-    /// 
-    /// </summary>
-    /// <returns></returns>
-    private void PerformBestAction(float[] vectorAction)
-    {
-        
-
-    }
+    
 
     private void ChangeState(State newState)
     {
