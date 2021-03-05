@@ -44,8 +44,6 @@ namespace AnimalsV2.States
             
             if (MeetRequirements())
             {
-                
-                
                 GameObject closestFood = NavigationUtilities.GetNearestObjectPosition(nearbyFood, animal.transform.position);
                 if (closestFood != null && animal.agent.isActiveAndEnabled)
                 {
@@ -78,6 +76,7 @@ namespace AnimalsV2.States
 
         public override bool MeetRequirements()
         {
+            
             return nearbyFood.Count > 0 && !(finiteStateMachine.CurrentState is EatingState);
         }
     }
