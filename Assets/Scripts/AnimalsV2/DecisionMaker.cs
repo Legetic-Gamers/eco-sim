@@ -116,7 +116,7 @@ namespace AnimalsV2
                 }
             }
 
-            Debug.Log(animalController.fsm.CurrentState);
+            
 
         }
 
