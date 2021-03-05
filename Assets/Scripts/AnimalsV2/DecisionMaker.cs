@@ -97,11 +97,13 @@ namespace AnimalsV2
                 prio.Insert(0, Mate);
             }
 
+            //TODO det som händer här är att det blir alltid den som är sist i priority vi går till, which is bad.
             foreach (var priority in prio)
             {
                 switch (priority)
                 {
                     case Food:
+                        //Kolla if(we actually we meet requirements? and then return?)
                         ChangeState(animalController.goToFoodState);
                         break;
                     case Water:
