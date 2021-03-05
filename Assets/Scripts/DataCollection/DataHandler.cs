@@ -54,7 +54,6 @@ namespace DataCollection
         public void LogNewAnimal(AnimalModel animalModel)
         {
             c.CollectBirth(animalModel);
-            Debug.Log(c.rabbitStatsPerGenMean[0][0]);
         }
         
         public void LogDeadAnimal(AnimalModel animalModel)
@@ -69,7 +68,7 @@ namespace DataCollection
         /// <returns></returns>
         private async Task ExportDataToFile(int listNumber)
         {
-            await WriteToFile(c.rabbitStatsPerGenVar[listNumber], traitNames[listNumber]);
+            await WriteToFile(c.rabbitStatsPerGenMean[listNumber], traitNames[listNumber]);
         }
 
         /// <summary>
