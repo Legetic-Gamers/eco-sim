@@ -27,20 +27,22 @@ namespace AnimalsV2
             fsm = animalController.fsm;
             animalModel = animalController.animalModel;
             eventPublisher = FindObjectOfType<global::TickEventPublisher>();
-            
+
             EventSubscribe();
         }
 
 
         private void MakeDecision()
-        {//TODO STATE should be called ACTION instead?!
+        {
+            //TODO STATE should be called ACTION instead?!
             GetBestAction(animalModel);
         }
 
         private void GetBestAction(AnimalModel parameters)
         {
             // no decision making while fleeing!
-            if (fsm.CurrentState is FleeingState || fsm.CurrentState is EatingState || fsm.CurrentState is DrinkingState || fsm.CurrentState is MatingState) return;
+            if (fsm.CurrentState is FleeingState || fsm.CurrentState is EatingState ||
+                fsm.CurrentState is DrinkingState || fsm.CurrentState is MatingState) return;
             Prioritize();
         }
 
@@ -53,7 +55,7 @@ namespace AnimalsV2
             List<Priorities> prio = new List<Priorities>();
 
 
-            if (!animalModel.HighHydration && !animalModel.HighEnergy) 
+            if (!animalModel.HighHydration && !animalModel.HighEnergy)
                 //not low energy but not high either + not low hydration but not high either -> find Water and then Food.
             {
                 prio.Remove(Food);
@@ -63,7 +65,7 @@ namespace AnimalsV2
                 prio.Insert(0, Water);
             }
 
-            if (animalModel.HighHydration && !animalModel.HighEnergy) 
+            if (animalModel.HighHydration && !animalModel.HighEnergy)
                 //not low energy but not high either + high hydration -> find Food.
             {
                 prio.Remove(Food);
@@ -77,21 +79,21 @@ namespace AnimalsV2
                 prio.Insert(0, Water);
             }
 
-            if (animalModel.LowEnergy) 
+            if (animalModel.LowEnergy)
                 //dont die from hunger -> Find Food.
             {
                 prio.Remove(Food);
                 prio.Insert(0, Food);
             }
 
-            if (animalModel.LowHydration) 
+            if (animalModel.LowHydration)
                 //don't die from dehydration -> Find Water.
             {
                 prio.Remove(Water);
                 prio.Insert(0, Water);
             }
 
-            if (animalModel.WantingOffspring) 
+            if (animalModel.WantingOffspring)
                 // (If we live good) search for mate.
             {
                 prio.Insert(0, Mate);
@@ -103,28 +105,39 @@ namespace AnimalsV2
                 switch (priority)
                 {
                     case Food:
-                        //Kolla if(we actually we meet requirements? and then return?)
-                        ChangeState(animalController.goToFoodState);
+                        //Kolla if(we actually meet requirements? and then return?)
+                        if (ChangeState(animalController.goToFoodState))
+                        {
+                            return;
+                        }
+
+
                         break;
                     case Water:
-                        ChangeState(animalController.goToWaterState);
+                        if (ChangeState(animalController.goToWaterState))
+                        {
+                            return;
+                        }
+                        
+
                         break;
                     case Mate:
-                        ChangeState(animalController.goToMate);
+                        if (ChangeState(animalController.goToMate))
+                        {
+                            return;
+                        }
+
                         break;
                     default:
                         fsm.GoToDefaultState();
                         break;
                 }
             }
-
-            
-
         }
 
-        private void ChangeState(State newState)
+        private bool ChangeState(State newState)
         {
-            fsm.ChangeState(newState);
+            return fsm.ChangeState(newState);
         }
 
 
