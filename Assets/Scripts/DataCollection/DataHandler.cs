@@ -3,7 +3,6 @@
  */
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 using static DataCollection.Formatter;
@@ -78,7 +77,7 @@ namespace DataCollection
         {
             c.Collect();
             //Display(ConvertFloatListToIntList(c.allStatsPerGeneration[0]));
-            ExportDataToFile(0);
+            //ExportDataToFile(0);
         }
         
         /// <summary>
