@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 using UnityEngine.AI;
 
 namespace AnimalsV2.States
@@ -29,13 +31,13 @@ namespace AnimalsV2.States
                 GameObject foundMate = GetFoundMate();
                 if (foundMate != null && animal.agent.isActiveAndEnabled)
                 {
-                    Vector3 pointToRunTo =
-                        NavigationUtilities.RunToFromPoint(animal.transform, foundMate.transform.position, true);
+                    Vector3 pointToRunTo = NavigationUtilities.RunToFromPoint(animal.transform, foundMate.transform.position, true);
                     //Move the animal using the navmeshagent.
-                    NavMeshHit hit;
-                    NavMesh.SamplePosition(pointToRunTo, out hit, 5, 1 << NavMesh.GetAreaFromName("Walkable"));
-                    animal.agent.SetDestination(hit.position);
-                    if (Vector3.Distance(animal.gameObject.transform.position, foundMate.transform.position) <= 2f)
+                    NavigationUtilities.NavigateToPoint(animal,pointToRunTo);
+                    // NavMeshHit hit;
+                    // NavMesh.SamplePosition(pointToRunTo, out hit, 100, 1 << NavMesh.GetAreaFromName("Walkable"));
+                    // animal.agent.SetDestination(hit.position);
+                    if (Vector3.Distance(animal.transform.position, foundMate.transform.position) <= 2f)
                     {
                         finiteStateMachine.ChangeState(animal.matingStateState);
                     }    
@@ -62,7 +64,8 @@ namespace AnimalsV2.States
 
         private GameObject GetFoundMate()
         {
-            foreach(GameObject potentialMate in animal.visibleFriendlyTargets)
+            List<GameObject> allNearbyFriendly = animal.heardFriendlyTargets.Concat(animal.visibleFriendlyTargets).ToList();
+            foreach(GameObject potentialMate in allNearbyFriendly)
             {
                 if (potentialMate != null && potentialMate.TryGetComponent(out AnimalController potentialMateAnimalController) && potentialMateAnimalController.animalModel.WantingOffspring)
                 {

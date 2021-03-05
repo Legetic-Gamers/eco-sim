@@ -3,6 +3,8 @@
  */
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace AnimalsV2.States
@@ -63,7 +65,9 @@ namespace AnimalsV2.States
         
         private GameObject GetFoundMate()
         {
-            foreach(GameObject potentialMate in animal.visibleFriendlyTargets)
+            List<GameObject> allNearbyFriendly = animal.heardFriendlyTargets.Concat(animal.visibleFriendlyTargets).ToList();
+
+            foreach(GameObject potentialMate in allNearbyFriendly)
             {
                 if (potentialMate.TryGetComponent(out AnimalController potentialMateAnimalController))
                 {

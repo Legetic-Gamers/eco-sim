@@ -50,8 +50,16 @@ namespace AnimalsV2.States
             {
                 if (animal.agent.remainingDistance < 1.0f)
                 {
-                    Vector3 position = new Vector3(Random.Range(-30.0f, 30.0f), 0, Random.Range(-30.0f, 30.0f));
-                    animal.agent.SetDestination(position);
+                    Vector3 position = new Vector3(Random.Range(-20.0f, 20.0f), 0, Random.Range(-20.0f, 20.0f));
+                   
+                    //Move the animal using the navmeshagent.
+                    NavMeshHit hit;
+                    //TODO this maxDistance is what is causing rabbits to dance sometimes, if poisition cant be found.
+                    if (NavMesh.SamplePosition(position, out hit, 20, 1 << NavMesh.GetAreaFromName("Walkable")))
+                    {
+                        animal.agent.SetDestination(hit.position);
+                    }
+                    
                 }
 
             }
