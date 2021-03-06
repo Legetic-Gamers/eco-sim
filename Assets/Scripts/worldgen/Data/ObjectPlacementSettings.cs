@@ -19,6 +19,7 @@ public struct ObjectType
     public Color previewColour;
     public float minimumDistance;
     public int newPointCount;
+    public float scale;
     [Range(0, 1)]
     public float minHeight;
     [Range(0, 1)]

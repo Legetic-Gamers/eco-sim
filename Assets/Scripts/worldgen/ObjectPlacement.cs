@@ -4,10 +4,14 @@ using UnityEngine;
 // http://devmag.org.za/2009/05/03/poisson-disk-sampling/
 public class ObjectPlacement : MonoBehaviour
 {
+    public List<GameObject> groups;
+
+
     public void PlaceObjects(ObjectPlacementSettings settings, MeshSettings meshSettings, HeightMapSettings heightMapSettings)
     {
         int size;
 
+        groups = new List<GameObject>();
 
         if (meshSettings.useFlatShading)
         {
@@ -21,6 +25,7 @@ public class ObjectPlacement : MonoBehaviour
         for (int i = 0; i < settings.objectTypes.Length; i++)
         {
             GameObject groupObject = new GameObject(settings.objectTypes[i].name + " Group");
+            groups.Add(groupObject);
             groupObject.transform.parent = this.transform;
             List<Vector2> points = GeneratePlacementPoints(settings, i, size);
             foreach (var point in points)
@@ -30,19 +35,27 @@ public class ObjectPlacement : MonoBehaviour
 
                 //gameObject.transform.position = new Vector3(point.x - size / 2, heightMapSettings.maxHeight + 10, point.y - size / 2);
                 gameObject.transform.parent = groupObject.transform;
+                gameObject.transform.localScale = Vector3.one * settings.objectTypes[i].scale;
+
                 Ray ray = new Ray(gameObject.transform.position, gameObject.transform.TransformDirection(Vector3.down));
                 RaycastHit hit;
                 if (Physics.Raycast(ray, out hit, float.MaxValue, ~(LayerMask.NameToLayer("Ground") | LayerMask.NameToLayer("Water"))))
                 {
                     if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Ground"))
                     {
-                        Vector3 oldPosition = gameObject.transform.position;
-                        gameObject.transform.position = new Vector3(oldPosition.x, hit.point.y, oldPosition.z);
-                        continue;
+                        bool withinSpan = hit.point.y <= (heightMapSettings.maxHeight - heightMapSettings.minHeight) * settings.objectTypes[i].maxHeight
+                        && hit.point.y >= (heightMapSettings.maxHeight - heightMapSettings.minHeight) * settings.objectTypes[i].minHeight;
+
+                        if (withinSpan)
+                        {
+                            Vector3 oldPosition = gameObject.transform.position;
+                            gameObject.transform.position = new Vector3(oldPosition.x, hit.point.y, oldPosition.z);
+                            continue;
+                        }
                     }
 
                 }
-                Destroy(gameObject);
+                DestroyImmediate(gameObject);
             }
         }
     }
