@@ -19,6 +19,7 @@ public class MapPreview : MonoBehaviour
     public HeightMapSettings heightMapSettings;
     public TextureData textureSettings;
     public WaterSettings waterSettings;
+    public ObjectPlacementSettings objectPlacementSettings;
 
     public Material terrainMaterial;
 
@@ -47,7 +48,16 @@ public class MapPreview : MonoBehaviour
         }
         else if (drawMode == DrawMode.ObjectPlacementMap)
         {
-            var list = PoissonDiskSampling.GeneratePoisson(200, 200, 10f, 10).ToArray();
+            int size;
+            if (meshSettings.useFlatShading)
+            {
+                size = MeshSettings.supportedChunkSizes[meshSettings.flatShadedChunkSizeIndex];
+            }
+            else
+            {
+                size = MeshSettings.supportedChunkSizes[meshSettings.chunkSizeIndex];
+            }
+            var list = ObjectPlacement.GeneratePlacementPoints(objectPlacementSettings, 0, size).ToArray();
             DrawTexture(TextureGenerator.TextureFromVector2List(list, 200, 200));
         }
     }
@@ -125,6 +135,11 @@ public class MapPreview : MonoBehaviour
         {
             waterSettings.OnValuesUpdated -= OnWaterUpdated;
             waterSettings.OnValuesUpdated += OnWaterUpdated;
+        }
+        if (objectPlacementSettings != null)
+        {
+            objectPlacementSettings.OnValuesUpdated -= OnValuesUpdated;
+            objectPlacementSettings.OnValuesUpdated += OnValuesUpdated;
         }
     }
 }

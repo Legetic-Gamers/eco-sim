@@ -26,7 +26,7 @@ public class WaterNoise : MonoBehaviour
     {
         Vector3[] verticies = mf.mesh.vertices;
 
-        for(int i = 0; i < verticies.Length; i++)
+        for (int i = 0; i < verticies.Length; i++)
         {
             verticies[i].y = CalculateHeight(verticies[i].x, verticies[i].z) * settings.power;
         }
