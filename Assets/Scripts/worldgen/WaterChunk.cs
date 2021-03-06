@@ -13,13 +13,14 @@ public class WaterChunk : MonoBehaviour
     NavMeshObstacle obstacle;
 
 
-    public void Setup(Vector2 position, WaterSettings waterSettings, HeightMapSettings heightMapSettings, Vector3 scale,  Transform parent)
+    public void Setup(Vector2 position, WaterSettings waterSettings, HeightMapSettings heightMapSettings, Vector3 scale, Transform parent)
     {
         this.waterSettings = waterSettings;
 
         waterObject = new GameObject("Water Chunk");
         waterObject.transform.position = new Vector3(position.x, 0, position.y);
         waterObject.transform.parent = parent;
+        waterObject.layer = LayerMask.NameToLayer("Water");
         meshFilter = waterObject.AddComponent<MeshFilter>();
         meshRenderer = waterObject.AddComponent<MeshRenderer>();
         meshRenderer.material = waterSettings.material;
@@ -36,7 +37,7 @@ public class WaterChunk : MonoBehaviour
 
         obstacle = waterObject.AddComponent<NavMeshObstacle>();
         obstacle.carving = true;
-        
+
     }
 
     private void OnDestroy()
@@ -53,11 +54,11 @@ public class WaterChunk : MonoBehaviour
         var normals = new List<Vector3>();
         var uvs = new List<Vector2>();
 
-        for(int x = 0; x < waterSettings.gridSize + 1; x++)
+        for (int x = 0; x < waterSettings.gridSize + 1; x++)
         {
-            for(int y = 0; y < waterSettings.gridSize + 1; y++)
+            for (int y = 0; y < waterSettings.gridSize + 1; y++)
             {
-                verticies.Add(new Vector3(-waterSettings.size * 0.5f + waterSettings.size * (x / ((float) waterSettings.gridSize)), 0, -waterSettings.size * 0.5f + waterSettings.size * (y / ((float)waterSettings.gridSize))));
+                verticies.Add(new Vector3(-waterSettings.size * 0.5f + waterSettings.size * (x / ((float)waterSettings.gridSize)), 0, -waterSettings.size * 0.5f + waterSettings.size * (y / ((float)waterSettings.gridSize))));
                 normals.Add(Vector3.up);
                 uvs.Add(new Vector2(x / (float)waterSettings.gridSize, y / (float)waterSettings.gridSize));
             }
@@ -67,16 +68,16 @@ public class WaterChunk : MonoBehaviour
         var triangles = new List<int>();
         var vertCount = waterSettings.gridSize + 1;
 
-        for(int i = 0; i < vertCount * vertCount - vertCount; i++)
+        for (int i = 0; i < vertCount * vertCount - vertCount; i++)
         {
-            if((i+1) % vertCount == 0)
+            if ((i + 1) % vertCount == 0)
             {
                 continue;
             }
-            triangles.AddRange(new List<int>() { 
+            triangles.AddRange(new List<int>() {
                 i+1+vertCount, i+vertCount, i,
                 i, i+1, i+vertCount+1
-            }); 
+            });
         }
 
         mesh.SetVertices(verticies);

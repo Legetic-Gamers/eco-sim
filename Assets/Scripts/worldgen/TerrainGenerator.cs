@@ -27,13 +27,14 @@ public class TerrainGenerator : MonoBehaviour
     public int fixedSizeX;
     public int fixedSizeY;
     public NavMeshSurface navMeshSurface;
-    
+
     [Header("General")]
     public Material mapMaterial;
     public MeshSettings meshSettings;
     public HeightMapSettings heightMapSettings;
     public TextureData textureSettings;
     public WaterSettings waterSettings;
+    public ObjectPlacementSettings objectPlacementSettings;
 
 
     private Vector2 viewerPosition;
@@ -117,7 +118,7 @@ public class TerrainGenerator : MonoBehaviour
                     }
                     else
                     {
-                        TerrainChunk newChunk = new TerrainChunk(viewedChunkCoordinate, heightMapSettings, meshSettings, waterSettings, false, detailLevels, colliderLevelOfDetailIndex, transform, viewer, mapMaterial);
+                        TerrainChunk newChunk = new TerrainChunk(viewedChunkCoordinate, heightMapSettings, meshSettings, waterSettings, objectPlacementSettings, false, detailLevels, colliderLevelOfDetailIndex, transform, viewer, mapMaterial);
                         terrainChunkDictionary.Add(viewedChunkCoordinate, newChunk);
                         newChunk.onVisibilityChanged += OnTerrainChunkVisibilityChanged;
                         newChunk.Load();
@@ -133,7 +134,7 @@ public class TerrainGenerator : MonoBehaviour
         {
             for (int x = 0; x < fixedSizeX; x++)
             {
-                TerrainChunk newChunk = new TerrainChunk(new Vector2(x - fixedSizeX / 2, y - fixedSizeY / 2), heightMapSettings, meshSettings, waterSettings, true, detailLevels, colliderLevelOfDetailIndex, transform, viewer, mapMaterial, OnChunkLoaded);
+                TerrainChunk newChunk = new TerrainChunk(new Vector2(x - fixedSizeX / 2, y - fixedSizeY / 2), heightMapSettings, meshSettings, waterSettings, objectPlacementSettings, true, detailLevels, colliderLevelOfDetailIndex, transform, viewer, mapMaterial, OnChunkLoaded);
                 fixedSizeChunks.Add(newChunk);
                 newChunk.Load();
                 newChunk.SetCollisionMesh();

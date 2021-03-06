@@ -4,9 +4,55 @@ using UnityEngine;
 // http://devmag.org.za/2009/05/03/poisson-disk-sampling/
 public class ObjectPlacement : MonoBehaviour
 {
+    public void PlaceObjects(ObjectPlacementSettings settings, MeshSettings meshSettings, HeightMapSettings heightMapSettings)
+    {
+        int size;
 
 
+        if (meshSettings.useFlatShading)
+        {
+            size = MeshSettings.supportedChunkSizes[meshSettings.flatShadedChunkSizeIndex];
+        }
+        else
+        {
+            size = MeshSettings.supportedChunkSizes[meshSettings.chunkSizeIndex];
+        }
 
+        for (int i = 0; i < settings.objectTypes.Length; i++)
+        {
+            GameObject groupObject = new GameObject(settings.objectTypes[i].name + " Group");
+            groupObject.transform.parent = this.transform;
+            List<Vector2> points = GeneratePlacementPoints(settings, i, size);
+            foreach (var point in points)
+            {
+                // GameObject gameObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                GameObject gameObject = Instantiate(settings.objectTypes[i].gameObject, new Vector3(point.x - size / 2, heightMapSettings.maxHeight + 10, point.y - size / 2), Quaternion.identity);
+
+                //gameObject.transform.position = new Vector3(point.x - size / 2, heightMapSettings.maxHeight + 10, point.y - size / 2);
+                gameObject.transform.parent = groupObject.transform;
+                Ray ray = new Ray(gameObject.transform.position, gameObject.transform.TransformDirection(Vector3.down));
+                RaycastHit hit;
+                if (Physics.Raycast(ray, out hit, float.MaxValue, ~(LayerMask.NameToLayer("Ground") | LayerMask.NameToLayer("Water"))))
+                {
+                    if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Ground"))
+                    {
+                        Vector3 oldPosition = gameObject.transform.position;
+                        gameObject.transform.position = new Vector3(oldPosition.x, hit.point.y, oldPosition.z);
+                        continue;
+                    }
+
+                }
+                Destroy(gameObject);
+            }
+        }
+    }
+
+    public static List<Vector2> GeneratePlacementPoints(ObjectPlacementSettings settings, int objectIndex, int size)
+    {
+        List<Vector2> points = PoissonDiskSampling.GeneratePoisson(size, size, settings.objectTypes[objectIndex].minimumDistance, settings.objectTypes[objectIndex].newPointCount);
+
+        return points;
+    }
 }
 
 public static class PoissonDiskSampling
@@ -23,7 +69,6 @@ public static class PoissonDiskSampling
         List<Vector2> samplePoints = new List<Vector2>();
 
         Vector2 firstPoint = new Vector2(Random.Range(0f, width), Random.Range(0f, height));
-        Debug.Log("First Vector 2 " + firstPoint);
         processList.Add(firstPoint);
         samplePoints.Add(firstPoint);
         Vector2 gridPoint = ImageToGrid(firstPoint, cellSize);
