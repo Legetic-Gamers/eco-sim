@@ -87,6 +87,7 @@ public class MapPreview : MonoBehaviour
         {
             DrawMapInEditor();
         }
+        OnMeshUpdated();
     }
 
     private void OnTextureValuesUpdated()
@@ -107,6 +108,28 @@ public class MapPreview : MonoBehaviour
         }
         if (waterSettings.generateWater)
             meshFilter.gameObject.AddComponent<WaterChunk>().Setup(Vector2.zero, waterSettings, heightMapSettings, meshRenderer.bounds.size, meshFilter.gameObject.transform);
+    }
+
+    private void OnObjectPlacementUpdated()
+    {
+        if (meshFilter.gameObject.GetComponent<ObjectPlacement>() != null)
+        {
+            var objects = meshFilter.gameObject.GetComponents<ObjectPlacement>();
+            foreach (var obj in objects)
+            {
+                foreach (var group in obj.groups)
+                {
+                    DestroyImmediate(group);
+                }
+                DestroyImmediate(obj);
+            }
+        }
+        meshFilter.gameObject.AddComponent<ObjectPlacement>().PlaceObjects(objectPlacementSettings, meshSettings, heightMapSettings);
+    }
+
+    private void OnMeshUpdated()
+    {
+        meshFilter.gameObject.GetComponent<MeshCollider>().sharedMesh = meshFilter.sharedMesh;
     }
 
     private void OnDestroy()
@@ -138,8 +161,9 @@ public class MapPreview : MonoBehaviour
         }
         if (objectPlacementSettings != null)
         {
-            objectPlacementSettings.OnValuesUpdated -= OnValuesUpdated;
-            objectPlacementSettings.OnValuesUpdated += OnValuesUpdated;
+            objectPlacementSettings.OnValuesUpdated -= OnObjectPlacementUpdated;
+            objectPlacementSettings.OnValuesUpdated += OnObjectPlacementUpdated;
+
         }
     }
 }
