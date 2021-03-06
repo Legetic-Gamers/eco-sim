@@ -2269,9 +2269,7 @@ MonoBehaviour:
   targetMask:
     serializedVersion: 2
     m_Bits: 256
-  targets: []
   animalController: {fileID: 0}
-  isPrey: 0
 --- !u!114 &4362939137640418630
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2292,7 +2290,6 @@ MonoBehaviour:
   obstacleMask:
     serializedVersion: 2
     m_Bits: 0
-  targets: []
   animalController: {fileID: 0}
 --- !u!114 &4362939137640418625
 MonoBehaviour:
@@ -3046,7 +3043,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 1d5d0013b0c06469a8598dd66e4f5b6e, type: 2}
+  - {fileID: 2100000, guid: 0221694c4f9a6dc4c9f74b1282498232, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
