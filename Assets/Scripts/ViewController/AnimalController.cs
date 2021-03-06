@@ -21,9 +21,7 @@ public abstract class AnimalController : MonoBehaviour
     // decisionMaker subscribes to these actions
     public Action<GameObject> actionPerceivedHostile;
     public Action actionDeath;
-    
-    public Action<AnimalModel> onBirth;
-    
+
     [HideInInspector]
     public NavMeshAgent agent;
     
@@ -31,9 +29,6 @@ public abstract class AnimalController : MonoBehaviour
     private AnimationController animationController;
     private DecisionMaker decisionMaker;
     
-    /*public GoToMate sm;
-    public GoToFood sf;
-    public GoToWater sw;*/
     public FleeingState fleeingState;
     public Eating eatingState;
     public Wander wanderState;
@@ -291,13 +286,12 @@ public abstract class AnimalController : MonoBehaviour
         EventSubscribe();
         
         // Find the data handler and notify birth.
-        DataHandler dh = FindObjectOfType<DataHandler>();
-        dh.LogNewAnimal(animalModel);
+        datahandler = FindObjectOfType<DataHandler>();
+        datahandler.LogNewAnimal(animalModel);
         
         SetPhenotype();
         
         decisionMaker = new DecisionMaker(this,animalModel,tickEventPublisher);
-        onBirth?.Invoke(animalModel);
     }
 
 
@@ -306,6 +300,8 @@ public abstract class AnimalController : MonoBehaviour
     {
         if (!animalModel.IsAlive)
         {
+            // Log animal death
+            datahandler.LogDeadAnimal(animalModel);
             // invoke death state with method HandleDeath() in decisionmaker
             actionDeath?.Invoke();
             // Set state so that it can't change
