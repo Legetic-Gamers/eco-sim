@@ -74,46 +74,62 @@ public class AnimalBrainAgent : Agent
         sensor.AddObservation(animalModel.currentHealth);
         sensor.AddObservation(animalModel.reproductiveUrge);
 
-
         //Perceptions of the Animal (3 (x,y,z) * 3) = 9
         ////////////////////////////////////////////////////////////////////////////////////
+        bool foundFood = false;
+        bool foundMate = false;
+        bool foundHostile = false;
         //TODO change from just first to something smarter.
-        // GameObject firstFood = animalController?.visibleFoodTargets?[0];
-        // if (firstFood != null)
-        // {
-        //     Vector3 firstFoodPosition = firstFood.transform.position;
-        //     sensor.AddObservation(firstFoodPosition);
-        // }
-        //
-        // //TODO change from just first to something smarter. (Right now just get first heard or seen)
-        // List<GameObject> mates = animalController?.visibleFriendlyTargets?.Concat(animalController?.heardFriendlyTargets)
-        //     .ToList();
-        // if (mates.Count > 0)
-        // {
-        //     GameObject firstMate = mates[0];
-        //     if (firstMate != null)
-        //     {
-        //         Vector3 firstMatePosition = firstMate.transform.position;
-        //         sensor.AddObservation(firstMatePosition);
-        //     }
-        // }
-        //
-        // //TODO change from just first to something smarter. (Right now just get first heard or seen)
-        // List<GameObject> hostiles = animalController?.visibleHostileTargets.Concat(animalController?.heardHostileTargets)
-        //     .ToList();
-        //
-        // if (hostiles.Count > 0)
-        // {
-        //     GameObject firstHostile = hostiles[0];
-        //     if (firstHostile != null)
-        //     {
-        //         Vector3 firstHostilePosition = firstHostile.transform.position;
-        //         sensor.AddObservation(firstHostilePosition);
-        //     }
-        // }
+        List<GameObject> foods = animalController?.visibleFoodTargets;
+        if (foods.Count > 0)
+        {
+            GameObject firstFood = foods[0];
+            if (firstFood != null)
+            {
+                //Vector3 firstFoodPosition = firstFood.transform.position;
+                //sensor.AddObservation(firstFoodPosition);
+                foundFood = true;
+            }
+            
+        }
+
+
+        //TODO change from just first to something smarter. (Right now just get first heard or seen)
+         List<GameObject> mates = animalController?.visibleFriendlyTargets?.Concat(animalController?.heardFriendlyTargets)
+             .ToList();
+         if (mates.Count > 0)
+         {
+             GameObject firstMate = mates[0];
+             if (firstMate != null)
+             {
+                 // Vector3 firstMatePosition = firstMate.transform.position;
+                 // sensor.AddObservation(firstMatePosition);
+                 foundMate = true;
+             }
+         }
+        
+         //TODO change from just first to something smarter. (Right now just get first heard or seen)
+         List<GameObject> hostiles = animalController?.visibleHostileTargets.Concat(animalController?.heardHostileTargets)
+             .ToList();
+        
+         if (hostiles.Count > 0)
+         {
+             GameObject firstHostile = hostiles[0];
+             if (firstHostile != null)
+             {
+                 // Vector3 firstHostilePosition = firstHostile.transform.position;
+                 // sensor.AddObservation(firstHostilePosition);
+                 foundHostile = true;
+             }
+         }
+         
+         sensor.AddObservation(foundFood);
+         sensor.AddObservation(foundMate);
+         sensor.AddObservation(foundHostile);
+         
         /////////////////////////////////////////////////////////////////////////////////////
 
-        //TOTAL = 14, set in "Vector Observation" of "Behavior Parameters" in inspector.
+        //TOTAL = 8, set in "Vector Observation" of "Behavior Parameters" in inspector.
     }
 
     //Called Every time the ML agent decides to take an action.
