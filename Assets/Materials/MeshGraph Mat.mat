@@ -88,10 +88,10 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 1
     - grassHighHeight: 1
-    - grassLowHeight: 0.468
-    - maxHeight: 3.4
+    - grassLowHeight: 0.416
+    - maxHeight: 20.9
     - minHeight: 0
-    - sandHeight: 0
+    - sandHeight: 0.119
     - waterHeight: 0
     m_Colors:
     - Color_375F3FFA: {r: 0.504717, g: 0.8103465, b: 1, a: 0}

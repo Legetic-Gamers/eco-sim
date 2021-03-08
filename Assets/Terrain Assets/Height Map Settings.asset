@@ -16,13 +16,13 @@ MonoBehaviour:
   noiseSettings:
     normalizeMode: 1
     scale: 29.42
-    octaves: 5
+    octaves: 4
     persistance: 0.573
-    lacunarity: 1.96
+    lacunarity: 2.08
     seed: 2147483647
     offset: {x: 0, y: 0}
   useFalloff: 0
-  heightMultiplier: 3.4
+  heightMultiplier: 20.9
   heightCurve:
     serializedVersion: 2
     m_Curve:
