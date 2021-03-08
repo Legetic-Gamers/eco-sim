@@ -206,7 +206,7 @@ public abstract class AnimalController : MonoBehaviour
     //Set animals size based on traits.
     private void SetPhenotype()
     {
-        gameObject.transform.localScale = new Vector3(1, 1, 1) * animalModel.traits.size;
+        gameObject.transform.localScale = getNormalizedScale() * animalModel.traits.size;
     }
 
     private void EatFood(GameObject food)
@@ -334,6 +334,8 @@ public abstract class AnimalController : MonoBehaviour
         EventUnsubscribe();
     }
 
+
+    public abstract Vector3 getNormalizedScale();
     private void FixedUpdate()
     {
         //Update physics

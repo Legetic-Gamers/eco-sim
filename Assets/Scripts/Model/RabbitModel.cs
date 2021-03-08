@@ -4,7 +4,7 @@ using Model;
 public class RabbitModel : AnimalModel,IEdible
 {
 
-    public RabbitModel() : base(new Traits(1f, 20, 100, 50, 3,10,10,10,10,120,10,3, Traits.BehaviorType.Herbivore, Traits.Species.Rabbit),0)
+    public RabbitModel() : base(new Traits(1f, 20, 100, 50, 3,10,10,10,10,120,10,3),0)
     {
         // Rabbit specific initialization 
     }
@@ -16,7 +16,7 @@ public class RabbitModel : AnimalModel,IEdible
 
     public override AnimalModel Mate(AnimalModel otherParent)
     {
-        Traits childTraits = traits.Crossover(otherParent.traits);
+        Traits childTraits = traits.Crossover(otherParent.traits, age, otherParent.age);
         //TODO logic for determining generation
         return new RabbitModel(childTraits, 0);
     }

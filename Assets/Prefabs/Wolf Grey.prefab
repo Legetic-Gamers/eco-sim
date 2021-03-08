@@ -2271,7 +2271,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   animalController: {fileID: 0}
-  isPrey: 0
 --- !u!114 &4362939137640418630
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2305,6 +2304,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83f7b0fd8a5be3343b6635d2e91a2840, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tickEventPublisher: {fileID: 0}
   agent: {fileID: 0}
   visibleHostileTargets: []
   visibleFriendlyTargets: []
@@ -3057,7 +3057,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 1d5d0013b0c06469a8598dd66e4f5b6e, type: 2}
+  - {fileID: 2100000, guid: 0221694c4f9a6dc4c9f74b1282498232, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

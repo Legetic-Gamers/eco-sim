@@ -69,7 +69,7 @@ public class Traits
     }
     
     
-    public Traits Crossover(Traits otherParentTraits, int firstParentAge, int secondParentAge)
+    public Traits Crossover(Traits otherParentTraits, float firstParentAge, float secondParentAge)
     {
         // create a copy of parent one's genes
         Traits childTraits = new Traits(size, maxEnergy, maxHealth, maxHydration, maxSpeed, endurance, ageLimit,
