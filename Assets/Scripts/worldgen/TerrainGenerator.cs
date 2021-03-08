@@ -1,11 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
+
 
 public class TerrainGenerator : MonoBehaviour
 {
-
-
     public enum TerrainMode
     {
         Endless,
@@ -26,12 +26,15 @@ public class TerrainGenerator : MonoBehaviour
     [Header("Fixed terrain settings")]
     public int fixedSizeX;
     public int fixedSizeY;
+    public NavMeshSurface navMeshSurface;
 
     [Header("General")]
     public Material mapMaterial;
     public MeshSettings meshSettings;
     public HeightMapSettings heightMapSettings;
     public TextureData textureSettings;
+    public WaterSettings waterSettings;
+    public ObjectPlacementSettings objectPlacementSettings;
 
 
     private Vector2 viewerPosition;
@@ -44,6 +47,7 @@ public class TerrainGenerator : MonoBehaviour
     private List<TerrainChunk> visibleTerrainChunks = new List<TerrainChunk>();
 
     private List<TerrainChunk> fixedSizeChunks = new List<TerrainChunk>();
+    private int loadedChunks = 0;
 
 
 
@@ -114,7 +118,7 @@ public class TerrainGenerator : MonoBehaviour
                     }
                     else
                     {
-                        TerrainChunk newChunk = new TerrainChunk(viewedChunkCoordinate, heightMapSettings, meshSettings, false, detailLevels, colliderLevelOfDetailIndex, transform, viewer, mapMaterial);
+                        TerrainChunk newChunk = new TerrainChunk(viewedChunkCoordinate, heightMapSettings, meshSettings, waterSettings, objectPlacementSettings, false, detailLevels, colliderLevelOfDetailIndex, transform, viewer, mapMaterial);
                         terrainChunkDictionary.Add(viewedChunkCoordinate, newChunk);
                         newChunk.onVisibilityChanged += OnTerrainChunkVisibilityChanged;
                         newChunk.Load();
@@ -130,11 +134,20 @@ public class TerrainGenerator : MonoBehaviour
         {
             for (int x = 0; x < fixedSizeX; x++)
             {
-                TerrainChunk newChunk = new TerrainChunk(new Vector2(x - fixedSizeX / 2, y - fixedSizeY / 2), heightMapSettings, meshSettings, true, detailLevels, colliderLevelOfDetailIndex, transform, viewer, mapMaterial);
+                TerrainChunk newChunk = new TerrainChunk(new Vector2(x - fixedSizeX / 2, y - fixedSizeY / 2), heightMapSettings, meshSettings, waterSettings, objectPlacementSettings, true, detailLevels, colliderLevelOfDetailIndex, transform, viewer, mapMaterial, OnChunkLoaded);
                 fixedSizeChunks.Add(newChunk);
                 newChunk.Load();
                 newChunk.SetCollisionMesh();
             }
+        }
+    }
+
+    public void OnChunkLoaded()
+    {
+        loadedChunks++;
+        if (loadedChunks >= fixedSizeX * fixedSizeY)
+        {
+            navMeshSurface.BuildNavMesh();
         }
     }
 

@@ -12,11 +12,18 @@ namespace DataCollection
 {
     public static class Formatter
     {
-        public static async Task WriteToFile<T>(List<T> data)
+        /// <summary>
+        /// Writes a list to a file given the name of the file and field to print, asynchronously.
+        /// </summary>
+        /// <param name="data"> Data to write </param>
+        /// <param name="filename"> Name of the file </param>
+        /// <typeparam name="T"> Generic </typeparam>
+        /// <returns> returns when the thread is finished writing. </returns>
+        public static async Task WriteToFile<T>(List<T> data, string filename)
         {
-            string fileName = "Assets/Scripts/DataCollection/test.json";
-            string path = Path.Combine(Directory.GetCurrentDirectory(), fileName);
-
+            string pathToFile = Path.Combine("Assets/Scripts/DataCollection/Export/", filename + ".json");
+            string path = Path.Combine(Directory.GetCurrentDirectory(), pathToFile);
+            
             if (!File.Exists(path))
             {
                 // Create a file to write to.
@@ -32,6 +39,10 @@ namespace DataCollection
             }
         }
         
+        /// <summary>
+        /// Wrapper class so Unitys build in Json utility can be used. 
+        /// </summary>
+        /// <typeparam name="T"> Generic </typeparam>
         [Serializable]
         public class Wrapper<T>
         {

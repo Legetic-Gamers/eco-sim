@@ -85,3 +85,7 @@ crashlytics-build.properties
 /results
 
 Packages/packages-lock.json
+
+# Export generated files
+Export/**/*.json
+!Export/.gitkeep
