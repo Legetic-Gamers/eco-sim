@@ -21,4 +21,4 @@ MonoBehaviour:
   power: 3
   scale: 1
   timeScale: 1
-  material: {fileID: 2100000, guid: 1bf102809a7cc4a409c724d892b1fecb, type: 2}
+  material: {fileID: 2100000, guid: 7d15e8e57b643694a8665fc53363315c, type: 2}

@@ -148,6 +148,7 @@ public class TerrainGenerator : MonoBehaviour
         if (loadedChunks >= fixedSizeX * fixedSizeY)
         {
             navMeshSurface.BuildNavMesh();
+            
         }
     }
 

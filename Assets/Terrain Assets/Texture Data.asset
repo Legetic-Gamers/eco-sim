@@ -21,10 +21,5 @@ MonoBehaviour:
   baseStartHeights:
   - 0
   - 0
-  - 0.254
-  - 0.395
-  baseBlends:
-  - 0
-  - 0
-  - 0.13
-  - 0.341
+  - 0.468
+  - 1

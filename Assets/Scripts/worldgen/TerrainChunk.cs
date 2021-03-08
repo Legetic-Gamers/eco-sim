@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Threading;
+using UnityEngine;
 using UnityEngine.AI;
 
 public class TerrainChunk
@@ -97,9 +98,6 @@ public class TerrainChunk
 
             maxViewDistance = detailLevels[detailLevels.Length - 1].visibleDistanceThreshold;
         }
-
-
-
 
     }
 
