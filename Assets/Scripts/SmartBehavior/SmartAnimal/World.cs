@@ -13,19 +13,29 @@ using Random = UnityEngine.Random;
 public class World : MonoBehaviour
 {
     public GameObject food;
+    public GameObject rabbit;
     public GameObject water;
     public int numFood;
+    public int numRabbits;
     public int numWater;
 
     public float range;
 
     public float foodRespawnRate;
 
+    public AnimalBrainAgent[] agents;
+
     public void Awake()
     {
-        ResetWorld();
+        agents = new AnimalBrainAgent[0];
         //ResetWorld();
-        InvokeRepeating("SpawnNewFood", foodRespawnRate, foodRespawnRate);
+        
+        InitWorld();
+    }
+
+    public void Update()
+    {
+        agents = FindObjectsOfType<AnimalBrainAgent>();
     }
 
     private void CreateObjects(int num, GameObject type)
@@ -46,13 +56,27 @@ public class World : MonoBehaviour
         }
     }
 
+    public void InitWorld()
+    {
+        InvokeRepeating("SpawnNewFood", 0, foodRespawnRate);
+        CreateObjects(numWater, water);
+        CreateObjects(numRabbits, rabbit);
+    }
+
     public void ResetWorld()
     {
         ClearObjects(GameObject.FindGameObjectsWithTag("Plant"));
         ClearObjects(GameObject.FindGameObjectsWithTag("Water"));
         
+        foreach (var agent in agents)
+        {
+            Destroy(agent.gameObject);
+        }
+        
         CreateObjects(numFood, food);
         CreateObjects(numWater, water);
+        CreateObjects(numRabbits, rabbit);
+        
     }
     
     private void SpawnNewFood()
