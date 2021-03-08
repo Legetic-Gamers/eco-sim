@@ -39,7 +39,7 @@ public class AnimalBrainAgent : Agent
         fsm = animalController.fsm;
         animalModel = animalController.animalModel;
 
-        //this.eventPublisher = eventPublisher;
+        eventPublisher = animalController.tickEventPublisher;
 
         world = FindObjectOfType<World>();
 
@@ -138,6 +138,8 @@ public class AnimalBrainAgent : Agent
         base.OnActionReceived(vectorAction);
         ActionSegment<int> discreteActions = vectorAction.DiscreteActions;
 
+        //Switch state based on action produced by ML model.
+        //Penalize unsuccessful change.
         if (discreteActions[0] == 0)
         {
             ChangeState(animalController.wanderState);
@@ -145,22 +147,39 @@ public class AnimalBrainAgent : Agent
         }
         else if (discreteActions[0] == 1)
         {
-            ChangeState(animalController.goToWaterState);
+            if (!ChangeState(animalController.goToWaterState))
+            {
+                AddReward(-1);
+            }
+            
+
             print("Look for Water.");
         }
         else if (discreteActions[0] == 2)
         {
-            ChangeState(animalController.goToMate);
+            if (!ChangeState(animalController.goToMate))
+            {
+                AddReward(-1);
+            }
+            
             print("Look for Mate.");
         }
         else if (discreteActions[0] == 3)
         {
-            ChangeState(animalController.goToFoodState);
+            if (!ChangeState(animalController.goToFoodState))
+            {
+                AddReward(-1);
+            }
+            
             print("Look for food.");
         }
         else if (discreteActions[0] == 4)
         {
-            ChangeState(animalController.fleeingState);
+            if (!ChangeState(animalController.fleeingState))
+            {
+                AddReward(-1);
+            }
+            
             print("Flee!");
         }
     }
@@ -237,33 +256,49 @@ public class AnimalBrainAgent : Agent
             discreteActions[0] = 4;
             // ChangeState(animalController.fleeingState);
             // print("Flee!");
+        }else if (Input.GetKey(KeyCode.Alpha0))
+        {
+            HandleDeath();
+            // ChangeState(animalController.fleeingState);
+            // print("Flee!");
         }
     }
 
 
-    private void ChangeState(State newState)
+    private bool ChangeState(State newState)
     {
         //Debug.Log(newState.ToString());
-        fsm.ChangeState(newState);
+        return fsm.ChangeState(newState);
     }
 
     //Instead of updating/Making choices every frame
     //Listen to when parameters or senses were updated.
     private void EventSubscribe()
     {
-        // eventPublisher.onParamTickEvent += MakeDecision;
-        // eventPublisher.onSenseTickEvent += MakeDecision;
+        //eventPublisher.onParamTickEvent += MakeDecision;
+        eventPublisher.onSenseTickEvent += RequestDecision;
 
         animalController.actionDeath += HandleDeath;
+        animalController.matingStateState.onMate += HandleMate;
+        animalController.eatingState.onEatFood += HandleEating;
+        animalController.drinkingState.onDrinkWater += HandleDrinking;
+
+
     }
+
+    
 
 
     public void EventUnsubscribe()
     {
         // eventPublisher.onParamTickEvent -= MakeDecision;
-        // eventPublisher.onSenseTickEvent -= MakeDecision;
+        eventPublisher.onSenseTickEvent -= RequestDecision;
 
         animalController.actionDeath -= HandleDeath;
+        animalController.matingStateState.onMate -= HandleMate;
+        animalController.eatingState.onEatFood -= HandleEating;
+        animalController.drinkingState.onDrinkWater -= HandleDrinking;
+
     }
 
     /// <summary>
@@ -283,26 +318,35 @@ public class AnimalBrainAgent : Agent
         //Penalize for every year not lived.
         AddReward(animalModel.age - animalModel.traits.ageLimit);
 
-        //Dont destroy agent, for training purposes.
-        //TODO comment back after training
+        
         ChangeState(animalController.deadState);
-        //EventUnsubscribe();
         EventUnsubscribe();
 
         //End if all rabbits are dead.
-        Debug.Log(fsm.absorbingState);
-        if (world.agents.All(agent => agent.fsm.absorbingState))
+        if (world.agents.All(agent => agent.fsm.CurrentState is Dead))
         {
-            Debug.Log("They all dead!");
-            EndEpisode();
-            world.ResetWorld();
+            //Debug.Log("They all dead!");
+             EndEpisode();
+             world.ResetWorld();
         }
         
-
-
         
     }
+    
+    private void HandleMate(GameObject obj)
+    {
+        AddReward(20);
+    }
+    
+    private void HandleEating(GameObject obj)
+    {
+        AddReward(5);
+    }
 
+    private void HandleDrinking(GameObject obj)
+    {
+        AddReward(5);
+    }
 
     public void Update()
     {

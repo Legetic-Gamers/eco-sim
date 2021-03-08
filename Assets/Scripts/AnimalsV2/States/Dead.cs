@@ -16,12 +16,13 @@ namespace AnimalsV2.States
             public override void Enter()
             {
                 //when entering state dead,
-
-                Debug.Log("Dead");
                 base.Enter();
                 animal.agent.isStopped = true;
                 currentStateAnimation = StateAnimation.Dead;
                 animal.DestroyGameObject(20f);
+                
+                // Set state so that it can't change
+                finiteStateMachine.absorbingState = true;
             }
 
             public override void HandleInput()

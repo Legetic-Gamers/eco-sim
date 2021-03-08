@@ -12,7 +12,7 @@ public abstract class AnimalController : MonoBehaviour
 {
     public AnimalModel animalModel;
 
-    private TickEventPublisher tickEventPublisher;
+    public TickEventPublisher tickEventPublisher;
 
     public Action<State> stateChange;
     
@@ -305,8 +305,8 @@ public abstract class AnimalController : MonoBehaviour
     {
         if (!animalModel.IsAlive)
         {
-            // Set state so that it can't change
-            fsm.absorbingState = true;
+            //Debug.Log("Energy: "+animalModel.currentEnergy + "Hydration: "+ animalModel.currentHydration);
+            
             // invoke death state with method HandleDeath() in decisionmaker
             actionDeath?.Invoke();
             // unsubscribe all events because we want only want to invoke it once.

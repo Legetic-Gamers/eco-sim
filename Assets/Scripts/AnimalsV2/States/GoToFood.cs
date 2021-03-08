@@ -35,7 +35,7 @@ namespace AnimalsV2.States
         {
             base.LogicUpdate();
 
-            Debug.Log("GOING TO FOOD");
+            
             nearbyFood.Clear();
             //Get all potential food
             if (animal.visibleFoodTargets !=null)// first list may be null
