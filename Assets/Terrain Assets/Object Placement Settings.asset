@@ -62,7 +62,7 @@ MonoBehaviour:
         type: 3}
       probability: 0.216
     previewColour: {r: 0, g: 0, b: 0, a: 0}
-    minimumDistance: 12
+    minimumDistance: 6
     newPointCount: 10
     scale: 1
     yOffset: 0
@@ -74,9 +74,9 @@ MonoBehaviour:
         type: 3}
       probability: 0.216
     previewColour: {r: 0, g: 0, b: 0, a: 0}
-    minimumDistance: 12
+    minimumDistance: 8
     newPointCount: 10
-    scale: 4
-    yOffset: 100
+    scale: 1
+    yOffset: 0.1
     minHeight: 0
     maxHeight: 1
