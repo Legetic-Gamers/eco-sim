@@ -1459,7 +1459,6 @@ GameObject:
   - component: {fileID: 6495063316997795289}
   - component: {fileID: 8505818697369016329}
   - component: {fileID: 8505818697369016330}
-  - component: {fileID: 3773031077935612405}
   m_Layer: 8
   m_Name: SmartRabbit
   m_TagString: Animal
@@ -1593,6 +1592,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bdd6549df376c1a4b9199e25eb73a7a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tickEventPublisher: {fileID: 0}
   agent: {fileID: 0}
   visibleHostileTargets: []
   visibleFriendlyTargets: []
@@ -1625,7 +1625,7 @@ MonoBehaviour:
     hasUpgradedBrainParametersWithActionSpec: 1
   m_Model: {fileID: 0}
   m_InferenceDevice: 0
-  m_BehaviorType: 0
+  m_BehaviorType: 1
   m_BehaviorName: RabbitBehavior
   TeamId: 0
   m_UseChildSensors: 1
@@ -1647,20 +1647,6 @@ MonoBehaviour:
     maxStep: 0
   hasUpgradedFromAgentParameters: 1
   MaxStep: 0
---- !u!114 &3773031077935612405
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8505818697369016331}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3a5c9d521e5ef4759a8246a07d52221e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  DecisionPeriod: 5
-  TakeActionsBetweenDecisions: 1
 --- !u!1 &8505818697383472513
 GameObject:
   m_ObjectHideFlags: 0
