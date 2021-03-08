@@ -23,19 +23,90 @@ namespace Tests
         [UnityTest]
         public IEnumerator FSM_Configure_Passes()
         {
-            // Wait for three seconds (this gives us time to see the prefab in the scene if its an animation or something else).
-            //yield return new WaitForSeconds(3f);
 
+            //Setup
             TestWorld testWorld = new TestWorld();
-
             GameObject animal = testWorld.animal;
-            //var animal = NewAnimal();
             AnimalController animalController = animal.GetComponent<AnimalController>();
             FiniteStateMachine fsm = animalController.fsm;
+            
+            //Check that initial state is correct.
             Assert.IsTrue(fsm.CurrentState is Wander);
             Assert.IsFalse(fsm.absorbingState);
 
 
+            //yield return new WaitForSeconds(3f);
+            yield return null;
+        }
+        
+        // Testing going to default state of the FSM
+        [UnityTest]
+        public IEnumerator FSM_DefaultState_Passes()
+        {
+
+            //Setup
+            TestWorld testWorld = new TestWorld();
+            GameObject animal = testWorld.animal;
+            AnimalController animalController = animal.GetComponent<AnimalController>();
+            FiniteStateMachine fsm = animalController.fsm;
+            
+            //Check that initial state is correct.
+            Assert.IsTrue(fsm.CurrentState is Wander);
+            fsm.ChangeState(animalController.idleState);
+            fsm.GoToDefaultState();
+            Assert.IsTrue(fsm.CurrentState is Wander);
+
+            //yield return new WaitForSeconds(3f);
+            yield return null;
+        }
+
+        
+        // Testing the basic functionality of the FSM
+        [UnityTest]
+        public IEnumerator FSM_Requirements_Passes()
+        {
+
+            //Setup
+            TestWorld testWorld = new TestWorld();
+            GameObject animal = testWorld.animal;
+            AnimalController animalController = animal.GetComponent<AnimalController>();
+            FiniteStateMachine fsm = animalController.fsm;
+            
+            
+            //State changing, make sure requirements checking works.
+            if (animalController.goToFoodState.MeetRequirements())
+            {
+                fsm.ChangeState(animalController.goToFoodState);
+                Assert.IsTrue(fsm.CurrentState is GoToFood);
+            }
+            else
+            {
+                Assert.IsFalse(fsm.CurrentState is GoToFood);
+            }
+            
+            if (animalController.goToMate.MeetRequirements())
+            {
+                fsm.ChangeState(animalController.goToMate);
+                Assert.IsTrue(fsm.CurrentState is GoToMate);
+            }
+            else
+            {
+                Assert.IsFalse(fsm.CurrentState is GoToMate);
+            }
+            
+            if (animalController.goToWaterState.MeetRequirements())
+            {
+                fsm.ChangeState(animalController.goToWaterState);
+                Assert.IsTrue(fsm.CurrentState is GoToWater);
+            }
+            else
+            {
+                Assert.IsFalse(fsm.CurrentState is GoToWater);
+            }
+
+
+
+            //yield return new WaitForSeconds(3f);
             yield return null;
         }
 
@@ -89,34 +160,5 @@ namespace Tests
         // }
 
 
-// 1
-        // [UnityTest]
-        // public IEnumerator AsteroidsMoveDown()
-        // {
-        //     // 2
-        //     GameObject gameGameObject = 
-        //         MonoBehaviour.Instantiate(Resources.Load<GameObject>("Prefabs/Game"));
-        //     game = gameGameObject.GetComponent<Game>();
-        //     // 3
-        //     GameObject asteroid = game.GetSpawner().SpawnAsteroid();
-        //     // 4
-        //     float initialYPos = asteroid.transform.position.y;
-        //     // 5
-        //     yield return new WaitForSeconds(0.1f);
-        //     // 6
-        //     Assert.Less(asteroid.transform.position.y, initialYPos);
-        //     // 7
-        //     Object.Destroy(game.gameObject);
-        // }
-
-        // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use
-        // `yield return null;` to skip a frame.
-        [UnityTest]
-        public IEnumerator FSMTestWithEnumeratorPasses()
-        {
-            // Use the Assert class to test conditions.
-            // Use yield to skip a frame.
-            yield return null;
-        }
     }
 }
