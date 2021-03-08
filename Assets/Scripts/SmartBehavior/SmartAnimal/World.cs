@@ -70,7 +70,10 @@ public class World : MonoBehaviour
         
         foreach (var agent in agents)
         {
-            Destroy(agent.gameObject);
+            if (agent != null)
+            {
+                Destroy(agent.gameObject);
+            }
         }
         
         CreateObjects(numFood, food);
