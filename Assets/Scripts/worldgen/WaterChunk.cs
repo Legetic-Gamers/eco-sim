@@ -16,6 +16,7 @@ public class WaterChunk : MonoBehaviour
     Vector3[] worldVerticies;
     float realWaterLevel;
 
+
     public void Setup(Vector2 position, WaterSettings waterSettings, HeightMapSettings heightMapSettings, Vector3 scale, Transform parent, Vector3[] worldVerticies)
     {
         this.waterSettings = waterSettings;
@@ -24,6 +25,7 @@ public class WaterChunk : MonoBehaviour
 
         waterObject = new GameObject("Water Chunk");
         waterObject.transform.parent = parent;
+
         waterObject.transform.position = new Vector3(position.x, 0, position.y);
         meshFilter = waterObject.AddComponent<MeshFilter>();
         meshRenderer = waterObject.AddComponent<MeshRenderer>();
@@ -42,6 +44,7 @@ public class WaterChunk : MonoBehaviour
 
         obstacle = waterObject.AddComponent<NavMeshObstacle>();
         obstacle.carving = true;
+
 
         PlaceWaterSources();
 

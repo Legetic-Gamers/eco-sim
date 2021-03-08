@@ -11,7 +11,7 @@ public class MapPreview : MonoBehaviour
 
     public enum DrawMode
     {
-        NoiseMap, Mesh, Falloff
+        NoiseMap, Mesh, Falloff, ObjectPlacementMap
     };
     public DrawMode drawMode;
 
@@ -19,6 +19,7 @@ public class MapPreview : MonoBehaviour
     public HeightMapSettings heightMapSettings;
     public TextureData textureSettings;
     public WaterSettings waterSettings;
+    public ObjectPlacementSettings objectPlacementSettings;
 
     public Material terrainMaterial;
 
@@ -46,13 +47,26 @@ public class MapPreview : MonoBehaviour
         {
             DrawTexture(TextureGenerator.TextureFromHeightMap(new HeightMap(FalloffGenerator.GenerateFalloffMap(meshSettings.numVertsPerLine), 0, 1)));
         }
+        else if (drawMode == DrawMode.ObjectPlacementMap)
+        {
+            int size;
+            if (meshSettings.useFlatShading)
+            {
+                size = MeshSettings.supportedChunkSizes[meshSettings.flatShadedChunkSizeIndex];
+            }
+            else
+            {
+                size = MeshSettings.supportedChunkSizes[meshSettings.chunkSizeIndex];
+            }
+            var list = ObjectPlacement.GeneratePlacementPoints(objectPlacementSettings, meshSettings.meshScale, 0, size).ToArray();
+            DrawTexture(TextureGenerator.TextureFromVector2List(list, 200, 200));
+        }
     }
 
     public void DrawTexture(Texture2D texture)
     {
         textureRender.sharedMaterial.mainTexture = texture;
         textureRender.transform.localScale = new Vector3(texture.width, 1, texture.height) / 10f;
-
         textureRender.gameObject.SetActive(true);
         meshFilter.gameObject.SetActive(false);
     }
@@ -75,6 +89,7 @@ public class MapPreview : MonoBehaviour
         {
             DrawMapInEditor();
         }
+        OnMeshUpdated();
     }
 
     private void OnTextureValuesUpdated()
@@ -93,10 +108,30 @@ public class MapPreview : MonoBehaviour
                 DestroyImmediate(waterChunk);
             }
         }
-
-
         if (waterSettings.generateWater)
             meshFilter.gameObject.AddComponent<WaterChunk>().Setup(Vector2.zero, waterSettings, heightMapSettings, meshRenderer.bounds.size, meshFilter.gameObject.transform, meshFilter.sharedMesh.vertices);
+    }
+
+    private void OnObjectPlacementUpdated()
+    {
+        if (meshFilter.gameObject.GetComponent<ObjectPlacement>() != null)
+        {
+            var objects = meshFilter.gameObject.GetComponents<ObjectPlacement>();
+            foreach (var obj in objects)
+            {
+                foreach (var group in obj.groups)
+                {
+                    DestroyImmediate(group);
+                }
+                DestroyImmediate(obj);
+            }
+        }
+        meshFilter.gameObject.AddComponent<ObjectPlacement>().PlaceObjects(objectPlacementSettings, meshSettings, heightMapSettings);
+    }
+
+    private void OnMeshUpdated()
+    {
+        meshFilter.gameObject.GetComponent<MeshCollider>().sharedMesh = meshFilter.sharedMesh;
     }
 
     private void OnDestroy()
@@ -109,7 +144,11 @@ public class MapPreview : MonoBehaviour
         if (meshSettings != null)
         {
             meshSettings.OnValuesUpdated -= OnValuesUpdated;
+            meshSettings.OnValuesUpdated -= OnObjectPlacementUpdated;
+            meshSettings.OnValuesUpdated -= OnWaterUpdated;
             meshSettings.OnValuesUpdated += OnValuesUpdated;
+            meshSettings.OnValuesUpdated += OnObjectPlacementUpdated;
+            meshSettings.OnValuesUpdated += OnWaterUpdated;
         }
         if (heightMapSettings != null)
         {
@@ -125,6 +164,12 @@ public class MapPreview : MonoBehaviour
         {
             waterSettings.OnValuesUpdated -= OnWaterUpdated;
             waterSettings.OnValuesUpdated += OnWaterUpdated;
+        }
+        if (objectPlacementSettings != null)
+        {
+            objectPlacementSettings.OnValuesUpdated -= OnObjectPlacementUpdated;
+            objectPlacementSettings.OnValuesUpdated += OnObjectPlacementUpdated;
+
         }
     }
 }
