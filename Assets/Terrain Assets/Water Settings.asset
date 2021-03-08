@@ -14,11 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   autoUpdate: 1
   generateWater: 1
-  waterLevel: 0
-  waterVertexDiff: 0.227
+  waterLevel: 0.26
+  waterVertexDiff: 0.1
   size: 1
   gridSize: 1
-  power: 12.15
-  scale: 36.64
-  timeScale: 3.04
+  power: 3
+  scale: 1
+  timeScale: 1
   material: {fileID: 2100000, guid: 1bf102809a7cc4a409c724d892b1fecb, type: 2}
