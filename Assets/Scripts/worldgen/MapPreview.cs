@@ -58,7 +58,7 @@ public class MapPreview : MonoBehaviour
             {
                 size = MeshSettings.supportedChunkSizes[meshSettings.chunkSizeIndex];
             }
-            var list = ObjectPlacement.GeneratePlacementPoints(objectPlacementSettings, 0, size).ToArray();
+            var list = ObjectPlacement.GeneratePlacementPoints(objectPlacementSettings, meshSettings.meshScale, 0, size).ToArray();
             DrawTexture(TextureGenerator.TextureFromVector2List(list, 200, 200));
         }
     }
@@ -144,7 +144,11 @@ public class MapPreview : MonoBehaviour
         if (meshSettings != null)
         {
             meshSettings.OnValuesUpdated -= OnValuesUpdated;
+            meshSettings.OnValuesUpdated -= OnObjectPlacementUpdated;
+            meshSettings.OnValuesUpdated -= OnWaterUpdated;
             meshSettings.OnValuesUpdated += OnValuesUpdated;
+            meshSettings.OnValuesUpdated += OnObjectPlacementUpdated;
+            meshSettings.OnValuesUpdated += OnWaterUpdated;
         }
         if (heightMapSettings != null)
         {

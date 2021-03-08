@@ -22,20 +22,42 @@ public class ObjectPlacement : MonoBehaviour
             size = MeshSettings.supportedChunkSizes[meshSettings.chunkSizeIndex];
         }
 
+        size = Mathf.RoundToInt(size * meshSettings.meshScale);
+
         for (int i = 0; i < settings.objectTypes.Length; i++)
         {
             GameObject groupObject = new GameObject(settings.objectTypes[i].name + " Group");
             groups.Add(groupObject);
             groupObject.transform.parent = this.transform;
-            List<Vector2> points = GeneratePlacementPoints(settings, i, size);
+            List<Vector2> points = GeneratePlacementPoints(settings, meshSettings.meshScale, i, size);
             foreach (var point in points)
             {
                 // GameObject gameObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                GameObject gameObject = Instantiate(settings.objectTypes[i].gameObject, new Vector3(point.x - size / 2, heightMapSettings.maxHeight + 10, point.y - size / 2), Quaternion.identity);
+                float maxLength = 0;
+                foreach (var obj in settings.objectTypes[i].gameObjectSettings)
+                {
+                    maxLength += obj.probability;
+                }
+
+                float randomChoice = Random.Range(0f, maxLength);
+                float counter = 0;
+                int randomIndex = 0;
+
+                for (int j = 0; j < settings.objectTypes[i].gameObjectSettings.Length; j++)
+                {
+                    counter += settings.objectTypes[i].gameObjectSettings[j].probability;
+                    if (randomChoice < counter)
+                    {
+                        randomIndex = j;
+                        break;
+                    }
+                }
+
+                GameObject gameObject = Instantiate(settings.objectTypes[i].gameObjectSettings[randomIndex].gameObject, new Vector3(point.x - size / 2, heightMapSettings.maxHeight + 10, point.y - size / 2), Quaternion.identity);
 
                 //gameObject.transform.position = new Vector3(point.x - size / 2, heightMapSettings.maxHeight + 10, point.y - size / 2);
                 gameObject.transform.parent = groupObject.transform;
-                gameObject.transform.localScale = Vector3.one * settings.objectTypes[i].scale;
+                gameObject.transform.localScale = Vector3.one * settings.objectTypes[i].scale * meshSettings.meshScale;
 
                 Ray ray = new Ray(gameObject.transform.position, gameObject.transform.TransformDirection(Vector3.down));
                 RaycastHit hit;
@@ -60,9 +82,9 @@ public class ObjectPlacement : MonoBehaviour
         }
     }
 
-    public static List<Vector2> GeneratePlacementPoints(ObjectPlacementSettings settings, int objectIndex, int size)
+    public static List<Vector2> GeneratePlacementPoints(ObjectPlacementSettings settings, float meshScale, int objectIndex, int size)
     {
-        List<Vector2> points = PoissonDiskSampling.GeneratePoisson(size, size, settings.objectTypes[objectIndex].minimumDistance, settings.objectTypes[objectIndex].newPointCount);
+        List<Vector2> points = PoissonDiskSampling.GeneratePoisson(size, size, settings.objectTypes[objectIndex].minimumDistance * meshScale, settings.objectTypes[objectIndex].newPointCount);
 
         return points;
     }

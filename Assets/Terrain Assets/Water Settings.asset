@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   autoUpdate: 1
   generateWater: 1
-  waterLevel: 0.233
+  waterLevel: 0.26
   waterVertexDiff: 0.1
   size: 1
   gridSize: 1
