@@ -5372,7 +5372,6 @@ MonoBehaviour:
   obstacleMask:
     serializedVersion: 2
     m_Bits: 0
-  targets: []
   animalController: {fileID: 0}
 --- !u!114 &8785101678715966952
 MonoBehaviour:
@@ -5390,9 +5389,7 @@ MonoBehaviour:
   targetMask:
     serializedVersion: 2
     m_Bits: 256
-  targets: []
   animalController: {fileID: 0}
-  isPrey: 0
 --- !u!1 &1571034971651392
 GameObject:
   m_ObjectHideFlags: 0
@@ -6632,7 +6629,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1699545072554856}
-  m_LocalRotation: {x: 1.7112914e-15, y: 1, z: -0.000000021855694, w: 0.0000000754979}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []

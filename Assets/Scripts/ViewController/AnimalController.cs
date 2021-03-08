@@ -21,9 +21,7 @@ public abstract class AnimalController : MonoBehaviour
     // decisionMaker subscribes to these actions
     public Action<GameObject> actionPerceivedHostile;
     public Action actionDeath;
-    
-    public Action<AnimalModel> onBirth;
-    
+
     [HideInInspector]
     public NavMeshAgent agent;
     
@@ -31,9 +29,6 @@ public abstract class AnimalController : MonoBehaviour
     private AnimationController animationController;
     private DecisionMaker decisionMaker;
     
-    /*public GoToMate sm;
-    public GoToFood sf;
-    public GoToWater sw;*/
     public FleeingState fleeingState;
     public Eating eatingState;
     public Wander wanderState;
@@ -83,13 +78,13 @@ public abstract class AnimalController : MonoBehaviour
             case Eating _:
                 energyModifier = 0f;
                 hydrationModifier = 0.05f;
-                reproductiveUrgeModifier = 1f;
+                reproductiveUrgeModifier = 0.05f;
                 //Debug.Log("varying parameters depending on state: Eating");
                 break;
             case FleeingState _:
-                energyModifier = 1f;
-                hydrationModifier = 1f;
-                reproductiveUrgeModifier = 1f;
+                energyModifier = 0.3f;
+                hydrationModifier = 0.3f;
+                reproductiveUrgeModifier = 0;
                 speedModifier = RunningSpeed;
                 //Debug.Log("varying parameters depending on state: FleeingState");
                 break;
@@ -97,7 +92,7 @@ public abstract class AnimalController : MonoBehaviour
             {
                 energyModifier = 0.1f;
                 hydrationModifier = 0.05f;
-                reproductiveUrgeModifier = 1;
+                reproductiveUrgeModifier = 0.05f;
 
                 GoToState chaseState = toState;
                 GameObject target = chaseState.GetTarget();
@@ -128,9 +123,9 @@ public abstract class AnimalController : MonoBehaviour
                 //Debug.Log("varying parameters depending on state: Wander");
                 break;
             case Wander _:
-                energyModifier = 0.1f;
+                energyModifier = 0.05f;
                 hydrationModifier = 0.05f;
-                reproductiveUrgeModifier = 1f;
+                reproductiveUrgeModifier = 0.05f;
             
                 speedModifier = JoggingSpeed;
                 //Debug.Log("varying parameters depending on state: Wander");
@@ -162,7 +157,7 @@ public abstract class AnimalController : MonoBehaviour
         animalModel.currentEnergy -= (animalModel.traits.size * 1) + (animalModel.traits.size * animalModel.currentSpeed) * energyModifier;
         animalModel.currentHydration -= (animalModel.traits.size * 1) + (animalModel.traits.size * animalModel.currentSpeed) * hydrationModifier;
         animalModel.reproductiveUrge += 0.1f * reproductiveUrgeModifier;
-        //animalModel.age++;
+        animalModel.age++;
         
     }
 
@@ -207,7 +202,8 @@ public abstract class AnimalController : MonoBehaviour
     //Set animals size based on traits.
     private void SetPhenotype()
     {
-        gameObject.transform.localScale = new Vector3(1, 1, 1) * animalModel.traits.size;
+        
+        gameObject.transform.localScale = getNormalizedScale() * animalModel.traits.size;
     }
 
     private void EatFood(GameObject food)
@@ -292,13 +288,12 @@ public abstract class AnimalController : MonoBehaviour
         EventSubscribe();
         
         // Find the data handler and notify birth.
-        DataHandler dh = FindObjectOfType<DataHandler>();
-        dh.LogNewAnimal(animalModel);
+        datahandler = FindObjectOfType<DataHandler>();
+        datahandler.LogNewAnimal(animalModel);
         
         SetPhenotype();
         
         decisionMaker = new DecisionMaker(this,animalModel,tickEventPublisher);
-        onBirth?.Invoke(animalModel);
     }
 
 
@@ -307,6 +302,8 @@ public abstract class AnimalController : MonoBehaviour
     {
         if (!animalModel.IsAlive)
         {
+            // Log animal death
+            datahandler.LogDeadAnimal(animalModel);
             // invoke death state with method HandleDeath() in decisionmaker
             actionDeath?.Invoke();
             // Set state so that it can't change
@@ -326,6 +323,8 @@ public abstract class AnimalController : MonoBehaviour
         //Update physics
         //Fsm.UpdateStatesPhysics();
     }
-    
-    
+
+    // method that defines a scale that is normalized and in relativity to a rabbits scale
+    public abstract Vector3 getNormalizedScale();
+
 }
