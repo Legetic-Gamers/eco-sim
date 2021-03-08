@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 // http://devmag.org.za/2009/05/03/poisson-disk-sampling/
 public class ObjectPlacement : MonoBehaviour
@@ -10,7 +11,7 @@ public class ObjectPlacement : MonoBehaviour
     public void PlaceObjects(ObjectPlacementSettings settings, MeshSettings meshSettings, HeightMapSettings heightMapSettings)
     {
         int size;
-
+        Debug.Log("Is this called more than once");
         groups = new List<GameObject>();
 
         if (meshSettings.useFlatShading)
@@ -71,7 +72,15 @@ public class ObjectPlacement : MonoBehaviour
                         if (withinSpan)
                         {
                             Vector3 oldPosition = gameObject.transform.position;
-                            gameObject.transform.position = new Vector3(oldPosition.x, hit.point.y, oldPosition.z);
+                            var agent = gameObject.GetComponent<NavMeshAgent>();
+                            if (agent == null)
+                            {
+                                gameObject.transform.position = new Vector3(oldPosition.x, hit.point.y + settings.objectTypes[i].yOffset, oldPosition.z);
+                            }
+                            else
+                            {
+                                agent.Warp(new Vector3(oldPosition.x, hit.point.y + settings.objectTypes[i].yOffset, oldPosition.z));
+                            }
                             continue;
                         }
                     }

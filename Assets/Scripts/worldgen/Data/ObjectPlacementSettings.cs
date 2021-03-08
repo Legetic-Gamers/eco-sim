@@ -20,6 +20,8 @@ public struct ObjectType
     public float minimumDistance;
     public int newPointCount;
     public float scale;
+    public float yOffset;
+    
     [Range(0, 1)]
     public float minHeight;
     [Range(0, 1)]
