@@ -15,7 +15,7 @@ public class ObjectPlacementSettings : UpdatableData
 public struct ObjectType
 {
     public string name;
-    public GameObject gameObject;
+    public GameObjectSettings[] gameObjectSettings;
     public Color previewColour;
     public float minimumDistance;
     public int newPointCount;
@@ -24,4 +24,12 @@ public struct ObjectType
     public float minHeight;
     [Range(0, 1)]
     public float maxHeight;
+}
+
+[System.Serializable]
+public struct GameObjectSettings
+{
+    public GameObject gameObject;
+    [Range(0, 1)]
+    public float probability;
 }
