@@ -19,9 +19,9 @@ public class AnimalBrainAgent : Agent
     private AnimalModel animalModel;
     private TickEventPublisher eventPublisher;
     private FiniteStateMachine fsm;
-    
+
     //
-     private World world;
+    private World world;
 
 
     //We could have multiple brains, EX:
@@ -38,11 +38,11 @@ public class AnimalBrainAgent : Agent
         animalController = GetComponent<AnimalController>();
         fsm = animalController.fsm;
         animalModel = animalController.animalModel;
-        
+
         //this.eventPublisher = eventPublisher;
 
         world = FindObjectOfType<World>();
-        
+
         EventSubscribe();
     }
 
@@ -54,12 +54,12 @@ public class AnimalBrainAgent : Agent
         //MAKE SURE YOU ARE USING LOCAL POSITION
 
         //Reset animal position and rotation.
-        transform.localPosition = new Vector3(Random.Range(-9.5f, 9.5f), 0, Random.Range(-9.5f, 9.5f));
-        transform.rotation = Quaternion.Euler(new Vector3(0f, Random.Range(0, 360)));
-
-        //world.ResetWorld();
+        //transform.localPosition = new Vector3(Random.Range(-9.5f, 9.5f), 0, Random.Range(-9.5f, 9.5f));
+        //transform.rotation = Quaternion.Euler(new Vector3(0f, Random.Range(0, 360)));
+        
         
     }
+  
 
     //Collecting observations that the ML agent should base its calculations on.
     public override void CollectObservations(VectorSensor sensor)
@@ -120,15 +120,42 @@ public class AnimalBrainAgent : Agent
     public override void OnActionReceived(ActionBuffers vectorAction)
     {
         base.OnActionReceived(vectorAction);
+        ActionSegment<int> discreteActions = vectorAction.DiscreteActions;
 
-        
+        if (discreteActions[0] == 0)
+        {
+            ChangeState(animalController.wanderState);
+            print("Wander.");
+        }
+        else if (discreteActions[0] == 1)
+        {
+            ChangeState(animalController.goToWaterState);
+            print("Look for Water.");
+        }
+        else if (discreteActions[0] == 2)
+        {
+            ChangeState(animalController.goToMate);
+            print("Look for Mate.");
+        }
+        else if (discreteActions[0] == 3)
+        {
+            ChangeState(animalController.goToFoodState);
+            print("Look for food.");
+        }
+        else if (discreteActions[0] == 4)
+        {
+            ChangeState(animalController.fleeingState);
+            print("Flee!");
+        }
     }
 
     //Used for testing, gives us control over the output from the ML algortihm.
     public override void Heuristic(in ActionBuffers actionsOut)
     {
         base.Heuristic(in actionsOut);
-        
+
+        ActionSegment<int> discreteActions = actionsOut.DiscreteActions;
+
         if (Input.GetKey(KeyCode.UpArrow))
         {
             print("up");
@@ -137,7 +164,8 @@ public class AnimalBrainAgent : Agent
             NavMeshHit hit;
             NavMesh.SamplePosition(position, out hit, 5, 1 << NavMesh.GetAreaFromName("Walkable"));
             animalController.agent.SetDestination(hit.position);
-        } else if (Input.GetKey(KeyCode.DownArrow))
+        }
+        else if (Input.GetKey(KeyCode.DownArrow))
         {
             Vector3 position = gameObject.transform.position;
             position.x = position.x - 1f;
@@ -145,7 +173,8 @@ public class AnimalBrainAgent : Agent
             NavMesh.SamplePosition(position, out hit, 5, 1 << NavMesh.GetAreaFromName("Walkable"));
             animalController.agent.SetDestination(hit.position);
             print("down");
-        } else if (Input.GetKey(KeyCode.LeftArrow))
+        }
+        else if (Input.GetKey(KeyCode.LeftArrow))
         {
             Vector3 position = gameObject.transform.position;
             position.z = position.z + 1f;
@@ -153,7 +182,8 @@ public class AnimalBrainAgent : Agent
             NavMesh.SamplePosition(position, out hit, 5, 1 << NavMesh.GetAreaFromName("Walkable"));
             animalController.agent.SetDestination(hit.position);
             print("left");
-        } else if (Input.GetKey(KeyCode.RightArrow))
+        }
+        else if (Input.GetKey(KeyCode.RightArrow))
         {
             Vector3 position = gameObject.transform.position;
             position.z = position.z - 1f;
@@ -161,31 +191,39 @@ public class AnimalBrainAgent : Agent
             NavMesh.SamplePosition(position, out hit, 5, 1 << NavMesh.GetAreaFromName("Walkable"));
             animalController.agent.SetDestination(hit.position);
             print("right");
-        } else if (Input.GetKey(KeyCode.Alpha1))
+        }
+        else if (Input.GetKey(KeyCode.Alpha1))
         {
-            ChangeState(animalController.goToFoodState);
-            print("Look for food.");
-        } else if (Input.GetKey(KeyCode.Alpha2))
+            discreteActions[0] = 0;
+            // ChangeState(animalController.goToFoodState);
+            // print("Look for food.");
+        }
+        else if (Input.GetKey(KeyCode.Alpha2))
         {
-            ChangeState(animalController.goToWaterState);
-            print("Look for Water.");
-        }else if (Input.GetKey(KeyCode.Alpha3))
+            discreteActions[0] = 1;
+            // ChangeState(animalController.goToWaterState);
+            // print("Look for Water.");
+        }
+        else if (Input.GetKey(KeyCode.Alpha3))
         {
-            ChangeState(animalController.goToMate);
-            print("Look for Mate.");
+            discreteActions[0] = 2;
+            // ChangeState(animalController.goToMate);
+            // print("Look for Mate.");
         }
         else if (Input.GetKey(KeyCode.Alpha4))
         {
-            ChangeState(animalController.wanderState);
-            print("Wander.");
-        } else if (Input.GetKey(KeyCode.Alpha5))
+            discreteActions[0] = 3;
+            // ChangeState(animalController.wanderState);
+            // print("Wander.");
+        }
+        else if (Input.GetKey(KeyCode.Alpha5))
         {
-            ChangeState(animalController.fleeingState);
-            print("Flee!");
+            discreteActions[0] = 4;
+            // ChangeState(animalController.fleeingState);
+            // print("Flee!");
         }
     }
 
-    
 
     private void ChangeState(State newState)
     {
@@ -218,34 +256,39 @@ public class AnimalBrainAgent : Agent
     /// <param name="target"> perceived target sent from either FieldOfView or HearingAbility,
     /// which method that will be called depends on the type of target </param>
 
-
     //To set reward we could use biological fitness = fertile ofspring produced = Good reward
     //addreward offspringConstant (could be like 20, depends on age)
     //This should be added on reproduce? so need event for that?
-    
+
     //Penalty could be set upon death. Perhaps based on how many fertile offspring produced in lifetime and
     //how long the rabbit lived?
-
     private void HandleDeath()
     {
-
         //Penalize for every year not lived.
-        AddReward( animalModel.age - animalModel.traits.ageLimit );
-        
+        AddReward(animalModel.age - animalModel.traits.ageLimit);
+
         //Dont destroy agent, for training purposes.
         //TODO comment back after training
-        //ChangeState(animalController.deadState);
+        ChangeState(animalController.deadState);
         //EventUnsubscribe();
-        
-        EndEpisode();
+        EventUnsubscribe();
+
+        //End if all rabbits are dead.
+        Debug.Log(fsm.absorbingState);
+        if (world.agents.All(agent => agent.fsm.absorbingState))
+        {
+            Debug.Log("They all dead!");
+            EndEpisode();
+            world.ResetWorld();
+        }
         
 
-        EventUnsubscribe();
+
+        
     }
-    
-    
+
+
     public void Update()
     {
-        
     }
 }

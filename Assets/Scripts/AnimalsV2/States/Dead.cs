@@ -1,4 +1,6 @@
-﻿namespace AnimalsV2.States
+﻿using UnityEngine;
+
+namespace AnimalsV2.States
 {
 
     namespace AnimalsV2.States
@@ -14,8 +16,8 @@
             public override void Enter()
             {
                 //when entering state dead,
-                
-                
+
+                Debug.Log("Dead");
                 base.Enter();
                 animal.agent.isStopped = true;
                 currentStateAnimation = StateAnimation.Dead;

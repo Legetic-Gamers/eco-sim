@@ -305,10 +305,10 @@ public abstract class AnimalController : MonoBehaviour
     {
         if (!animalModel.IsAlive)
         {
-            // invoke death state with method HandleDeath() in decisionmaker
-            actionDeath?.Invoke();
             // Set state so that it can't change
             fsm.absorbingState = true;
+            // invoke death state with method HandleDeath() in decisionmaker
+            actionDeath?.Invoke();
             // unsubscribe all events because we want only want to invoke it once.
             actionDeath = null;
         }
