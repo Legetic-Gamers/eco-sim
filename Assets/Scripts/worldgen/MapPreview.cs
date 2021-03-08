@@ -27,12 +27,13 @@ public class MapPreview : MonoBehaviour
     public int editorPreviewLevelOfDetail;
     public bool autoUpdate;
 
+
+
     public void DrawMapInEditor()
     {
         textureSettings.ApplyToMaterial(terrainMaterial);
         textureSettings.UpdateMeshHeights(terrainMaterial, heightMapSettings.minHeight, heightMapSettings.maxHeight);
-        HeightMap heightMap = HeightMapGenerator.GenerateHeightMap(meshSettings.numVertsPerLine, meshSettings.numVertsPerLine, heightMapSettings, Vector2.zero);
-
+        HeightMap heightMap = genHeightMap();
         if (drawMode == DrawMode.NoiseMap)
         {
             DrawTexture(TextureGenerator.TextureFromHeightMap(heightMap));
@@ -75,10 +76,11 @@ public class MapPreview : MonoBehaviour
         meshFilter.sharedMesh = meshData.CreateMesh();
         textureRender.gameObject.SetActive(false);
         meshFilter.gameObject.SetActive(true);
-        if (waterSettings.generateWater)
-        {
+    }
 
-        }
+    private HeightMap genHeightMap()
+    {
+        return HeightMapGenerator.GenerateHeightMap(meshSettings.numVertsPerLine, meshSettings.numVertsPerLine, heightMapSettings, Vector2.zero);
     }
 
     private void OnValuesUpdated()
@@ -107,7 +109,7 @@ public class MapPreview : MonoBehaviour
             }
         }
         if (waterSettings.generateWater)
-            meshFilter.gameObject.AddComponent<WaterChunk>().Setup(Vector2.zero, waterSettings, heightMapSettings, meshRenderer.bounds.size, meshFilter.gameObject.transform);
+            meshFilter.gameObject.AddComponent<WaterChunk>().Setup(Vector2.zero, waterSettings, heightMapSettings, meshRenderer.bounds.size, meshFilter.gameObject.transform, meshFilter.sharedMesh.vertices);
     }
 
     private void OnObjectPlacementUpdated()
