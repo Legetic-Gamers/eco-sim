@@ -16,8 +16,6 @@ public class CameraController : MonoBehaviour
     private GameObject target;
     private readonly Vector3 yOffset = new Vector3(0, 2, 0);
 
-    private bool hasTarget;
-    
     [SerializeField]
     private AnimalSelectPanel animalSelectPanel;
     
@@ -70,9 +68,8 @@ public class CameraController : MonoBehaviour
         // If ray != null, out hit (store data in hit)
         if (Physics.Raycast(ray, out hit, 100f))
         {
-            if (hit.transform != null && hit.transform.gameObject.name != "Plane")
+            if (hit.transform && hit.transform.gameObject.name != "Plane")
             {
-                hasTarget = true;
                 target = hit.collider.gameObject;
                 // Print the name of the object
                 PrintName(target);
@@ -86,7 +83,7 @@ public class CameraController : MonoBehaviour
     {
         // See if the gameobject has animalcontroller, if so; we want to show panel with traits
         AnimalController animalController = gameObject.GetComponent<AnimalController>();
-        if (animalController != null && animalController?.animalModel?.traits != null)
+        if (animalController && animalController?.animalModel?.traits != null)
         {
             animalSelectPanel.SetTraitText(animalController.animalModel.traits, animalController.gameObject.name);
         }
@@ -104,7 +101,7 @@ public class CameraController : MonoBehaviour
     // Update is called once per frame
     private void LateUpdate()
     {
-        // selct an object (correct tag) to follow it
+        // selct an object to follow it
         if (Input.GetMouseButtonDown(0))
         {
             GetTarget();
@@ -112,7 +109,6 @@ public class CameraController : MonoBehaviour
         // Esc to deselect target and/or reset zoom/fov level
         if (Input.GetKey(KeyCode.Escape)) 
         {
-            hasTarget = false;
             target = null;
             
             Camera.main.fieldOfView = 60;
@@ -122,7 +118,7 @@ public class CameraController : MonoBehaviour
         if (!Input.GetKey(KeyCode.LeftAlt)) Rotate();
 
         // Follow the target
-        if (hasTarget) transform.position = target.transform.position - transform.forward * 4 + yOffset;
+        if (target) transform.position = target.transform.position - transform.forward * 4 + yOffset;
         else Move();
     }
 }
