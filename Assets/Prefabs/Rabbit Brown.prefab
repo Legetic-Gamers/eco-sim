@@ -963,7 +963,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 6b7a28603e9bc44cebffdd89cef80ade, type: 2}
+  - {fileID: 2100000, guid: af31ae3251cf4b54db9ee9d45721d945, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2656,7 +2656,6 @@ MonoBehaviour:
   obstacleMask:
     serializedVersion: 2
     m_Bits: 0
-  targets: []
   animalController: {fileID: 0}
 --- !u!114 &5945667779142240398
 MonoBehaviour:
@@ -2674,9 +2673,7 @@ MonoBehaviour:
   targetMask:
     serializedVersion: 2
     m_Bits: 256
-  targets: []
   animalController: {fileID: 0}
-  isPrey: 0
 --- !u!114 &9127360419405430084
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2692,7 +2689,6 @@ MonoBehaviour:
   agent: {fileID: 0}
   visibleHostileTargets: []
   visibleFriendlyTargets: []
-  visiblePreyTargets: []
   visibleFoodTargets: []
   visibleWaterTargets: []
   heardHostileTargets: []

@@ -69,9 +69,8 @@ namespace AnimalsV2
 
             switch (currentState)
             {
-                case Eating state:
+                case Eating eatingState:
                 {
-                    Eating eatingState = state;
                     //Eat until full or out of food.
                     if (eatingState.foodIsEmpty() || animalModel.EnergyFull)
                     {
@@ -80,18 +79,16 @@ namespace AnimalsV2
 
                     break;
                 }
-                case Drinking state:
+                case Drinking _:
                 {
-                    Drinking drinkingState = state;
                     Prioritize();
                     break;
                 }
-                case FleeingState state:
+                case FleeingState fleeingState:
                 {
                     //Run until no predator nearby.
                     //Run a bit longer?
 
-                    FleeingState fleeingState = state;
                     if (fleeingState.HasFled())
                     {
                         //if we arrive here there the animal has sucessfully fled
@@ -103,9 +100,8 @@ namespace AnimalsV2
                 case Idle _:
                     Prioritize();
                     break;
-                case GoToState state:
+                case GoToState goToState:
                 {
-                    GoToState goToState = state;
                     if(goToState.GetTarget() != null && goToState.GetAction() != null){
                         if (goToState.arrivedAtTarget())
                         {
@@ -137,11 +133,10 @@ namespace AnimalsV2
 
                     break;
                 }
-                case Wander state:
+                case Wander wander:
                 {
-                    Wander wander = state;
                     var targetAndAction = wander.FoundObject();
-                    if (targetAndAction?.Item1 != null)
+                    if (targetAndAction?.Item1)
                     {
                         animalController.goToState.SetTarget(targetAndAction.Item1);
                         animalController.goToState.SetActionOnArrive(targetAndAction.Item2);
@@ -252,7 +247,6 @@ namespace AnimalsV2
         //Listen to when parameters or senses were updated.
         private void EventSubscribe()
         {
-            eventPublisher.onParamTickEvent += MakeDecision;
             eventPublisher.onSenseTickEvent += MakeDecision;
             
             animalController.actionPerceivedHostile += HandleHostileTarget;
@@ -262,7 +256,6 @@ namespace AnimalsV2
         
         public void EventUnsubscribe()
         {
-            eventPublisher.onParamTickEvent -= MakeDecision;
             eventPublisher.onSenseTickEvent -= MakeDecision;
             
             animalController.actionPerceivedHostile -= HandleHostileTarget;

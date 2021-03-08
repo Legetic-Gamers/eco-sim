@@ -56,8 +56,6 @@ public abstract class AnimalController : MonoBehaviour
     public List<GameObject> heardFriendlyTargets = new List<GameObject>();
     public List<GameObject> heardPreyTargets = new List<GameObject>();
 
-    public bool IsControllable { get; set; } = false;
-
     /* /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\ */
     /*                                   Parameter handlers                                   */
     /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
@@ -97,11 +95,11 @@ public abstract class AnimalController : MonoBehaviour
                 GoToState chaseState = toState;
                 GameObject target = chaseState.GetTarget();
             
-                if (target != null)
+                if (target)
                 {
                     AnimalController targetController = target.GetComponent<AnimalController>();
                     //target is an animal and i can eat it -> we are chasing something.
-                    if (targetController != null && animalModel.CanEat(targetController.animalModel)){
+                    if (targetController && animalModel.CanEat(targetController.animalModel)){
                         //Run fast if chasing
                         speedModifier = RunningSpeed;
                     
