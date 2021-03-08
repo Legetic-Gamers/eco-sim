@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using AnimalsV2;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
@@ -91,7 +88,7 @@ public class CameraController : MonoBehaviour
         AnimalController animalController = gameObject.GetComponent<AnimalController>();
         if (animalController != null && animalController?.animalModel?.traits != null)
         {
-            animalSelectPanel.SetTraitText(animalController.animalModel.traits, gameObject.name);
+            animalSelectPanel.SetTraitText(animalController.animalModel.traits, animalController.gameObject.name);
         }
         else
         {
