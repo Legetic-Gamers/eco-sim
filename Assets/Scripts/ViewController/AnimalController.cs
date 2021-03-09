@@ -167,12 +167,15 @@ public abstract class AnimalController : MonoBehaviour
 
     protected void EventSubscribe()
     {
-        // every 2 sec
-        tickEventPublisher.onParamTickEvent += VaryParameters;
-        tickEventPublisher.onParamTickEvent += HandleDeathStatus;
-        // every 0.5 sec
-        tickEventPublisher.onSenseTickEvent += fsm.UpdateStatesLogic;
-
+        if (tickEventPublisher)
+        {
+            // every 2 sec
+            tickEventPublisher.onParamTickEvent += VaryParameters;
+            tickEventPublisher.onParamTickEvent += HandleDeathStatus;
+            // every 0.5 sec
+            tickEventPublisher.onSenseTickEvent += fsm.UpdateStatesLogic;    
+        }
+        
         fsm.OnStateEnter += ChangeModifiers;
 
         eatingState.onEatFood += EatFood;
@@ -186,12 +189,16 @@ public abstract class AnimalController : MonoBehaviour
 
     protected void EventUnsubscribe()
     {
-        // every 2 sec
-        tickEventPublisher.onParamTickEvent -= VaryParameters;
-        tickEventPublisher.onParamTickEvent -= HandleDeathStatus;
-        // every 0.5 sec
-        tickEventPublisher.onSenseTickEvent -= fsm.UpdateStatesLogic;
-
+        if (tickEventPublisher)
+        {
+            // every 2 sec
+            tickEventPublisher.onParamTickEvent -= VaryParameters;
+            tickEventPublisher.onParamTickEvent -= HandleDeathStatus;
+            // every 0.5 sec
+            tickEventPublisher.onSenseTickEvent -= fsm.UpdateStatesLogic;    
+        }
+        
+        
         fsm.OnStateEnter -= ChangeModifiers;
 
         eatingState.onEatFood -= EatFood;
@@ -341,4 +348,5 @@ public abstract class AnimalController : MonoBehaviour
         //Update physics
         //Fsm.UpdateStatesPhysics();
     }
+    
 }

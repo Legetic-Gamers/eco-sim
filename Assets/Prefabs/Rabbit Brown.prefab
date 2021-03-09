@@ -271,6 +271,7 @@ MonoBehaviour:
   energy: {fileID: 5542760120057978334}
   hydration: {fileID: 5542760118698675375}
   reproductiveUrge: {fileID: 5542760118645572184}
+  onlyUpdateNearCamera: 1
   camera: {fileID: 0}
 --- !u!1 &2776256131469257146
 GameObject:
@@ -2589,7 +2590,7 @@ Animator:
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 63b5250ea377b104a8c56fd4f3aa55bc, type: 3}
   m_Controller: {fileID: 9100000, guid: 8f90dc31d23f89b4fbcc3a81f0a72bed, type: 2}
-  m_CullingMode: 0
+  m_CullingMode: 2
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
@@ -2675,7 +2676,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   animalController: {fileID: 0}
-  isPrey: 0
 --- !u!114 &9127360419405430084
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2688,6 +2688,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bdd6549df376c1a4b9199e25eb73a7a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tickEventPublisher: {fileID: 0}
   agent: {fileID: 0}
   visibleHostileTargets: []
   visibleFriendlyTargets: []

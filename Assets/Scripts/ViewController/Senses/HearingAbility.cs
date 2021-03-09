@@ -76,14 +76,19 @@ public class HearingAbility : MonoBehaviour
         animalController = GetComponent<AnimalController>();
         // set animals hearing distance
         radius = animalController.animalModel.traits.hearingRadius;
-        
-        // subscribe to Ticks
-        tickEventPublisher.onSenseTickEvent += FindHeardTargets;
+        if (tickEventPublisher)
+        {
+            // subscribe to Ticks
+            tickEventPublisher.onSenseTickEvent += FindHeardTargets;   
+        }
     }
 
     private void OnDestroy()
     {
-        // unsubscribe from Ticks
-        tickEventPublisher.onSenseTickEvent -= FindHeardTargets;
+        if (tickEventPublisher)
+        {
+            // unsubscribe from Ticks
+            tickEventPublisher.onSenseTickEvent -= FindHeardTargets;   
+        }
     }
 }

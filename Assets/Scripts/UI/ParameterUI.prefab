@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4983618221499791169}
   - component: {fileID: 7968821725206148526}
   - component: {fileID: 9117412599635127386}
-  m_Layer: 8
+  m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -90,7 +90,7 @@ GameObject:
   - component: {fileID: 7109646815149258887}
   - component: {fileID: 7109646815149258886}
   - component: {fileID: 7109646815149258885}
-  m_Layer: 8
+  m_Layer: 5
   m_Name: ParameterUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -189,7 +189,7 @@ GameObject:
   - component: {fileID: 7109646816137998282}
   - component: {fileID: 7109646816137998281}
   - component: {fileID: 8413700963402318243}
-  m_Layer: 8
+  m_Layer: 5
   m_Name: Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -271,6 +271,7 @@ MonoBehaviour:
   energy: {fileID: 2491840453941846063}
   hydration: {fileID: 2491840453156778334}
   reproductiveUrge: {fileID: 2491840453074583465}
+  onlyUpdateNearCamera: 1
   camera: {fileID: 0}
 --- !u!1001 &7109646815094159374
 PrefabInstance:
