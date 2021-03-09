@@ -262,7 +262,7 @@ public class AnimalBrainAgent : Agent
             // ChangeState(animalController.fleeingState);
             // print("Flee!");
         }
-        discreteActions[0] = 3;
+        
         
     }
 

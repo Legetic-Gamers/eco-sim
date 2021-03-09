@@ -50,13 +50,13 @@ public class FieldOfView : MonoBehaviour
             Vector3 dirToTarget = (target.transform.position - transform.position).normalized;
             float distToTarget = Vector3.Distance(transform.position, target.transform.position);
             
-            
+            Debug.DrawLine(transform.position, transform.position + dirToTarget * distToTarget , Color.green);
+
 
             if (Vector3.Angle(transform.forward, dirToTarget) < angle / 2)
             {
                 //Debug.Log(target.name);
-                Debug.DrawLine(transform.position, transform.position + dirToTarget * distToTarget , Color.green);
-
+                
                 // if target is not obscured
                 RaycastHit hit;
                 if (!Physics.Raycast(transform.position, dirToTarget, distToTarget, obstacleMask))
