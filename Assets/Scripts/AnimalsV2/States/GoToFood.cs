@@ -55,7 +55,7 @@ namespace AnimalsV2.States
                     // NavMeshHit hit;
                     // NavMesh.SamplePosition(pointToRunTo, out hit, 100, 1 << NavMesh.GetAreaFromName("Walkable"));
                     // animal.agent.SetDestination(hit.position);
-                    if (Vector3.Distance(animal.transform.position, closestFood.transform.position) <= 2f)
+                    if (Vector3.Distance(animal.transform.position, closestFood.transform.position) <= 3f)
                     {
                         animal.eatingState.SetTarget(closestFood);
                         finiteStateMachine.ChangeState(animal.eatingState);

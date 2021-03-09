@@ -36,12 +36,14 @@ namespace AnimalsV2
 
         public static void NavigateToPoint(AnimalController animal,Vector3 position)
         {
+            
             NavMeshHit hit;
             //TODO this maxDistance is what is causing rabbits to dance sometimes, if poisition cant be found.
-            if (NavMesh.SamplePosition(position, out hit, 20, 1 << NavMesh.GetAreaFromName("Walkable")))
+            if (NavMesh.SamplePosition(position, out hit, animal.agent.height * 2, 1 << NavMesh.GetAreaFromName("Walkable")))
             {
                 animal.agent.SetDestination(hit.position);
             }
+            
         }
 
         /// <summary>

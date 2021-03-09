@@ -57,7 +57,7 @@ namespace AnimalsV2.States
             Vector3 position = animal.transform.position;
             target = GetNearestWater();
             if (target == null) return false;
-            bool isCloseEnough = Vector3.Distance(target.transform.position, position) <= 2f;
+            bool isCloseEnough = Vector3.Distance(target.transform.position, position) <= 3f;
             return animal.visibleWaterTargets.Count > 0 && isCloseEnough;
         }
 

@@ -83,7 +83,6 @@ public class ParameterUI : MonoBehaviour
 
     void UpdateRenderParameterUI()
     {
-        Debug.Log("renderer is visible");
         AnimalModel animal = animalController.animalModel;
         health.value = animal.GetHealthPercentage;
         energy.value = animal.GetEnergyPercentage;

@@ -27,23 +27,23 @@ public class CameraController : MonoBehaviour
         // Positive: W, Negative: S
         var zAxis = Input.GetAxis("Vertical") * speed * Time.deltaTime;
 
-        transform.Translate(new Vector3(xAxis, 0, zAxis));
-
-        // This is set so that the camera always stays at a certain height
-        transform.position = new Vector3(transform.position.x, height, transform.position.z);
+        float yAxis = 0;
+        
 
         // Change the height by scrolling while holding LeftAlt key.
-        if (Input.GetKey(KeyCode.LeftAlt))
+        if (Input.GetKey(KeyCode.Space))
         {
-            height -= Input.GetAxis("Mouse ScrollWheel") * speed;
-            height = Mathf.Max(height, 0);
-        }
-        // Else scrolling will set the zoom level (FoV).
-        else 
+            yAxis = speed/2 * Time.deltaTime;
+        } else if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.LeftCommand))
         {
-            Camera.main.fieldOfView -= Input.GetAxis("Mouse ScrollWheel") * speed;
-            Camera.main.fieldOfView = Mathf.Clamp(Camera.main.fieldOfView, 15, 100);
+            yAxis = -speed/2 * Time.deltaTime;
         }
+        
+        transform.Translate(new Vector3(xAxis, yAxis, zAxis));
+        
+        
+        Camera.main.fieldOfView -= Input.GetAxis("Mouse ScrollWheel") * speed;
+        Camera.main.fieldOfView = Mathf.Clamp(Camera.main.fieldOfView, 15, 100);
     }
 
     // Camera rotation
