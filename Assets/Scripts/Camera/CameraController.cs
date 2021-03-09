@@ -3,7 +3,7 @@
 public class CameraController : MonoBehaviour
 {
     // Move
-    public float speed = 25.0f;
+    public float speed = 10.0f;
     public float height = 2.0f;
 
     // Rotate
