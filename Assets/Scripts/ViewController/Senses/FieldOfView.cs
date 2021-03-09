@@ -45,24 +45,37 @@ public class FieldOfView : MonoBehaviour
             GameObject target = targetsInRadius[i].gameObject;
 
             // don't add self
-            if (target == gameObject) return;
+            if (target == gameObject) break;
 
             Vector3 dirToTarget = (target.transform.position - transform.position).normalized;
+            float distToTarget = Vector3.Distance(transform.position, target.transform.position);
+            
+            
 
             if (Vector3.Angle(transform.forward, dirToTarget) < angle / 2)
             {
                 //Debug.Log(target.name);
-                float distToTarget = Vector3.Distance(transform.position, target.transform.position);
+                Debug.DrawLine(transform.position, transform.position + dirToTarget * distToTarget , Color.green);
 
                 // if target is not obscured
+                RaycastHit hit;
                 if (!Physics.Raycast(transform.position, dirToTarget, distToTarget, obstacleMask))
                 {
-                    if(target.gameObject.CompareTag("Plant")) 
+                    
+                    //Debug.Log("HERE0");
+                    if (target.gameObject.CompareTag("Plant"))
+                    {
+                        //Debug.Log("ISAPLANT");
                         HandlePlantTarget(target);
-                    else if (target.gameObject.CompareTag("Animal")) 
+                    }
+                    else if (target.gameObject.CompareTag("Animal"))
+                    {
                         HandleAnimalTarget(target);
+                    }
                     else if (target.gameObject.CompareTag("Water"))
+                    {
                         HandleWaterTarget(target);
+                    }
                 }
             }
         }
