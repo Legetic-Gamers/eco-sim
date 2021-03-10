@@ -35,7 +35,7 @@ public class World : MonoBehaviour
     {
         //ResetWorld();
         
-        Academy.Instance.OnEnvironmentReset += ResetWorld;
+        //Academy.Instance.OnEnvironmentReset += ResetWorld;
         m_Recorder = Academy.Instance.StatsRecorder;
         
         InitWorld();
@@ -43,7 +43,15 @@ public class World : MonoBehaviour
 
     public void Update()
     {
-        
+        scoreText.text = $"Score: {totalScore}";
+
+        // Send stats via SideChannel so that they'll appear in TensorBoard.
+        // These values get averaged every summary_frequency steps, so we don't
+        // need to send every Update() call.
+        if ((Time.frameCount % 100) == 0)
+        {
+            m_Recorder.Add("TotalScore", totalScore);
+        }
     }
 
     private void CreateObjects(int num, GameObject type)
@@ -88,7 +96,9 @@ public class World : MonoBehaviour
         CreateObjects(numFood, food);
         CreateObjects(numWater, water);
         CreateObjects(numRabbits, rabbit);
-        
+
+        totalScore = 0;
+
     }
     
     private void SpawnNewFood()
