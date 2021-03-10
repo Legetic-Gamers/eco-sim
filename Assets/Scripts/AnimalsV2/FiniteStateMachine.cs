@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using AnimalsV2.States;
 using UnityEditorInternal;
 using UnityEngine;
 
@@ -45,6 +46,11 @@ namespace AnimalsV2
         /// <param name="newState"> State to change into. </param>
         public bool ChangeState(State newState)
         {
+            if (newState is MatingState)
+            {
+                Debug.Log("absorbingstate:" + absorbingState + " Meetrequirements: " + newState.MeetRequirements());
+            }
+
             // if the state is absorbing, meaning that state change is not possible or newState == CurrentState or newState does not meet requirements, we return
             if(newState == CurrentState || absorbingState || !newState.MeetRequirements()) return false;
             

@@ -57,7 +57,7 @@ public class AnimalBrainAgent : Agent
         // 
         //resetRabbit();
         
-        ResetRabbit();
+        //ResetRabbit();
     }
 
     private void ResetRabbit()
@@ -180,6 +180,7 @@ public class AnimalBrainAgent : Agent
         {
             if (ChangeState(animalController.goToMate))
             {
+                Debug.Log("LOOKING FOR DA MATE");
                 AddReward(10);
             }
             
@@ -331,17 +332,16 @@ public class AnimalBrainAgent : Agent
         //Penalize for every year not lived.
         AddReward(animalModel.age - animalModel.traits.ageLimit);
 
+        world.totalScore += (int)(animalModel.age - animalModel.traits.ageLimit);
         
-        // ChangeState(animalController.deadState);
-        // EventUnsubscribe();
+        ChangeState(animalController.deadState);
+        EventUnsubscribe();
         
         
         // world.SpawnNewRabbit();
         
         //Task failed
         EndEpisode();
-        
-        
 
         //End if all rabbits are dead.
         if (world.agents.All(agent => agent.fsm.CurrentState is Dead))
@@ -357,18 +357,21 @@ public class AnimalBrainAgent : Agent
     private void HandleMate(GameObject obj)
     {
         AddReward(100);
+        world.totalScore += 100;
         //Task achieved
-        EndEpisode();
+        //EndEpisode();
     }
     
     private void HandleEating(GameObject obj)
     {
         AddReward(5);
+        world.totalScore += 5;
     }
 
     private void HandleDrinking(GameObject obj)
     {
         AddReward(5);
+        world.totalScore += 5;
     }
 
     public void Update()

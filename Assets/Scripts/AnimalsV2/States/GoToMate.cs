@@ -59,16 +59,18 @@ namespace AnimalsV2.States
 
         public override bool MeetRequirements()
         {
-            return animal.visibleFriendlyTargets.Count > 0 && !(finiteStateMachine.CurrentState is MatingState) && GetFoundMate() != null;
+            return animal.heardFriendlyTargets.Concat(animal.visibleFriendlyTargets).ToList().Count > 0 && !(finiteStateMachine.CurrentState is MatingState) && animal.animalModel.WantingOffspring && GetFoundMate() != null;
         }
 
         private GameObject GetFoundMate()
         {
             List<GameObject> allNearbyFriendly = animal.heardFriendlyTargets.Concat(animal.visibleFriendlyTargets).ToList();
+            Debug.Log("Nfriendly" + allNearbyFriendly.Count);
             foreach(GameObject potentialMate in allNearbyFriendly)
             {
                 if (potentialMate != null && potentialMate.TryGetComponent(out AnimalController potentialMateAnimalController) && potentialMateAnimalController.animalModel.WantingOffspring)
                 {
+                    Debug.Log("FoundMate");
                     return potentialMateAnimalController.gameObject;
                 }
             }
