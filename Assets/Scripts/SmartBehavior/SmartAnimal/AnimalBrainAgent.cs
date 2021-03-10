@@ -354,7 +354,6 @@ public class AnimalBrainAgent : Agent
         
     }
     
-    //To set reward we use biological fitness = fertile ofspring produced = Good
     private void HandleMate(GameObject obj)
     {
         AddReward(100);

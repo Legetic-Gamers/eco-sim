@@ -1560,7 +1560,7 @@ MonoBehaviour:
     m_Bits: 256
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 4
   animalController: {fileID: 0}
 --- !u!114 &8505818697369016339
 MonoBehaviour:
