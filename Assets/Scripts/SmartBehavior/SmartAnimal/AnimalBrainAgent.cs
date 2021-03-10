@@ -171,7 +171,7 @@ public class AnimalBrainAgent : Agent
                 AddReward(-1);
             }
             
-            //print("Look for food.");
+            print("Look for food.");
         }
         else if (discreteActions[0] == 4)
         {
@@ -262,8 +262,6 @@ public class AnimalBrainAgent : Agent
             // ChangeState(animalController.fleeingState);
             // print("Flee!");
         }
-        
-        
     }
 
 
@@ -337,7 +335,7 @@ public class AnimalBrainAgent : Agent
     
     private void HandleMate(GameObject obj)
     {
-        AddReward(50);
+        AddReward(20);
     }
     
     private void HandleEating(GameObject obj)
