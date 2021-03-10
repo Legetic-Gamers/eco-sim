@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.MLAgents;
+using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -49,10 +50,10 @@ public class MoveToGoalAgent : Agent
     }
 
     //TESTING
-    public override void Heuristic(float[] actionsOut)
+    public override void Heuristic(in ActionBuffers actionsOut)
     {
         base.Heuristic(actionsOut);
-        float[] continousActions = actionsOut;
+        ActionSegment<float> continousActions = actionsOut.ContinuousActions;
         continousActions[0] = Input.GetAxisRaw("Horizontal");
         continousActions[1] = Input.GetAxisRaw("Vertical");
     }
