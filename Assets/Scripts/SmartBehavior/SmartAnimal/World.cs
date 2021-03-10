@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.MLAgents;
 using UnityEngine;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 /// <summary>
@@ -24,18 +25,25 @@ public class World : MonoBehaviour
     public float foodRespawnRate;
 
     public AnimalBrainAgent[] agents;
+    
+    
+    public int totalScore;
+    public Text scoreText;
+    StatsRecorder m_Recorder;
 
     public void Awake()
     {
-        agents = new AnimalBrainAgent[0];
         //ResetWorld();
+        
+        Academy.Instance.OnEnvironmentReset += ResetWorld;
+        m_Recorder = Academy.Instance.StatsRecorder;
         
         InitWorld();
     }
 
     public void Update()
     {
-        agents = FindObjectsOfType<AnimalBrainAgent>();
+        
     }
 
     private void CreateObjects(int num, GameObject type)
@@ -68,6 +76,7 @@ public class World : MonoBehaviour
         ClearObjects(GameObject.FindGameObjectsWithTag("Plant"));
         ClearObjects(GameObject.FindGameObjectsWithTag("Water"));
         
+        agents = FindObjectsOfType<AnimalBrainAgent>();
         foreach (var agent in agents)
         {
             if (agent != null)
@@ -86,6 +95,11 @@ public class World : MonoBehaviour
     {
         CreateObjects(numFood, food);
         
+    }
+
+    public void SpawnNewRabbit()
+    {
+        CreateObjects(1,rabbit);
     }
     
 }

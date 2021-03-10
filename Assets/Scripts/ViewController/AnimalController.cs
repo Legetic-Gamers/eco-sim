@@ -249,8 +249,8 @@ public abstract class AnimalController : MonoBehaviour
             AnimalModel childModel = animalModel.Mate(targetAnimalController.animalModel);
             child.GetComponent<AnimalController>().animalModel = childModel;
             //TODO promote laborTime to model or something.
-            float childEnergy = animalModel.currentEnergy * 0.5f +
-                                targetAnimalController.animalModel.currentEnergy * 0.5f;
+            float childEnergy = animalModel.currentEnergy * 0.25f +
+                                targetAnimalController.animalModel.currentEnergy * 0.25f;
             StartCoroutine(GiveBirth(child, childEnergy, 5));
 
             //Reset both reproductive urges. 
@@ -258,8 +258,8 @@ public abstract class AnimalController : MonoBehaviour
             targetAnimalController.animalModel.reproductiveUrge = 0f;
 
             //Expend energy
-            animalModel.currentEnergy = animalModel.currentEnergy * 0.5f;
-            targetAnimalController.animalModel.currentEnergy = targetAnimalController.animalModel.currentEnergy * 0.5f;
+            animalModel.currentEnergy = animalModel.currentEnergy * 0.75f;
+            targetAnimalController.animalModel.currentEnergy = targetAnimalController.animalModel.currentEnergy * 0.75f;
         }
     }
 
@@ -325,7 +325,7 @@ public abstract class AnimalController : MonoBehaviour
             // invoke death state with method HandleDeath() in decisionmaker
             actionDeath?.Invoke();
             // unsubscribe all events because we want only want to invoke it once.
-            actionDeath = null;
+            //actionDeath = null;
         }
     }
 

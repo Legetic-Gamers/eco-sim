@@ -212,10 +212,11 @@ public abstract class AnimalModel
     public bool HighHydration => currentHydration / traits.maxHydration > 0.9f;
     
     public bool LowHydration => currentHydration / traits.maxHydration < 0.5f;
-    
-    public bool WantingOffspring => 
+
+    public bool WantingOffspring =>
+        reproductiveUrge > (traits.maxEnergy - currentEnergy) && reproductiveUrge > (traits.maxHydration - currentHydration);
         //reproductive urge greater than average of energy and hydration.
-        reproductiveUrge > (currentEnergy + currentHydration) / (traits.maxEnergy + traits.maxHydration);
+        //reproductiveUrge > (currentEnergy + currentHydration) / (traits.maxEnergy + traits.maxHydration);
     
     public bool LowHealth => currentHealth < 30;
     

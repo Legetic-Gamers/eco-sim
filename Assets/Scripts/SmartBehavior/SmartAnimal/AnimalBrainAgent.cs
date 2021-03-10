@@ -51,15 +51,36 @@ public class AnimalBrainAgent : Agent
         base.OnEpisodeBegin();
 
         //Reset stuff 
-        //MAKE SURE YOU ARE USING LOCAL POSITION
+        
 
         //Reset animal position and rotation.
-        //transform.localPosition = new Vector3(Random.Range(-9.5f, 9.5f), 0, Random.Range(-9.5f, 9.5f));
-        //transform.rotation = Quaternion.Euler(new Vector3(0f, Random.Range(0, 360)));
+        // 
+        //resetRabbit();
         
-        
+        ResetRabbit();
     }
-  
+
+    private void ResetRabbit()
+    {
+        //MAKE SURE YOU ARE USING LOCAL POSITION
+        transform.localPosition = new Vector3(Random.Range(-9.5f, 9.5f), 0, Random.Range(-9.5f, 9.5f));
+        transform.rotation = Quaternion.Euler(new Vector3(0f, Random.Range(0, 360)));
+        Debug.Log("reset!");
+        // Destroy(animalController);
+        // gameObject.AddComponent<RabbitController>();
+        
+        //this.animalModel = new RabbitModel();
+        
+        animalModel.currentEnergy = animalModel.traits.maxEnergy;
+        animalModel.currentSpeed = 0;
+        animalModel.currentHealth = animalModel.traits.maxHealth;
+        animalModel.currentHydration = animalModel.traits.maxHydration;
+        animalModel.reproductiveUrge = 0.2f;
+        animalModel.age = 0;
+        animalController.fsm.absorbingState = false;
+
+    }
+
 
     //Collecting observations that the ML agent should base its calculations on.
     public override void CollectObservations(VectorSensor sensor)
@@ -149,7 +170,7 @@ public class AnimalBrainAgent : Agent
         {
             if (!ChangeState(animalController.goToWaterState))
             {
-                AddReward(-1);
+                //AddReward(-1);
             }
             
 
@@ -157,9 +178,9 @@ public class AnimalBrainAgent : Agent
         }
         else if (discreteActions[0] == 2)
         {
-            if (!ChangeState(animalController.goToMate))
+            if (ChangeState(animalController.goToMate))
             {
-                AddReward(-1);
+                AddReward(10);
             }
             
             print("Look for Mate.");
@@ -168,16 +189,16 @@ public class AnimalBrainAgent : Agent
         {
             if (!ChangeState(animalController.goToFoodState))
             {
-                AddReward(-1);
+                //AddReward(-1);
             }
             
-            //print("Look for food.");
+            print("Look for food.");
         }
         else if (discreteActions[0] == 4)
         {
             if (!ChangeState(animalController.fleeingState))
             {
-                AddReward(-1);
+                //AddReward(-1);
             }
             
             print("Flee!");
@@ -303,41 +324,42 @@ public class AnimalBrainAgent : Agent
 
     }
 
-    /// <summary>
-    /// Handle perceived target such that GetBestAction can then use it in deciding an action.
-    /// </summary>
-    /// <param name="target"> perceived target sent from either FieldOfView or HearingAbility,
-    /// which method that will be called depends on the type of target </param>
-
-    //To set reward we could use biological fitness = fertile ofspring produced = Good reward
-    //addreward offspringConstant (could be like 20, depends on age)
-    //This should be added on reproduce? so need event for that?
-
-    //Penalty could be set upon death. Perhaps based on how many fertile offspring produced in lifetime and
-    //how long the rabbit lived?
+    
     private void HandleDeath()
     {
+        Debug.Log("Death");
         //Penalize for every year not lived.
         AddReward(animalModel.age - animalModel.traits.ageLimit);
 
         
-        ChangeState(animalController.deadState);
-        EventUnsubscribe();
+        // ChangeState(animalController.deadState);
+        // EventUnsubscribe();
+        
+        
+        // world.SpawnNewRabbit();
+        
+        //Task failed
+        EndEpisode();
+        
+        
 
         //End if all rabbits are dead.
         if (world.agents.All(agent => agent.fsm.CurrentState is Dead))
         {
             //Debug.Log("They all dead!");
-             EndEpisode();
+             
              world.ResetWorld();
         }
         
         
     }
     
+    //To set reward we use biological fitness = fertile ofspring produced = Good
     private void HandleMate(GameObject obj)
     {
-        AddReward(50);
+        AddReward(100);
+        //Task achieved
+        EndEpisode();
     }
     
     private void HandleEating(GameObject obj)
