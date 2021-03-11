@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.MLAgents;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,9 +16,11 @@ public class World : MonoBehaviour
 {
     public GameObject food;
     public GameObject rabbit;
+    public GameObject wolf;
     public GameObject water;
     public int numFood;
     public int numRabbits;
+    public int numWolves;
     public int numWater;
 
     public float range;
@@ -79,14 +82,24 @@ public class World : MonoBehaviour
         InvokeRepeating("SpawnNewFood", 0, foodRespawnRate);
         CreateObjects(numWater, water);
         CreateObjects(numRabbits, rabbit);
+        CreateObjects(numWolves, wolf);
     }
 
     public void ResetWorld()
     {
         ClearObjects(GameObject.FindGameObjectsWithTag("Plant"));
         ClearObjects(GameObject.FindGameObjectsWithTag("Water"));
+
+        //Clear wolves
+        WolfController[] wolveControllers = GameObject.FindObjectsOfType<WolfController>();
+        List<GameObject> wolves = new List<GameObject>();
+        foreach (var w in wolveControllers)
+        {
+            wolves.Append(w.gameObject);
+        }
+        ClearObjects(wolves.ToArray());
         
-        
+        //Clear agents
         foreach (var agent in agents)
         {
             if (agent != null)
@@ -95,9 +108,11 @@ public class World : MonoBehaviour
             }
         }
         
+        //Create things again.
         CreateObjects(numFood, food);
         CreateObjects(numWater, water);
         CreateObjects(numRabbits, rabbit);
+        CreateObjects(numWolves,wolf);
 
         totalScore = 0;
 

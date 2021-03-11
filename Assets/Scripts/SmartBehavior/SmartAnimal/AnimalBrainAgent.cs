@@ -329,8 +329,8 @@ public class AnimalBrainAgent : Agent
     {
         Debug.Log("Death");
         //Penalize for every year not lived.
-        AddReward(animalModel.age - animalModel.traits.ageLimit);
-        world.totalScore += (int)(animalModel.age - animalModel.traits.ageLimit);
+        // AddReward(animalModel.age - animalModel.traits.ageLimit);
+        // world.totalScore += (int)(animalModel.age - animalModel.traits.ageLimit);
         
         ChangeState(animalController.deadState);
         EventUnsubscribe();
@@ -354,8 +354,8 @@ public class AnimalBrainAgent : Agent
     
     private void HandleMate(GameObject obj)
     {
-        AddReward(100);
-        world.totalScore += 100;
+        AddReward(50);
+        world.totalScore += 50;
         //Task achieved
         //EndEpisode();
     }
