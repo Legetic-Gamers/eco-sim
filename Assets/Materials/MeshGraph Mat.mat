@@ -21,7 +21,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: MeshGraph Mat
-  m_Shader: {fileID: -6465566751694194690, guid: ce90becef5e532e4f8582d59371d53a9,
+  m_Shader: {fileID: -6465566751694194690, guid: 0c71aa4812c414d46aecc24fb35988c3,
     type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
@@ -62,9 +62,13 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
+    - Vector1_196E40F6: 0.73
     - Vector1_24186FB8: 0.3
+    - Vector1_3E158F7: 1
+    - Vector1_83579301: 0
     - Vector1_96D1680F: 0.6
     - Vector1_994B5707: 0
+    - Vector1_CDA8E1D9: 0.3
     - Vector1_D89293EA: 1
     - _AlphaClip: 0
     - _Blend: 0
@@ -95,7 +99,9 @@ Material:
     - waterHeight: 0
     m_Colors:
     - Color_375F3FFA: {r: 0.504717, g: 0.8103465, b: 1, a: 0}
+    - Color_3BC10489: {r: 0.4056604, g: 0, b: 0, a: 0}
     - Color_4D0CA4B0: {r: 0.32793146, g: 0.75471693, b: 0.29547876, a: 0}
+    - Color_6F761AA7: {r: 1, g: 0.7119992, b: 0.3254717, a: 0}
     - Color_90877421: {r: 0.13630977, g: 0.34905657, b: 0.03786936, a: 0}
     - Color_A1945009: {r: 1, g: 0.9278792, b: 0.6556604, a: 0}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
@@ -103,6 +109,6 @@ Material:
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - grassHighColor: {r: 0.103959166, g: 0.4056604, b: 0.051664297, a: 0}
-    - grassLowColor: {r: 0.28933313, g: 0.5660378, b: 0.22160912, a: 0}
-    - sandColor: {r: 0.9339623, g: 0.9181937, b: 0.64760596, a: 0}
-    - waterColor: {r: 0.36078432, g: 0.76470596, b: 0.80392164, a: 0}
+    - grassLowColor: {r: 0.27656382, g: 0.4716981, b: 0.22917409, a: 0}
+    - sandColor: {r: 0.6886792, g: 0.6799573, b: 0.52950335, a: 0}
+    - waterColor: {r: 0.3190192, g: 0.6043714, b: 0.6320754, a: 0}
