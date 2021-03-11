@@ -43,6 +43,8 @@ public class World : MonoBehaviour
 
     public void Update()
     {
+        agents = FindObjectsOfType<AnimalBrainAgent>();
+        
         scoreText.text = $"Score: {totalScore}";
 
         // Send stats via SideChannel so that they'll appear in TensorBoard.
@@ -84,7 +86,7 @@ public class World : MonoBehaviour
         ClearObjects(GameObject.FindGameObjectsWithTag("Plant"));
         ClearObjects(GameObject.FindGameObjectsWithTag("Water"));
         
-        agents = FindObjectsOfType<AnimalBrainAgent>();
+        
         foreach (var agent in agents)
         {
             if (agent != null)

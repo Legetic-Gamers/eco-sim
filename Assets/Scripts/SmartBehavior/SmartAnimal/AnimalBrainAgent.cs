@@ -180,7 +180,6 @@ public class AnimalBrainAgent : Agent
         {
             if (ChangeState(animalController.goToMate))
             {
-                Debug.Log("LOOKING FOR DA MATE");
                 AddReward(10);
             }
             
@@ -331,7 +330,6 @@ public class AnimalBrainAgent : Agent
         Debug.Log("Death");
         //Penalize for every year not lived.
         AddReward(animalModel.age - animalModel.traits.ageLimit);
-
         world.totalScore += (int)(animalModel.age - animalModel.traits.ageLimit);
         
         ChangeState(animalController.deadState);
@@ -346,7 +344,7 @@ public class AnimalBrainAgent : Agent
         //End if all rabbits are dead.
         if (world.agents.All(agent => agent.fsm.CurrentState is Dead))
         {
-            //Debug.Log("They all dead!");
+            Debug.Log("They all dead!");
              
              world.ResetWorld();
         }

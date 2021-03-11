@@ -65,12 +65,12 @@ namespace AnimalsV2.States
         private GameObject GetFoundMate()
         {
             List<GameObject> allNearbyFriendly = animal.heardFriendlyTargets.Concat(animal.visibleFriendlyTargets).ToList();
-            Debug.Log("Nfriendly" + allNearbyFriendly.Count);
+            //Debug.Log("Nfriendly" + allNearbyFriendly.Count);
             foreach(GameObject potentialMate in allNearbyFriendly)
             {
                 if (potentialMate != null && potentialMate.TryGetComponent(out AnimalController potentialMateAnimalController) && potentialMateAnimalController.animalModel.WantingOffspring)
                 {
-                    Debug.Log("FoundMate");
+                    
                     return potentialMateAnimalController.gameObject;
                 }
             }
