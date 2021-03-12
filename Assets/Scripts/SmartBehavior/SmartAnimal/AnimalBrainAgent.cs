@@ -87,12 +87,14 @@ public class AnimalBrainAgent : Agent
     {
         base.CollectObservations(sensor);
 
-        //parameters of the Animal = 5
+        //parameters of the Animal = 4
         //Right now these are continous, might need to be discrete (using lowEnergy() ex.) to represent conditions.
-        sensor.AddObservation(animalModel.currentEnergy);
-        sensor.AddObservation(animalModel.currentSpeed);
-        sensor.AddObservation(animalModel.currentHydration);
-        sensor.AddObservation(animalModel.currentHealth);
+        //Also normalize
+        sensor.AddObservation(animalModel.currentEnergy / animalModel.traits.maxEnergy);
+        //sensor.AddObservation(animalModel.currentSpeed / animalModel.traits.maxSpeed);
+        sensor.AddObservation(animalModel.currentHydration / animalModel.traits.maxHydration);
+        sensor.AddObservation(animalModel.currentHealth / animalModel.traits.maxHealth);
+        //TODO Might also need normalization
         sensor.AddObservation(animalModel.reproductiveUrge);
 
         //Perceptions of the Animal (3 (x,y,z) * 3) = 9
@@ -150,7 +152,7 @@ public class AnimalBrainAgent : Agent
          
         /////////////////////////////////////////////////////////////////////////////////////
 
-        //TOTAL = 8, set in "Vector Observation" of "Behavior Parameters" in inspector.
+        //TOTAL = 7, set in "Vector Observation" of "Behavior Parameters" in inspector.
     }
 
     //Called Every time the ML agent decides to take an action.
