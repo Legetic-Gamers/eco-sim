@@ -94,8 +94,7 @@ public class AnimalBrainAgent : Agent
         //sensor.AddObservation(animalModel.currentSpeed / animalModel.traits.maxSpeed);
         sensor.AddObservation(animalModel.currentHydration / animalModel.traits.maxHydration);
         sensor.AddObservation(animalModel.currentHealth / animalModel.traits.maxHealth);
-        //TODO Might also need normalization
-        sensor.AddObservation(animalModel.reproductiveUrge);
+        sensor.AddObservation(animalModel.reproductiveUrge / animalModel.traits.maxReproductiveUrge);
 
         //Perceptions of the Animal (3 (x,y,z) * 3) = 9
         ////////////////////////////////////////////////////////////////////////////////////
@@ -161,8 +160,27 @@ public class AnimalBrainAgent : Agent
         base.OnActionReceived(vectorAction);
         ActionSegment<int> discreteActions = vectorAction.DiscreteActions;
 
+        
+        //hunger is the fraction of missing energy.
+        float hunger = (animalModel.traits.maxEnergy - animalModel.currentEnergy)/animalModel.traits.maxEnergy;
+        //thirst is the fraction of missing hydration.
+        float thirst = (animalModel.traits.maxHydration - animalModel.currentHydration)/animalModel.traits.maxHydration;
+        float stressFactor = -0.05f;//-0.05 means max penalty = -0.1
+
+        if (animalModel.IsAlive)
+        {
+            //Penalize the rabbit for being hungry and thirsty. This should make the agent try to stay satiated.
+            AddReward((hunger + thirst) * stressFactor);
+            world.totalScore += (hunger + thirst) * stressFactor;
+
+            //Reward staying alive. If completely satiated -> 0.1. Completely drained -> 0.
+            AddReward(2 * -stressFactor);
+            world.totalScore += 2 * -stressFactor;
+        }
+
+
         //Switch state based on action produced by ML model.
-        //Penalize unsuccessful change.
+        //We are rewarding successful state changes.
         if (discreteActions[0] == 0)
         {
             ChangeState(animalController.wanderState);
@@ -170,9 +188,10 @@ public class AnimalBrainAgent : Agent
         }
         else if (discreteActions[0] == 1)
         {
-            if (!ChangeState(animalController.goToWaterState))
+            if (ChangeState(animalController.goToWaterState))
             {
-                //AddReward(-1);
+                // AddReward(0.1f);
+                // world.totalScore += 0.1f;
             }
             
 
@@ -182,29 +201,43 @@ public class AnimalBrainAgent : Agent
         {
             if (ChangeState(animalController.goToMate))
             {
-                AddReward(10);
+                // AddReward(0.1f);
+                // world.totalScore += 0.1f;
+                print("Wants offspring and found mate.");
             }
             
             print("Look for Mate.");
         }
         else if (discreteActions[0] == 3)
         {
-            if (!ChangeState(animalController.goToFoodState))
+            if (ChangeState(animalController.goToFoodState))
             {
-                //AddReward(-1);
+                // AddReward(0.1f);
+                // world.totalScore += 0.1f;
             }
             
             print("Look for food.");
         }
         else if (discreteActions[0] == 4)
         {
-            if (!ChangeState(animalController.fleeingState))
+            if (ChangeState(animalController.fleeingState))
             {
-                //AddReward(-1);
+                // AddReward(0.1f);
+                // world.totalScore += 0.1f;
             }
             
             print("Flee!");
         }
+    }
+    
+    //Used to mark an action as IMPOSIBLE.
+    public override void WriteDiscreteActionMask(IDiscreteActionMask actionMask)
+    {
+        //actionMask.WriteMask(branch, actionIndices);
+        
+        //branch is the index (starting at 0) of the branch on which you want to mask the action
+        //actionIndices is a list of int corresponding to the indices of the actions that the Agent cannot perform.
+
     }
 
     //Used for testing, gives us control over the output from the ML algortihm.
@@ -356,22 +389,22 @@ public class AnimalBrainAgent : Agent
     
     private void HandleMate(GameObject obj)
     {
-        AddReward(50);
-        world.totalScore += 50;
+        AddReward(1f);
+        world.totalScore += 1f;
         //Task achieved
         //EndEpisode();
     }
     
     private void HandleEating(GameObject obj)
     {
-        AddReward(5);
-        world.totalScore += 5;
+        AddReward(0.2f);
+        world.totalScore += 0.2f;
     }
 
     private void HandleDrinking(GameObject obj)
     {
-        AddReward(5);
-        world.totalScore += 5;
+        AddReward(0.2f);
+        world.totalScore += 0.2f;
     }
 
     public void Update()

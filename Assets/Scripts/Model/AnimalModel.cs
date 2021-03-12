@@ -177,7 +177,24 @@ public abstract class AnimalModel
     }
 
     //No limit on reproductive urge.
-    public float reproductiveUrge { get; set; }
+    //public float reproductiveUrge { get; set; }
+    
+    private float _reproductiveUrge;
+    public float reproductiveUrge
+    {
+        get { return _reproductiveUrge; }
+        set
+        {
+            if (traits == null)
+            {
+                _reproductiveUrge = value;
+            }
+            else
+            {
+                _reproductiveUrge = Mathf.Clamp(value, 0, traits.maxReproductiveUrge);
+            }
+        }
+    }
 
 
     public AnimalModel(Traits traits, int generation)
@@ -203,6 +220,8 @@ public abstract class AnimalModel
     public float GetHydrationPercentage => currentHydration / traits.maxHydration;
 
     public float GetSpeedPercentage => currentSpeed / traits.maxSpeed;
+    
+    public float GetUrgePercentage => reproductiveUrge / traits.maxReproductiveUrge;
 
     public bool EnergyFull => currentEnergy == traits.maxEnergy;
 
@@ -216,16 +235,19 @@ public abstract class AnimalModel
 
     public bool LowHydration => currentHydration / traits.maxHydration < 0.5f;
 
-    public bool WantingOffspring => reproductiveUrge > (traits.maxEnergy - currentEnergy)/ traits.maxEnergy && reproductiveUrge > (traits.maxHydration - currentHydration) / traits.maxHydration;
+    public bool WantingOffspring => reproductiveUrge / traits.maxReproductiveUrge > (traits.maxEnergy - currentEnergy) / traits.maxEnergy && reproductiveUrge / traits.maxReproductiveUrge > (traits.maxHydration - currentHydration) / traits.maxHydration;
     //reproductive urge greater than average of energy and hydration.
     //reproductiveUrge > (currentEnergy + currentHydration) / (traits.maxEnergy + traits.maxHydration);
     // public bool WantingOffspring()
     // {
-    //     Debug.Log("Urge: " + reproductiveUrge);
-    //     Debug.Log("Hunger: " + (traits.maxEnergy - currentEnergy));
-    //     Debug.Log("Thirst: " + (traits.maxHydration - currentHydration));
+    //     bool condition =
+    //         reproductiveUrge / traits.maxReproductiveUrge > (traits.maxEnergy - currentEnergy) / traits.maxEnergy &&
+    //         reproductiveUrge / traits.maxReproductiveUrge >
+    //         (traits.maxHydration - currentHydration) / traits.maxHydration;
+    //     Debug.Log("Urge: " + reproductiveUrge / traits.maxReproductiveUrge + " Hunger: " + (traits.maxEnergy - currentEnergy)/ traits.maxEnergy + " Thirst: " + (traits.maxHydration - currentHydration)/traits.maxHydration + " Cond: " + condition);
+    //    
     //
-    //     return true;
+    //     return condition;
     // }
 
     public bool LowHealth => currentHealth < 30;

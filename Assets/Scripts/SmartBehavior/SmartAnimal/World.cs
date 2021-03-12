@@ -30,7 +30,7 @@ public class World : MonoBehaviour
     public AnimalBrainAgent[] agents;
     
     
-    public int totalScore;
+    public float totalScore;
     public Text scoreText;
     StatsRecorder m_Recorder;
 
