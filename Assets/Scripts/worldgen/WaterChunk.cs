@@ -23,27 +23,53 @@ public class WaterChunk : MonoBehaviour
         this.heightMapSettings = heightMapSettings;
         this.worldVerticies = worldVerticies;
 
-        waterObject = new GameObject("Water Chunk");
-        waterObject.transform.parent = parent;
+        if (waterSettings.stylizedWater)
+        {
+            waterObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            waterObject.name = "Water Chunk";
+            waterObject.transform.parent = parent;
 
-        waterObject.transform.position = new Vector3(position.x, 0, position.y);
-        meshFilter = waterObject.AddComponent<MeshFilter>();
-        meshRenderer = waterObject.AddComponent<MeshRenderer>();
-        meshRenderer.material = waterSettings.material;
+            meshRenderer = waterObject.GetComponent<MeshRenderer>();
+
+            //waterObject.transform.localScale = parent.gameObject.GetComponent<MeshFilter>().sharedMesh.bounds.size;
+
+            realWaterLevel = Mathf.Lerp(heightMapSettings.minHeight, heightMapSettings.maxHeight, waterSettings.waterLevel);
+
+            waterObject.transform.localScale = new Vector3(scale.x, 0, scale.z);
+            waterObject.transform.position = new Vector3(position.x, -waterObject.transform.localScale.y / 2, position.y);
+
+            waterObject.transform.position += new Vector3(0, realWaterLevel / 2, 0);
+            waterObject.transform.localScale += new Vector3(0, realWaterLevel, 0);
+
+            meshRenderer.material = waterSettings.stylizedMaterial;
+
+            obstacle = waterObject.AddComponent<NavMeshObstacle>();
+            obstacle.carving = true;
+        }
+        else
+        {
+            waterObject = new GameObject("Water Chunk");
+            waterObject.transform.parent = parent;
+
+            waterObject.transform.position = new Vector3(position.x, 0, position.y);
+            meshFilter = waterObject.AddComponent<MeshFilter>();
+            meshRenderer = waterObject.AddComponent<MeshRenderer>();
+            meshRenderer.material = waterSettings.material;
 
 
-        meshFilter.mesh = GenerateMesh();
-        //waterObject.AddComponent<WaterNoise>();
-        //waterObject.GetComponent<WaterNoise>().settings = waterSettings;
-        realWaterLevel = Mathf.Lerp(heightMapSettings.minHeight, heightMapSettings.maxHeight, waterSettings.waterLevel);
-        waterObject.transform.localScale = scale;
-        waterObject.transform.position += new Vector3(0, realWaterLevel, 0);
-        collider = waterObject.AddComponent<BoxCollider>();
-        collider.size = new Vector3(1, 1, 1);
-        collider.center -= new Vector3(0, 0.5f, 0);
+            meshFilter.mesh = GenerateMesh();
+            //waterObject.AddComponent<WaterNoise>();
+            //waterObject.GetComponent<WaterNoise>().settings = waterSettings;
+            realWaterLevel = Mathf.Lerp(heightMapSettings.minHeight, heightMapSettings.maxHeight, waterSettings.waterLevel);
+            waterObject.transform.localScale = scale;
+            waterObject.transform.position += new Vector3(0, realWaterLevel, 0);
+            collider = waterObject.AddComponent<BoxCollider>();
+            collider.size = new Vector3(1, 1, 1);
+            collider.center -= new Vector3(0, 0.5f, 0);
 
-        obstacle = waterObject.AddComponent<NavMeshObstacle>();
-        obstacle.carving = true;
+            obstacle = waterObject.AddComponent<NavMeshObstacle>();
+            obstacle.carving = true;
+        }
 
 
         PlaceWaterSources();

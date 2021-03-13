@@ -6,6 +6,7 @@ using UnityEngine;
 public class WaterSettings : UpdatableData
 {
     public bool generateWater = true;
+    public bool stylizedWater = false;
     [Range(0, 1)]
     public float waterLevel;
     [Range(0, 1)]
@@ -16,4 +17,5 @@ public class WaterSettings : UpdatableData
     public float scale = 1;
     public float timeScale = 1;
     public Material material;
+    public Material stylizedMaterial;
 }
