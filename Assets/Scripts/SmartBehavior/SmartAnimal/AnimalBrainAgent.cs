@@ -366,7 +366,11 @@ public class AnimalBrainAgent : Agent
         //Penalize for every year not lived.
         // AddReward(animalModel.age - animalModel.traits.ageLimit);
         // world.totalScore += (int)(animalModel.age - animalModel.traits.ageLimit);
-        
+        // if (world != null)
+        // {
+        //     world.agents.Remove(this);
+        // }
+
         ChangeState(animalController.deadState);
         EventUnsubscribe();
         
