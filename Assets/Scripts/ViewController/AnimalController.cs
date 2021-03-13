@@ -259,18 +259,12 @@ public abstract class AnimalController : MonoBehaviour
     }
     
     /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
-    
-    protected void Start()
-    {
-        // Init the NavMesh agent
-        agent = GetComponent<NavMeshAgent>();
-        agent.autoBraking = false;
-        animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
-        agent.speed = animalModel.currentSpeed;
 
+    protected void Awake()
+    {
         //Create the FSM.
         fsm = new FiniteStateMachine();
-        animationController = new AnimationController(this);
+        
         
         eatingState = new Eating(this, fsm);
         fleeingState = new FleeingState(this, fsm);
@@ -282,6 +276,17 @@ public abstract class AnimalController : MonoBehaviour
         deadState = new Dead(this, fsm);
         fsm.Initialize(idleState);
         
+        animationController = new AnimationController(this);
+    }
+
+    protected void Start()
+    {
+        // Init the NavMesh agent
+        agent = GetComponent<NavMeshAgent>();
+        agent.autoBraking = false;
+        animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
+        agent.speed = animalModel.currentSpeed;
+
         tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
         EventSubscribe();
         
