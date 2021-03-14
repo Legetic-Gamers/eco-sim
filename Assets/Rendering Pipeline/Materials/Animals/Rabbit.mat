@@ -20,6 +20,10 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - Texture2D_2DAAF2E9:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - Texture2D_6510D59B:
         m_Texture: {fileID: 2800000, guid: 71735a7ac8c8847df916556c626d1939, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -69,11 +73,15 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
+    - ShadowBlend: 0.3
+    - ShadowSize: 0.1
     - Vector1_18369C28: 0
-    - Vector1_A14F17FC: -0.75
-    - Vector1_B98C008C: 0
-    - Vector1_BFA0FE28: 0
-    - Vector1_C3824C7C: 0.3
+    - Vector1_918D4D95: 10
+    - Vector1_A14F17FC: -0.5
+    - Vector1_AE7D5921: 2
+    - Vector1_B98C008C: 0.7
+    - Vector1_BFA0FE28: 0.4
+    - Vector1_C3824C7C: 0.7
     - _AlphaClip: 0
     - _Blend: 0
     - _BumpScale: 1
@@ -100,8 +108,9 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
-    - Color_59D500A6: {r: 0, g: 0, b: 0, a: 0}
-    - Color_C90FA907: {r: 0, g: 0, b: 0, a: 0}
+    - Color_59D500A6: {r: 0.5566038, g: 0.25378212, b: 0.04463333, a: 0}
+    - Color_C90FA907: {r: 0.3679245, g: 0.35977527, b: 0.1718138, a: 0}
+    - ShadowColor: {r: 0.23584905, g: 0.025587412, b: 0.025587412, a: 0}
     - _BaseColor: {r: 0.6691177, g: 0.6691177, b: 0.6691177, a: 1}
     - _Color: {r: 0.6691177, g: 0.6691177, b: 0.6691177, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
