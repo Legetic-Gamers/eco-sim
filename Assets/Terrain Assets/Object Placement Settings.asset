@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 713ccc87d08e5054cbaf4b1c0662ae86, type: 3}
   m_Name: Object Placement Settings
   m_EditorClassIdentifier: 
-  autoUpdate: 0
+  autoUpdate: 1
   objectTypes:
   - name: Trees
     gameObjectSettings:
@@ -30,7 +30,6 @@ MonoBehaviour:
       probability: 0.029
     previewColour: {r: 0, g: 0, b: 0, a: 0}
     minimumDistance: 15
-    minimumDistance: 8
     newPointCount: 10
     scale: 1
     yOffset: 0
@@ -64,7 +63,6 @@ MonoBehaviour:
       probability: 0.216
     previewColour: {r: 0, g: 0, b: 0, a: 0}
     minimumDistance: 15
-    minimumDistance: 4
     newPointCount: 10
     scale: 1
     yOffset: 0
