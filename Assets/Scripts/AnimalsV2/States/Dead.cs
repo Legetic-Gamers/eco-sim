@@ -1,4 +1,6 @@
-﻿namespace AnimalsV2.States
+﻿using UnityEngine;
+
+namespace AnimalsV2.States
 {
 
     namespace AnimalsV2.States
@@ -14,12 +16,13 @@
             public override void Enter()
             {
                 //when entering state dead,
-                
-                
                 base.Enter();
                 animal.agent.isStopped = true;
                 currentStateAnimation = StateAnimation.Dead;
                 animal.DestroyGameObject(20f);
+                
+                // Set state so that it can't change
+                finiteStateMachine.absorbingState = true;
             }
 
             public override void HandleInput()
@@ -38,6 +41,12 @@
             {
                 return "Dead";
             }
+
+            public override bool MeetRequirements()
+            {
+                return true;
+            }
+            
         }
     }
 }

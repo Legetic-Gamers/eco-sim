@@ -5249,6 +5249,7 @@ GameObject:
   - component: {fileID: 1932977675138034824}
   - component: {fileID: 3398314273756797995}
   - component: {fileID: 8785101678715966952}
+  - component: {fileID: 4440942249907535268}
   m_Layer: 8
   m_Name: Deer
   m_TagString: Animal
@@ -5284,7 +5285,7 @@ Animator:
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 4f04ddbc20d0cc5478aa4e085885c26c, type: 3}
   m_Controller: {fileID: 9100000, guid: 51140fb07450497469e75ba5b736a699, type: 2}
-  m_CullingMode: 1
+  m_CullingMode: 2
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
@@ -5344,6 +5345,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88de382ffe14e194aa20383352640f2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tickEventPublisher: {fileID: 0}
   agent: {fileID: 0}
   visibleHostileTargets: []
   visibleFriendlyTargets: []
@@ -5371,7 +5373,7 @@ MonoBehaviour:
     m_Bits: 256
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 4
   animalController: {fileID: 0}
 --- !u!114 &8785101678715966952
 MonoBehaviour:
@@ -5390,6 +5392,18 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   animalController: {fileID: 0}
+--- !u!114 &4440942249907535268
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1567582185033856}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c71b720863ec4e7a8484c019f6979fe3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1571034971651392
 GameObject:
   m_ObjectHideFlags: 0
@@ -6629,7 +6643,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1699545072554856}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 1.7112914e-15, y: 1, z: -0.000000021855694, w: 0.0000000754979}
   m_LocalPosition: {x: -0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -6654,7 +6668,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 248ba7c0d5d696e4c87cd4bae19acad0, type: 2}
+  - {fileID: 2100000, guid: c584403a510c4aa41ab6730832548f0b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

@@ -12,13 +12,19 @@ namespace ViewController
         public void Start()
         {
             plantModel = new PlantModel();
-            tickEventPublisher = FindObjectOfType<TickEventPublisher>();
-            tickEventPublisher.onParamTickEvent += HandleDeathStatus;
+            if (tickEventPublisher)
+            {
+                tickEventPublisher = FindObjectOfType<TickEventPublisher>();
+                tickEventPublisher.onParamTickEvent += HandleDeathStatus;    
+            }
         }
 
         public void OnDestroy()
         {
-            tickEventPublisher.onParamTickEvent -= HandleDeathStatus;
+            if (tickEventPublisher)
+            {
+                tickEventPublisher.onParamTickEvent -= HandleDeathStatus;
+            }
         }
 
         private void HandleDeathStatus()

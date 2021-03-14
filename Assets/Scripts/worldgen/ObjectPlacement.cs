@@ -58,7 +58,7 @@ public class ObjectPlacement : MonoBehaviour
 
                 //gameObject.transform.position = new Vector3(point.x - size / 2, heightMapSettings.maxHeight + 10, point.y - size / 2);
                 gameObject.transform.parent = groupObject.transform;
-                gameObject.transform.localScale = Vector3.one * settings.objectTypes[i].scale * meshSettings.meshScale;
+                //gameObject.transform.localScale = Vector3.one * settings.objectTypes[i].scale * meshSettings.meshScale;
 
                 Ray ray = new Ray(gameObject.transform.position, gameObject.transform.TransformDirection(Vector3.down));
                 RaycastHit hit;

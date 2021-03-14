@@ -1,6 +1,13 @@
 {
     "name": "ScriptAssembly",
     "references": [
+        "GUID:61c5b659adf544b4baf3eef86248e13a",
+        "GUID:85e0054f8e64b47309646d35f8851f81",
+        "GUID:42675ddec8c314cf08d17ee0f6f5e5a5",
+        "GUID:57f6004a925b546cd94e94ed518e275d",
+        "GUID:38254a2538c8f42fb9f2057d17fd0e70",
+        "GUID:d29014db7ebcd4cf4a14f537fbf02110",
+        "GUID:5c2b5ba89f9e74e418232e154bc5cc7a",
         "GUID:8c4dd21966739024fbd72155091d199e"
     ],
     "includePlatforms": [],

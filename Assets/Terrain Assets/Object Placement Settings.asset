@@ -30,6 +30,7 @@ MonoBehaviour:
       probability: 0.029
     previewColour: {r: 0, g: 0, b: 0, a: 0}
     minimumDistance: 15
+    minimumDistance: 8
     newPointCount: 10
     scale: 1
     yOffset: 0
@@ -58,11 +59,12 @@ MonoBehaviour:
     maxHeight: 1
   - name: Food
     gameObjectSettings:
-    - gameObject: {fileID: 8585085198824190955, guid: faca9fdb3f703844aa60f6115d12e202,
+    - gameObject: {fileID: 5707813131339405077, guid: b7aede90df860184e82d1ea8292b5123,
         type: 3}
       probability: 0.216
     previewColour: {r: 0, g: 0, b: 0, a: 0}
     minimumDistance: 15
+    minimumDistance: 4
     newPointCount: 10
     scale: 1
     yOffset: 0
@@ -76,6 +78,42 @@ MonoBehaviour:
     previewColour: {r: 0, g: 0, b: 0, a: 0}
     minimumDistance: 8
     newPointCount: 16
+    scale: 1
+    yOffset: 0.1
+    minHeight: 0
+    maxHeight: 1
+  - name: Wolfs
+    gameObjectSettings:
+    - gameObject: {fileID: 4362939137640418624, guid: 9a3fc11558a4b4a4c97a046dc0bd6872,
+        type: 3}
+      probability: 0.216
+    previewColour: {r: 0, g: 0, b: 0, a: 0}
+    minimumDistance: 80
+    newPointCount: 10
+    scale: 1
+    yOffset: 0.1
+    minHeight: 0
+    maxHeight: 1
+  - name: Bears
+    gameObjectSettings:
+    - gameObject: {fileID: 8012323441774472881, guid: 51e551f1cef16d9488952707d8521940,
+        type: 3}
+      probability: 0.216
+    previewColour: {r: 0, g: 0, b: 0, a: 0}
+    minimumDistance: 60
+    newPointCount: 10
+    scale: 1
+    yOffset: 0.1
+    minHeight: 0
+    maxHeight: 1
+  - name: Deers
+    gameObjectSettings:
+    - gameObject: {fileID: 1567582185033856, guid: 70e110c1886e4174e8c3ed315798a2f1,
+        type: 3}
+      probability: 0.216
+    previewColour: {r: 0, g: 0, b: 0, a: 0}
+    minimumDistance: 20
+    newPointCount: 10
     scale: 1
     yOffset: 0.1
     minHeight: 0
