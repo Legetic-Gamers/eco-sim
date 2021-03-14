@@ -62,7 +62,7 @@ public class ObjectPlacement : MonoBehaviour
 
                 Ray ray = new Ray(gameObject.transform.position, gameObject.transform.TransformDirection(Vector3.down));
                 RaycastHit hit;
-                if (Physics.Raycast(ray, out hit, float.MaxValue, ~(LayerMask.NameToLayer("Ground") | LayerMask.NameToLayer("Water"))))
+                if (Physics.Raycast(ray, out hit, float.MaxValue))
                 {
                     if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Ground"))
                     {
@@ -86,7 +86,14 @@ public class ObjectPlacement : MonoBehaviour
                     }
 
                 }
-                DestroyImmediate(gameObject);
+                if (Application.isEditor)
+                {
+                    DestroyImmediate(gameObject);
+                }
+                else
+                {
+                    Destroy(gameObject);
+                }
             }
         }
     }
