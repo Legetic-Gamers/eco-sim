@@ -15,7 +15,7 @@ MonoBehaviour:
   autoUpdate: 1
   generateWater: 1
   stylizedWater: 1
-  waterLevel: 0.312
+  waterLevel: 0.318
   waterVertexDiff: 0.1
   size: 1
   gridSize: 1
