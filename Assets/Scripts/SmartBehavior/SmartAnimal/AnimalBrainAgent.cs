@@ -20,7 +20,7 @@ public class AnimalBrainAgent : Agent
     private TickEventPublisher eventPublisher;
     private FiniteStateMachine fsm;
 
-    //
+    
     public World world;
 
 
