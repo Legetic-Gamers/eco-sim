@@ -13,8 +13,8 @@ namespace Tests
         public void TestCrossover()
         {
             // Initialize two parents
-            AnimalModel parent1 = new RabbitModel(new Traits(10,10,10,10,10,10,10,10,10,10,10,10), 0);
-            AnimalModel parent2 = new RabbitModel(new Traits(1,1,1,1,1,1,1,1,1,1,1,1), 1);
+            AnimalModel parent1 = new RabbitModel(new Traits(10,10,10,10,10,1,10,10,10,10,10,10,10), 0);
+            AnimalModel parent2 = new RabbitModel(new Traits(1,1,1,1,1,1,1,1,1,1,1,1,1), 1);
 
             // Set age
             parent1.age = 80;
