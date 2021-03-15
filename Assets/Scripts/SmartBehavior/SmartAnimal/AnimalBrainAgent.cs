@@ -41,7 +41,7 @@ public class AnimalBrainAgent : Agent
 
         eventPublisher = animalController.tickEventPublisher;
 
-        
+        //
 
         EventSubscribe();
     }
