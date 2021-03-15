@@ -10,9 +10,9 @@ Material:
   m_Name: Wolf_White
   m_Shader: {fileID: -6465566751694194690, guid: 33ea7b19c60975249b58bc268ab58397,
     type: 3}
-  m_ShaderKeywords: 
+  m_ShaderKeywords: CORNERS_ON
   m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
+  m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
@@ -20,6 +20,10 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - Texture2D_2DAAF2E9:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - Texture2D_6510D59B:
         m_Texture: {fileID: 2800000, guid: dca53c930cac3491fb06a6c178affe55, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -60,6 +64,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _OutlineSample_2A0C3EB2_Texture2DBADD5F9F_55082866:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _ParallaxMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -69,11 +77,16 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
+    - CORNERS: 1
+    - ShadowBlend: 0.3
+    - ShadowSize: 0.1
     - Vector1_18369C28: 0
-    - Vector1_A14F17FC: -0.42
+    - Vector1_918D4D95: 1
+    - Vector1_A14F17FC: -0.74
+    - Vector1_AE7D5921: 1
     - Vector1_B98C008C: 0.5
     - Vector1_BFA0FE28: 1
-    - Vector1_C3824C7C: 0.1
+    - Vector1_C3824C7C: 0.44
     - _AlphaClip: 0
     - _Blend: 0
     - _BumpScale: 1
@@ -88,6 +101,7 @@ Material:
     - _Metallic: 0.58
     - _Mode: 0
     - _OcclusionStrength: 1
+    - _OutlineThickness: 6.82
     - _Parallax: 0.02
     - _QueueOffset: 0
     - _ReceiveShadows: 1
@@ -101,10 +115,13 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - Color_59D500A6: {r: 0.4150943, g: 0.3113207, b: 0.3113207, a: 0}
-    - Color_C90FA907: {r: 0.509434, g: 0.1375364, b: 0, a: 1}
+    - Color_B8C88667: {r: 0, g: 0, b: 0, a: 0}
+    - Color_C90FA907: {r: 0.4339623, g: 0.38603473, b: 0.1780883, a: 1}
+    - ShadowColor: {r: 0.23584905, g: 0.025587412, b: 0.025587412, a: 0}
     - _BaseColor: {r: 0.74264705, g: 0.74264705, b: 0.74264705, a: 1}
     - _Color: {r: 0.74264705, g: 0.74264705, b: 0.74264705, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _OutlineColor: {r: 0, g: 0.14145823, b: 0.6226415, a: 1}
     - _SpecColor: {r: 0, g: 0, b: 0, a: 1}
 --- !u!114 &5507540270503514042
 MonoBehaviour:
