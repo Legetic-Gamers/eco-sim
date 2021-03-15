@@ -8,15 +8,15 @@ namespace Tests.EditModeTests
     public class StatisticCalculationTest
     {
         
-        AnimalModel am1 = new RabbitModel(new Traits(1f, 50, 100, 100, 6,
+        AnimalModel am1 = new RabbitModel(new Traits(1f, 50, 100, 100, 6,1,
             10,100,10,10,180,5,3),0);
-        AnimalModel am2 = new RabbitModel(new Traits(1f, 50, 100, 100, 6,
+        AnimalModel am2 = new RabbitModel(new Traits(1f, 50, 100, 100, 6,1,
             10,100,10,10,180,5,3),0);
-        AnimalModel am3 = new RabbitModel(new Traits(2f, 50, 100, 100, 6,
+        AnimalModel am3 = new RabbitModel(new Traits(2f, 50, 100, 100, 6,1,
             10,100,10,10,180,5,3),0);
-        AnimalModel am4 = new RabbitModel(new Traits(2f, 50, 100, 100, 6,
+        AnimalModel am4 = new RabbitModel(new Traits(2f, 50, 100, 100, 6,1,
             10,100,10,10,180,5,3),0);
-        AnimalModel am5 = new RabbitModel(new Traits(3f, 50, 100, 100, 6,
+        AnimalModel am5 = new RabbitModel(new Traits(3f, 50, 100, 100, 6,1,
             10,100,10,10,180,5,3),0);
         
         /// <summary>
