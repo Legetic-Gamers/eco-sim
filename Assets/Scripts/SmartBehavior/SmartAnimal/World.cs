@@ -16,18 +16,23 @@ using Random = UnityEngine.Random;
 /// </summary>
 public class World : MonoBehaviour
 {
+    //Objects that live in the environment
     [SerializeField] private GameObject food;
     [SerializeField] private GameObject rabbit;
     [SerializeField] private GameObject wolf;
     [SerializeField] private GameObject water;
+    
+    //Environment parameters.
     [SerializeField] private int numFood;
     [SerializeField] private int numRabbits;
     [SerializeField] private int numWolves;
     [SerializeField] private int numWater;
-
+    [SerializeField] private float foodRespawnRate;
+    
+    //Specific to the environment size, used for spawning
     [SerializeField] private float range;
 
-    [SerializeField] private float foodRespawnRate;
+    
 
     public List<AnimalBrainAgent> agents;
     public List<WolfController> wolves;
@@ -44,6 +49,15 @@ public class World : MonoBehaviour
         //ResetWorld();
 
         //Academy.Instance.OnEnvironmentReset += ResetWorld;
+        // Academy.Instance.EnvironmentParameters.GetWithDefault("numFood", 15.0f);
+        // Academy.Instance.EnvironmentParameters.GetWithDefault("numRabbits", 3.0f);
+        // Academy.Instance.EnvironmentParameters.GetWithDefault("numWolves", 0.0f);
+        // Academy.Instance.EnvironmentParameters.GetWithDefault("numWater", 3.0f);
+        // Academy.Instance.EnvironmentParameters.GetWithDefault("foodRespawnRate", 100.0f);
+
+        
+        
+        
         m_Recorder = Academy.Instance.StatsRecorder;
 
         InitWorld();
