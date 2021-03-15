@@ -5251,6 +5251,7 @@ GameObject:
   - component: {fileID: 8785101678715966952}
   - component: {fileID: 4440942249907535268}
   - component: {fileID: 4380821721372479982}
+  - component: {fileID: 3798916785587689332}
   m_Layer: 8
   m_Name: Deer
   m_TagString: Animal
@@ -5417,6 +5418,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eeade2d59b355d445a3a8d5bdfc67fa4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &3798916785587689332
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1567582185033856}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8bf4adb19bbc0654a85ae2e21b189726, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  deathParticleSystem: {fileID: 19800004, guid: cd83dd6d156d3e24d8d134f5c2a142ab,
+    type: 3}
+  smokeTrailParticleSystem: {fileID: 6545145587975673058, guid: 49b5bdb0935ed584e9b0550a3f66db97,
+    type: 3}
+  hitParticleSystem: {fileID: 198381239668097408, guid: 8592e667e07bd3848843966df9cc1079,
+    type: 3}
+  matingParticleSystem: {fileID: 19800004, guid: bde53105b8182734c8ea3b60cf07dfdc,
+    type: 3}
+  bornParticleSystem: {fileID: 19800000, guid: cad95613d7466d549bf4928aef790dfd, type: 3}
 --- !u!1 &1571034971651392
 GameObject:
   m_ObjectHideFlags: 0

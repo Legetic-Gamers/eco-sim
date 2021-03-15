@@ -271,6 +271,7 @@ MonoBehaviour:
   energy: {fileID: 5542760120057978334}
   hydration: {fileID: 5542760118698675375}
   reproductiveUrge: {fileID: 5542760118645572184}
+  onlyUpdateNearCamera: 0
   camera: {fileID: 0}
 --- !u!1 &2776256131469257146
 GameObject:
@@ -2555,6 +2556,7 @@ GameObject:
   - component: {fileID: 5945667779142240398}
   - component: {fileID: 9127360419405430084}
   - component: {fileID: 1380498083}
+  - component: {fileID: 7273209833827066304}
   m_Layer: 8
   m_Name: Rabbit Brown
   m_TagString: Animal
@@ -2687,6 +2689,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bdd6549df376c1a4b9199e25eb73a7a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tickEventPublisher: {fileID: 0}
   agent: {fileID: 0}
   visibleHostileTargets: []
   visibleFriendlyTargets: []
@@ -2716,6 +2719,18 @@ MonoBehaviour:
   matingParticleSystem: {fileID: 19800004, guid: bde53105b8182734c8ea3b60cf07dfdc,
     type: 3}
   bornParticleSystem: {fileID: 19800000, guid: cad95613d7466d549bf4928aef790dfd, type: 3}
+--- !u!114 &7273209833827066304
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5945667779142240406}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eeade2d59b355d445a3a8d5bdfc67fa4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5945667779165617436
 GameObject:
   m_ObjectHideFlags: 0

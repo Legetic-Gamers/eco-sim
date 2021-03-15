@@ -64,7 +64,7 @@ public class AnimalParticleManager : MonoBehaviour
         //Reset particle systems.
         smokeTrailParticleSystem.Stop();
         
-        if (state is Mating)
+        if (state is MatingState)
         {
             
         }
