@@ -11,10 +11,10 @@
 * Animal Controller script (e.g. BearController, DeerController etc.)
 * Field Of Fiew script
 * Hearing Ability script
-* Nav Mesh Agent script
-* Animator script
+* Nav Mesh Agent
+* Animator
 * Transform
-* Character Controller script
+* Character Controller
 
 #### Water gameobject
 * Tag: Water, Layer: Target
