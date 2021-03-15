@@ -5,6 +5,7 @@ using System.Linq;
 using Unity.MLAgents;
 using UnityEngine;
 using UnityEngine.UI;
+using ViewController;
 using Random = UnityEngine.Random;
 
 /// <summary>
@@ -14,22 +15,25 @@ using Random = UnityEngine.Random;
 /// </summary>
 public class World : MonoBehaviour
 {
-    public GameObject food;
-    public GameObject rabbit;
-    public GameObject wolf;
-    public GameObject water;
-    public int numFood;
-    public int numRabbits;
-    public int numWolves;
-    public int numWater;
+    [SerializeField] private GameObject food;
+    [SerializeField] private GameObject rabbit;
+    [SerializeField] private GameObject wolf;
+    [SerializeField] private GameObject water;
+    [SerializeField] private int numFood;
+    [SerializeField] private int numRabbits;
+    [SerializeField] private int numWolves;
+    [SerializeField] private int numWater;
 
-    public float range;
+    [SerializeField] private float range;
 
-    public float foodRespawnRate;
+    [SerializeField] private float foodRespawnRate;
 
-    public AnimalBrainAgent[] agents;
-    
-    
+    public List<AnimalBrainAgent> agents;
+    public List<WolfController> wolves;
+    public List<PlantController> plants;
+    public List<GameObject> waters;
+
+
     public float totalScore;
     public Text scoreText;
     StatsRecorder m_Recorder;
@@ -37,17 +41,17 @@ public class World : MonoBehaviour
     public void Awake()
     {
         //ResetWorld();
-        
+
         //Academy.Instance.OnEnvironmentReset += ResetWorld;
         m_Recorder = Academy.Instance.StatsRecorder;
-        
+
         InitWorld();
     }
 
     public void Update()
     {
-        agents = FindObjectsOfType<AnimalBrainAgent>();
-        
+        //agents = FindObjectsOfType<AnimalBrainAgent>();
+
         scoreText.text = $"Score: {totalScore}";
 
         // Send stats via SideChannel so that they'll appear in TensorBoard.
@@ -59,21 +63,91 @@ public class World : MonoBehaviour
         }
     }
 
+
     private void CreateObjects(int num, GameObject type)
     {
         for (int i = 0; i < num; i++)
         {
-            GameObject f = Instantiate(type, new Vector3(Random.Range(-range, range), 0,
+            //Instantiate
+            GameObject newObject = Instantiate(type, new Vector3(Random.Range(-range, range), 0,
                     Random.Range(-range, range)) + transform.position,
                 Quaternion.Euler(new Vector3(0f, Random.Range(0f, 360f), 90f)));
+
+            //Add agents to lists
+            AnimalBrainAgent agent = newObject.GetComponent<AnimalBrainAgent>();
+            if (agent)
+            {
+                agent.world = this;
+                agents.Add(agent);
+            }
+
+            //Add wolves to list.
+            WolfController wolf = newObject.GetComponent<WolfController>();
+            if (wolf)
+            {
+                wolves.Add(wolf);
+            }
+
+            //Add Water to list.
+            if (newObject.CompareTag("Water"))
+            {
+                waters.Add(newObject);
+            }
+
+            //Add plant to list.
+            PlantController plant = newObject.GetComponent<PlantController>();
+            if (plant)
+            {
+                plants.Add(plant);
+            }
+
+
+            //Listen to all animals events
+            AnimalController animalController = newObject.GetComponent<AnimalController>();
+            if (animalController)
+            {
+                animalController.onBirth += HandleBirth;
+                // animalController.actionDeath += HandleDeath;
+            }
         }
+    }
+
+    private void OnDestroy()
+    {
+        foreach (Agent a in agents)
+        {
+            if (a != null)
+            {
+                AnimalController animalController = a.GetComponent<AnimalController>();
+                if (animalController)
+                {
+                    animalController.onBirth -= HandleBirth;
+                    // animalController.actionDeath += HandleDeath;
+                }
+            }
+        }
+        
+        foreach (WolfController w in wolves)
+        {
+            if (w != null)
+            {
+                AnimalController animalController = w.GetComponent<AnimalController>();
+                if (animalController)
+                {
+                    animalController.onBirth -= HandleBirth;
+                    // animalController.actionDeath += HandleDeath;
+                }
+            }
+        }
+        
+        
     }
 
     void ClearObjects(GameObject[] objects)
     {
-        foreach (var food in objects)
+        foreach (var obj in objects)
         {
-            Destroy(food);
+            Destroy(obj);
         }
     }
 
@@ -87,18 +161,44 @@ public class World : MonoBehaviour
 
     public void ResetWorld()
     {
-        ClearObjects(GameObject.FindGameObjectsWithTag("Plant"));
-        ClearObjects(GameObject.FindGameObjectsWithTag("Water"));
+        // ClearObjects(GameObject.FindGameObjectsWithTag("Plant"));
+        // ClearObjects(GameObject.FindGameObjectsWithTag("Water"));
+
+        //Clear plants
+        foreach (var p in plants)
+        {
+            //Check if not already destroyed.
+            if (p != null)
+            {
+                Destroy(p.gameObject);
+            }
+        }
+
+        plants.Clear();
+
+        //Clear Waters
+        foreach (var w in waters)
+        {
+            if (w != null)
+            {
+                Destroy(w.gameObject);
+            }
+        }
+
+        waters.Clear();
 
         //Clear wolves
-        WolfController[] wolveControllers = GameObject.FindObjectsOfType<WolfController>();
-        List<GameObject> wolves = new List<GameObject>();
-        foreach (var w in wolveControllers)
+        foreach (var w in wolves)
         {
-            wolves.Append(w.gameObject);
+            if (w != null)
+            {
+                Destroy(w.gameObject);
+            }
         }
-        ClearObjects(wolves.ToArray());
-        
+
+        wolves.Clear();
+
+
         //Clear agents
         foreach (var agent in agents)
         {
@@ -107,26 +207,39 @@ public class World : MonoBehaviour
                 Destroy(agent.gameObject);
             }
         }
-        
+
+        agents.Clear();
+
         //Create things again.
         CreateObjects(numFood, food);
         CreateObjects(numWater, water);
         CreateObjects(numRabbits, rabbit);
-        CreateObjects(numWolves,wolf);
+        CreateObjects(numWolves, wolf);
 
         totalScore = 0;
-
     }
-    
+
+    private void HandleBirth(object sender, AnimalController.OnBirthEventArgs e)
+    {
+        AnimalBrainAgent childAgent = e.child.GetComponent<AnimalBrainAgent>();
+        if (childAgent != null)
+        {
+            agents.Add(childAgent);
+        }
+    }
+
+    // private void HandleDeath()
+    // {
+    //     agents.Remove(this);
+    // }
+
     private void SpawnNewFood()
     {
         CreateObjects(numFood, food);
-        
     }
 
     public void SpawnNewRabbit()
     {
-        CreateObjects(1,rabbit);
+        CreateObjects(1, rabbit);
     }
-    
 }

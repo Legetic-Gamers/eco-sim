@@ -20,6 +20,14 @@ public abstract class AnimalController : MonoBehaviour
     // decisionMaker subscribes to these actions
     public Action<GameObject> actionPerceivedHostile;
     public Action actionDeath;
+    
+    //Subscribed to by animalBrainAgent.
+    public event EventHandler<OnBirthEventArgs> onBirth;
+
+    public class OnBirthEventArgs : EventArgs
+    {
+        public GameObject child;
+    }
 
     [HideInInspector] public NavMeshAgent agent;
 
@@ -270,6 +278,8 @@ public abstract class AnimalController : MonoBehaviour
         child = Instantiate(child, gameObject.transform.position,
             gameObject.transform.rotation); //NOTE CHANGE SO THAT PREFAB IS USED
         child.GetComponent<AnimalController>().animalModel.currentEnergy = newEnergy;
+        
+        onBirth?.Invoke(this,new OnBirthEventArgs{child = child});
     }
 
     public void DestroyGameObject(float delay)

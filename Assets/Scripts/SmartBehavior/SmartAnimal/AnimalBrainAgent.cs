@@ -21,7 +21,7 @@ public class AnimalBrainAgent : Agent
     private FiniteStateMachine fsm;
 
     //
-    private World world;
+    public World world;
 
 
     //We could have multiple brains, EX:
@@ -41,7 +41,7 @@ public class AnimalBrainAgent : Agent
 
         eventPublisher = animalController.tickEventPublisher;
 
-        world = FindObjectOfType<World>();
+        
 
         EventSubscribe();
     }
@@ -337,6 +337,8 @@ public class AnimalBrainAgent : Agent
         eventPublisher.onSenseTickEvent += RequestDecision;
 
         animalController.actionDeath += HandleDeath;
+        // animalController.onBirth += HandleBirth;
+        
         animalController.matingStateState.onMate += HandleMate;
         animalController.eatingState.onEatFood += HandleEating;
         animalController.drinkingState.onDrinkWater += HandleDrinking;
@@ -353,6 +355,8 @@ public class AnimalBrainAgent : Agent
         eventPublisher.onSenseTickEvent -= RequestDecision;
 
         animalController.actionDeath -= HandleDeath;
+        // animalController.onBirth -= HandleBirth;
+        
         animalController.matingStateState.onMate -= HandleMate;
         animalController.eatingState.onEatFood -= HandleEating;
         animalController.drinkingState.onDrinkWater -= HandleDrinking;
@@ -366,6 +370,7 @@ public class AnimalBrainAgent : Agent
         //Penalize for every year not lived.
         // AddReward(animalModel.age - animalModel.traits.ageLimit);
         // world.totalScore += (int)(animalModel.age - animalModel.traits.ageLimit);
+        
         // if (world != null)
         // {
         //     world.agents.Remove(this);
@@ -398,6 +403,19 @@ public class AnimalBrainAgent : Agent
         //Task achieved
         //EndEpisode();
     }
+    
+    // private void HandleBirth(object sender, AnimalController.OnBirthEventArgs e)
+    // {
+    //     if (world != null)
+    //     {
+    //         AnimalBrainAgent childAgent = e.child.GetComponent<AnimalBrainAgent>();
+    //         if (childAgent != null)
+    //         {
+    //             world.agents.Add(childAgent);
+    //         }
+    //         
+    //     }
+    // }
     
     private void HandleEating(GameObject obj)
     {
