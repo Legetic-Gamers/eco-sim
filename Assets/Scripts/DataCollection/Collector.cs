@@ -109,16 +109,16 @@ namespace DataCollection
 
             // Mean and variance running update
             int indexTrait = 0;
+            animalTotal[gen] += 1;
             for (int trait = 0; trait < 12; trait++)
             {
                 (float mean, float var) =
                     GetNewMeanVariance(animalMean[trait][gen],animalVar[trait][gen], traitsInAnimal[indexTrait], animalTotal[gen]);
                 animalMean[trait][gen] = mean;
                 animalVar[trait][gen] = var;
+                if(trait == 0 && gen == 0) Debug.Log(var);
                 indexTrait++;
             }
-            
-            animalTotal[gen] += 1;
             totalAnimalsAlivePerGeneration[gen] += 1;
         }
 
@@ -221,10 +221,11 @@ namespace DataCollection
         // source: https://www.johndcook.com/blog/standard_deviation/
         private (float m, float v) GetNewMeanVariance(float m, float s,float valueToAdd, float populationSize)
         {
-            float oldM = m;
-            m = m + (valueToAdd - m) / populationSize;
-            s = s + (valueToAdd - m) * (valueToAdd - oldM);
-            return (m, s / (populationSize - 1));
+            var oldM = m;
+            if(populationSize > 1) s = s * (populationSize - 2);
+            m += (valueToAdd - m) / populationSize;
+            s += (valueToAdd - m) * (valueToAdd - oldM);
+            return (populationSize > 1) ? (m, s / (populationSize - 1f)) : (m, 0);
         }
     }
 }    
