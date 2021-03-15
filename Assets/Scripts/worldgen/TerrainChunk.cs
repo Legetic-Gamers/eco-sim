@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Threading;
+using UnityEngine;
 using UnityEngine.AI;
 
 public class TerrainChunk
@@ -39,7 +40,9 @@ public class TerrainChunk
     WaterChunk waterChunk;
     WaterSettings waterSettings;
 
-    public TerrainChunk(Vector2 coordinate, HeightMapSettings heightMapSettings, MeshSettings meshSettings, WaterSettings waterSettings, bool fixedTerrain, LODInfo[] detailLevels, int colliderLevelOfDetailIndex, Transform parent, Transform viewer, Material material, System.Action OnChunkLoaded = null)
+    ObjectPlacementSettings objectPlacementSettings;
+
+    public TerrainChunk(Vector2 coordinate, HeightMapSettings heightMapSettings, MeshSettings meshSettings, WaterSettings waterSettings, ObjectPlacementSettings objectPlacementSettings, bool fixedTerrain, LODInfo[] detailLevels, int colliderLevelOfDetailIndex, Transform parent, Transform viewer, Material material, System.Action OnChunkLoaded = null)
     {
         this.coordinate = coordinate;
         this.detailLevels = detailLevels;
@@ -49,6 +52,7 @@ public class TerrainChunk
         this.viewer = viewer;
         this.fixedTerrain = fixedTerrain;
         this.waterSettings = waterSettings;
+        this.objectPlacementSettings = objectPlacementSettings;
 
         sampleCentre = coordinate * meshSettings.meshWorldSize / meshSettings.meshScale;
         Vector2 position = coordinate * meshSettings.meshWorldSize;
@@ -63,6 +67,7 @@ public class TerrainChunk
 
         meshObject.transform.position = new Vector3(position.x, 0, position.y);
         meshObject.transform.parent = parent;
+        meshObject.layer = LayerMask.NameToLayer("Ground");
         SetVisible(false);
 
         if (fixedTerrain)
@@ -73,6 +78,7 @@ public class TerrainChunk
             if (waterSettings.generateWater) terrainMesh.updateCallback += SetWater;
             if (OnChunkLoaded != null)
                 terrainMesh.updateCallback += OnChunkLoaded;
+            terrainMesh.updateCallback += PlaceObjects;
             SetVisible(true);
         }
         else
@@ -92,7 +98,6 @@ public class TerrainChunk
 
             maxViewDistance = detailLevels[detailLevels.Length - 1].visibleDistanceThreshold;
         }
-
 
     }
 
@@ -219,7 +224,17 @@ public class TerrainChunk
     public void SetWater()
     {
         waterChunk = meshObject.AddComponent<WaterChunk>();
-        waterChunk.Setup(coordinate * meshSettings.meshWorldSize, waterSettings, heightMapSettings, meshRenderer.bounds.size, meshObject.transform);
+        waterChunk.Setup(coordinate * meshSettings.meshWorldSize, waterSettings, heightMapSettings, meshRenderer.bounds.size, meshObject.transform, meshFilter.mesh.vertices);
+    }
+
+    public void PlaceObjects()
+    {
+        if (hasSetCollider)
+        {
+            ObjectPlacement objectPlacement = meshObject.AddComponent<ObjectPlacement>();
+            objectPlacement.PlaceObjects(objectPlacementSettings, meshSettings, heightMapSettings);
+        }
+
     }
 
     public void SetVisible(bool visible)

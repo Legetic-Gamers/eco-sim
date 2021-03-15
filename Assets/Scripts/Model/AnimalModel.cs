@@ -90,19 +90,23 @@ public abstract class AnimalModel
     ///     -hydration == 0 (when not going the "decrementHealth if hydration less than 20%"-route)
     /// 
     /// </summary>
-    
+
     public int generation { get; set; }
+
+
     public Traits traits { get; set; }
-    
+
     /* /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\ */
     /*                                       Parameters                                       */
     /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
 
-    public int age { get; set; }
-    
+    public float age { get; set; }
+
     //CLAMPING (SETTING A LIMIT) TO ALL LIMITED PARAMETERS.
     private float _currentHealth;
-    public float currentHealth { 
+
+    public float currentHealth
+    {
         get { return _currentHealth; }
         set
         {
@@ -119,6 +123,7 @@ public abstract class AnimalModel
     }
 
     private float _currentEnergy;
+
     public float currentEnergy
     {
         get { return _currentEnergy; }
@@ -130,12 +135,13 @@ public abstract class AnimalModel
             }
             else
             {
-                _currentEnergy = Mathf.Clamp(value, 0, traits.maxEnergy); 
+                _currentEnergy = Mathf.Clamp(value, 0, traits.maxEnergy);
             }
         }
     }
 
     private float _currentHydration;
+
     public float currentHydration
     {
         get { return _currentHydration; }
@@ -153,6 +159,7 @@ public abstract class AnimalModel
     }
 
     private float _currentSpeed;
+
     public float currentSpeed
     {
         get { return _currentSpeed; }
@@ -168,12 +175,27 @@ public abstract class AnimalModel
             }
         }
     }
-    
+
     //No limit on reproductive urge.
-    public float reproductiveUrge { get; set; }
+    //public float reproductiveUrge { get; set; }
     
-    
-    
+    private float _reproductiveUrge;
+    public float reproductiveUrge
+    {
+        get { return _reproductiveUrge; }
+        set
+        {
+            if (traits == null)
+            {
+                _reproductiveUrge = value;
+            }
+            else
+            {
+                _reproductiveUrge = Mathf.Clamp(value, 0, traits.maxReproductiveUrge);
+            }
+        }
+    }
+
 
     public AnimalModel(Traits traits, int generation)
     {
@@ -187,40 +209,51 @@ public abstract class AnimalModel
     }
 
     public bool IsAlive => (currentHealth > 0 && currentEnergy > 0 && age < traits.ageLimit && currentHydration > 0);
-    
+
 
     public abstract AnimalModel Mate(AnimalModel otherParent);
 
     public float GetHealthPercentage => currentHealth / traits.maxEnergy;
-    
+
     public float GetEnergyPercentage => currentEnergy / traits.maxEnergy;
-    
+
     public float GetHydrationPercentage => currentHydration / traits.maxHydration;
-    
+
     public float GetSpeedPercentage => currentSpeed / traits.maxSpeed;
     
+    public float GetUrgePercentage => reproductiveUrge / traits.maxReproductiveUrge;
+
     public bool EnergyFull => currentEnergy == traits.maxEnergy;
 
     public bool HighEnergy => currentEnergy / traits.maxEnergy > 0.9f;
-    
+
     public bool LowEnergy => currentEnergy / traits.maxEnergy < 0.6f;
-    
+
     public bool HydrationFull => currentHydration == traits.maxHydration;
-    
+
     public bool HighHydration => currentHydration / traits.maxHydration > 0.9f;
-    
+
     public bool LowHydration => currentHydration / traits.maxHydration < 0.5f;
-    
-    public bool WantingOffspring => 
-        //reproductive urge greater than average of energy and hydration.
-        reproductiveUrge > (currentEnergy + currentHydration) / (traits.maxEnergy + traits.maxHydration);
-    
+
+    public bool WantingOffspring => reproductiveUrge / traits.maxReproductiveUrge > (traits.maxEnergy - currentEnergy) / traits.maxEnergy && reproductiveUrge / traits.maxReproductiveUrge > (traits.maxHydration - currentHydration) / traits.maxHydration;
+    //reproductive urge greater than average of energy and hydration.
+    //reproductiveUrge > (currentEnergy + currentHydration) / (traits.maxEnergy + traits.maxHydration);
+    // public bool WantingOffspring()
+    // {
+    //     bool condition =
+    //         reproductiveUrge / traits.maxReproductiveUrge > (traits.maxEnergy - currentEnergy) / traits.maxEnergy &&
+    //         reproductiveUrge / traits.maxReproductiveUrge >
+    //         (traits.maxHydration - currentHydration) / traits.maxHydration;
+    //     Debug.Log("Urge: " + reproductiveUrge / traits.maxReproductiveUrge + " Hunger: " + (traits.maxEnergy - currentEnergy)/ traits.maxEnergy + " Thirst: " + (traits.maxHydration - currentHydration)/traits.maxHydration + " Cond: " + condition);
+    //    
+    //
+    //     return condition;
+    // }
+
     public bool LowHealth => currentHealth < 30;
-    
-    
+
 
     public abstract bool CanEat<T>(T obj);
 
     public abstract bool IsSameSpecies<T>(T obj);
-
 }

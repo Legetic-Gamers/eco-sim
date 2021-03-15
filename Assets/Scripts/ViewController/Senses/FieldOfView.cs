@@ -125,7 +125,10 @@ public class FieldOfView : MonoBehaviour
 
     private void OnDestroy()
     {
-        tickEventPublisher.onSenseTickEvent -= FindVisibleTargets;
+        if (tickEventPublisher)
+        {
+            tickEventPublisher.onSenseTickEvent -= FindVisibleTargets;   
+        }
     }
     
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using AnimalsV2.States;
 using UnityEditorInternal;
 using UnityEngine;
 
@@ -18,6 +19,8 @@ namespace AnimalsV2
     {
         public State CurrentState { get; private set; }
         
+        private State defaultState { get; set; }
+        
         // Used to identify an absorbing state, such that no other state can be entered, e.g. Dead.
         public bool absorbingState;
         
@@ -33,19 +36,23 @@ namespace AnimalsV2
         /// <param name="startingState"> State to start in (Idle) </param>
         public void Initialize(State startingState)
         {
+            defaultState = startingState;
             ChangeState(startingState);
-            
         }
 
         /// <summary>
         /// Changing states. 
         /// </summary>
         /// <param name="newState"> State to change into. </param>
-        public void ChangeState(State newState)
+        public bool ChangeState(State newState)
         {
-            if(newState == CurrentState) return;
-            // if the state is absorbing, meaning that state change is not possible, we return
-            if (absorbingState) return;
+            // if (newState is MatingState)
+            // {
+            //     Debug.Log("absorbingstate:" + absorbingState + " Meetrequirements: " + newState.MeetRequirements());
+            // }
+
+            // if the state is absorbing, meaning that state change is not possible or newState == CurrentState or newState does not meet requirements, we return
+            if(newState == CurrentState || absorbingState || !newState.MeetRequirements()) return false;
             
             if (CurrentState != null)
             {
@@ -53,19 +60,18 @@ namespace AnimalsV2
                 CurrentState.Exit();
                 OnStateExit?.Invoke(CurrentState);
             }
-            
-            //Change state
-            CurrentState = newState; 
 
+            //Change state
+            CurrentState = newState;
             if (CurrentState != null)
             {
                 //Enter new state
                 CurrentState.Enter();
-                
-                
                 OnStateEnter?.Invoke(CurrentState);
+                return true;
+                
             }
-            
+            return false;
         }
         
         public void  UpdateStatesLogic() {
@@ -83,6 +89,11 @@ namespace AnimalsV2
         {
             if (CurrentState != null) CurrentState.PhysicsUpdate();
             OnStatePhysicsUpdate?.Invoke(CurrentState);
+        }
+
+        public void GoToDefaultState()
+        {
+            ChangeState(defaultState);
         }
     }
 }

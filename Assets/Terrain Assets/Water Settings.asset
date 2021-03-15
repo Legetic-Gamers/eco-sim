@@ -14,10 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   autoUpdate: 1
   generateWater: 1
-  waterLevel: 0.363
+  stylizedWater: 1
+  waterLevel: 0.318
+  waterVertexDiff: 0.1
   size: 1
-  gridSize: 16
-  power: 12.15
-  scale: 36.64
-  timeScale: 3.04
-  material: {fileID: 2100000, guid: 1bf102809a7cc4a409c724d892b1fecb, type: 2}
+  gridSize: 1
+  power: 3
+  scale: 1
+  timeScale: 1
+  material: {fileID: 2100000, guid: 7d15e8e57b643694a8665fc53363315c, type: 2}
+  stylizedMaterial: {fileID: 2100000, guid: 8c69baf2737c74646964642f0ae67ca6, type: 2}
