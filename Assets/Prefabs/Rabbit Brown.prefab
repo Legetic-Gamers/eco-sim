@@ -2557,6 +2557,7 @@ GameObject:
   - component: {fileID: 9127360419405430084}
   - component: {fileID: 1380498083}
   - component: {fileID: 7273209833827066304}
+  - component: {fileID: 3920424722655883519}
   m_Layer: 8
   m_Name: Rabbit Brown
   m_TagString: Animal
@@ -2729,6 +2730,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: eeade2d59b355d445a3a8d5bdfc67fa4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3920424722655883519
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5945667779142240406}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c71b720863ec4e7a8484c019f6979fe3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &5945667779165617436
