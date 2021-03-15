@@ -71,10 +71,10 @@ namespace AnimalsV2.States
             {
                 if (potentialMate.TryGetComponent(out AnimalController potentialMateAnimalController))
                 {
-                    if (potentialMateAnimalController.animalModel.WantingOffspring)
-                    {
+                    // if (potentialMateAnimalController.animalModel.WantingOffspring)
+                    // {
                         return potentialMateAnimalController.gameObject;
-                    }
+                    // }
                 }
             }
 

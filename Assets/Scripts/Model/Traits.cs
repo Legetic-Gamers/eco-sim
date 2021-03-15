@@ -16,6 +16,8 @@ public class Traits
     public float maxHealth { get; set; } // optional
     
     public float maxSpeed { get; set; }
+    
+    public float maxReproductiveUrge { get; set; }
     public float endurance { get; set; }
     
     public float ageLimit { get; set; }
@@ -45,6 +47,7 @@ public class Traits
         float maxHealth,
         float maxHydration,
         float maxSpeed,
+        float maxReproductiveUrge,
         float endurance, 
         float ageLimit, 
         float temperatureResist, 
@@ -59,6 +62,7 @@ public class Traits
         this.maxHealth = maxHealth;
         this.maxHydration = maxHydration;
         this.maxSpeed = maxSpeed;
+        this.maxReproductiveUrge = maxReproductiveUrge;
         this.endurance = endurance;
         this.ageLimit = ageLimit;
         this.temperatureResist = temperatureResist;
@@ -72,7 +76,7 @@ public class Traits
     public Traits Crossover(Traits otherParentTraits, float firstParentAge, float secondParentAge)
     {
         // create a copy of parent one's genes
-        Traits childTraits = new Traits(size, maxEnergy, maxHealth, maxHydration, maxSpeed, endurance, ageLimit,
+        Traits childTraits = new Traits(size, maxEnergy, maxHealth, maxHydration, maxSpeed,maxReproductiveUrge, endurance, ageLimit,
             temperatureResist, desirability, viewAngle, viewRadius, hearingRadius);
         
         try

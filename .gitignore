@@ -81,8 +81,8 @@ crashlytics-build.properties
 /.idea
 
 #ML-Agents Virtual Environment and Results
-/venv
-/results
+/venv/
+/results/
 
 Packages/packages-lock.json
 

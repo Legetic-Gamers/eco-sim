@@ -50,8 +50,10 @@ namespace AnimalsV2.States
             {
                 if (animal.agent.remainingDistance < 1.0f)
                 {
-                    Vector3 position = RandomNavSphere(animal.transform.position, 20,
+                    Vector3 position = RandomNavSphere(animal.transform.position, 10,
                         1 << NavMesh.GetAreaFromName("Walkable"));
+                    
+                    //Vector3 position = new Vector3(Random.Range(-10.0f, 10.0f), 0, Random.Range(-10.0f, 10.0f)) + animal.transform.position;
                    
                     //Move the animal using the navmeshagent.
                     NavMeshHit hit;

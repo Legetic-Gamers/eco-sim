@@ -20,6 +20,14 @@ public abstract class AnimalController : MonoBehaviour
     // decisionMaker subscribes to these actions
     public Action<GameObject> actionPerceivedHostile;
     public Action actionDeath;
+    
+    //Subscribed to by animalBrainAgent.
+    public event EventHandler<OnBirthEventArgs> onBirth;
+
+    public class OnBirthEventArgs : EventArgs
+    {
+        public GameObject child;
+    }
 
     [HideInInspector] public NavMeshAgent agent;
 
@@ -256,8 +264,8 @@ public abstract class AnimalController : MonoBehaviour
             AnimalModel childModel = animalModel.Mate(targetAnimalController.animalModel);
             child.GetComponent<AnimalController>().animalModel = childModel;
             //TODO promote laborTime to model or something.
-            float childEnergy = animalModel.currentEnergy * 0.5f +
-                                targetAnimalController.animalModel.currentEnergy * 0.5f;
+            float childEnergy = animalModel.currentEnergy * 0.25f +
+                                targetAnimalController.animalModel.currentEnergy * 0.25f;
             StartCoroutine(GiveBirth(child, childEnergy, 5));
 
             //Reset both reproductive urges. 
@@ -265,8 +273,8 @@ public abstract class AnimalController : MonoBehaviour
             targetAnimalController.animalModel.reproductiveUrge = 0f;
 
             //Expend energy
-            animalModel.currentEnergy = animalModel.currentEnergy * 0.5f;
-            targetAnimalController.animalModel.currentEnergy = targetAnimalController.animalModel.currentEnergy * 0.5f;
+            animalModel.currentEnergy = animalModel.currentEnergy * 0.75f;
+            targetAnimalController.animalModel.currentEnergy = targetAnimalController.animalModel.currentEnergy * 0.75f;
         }
     }
 
@@ -277,6 +285,8 @@ public abstract class AnimalController : MonoBehaviour
         child = Instantiate(child, gameObject.transform.position,
             gameObject.transform.rotation); //NOTE CHANGE SO THAT PREFAB IS USED
         child.GetComponent<AnimalController>().animalModel.currentEnergy = newEnergy;
+        
+        onBirth?.Invoke(this,new OnBirthEventArgs{child = child});
     }
 
     public void DestroyGameObject(float delay)
@@ -331,8 +341,9 @@ public abstract class AnimalController : MonoBehaviour
 
             // invoke death state with method HandleDeath() in decisionmaker
             actionDeath?.Invoke();
+           
             // unsubscribe all events because we want only want to invoke it once.
-            actionDeath = null;
+            //actionDeath = null;
         }
     }
 

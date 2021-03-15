@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -87,7 +86,7 @@ public class ParameterUI : MonoBehaviour
         health.value = animal.GetHealthPercentage;
         energy.value = animal.GetEnergyPercentage;
         hydration.value = animal.GetHydrationPercentage;
-        reproductiveUrge.value = animal.reproductiveUrge;
+        reproductiveUrge.value = animal.GetUrgePercentage;
         state.text = animalController.fsm.CurrentState.ToString();
     }
 }
