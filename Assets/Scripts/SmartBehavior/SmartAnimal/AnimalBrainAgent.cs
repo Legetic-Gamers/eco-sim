@@ -366,7 +366,6 @@ public class AnimalBrainAgent : Agent
     
     private void HandleDeath()
     {
-        Debug.Log("Death");
         //Penalize for every year not lived.
         // AddReward(animalModel.age - animalModel.traits.ageLimit);
         // world.totalScore += (int)(animalModel.age - animalModel.traits.ageLimit);
@@ -385,15 +384,9 @@ public class AnimalBrainAgent : Agent
         //Task failed
         EndEpisode();
 
-        //End if all rabbits are dead.
-        if (world.agents.All(agent => agent.fsm.CurrentState is Dead))
-        {
-            Debug.Log("They all dead!");
-             
-             world.ResetWorld();
-        }
         
-        
+
+
     }
     
     private void HandleMate(GameObject obj)

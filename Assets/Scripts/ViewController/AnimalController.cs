@@ -334,6 +334,7 @@ public abstract class AnimalController : MonoBehaviour
 
             // invoke death state with method HandleDeath() in decisionmaker
             actionDeath?.Invoke();
+           
             // unsubscribe all events because we want only want to invoke it once.
             //actionDeath = null;
         }

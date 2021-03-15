@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using AnimalsV2.States.AnimalsV2.States;
 using Unity.MLAgents;
 using UnityEngine;
 using UnityEngine.UI;
@@ -63,6 +64,10 @@ public class World : MonoBehaviour
         }
     }
 
+    private void FixedUpdate()
+    {
+        ResetOnExtinction();
+    }
 
     private void CreateObjects(int num, GameObject type)
     {
@@ -107,7 +112,7 @@ public class World : MonoBehaviour
             if (animalController)
             {
                 animalController.onBirth += HandleBirth;
-                // animalController.actionDeath += HandleDeath;
+                
             }
         }
     }
@@ -121,12 +126,13 @@ public class World : MonoBehaviour
                 AnimalController animalController = a.GetComponent<AnimalController>();
                 if (animalController)
                 {
+                    
                     animalController.onBirth -= HandleBirth;
-                    // animalController.actionDeath += HandleDeath;
+                    
                 }
             }
         }
-        
+
         foreach (WolfController w in wolves)
         {
             if (w != null)
@@ -135,12 +141,10 @@ public class World : MonoBehaviour
                 if (animalController)
                 {
                     animalController.onBirth -= HandleBirth;
-                    // animalController.actionDeath += HandleDeath;
+                    
                 }
             }
         }
-        
-        
     }
 
     void ClearObjects(GameObject[] objects)
@@ -228,18 +232,48 @@ public class World : MonoBehaviour
         }
     }
 
-    // private void HandleDeath()
-    // {
-    //     agents.Remove(this);
-    // }
+    private void ResetOnExtinction()
+    {
+        //Reset if all agents are dead.
+        if (agents.All(agent => IsDead(agent) ))
+        {
+            Debug.Log("Extinction");
+            ResetWorld();
+        }
+    }
+
+    private static bool IsDead(AnimalBrainAgent agent)
+    {
+        //agent is dead if nonexistent
+        if (agent == null)
+        {
+            return true;
+        }
+
+        //agent is dead if dead
+        AnimalController animalController = agent.GetComponent<AnimalController>();
+        if (animalController)
+        {
+            if (animalController.fsm.CurrentState is Dead || !animalController.animalModel.IsAlive)
+            {
+                return true;
+            }
+        }
+        else
+        {
+            //Agent is dead if it has no animalController
+            return true;
+        }
+
+
+        //else agent is alive
+        return false;
+    }
 
     private void SpawnNewFood()
     {
         CreateObjects(numFood, food);
     }
 
-    public void SpawnNewRabbit()
-    {
-        CreateObjects(1, rabbit);
-    }
+   
 }
