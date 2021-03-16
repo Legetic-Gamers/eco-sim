@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
+using Random = UnityEngine.Random;
 
 namespace AnimalsV2
 {
@@ -125,6 +126,39 @@ namespace AnimalsV2
         //     return allPercievedObjectsWithTag;
         // }
 
-       
+        public static Vector3 RandomNavSphere(Vector3 origin, float dist, int layermask)
+        {
+            Vector3 randDirection = Random.insideUnitSphere * dist;
+
+            randDirection += origin;
+
+            NavMeshHit navHit;
+
+            NavMesh.SamplePosition(randDirection, out navHit, dist, layermask);
+
+            return navHit.position;
+        }
+
+        public static bool NavigateRelative(AnimalController animal, Vector3 relativeVector, int layerMask)
+        {
+            if (relativeVector == Vector3.zero && !animal)
+            {
+                return true;
+            }
+
+            Vector3 origin = animal.transform.position;
+            Vector3 destination = origin + relativeVector;
+            
+            NavMeshHit hit;
+            if (NavMesh.SamplePosition(destination, out hit, Vector3.Distance(origin, relativeVector), layerMask))
+            {
+                animal.agent.SetDestination(destination);
+                return true;
+            }
+            
+            return false;
+            
+        }
+        
     }
 }

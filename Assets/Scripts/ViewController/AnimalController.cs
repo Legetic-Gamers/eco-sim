@@ -56,14 +56,14 @@ public abstract class AnimalController : MonoBehaviour
     private float reproductiveUrgeModifier;
     private float speedModifier = JoggingSpeed; //100% of maxSpeed in model
 
-    public List<GameObject> visibleHostileTargets = new List<GameObject>();
-    public List<GameObject> visibleFriendlyTargets = new List<GameObject>();
-    public List<GameObject> visibleFoodTargets = new List<GameObject>();
-    public List<GameObject> visibleWaterTargets = new List<GameObject>();
+    public readonly List<GameObject> visibleHostileTargets = new List<GameObject>();
+    public readonly List<GameObject> visibleFriendlyTargets = new List<GameObject>();
+    public readonly List<GameObject> visibleFoodTargets = new List<GameObject>();
+    public readonly List<GameObject> visibleWaterTargets = new List<GameObject>();
 
-    public List<GameObject> heardHostileTargets = new List<GameObject>();
-    public List<GameObject> heardFriendlyTargets = new List<GameObject>();
-    public List<GameObject> heardPreyTargets = new List<GameObject>();
+    public readonly List<GameObject> heardHostileTargets = new List<GameObject>();
+    public readonly List<GameObject> heardFriendlyTargets = new List<GameObject>();
+    public readonly List<GameObject> heardPreyTargets = new List<GameObject>();
 
     public bool IsControllable { get; set; } = false;
 
@@ -331,7 +331,6 @@ public abstract class AnimalController : MonoBehaviour
         SetPhenotype();
     }
 
-
     //should be refactored so that this logic is in AnimalModel
     private void HandleDeathStatus()
     {
@@ -354,10 +353,5 @@ public abstract class AnimalController : MonoBehaviour
 
 
     public abstract Vector3 getNormalizedScale();
-    private void FixedUpdate()
-    {
-        //Update physics
-        //Fsm.UpdateStatesPhysics();
-    }
-    
+
 }
