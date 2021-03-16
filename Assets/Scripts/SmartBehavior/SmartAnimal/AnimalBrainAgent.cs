@@ -276,6 +276,7 @@ public class AnimalBrainAgent : Agent
         }
         else if (Input.GetKey(KeyCode.RightArrow))
         {
+           
             Vector3 position = gameObject.transform.position;
             position.z = position.z - 1f;
             NavMeshHit hit;
