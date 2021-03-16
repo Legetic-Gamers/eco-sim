@@ -74,9 +74,11 @@ public class AnimalMovementBrain : Agent
         base.CollectObservations(sensor);
 
         Vector3 thisPosition = animalController.transform.position;
-        Vector3? nearestFoodRelativePosition = NavigationUtilities.GetNearestObjectPosition(animalController.visibleFoodTargets, thisPosition)?.transform.position;
-        Vector3? nearestWaterRelativePosition = NavigationUtilities.GetNearestObjectPosition(animalController.visibleWaterTargets, thisPosition)?.transform.position;
-        
+        Vector3? nearestFoodPosition = NavigationUtilities.GetNearestObject(animalController.visibleFoodTargets, thisPosition)?.transform.position;
+        Vector3? nearestWaterPosition = NavigationUtilities.GetNearestObject(animalController.visibleWaterTargets, thisPosition)?.transform.position;
+
+        Vector3? nearestFoodRelativePosition = nearestFoodPosition - thisPosition;
+        Vector3? nearestWaterRelativePosition = nearestWaterPosition - thisPosition;
         
         sensor.AddObservation(animalModel.currentEnergy / animalModel.traits.maxEnergy);
         sensor.AddObservation(animalModel.currentHydration / animalModel.traits.maxHydration);
@@ -139,9 +141,6 @@ public class AnimalMovementBrain : Agent
     //Listen to when parameters or senses were updated.
     private void EventSubscribe()
     {
-        //eventPublisher.onParamTickEvent += MakeDecision;
-        
-        //eventPublisher.onParamTickEvent += MakeDecision;
         eventPublisher.onSenseTickEvent += RequestDecision;
         
         animalController.actionDeath += HandleDeath;
