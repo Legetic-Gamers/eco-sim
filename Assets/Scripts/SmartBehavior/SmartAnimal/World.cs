@@ -49,11 +49,13 @@ public class World : MonoBehaviour
         //ResetWorld();
 
         //Academy.Instance.OnEnvironmentReset += ResetWorld;
-        // Academy.Instance.EnvironmentParameters.GetWithDefault("numFood", 15.0f);
-        // Academy.Instance.EnvironmentParameters.GetWithDefault("numRabbits", 3.0f);
-        // Academy.Instance.EnvironmentParameters.GetWithDefault("numWolves", 0.0f);
-        // Academy.Instance.EnvironmentParameters.GetWithDefault("numWater", 3.0f);
-        // Academy.Instance.EnvironmentParameters.GetWithDefault("foodRespawnRate", 100.0f);
+        
+        
+        numFood = (int )Mathf.Round(Academy.Instance.EnvironmentParameters.GetWithDefault("numFood", 15.0f));
+        numRabbits = (int )Mathf.Round(Mathf.Round(Academy.Instance.EnvironmentParameters.GetWithDefault("numRabbits", 3.0f)));
+        numWolves = (int )Mathf.Round(Mathf.Round(Academy.Instance.EnvironmentParameters.GetWithDefault("numWolves", 0.0f)));
+        numWater = (int )Mathf.Round(Mathf.Round(Academy.Instance.EnvironmentParameters.GetWithDefault("numWater", 3.0f)));
+        foodRespawnRate = (int )Mathf.Round(Mathf.Round(Academy.Instance.EnvironmentParameters.GetWithDefault("foodRespawnRate", 100.0f)));
 
         
         
