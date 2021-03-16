@@ -119,7 +119,7 @@ namespace DataCollection
         {
             c.Collect();
             //Display(ConvertFloatListToIntList(c.rabbitStatsPerGenMean[0]));
-            if (ShowFrameRate) Display(ConvertFloatListToIntList(framerate));
+            //if (ShowFrameRate) Display(ConvertFloatListToIntList(framerate));
             //ExportDataToFile(0);
         }
         
