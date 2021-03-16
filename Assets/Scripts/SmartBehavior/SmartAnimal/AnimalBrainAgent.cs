@@ -20,7 +20,7 @@ public class AnimalBrainAgent : Agent
     private TickEventPublisher eventPublisher;
     private FiniteStateMachine fsm;
 
-    
+
     public World world;
 
 
@@ -51,12 +51,12 @@ public class AnimalBrainAgent : Agent
         base.OnEpisodeBegin();
 
         //Reset stuff 
-        
+
 
         //Reset animal position and rotation.
         // 
         //resetRabbit();
-        
+
         //ResetRabbit();
     }
 
@@ -68,9 +68,9 @@ public class AnimalBrainAgent : Agent
         Debug.Log("reset!");
         // Destroy(animalController);
         // gameObject.AddComponent<RabbitController>();
-        
+
         //this.animalModel = new RabbitModel();
-        
+
         animalModel.currentEnergy = animalModel.traits.maxEnergy;
         animalModel.currentSpeed = 0;
         animalModel.currentHealth = animalModel.traits.maxHealth;
@@ -78,7 +78,6 @@ public class AnimalBrainAgent : Agent
         animalModel.reproductiveUrge = 0.2f;
         animalModel.age = 0;
         animalController.fsm.absorbingState = false;
-
     }
 
 
@@ -112,43 +111,44 @@ public class AnimalBrainAgent : Agent
                 //sensor.AddObservation(firstFoodPosition);
                 foundFood = true;
             }
-            
         }
 
 
         //TODO change from just first to something smarter. (Right now just get first heard or seen)
-         List<GameObject> mates = animalController?.visibleFriendlyTargets?.Concat(animalController?.heardFriendlyTargets)
-             .ToList();
-         if (mates.Count > 0)
-         {
-             GameObject firstMate = mates[0];
-             if (firstMate != null)
-             {
-                 // Vector3 firstMatePosition = firstMate.transform.position;
-                 // sensor.AddObservation(firstMatePosition);
-                 foundMate = true;
-             }
-         }
-        
-         //TODO change from just first to something smarter. (Right now just get first heard or seen)
-         List<GameObject> hostiles = animalController?.visibleHostileTargets.Concat(animalController?.heardHostileTargets)
-             .ToList();
-        
-         if (hostiles.Count > 0)
-         {
-             GameObject firstHostile = hostiles[0];
-             if (firstHostile != null)
-             {
-                 // Vector3 firstHostilePosition = firstHostile.transform.position;
-                 // sensor.AddObservation(firstHostilePosition);
-                 foundHostile = true;
-             }
-         }
-         
-         sensor.AddObservation(foundFood);
-         sensor.AddObservation(foundMate);
-         sensor.AddObservation(foundHostile);
-         
+        List<GameObject> mates = animalController?.visibleFriendlyTargets
+            ?.Concat(animalController?.heardFriendlyTargets)
+            .ToList();
+        if (mates.Count > 0)
+        {
+            GameObject firstMate = mates[0];
+            if (firstMate != null)
+            {
+                // Vector3 firstMatePosition = firstMate.transform.position;
+                // sensor.AddObservation(firstMatePosition);
+                foundMate = true;
+            }
+        }
+
+        //TODO change from just first to something smarter. (Right now just get first heard or seen)
+        List<GameObject> hostiles = animalController?.visibleHostileTargets
+            .Concat(animalController?.heardHostileTargets)
+            .ToList();
+
+        if (hostiles.Count > 0)
+        {
+            GameObject firstHostile = hostiles[0];
+            if (firstHostile != null)
+            {
+                // Vector3 firstHostilePosition = firstHostile.transform.position;
+                // sensor.AddObservation(firstHostilePosition);
+                foundHostile = true;
+            }
+        }
+
+        sensor.AddObservation(foundFood);
+        sensor.AddObservation(foundMate);
+        sensor.AddObservation(foundHostile);
+
         /////////////////////////////////////////////////////////////////////////////////////
 
         //TOTAL = 7, set in "Vector Observation" of "Behavior Parameters" in inspector.
@@ -160,22 +160,23 @@ public class AnimalBrainAgent : Agent
         base.OnActionReceived(vectorAction);
         ActionSegment<int> discreteActions = vectorAction.DiscreteActions;
 
-        
+
         //hunger is the fraction of missing energy.
-        float hunger = (animalModel.traits.maxEnergy - animalModel.currentEnergy)/animalModel.traits.maxEnergy;
+        float hunger = (animalModel.traits.maxEnergy - animalModel.currentEnergy) / animalModel.traits.maxEnergy;
         //thirst is the fraction of missing hydration.
-        float thirst = (animalModel.traits.maxHydration - animalModel.currentHydration)/animalModel.traits.maxHydration;
-        float stressFactor = -0.05f;//-0.05 means max penalty = -0.1
+        float thirst = (animalModel.traits.maxHydration - animalModel.currentHydration) /
+                       animalModel.traits.maxHydration;
+        float stressFactor = -0.05f; //-0.05 means max penalty = -0.1
 
         if (animalModel.IsAlive)
         {
             //Penalize the rabbit for being hungry and thirsty. This should make the agent try to stay satiated.
             AddReward((hunger + thirst) * stressFactor);
-            world.totalScore += (hunger + thirst) * stressFactor;
+            //world.totalScore += (hunger + thirst) * stressFactor;
 
             //Reward staying alive. If completely satiated -> 0.1. Completely drained -> 0.
             AddReward(2 * -stressFactor);
-            world.totalScore += 2 * -stressFactor;
+            //world.totalScore += 2 * -stressFactor;
         }
 
 
@@ -193,7 +194,7 @@ public class AnimalBrainAgent : Agent
                 // AddReward(0.1f);
                 // world.totalScore += 0.1f;
             }
-            
+
 
             print("Look for Water.");
         }
@@ -205,7 +206,7 @@ public class AnimalBrainAgent : Agent
                 // world.totalScore += 0.1f;
                 print("Wants offspring and found mate.");
             }
-            
+
             print("Look for Mate.");
         }
         else if (discreteActions[0] == 3)
@@ -215,7 +216,7 @@ public class AnimalBrainAgent : Agent
                 // AddReward(0.1f);
                 // world.totalScore += 0.1f;
             }
-            
+
             print("Look for food.");
         }
         else if (discreteActions[0] == 4)
@@ -225,19 +226,18 @@ public class AnimalBrainAgent : Agent
                 // AddReward(0.1f);
                 // world.totalScore += 0.1f;
             }
-            
+
             print("Flee!");
         }
     }
-    
+
     //Used to mark an action as IMPOSIBLE.
     public override void WriteDiscreteActionMask(IDiscreteActionMask actionMask)
     {
         //actionMask.WriteMask(branch, actionIndices);
-        
+
         //branch is the index (starting at 0) of the branch on which you want to mask the action
         //actionIndices is a list of int corresponding to the indices of the actions that the Agent cannot perform.
-
     }
 
     //Used for testing, gives us control over the output from the ML algortihm.
@@ -312,14 +312,13 @@ public class AnimalBrainAgent : Agent
             discreteActions[0] = 4;
             // ChangeState(animalController.fleeingState);
             // print("Flee!");
-        }else if (Input.GetKey(KeyCode.Alpha0))
+        }
+        else if (Input.GetKey(KeyCode.Alpha0))
         {
             HandleDeath();
             // ChangeState(animalController.fleeingState);
             // print("Flee!");
         }
-        
-        
     }
 
 
@@ -330,65 +329,47 @@ public class AnimalBrainAgent : Agent
     }
 
     //Instead of updating/Making choices every frame
-    //Listen to when parameters or senses were updated.
+    //Listen to when senses were updated.
     private void EventSubscribe()
     {
-        //eventPublisher.onParamTickEvent += MakeDecision;
         eventPublisher.onSenseTickEvent += RequestDecision;
 
         animalController.actionDeath += HandleDeath;
         // animalController.onBirth += HandleBirth;
-        
+
         animalController.matingStateState.onMate += HandleMate;
         animalController.eatingState.onEatFood += HandleEating;
         animalController.drinkingState.onDrinkWater += HandleDrinking;
-
-
     }
-
-    
 
 
     public void EventUnsubscribe()
     {
-        // eventPublisher.onParamTickEvent -= MakeDecision;
         eventPublisher.onSenseTickEvent -= RequestDecision;
 
         animalController.actionDeath -= HandleDeath;
         // animalController.onBirth -= HandleBirth;
-        
+
         animalController.matingStateState.onMate -= HandleMate;
         animalController.eatingState.onEatFood -= HandleEating;
         animalController.drinkingState.onDrinkWater -= HandleDrinking;
-
     }
 
-    
+
     private void HandleDeath()
     {
         //Penalize for every year not lived.
         // AddReward(animalModel.age - animalModel.traits.ageLimit);
         // world.totalScore += (int)(animalModel.age - animalModel.traits.ageLimit);
-        
-        // if (world != null)
-        // {
-        //     world.agents.Remove(this);
-        // }
 
         ChangeState(animalController.deadState);
         EventUnsubscribe();
-        
-        
-        // world.SpawnNewRabbit();
-        
+
+
         //Task failed
         EndEpisode();
-
-        
-
-
     }
-    
+
     private void HandleMate(GameObject obj)
     {
         AddReward(1f);
@@ -396,7 +377,7 @@ public class AnimalBrainAgent : Agent
         //Task achieved
         //EndEpisode();
     }
-    
+
     // private void HandleBirth(object sender, AnimalController.OnBirthEventArgs e)
     // {
     //     if (world != null)
@@ -409,7 +390,7 @@ public class AnimalBrainAgent : Agent
     //         
     //     }
     // }
-    
+
     private void HandleEating(GameObject obj)
     {
         AddReward(0.2f);

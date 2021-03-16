@@ -21,18 +21,22 @@ namespace Tests
 
         // Testing the basic configuration of the FSM
         [UnityTest]
-        public IEnumerator FSM_Configure_Passes()
+        public IEnumerator FSM_Setup_Passes()
         {
 
             //Setup
-            TestWorld testWorld = new TestWorld();
+            TestUtils.TestWorld testWorld = new TestUtils.TestWorld();
             GameObject animal = testWorld.animal;
             AnimalController animalController = animal.GetComponent<AnimalController>();
             FiniteStateMachine fsm = animalController.fsm;
             
             //Check that initial state is correct.
-            Assert.IsTrue(fsm.CurrentState is Wander);
-            Assert.IsFalse(fsm.absorbingState);
+            Assert.NotNull(fsm);
+            if (fsm != null)
+            {
+                Assert.IsTrue(fsm.CurrentState is Wander);
+                Assert.IsFalse(fsm.absorbingState);
+            }
 
 
             //yield return new WaitForSeconds(3f);
@@ -45,7 +49,7 @@ namespace Tests
         {
 
             //Setup
-            TestWorld testWorld = new TestWorld();
+            TestUtils.TestWorld testWorld = new TestUtils.TestWorld();
             GameObject animal = testWorld.animal;
             AnimalController animalController = animal.GetComponent<AnimalController>();
             FiniteStateMachine fsm = animalController.fsm;
@@ -67,7 +71,7 @@ namespace Tests
         {
 
             //Setup
-            TestWorld testWorld = new TestWorld();
+            TestUtils.TestWorld testWorld = new TestUtils.TestWorld();
             GameObject animal = testWorld.animal;
             AnimalController animalController = animal.GetComponent<AnimalController>();
             FiniteStateMachine fsm = animalController.fsm;
@@ -112,32 +116,32 @@ namespace Tests
 
         
 
-        private class TestWorld
-        {
-            public GameObject animal;
-            public GameObject eventPublisher;
-            
-            public TestWorld()
-            {
-                //Add camera to scene.
-                RenderSettings.skybox = null;
-                var root = new GameObject();
-                root.AddComponent(typeof(Camera));
-                var camera = root.GetComponent<Camera>();
-                camera.tag = "MainCamera";
-                root = GameObject.Instantiate(root);
-            
-                //Add tickEventPublisher to scene.
-                eventPublisher = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/TickEventPublisher.prefab");
-                eventPublisher = GameObject.Instantiate(eventPublisher, new Vector3(0, 0, 10), new Quaternion(0, 180, 0, 0));
-
-            
-                animal = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Rabbit Brown.prefab");
-                animal.GetComponent<NavMeshAgent>().enabled = false;
-                animal = GameObject.Instantiate(animal, new Vector3(0, 0, 10), new Quaternion(0, 180, 0, 0));
-
-            }
-        }
+        // private class TestWorld
+        // {
+        //     public GameObject animal;
+        //     public GameObject eventPublisher;
+        //     
+        //     public TestWorld()
+        //     {
+        //         //Add camera to scene.
+        //         RenderSettings.skybox = null;
+        //         var root = new GameObject();
+        //         root.AddComponent(typeof(Camera));
+        //         var camera = root.GetComponent<Camera>();
+        //         camera.tag = "MainCamera";
+        //         root = GameObject.Instantiate(root);
+        //     
+        //         //Add tickEventPublisher to scene.
+        //         eventPublisher = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/TickEventPublisher.prefab");
+        //         eventPublisher = GameObject.Instantiate(eventPublisher, new Vector3(0, 0, 10), new Quaternion(0, 180, 0, 0));
+        //
+        //     
+        //         animal = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Rabbit Brown.prefab");
+        //         animal.GetComponent<NavMeshAgent>().enabled = false;
+        //         animal = GameObject.Instantiate(animal, new Vector3(0, 0, 10), new Quaternion(0, 180, 0, 0));
+        //
+        //     }
+        // }
 
         // private GameObject NewAnimal()
         // {
