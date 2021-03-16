@@ -66,6 +66,41 @@ public abstract class AnimalController : MonoBehaviour
     public readonly List<GameObject> heardPreyTargets = new List<GameObject>();
 
     public bool IsControllable { get; set; } = false;
+    
+    public void Awake()
+    {
+        //Create the FSM.
+        fsm = new FiniteStateMachine();
+
+        goToFoodState = new GoToFood(this, fsm);
+        fleeingState = new FleeingState(this, fsm);
+        wanderState = new Wander(this, fsm);
+        idleState = new Idle(this, fsm);
+        goToWaterState = new GoToWater(this, fsm);
+        matingStateState = new MatingState(this, fsm);
+        deadState = new Dead(this, fsm);
+        drinkingState = new DrinkingState(this, fsm);
+        eatingState = new EatingState(this, fsm);
+        goToMate = new GoToMate(this, fsm);
+        fsm.Initialize(wanderState);
+
+        animationController = new AnimationController(this);
+    }
+
+    protected void Start()
+    {
+        // Init the NavMesh agent
+        agent = GetComponent<NavMeshAgent>();
+        agent.autoBraking = false;
+        animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
+        agent.speed = animalModel.currentSpeed;
+
+
+        tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
+        EventSubscribe();
+
+        SetPhenotype();
+    }
 
     /* /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\ */
     /*                                   Parameter handlers                                   */
@@ -224,27 +259,53 @@ public abstract class AnimalController : MonoBehaviour
         gameObject.transform.localScale = getNormalizedScale() * animalModel.traits.size;
     }
 
-    private void EatFood(GameObject food)
+    public float EatFood(GameObject food)
     {
+        float reward = 0f;
         //Access food script to consume the food.
-        if (food.GetComponent<AnimalController>()?.animalModel is IEdible edibleAnimal)
+        if (food.GetComponent<AnimalController>()?.animalModel is IEdible edibleAnimal && animalModel.CanEat(edibleAnimal))
         {
-            animalModel.currentEnergy += edibleAnimal.GetEaten();
+            float nutritionReward = edibleAnimal.GetEaten();
+            float hunger = animalModel.traits.maxEnergy - animalModel.currentEnergy;
+
+            //the reward for eating something should be the minimum of the actual nutrition gain and the hunger. Reason is that if an animal eats something that when it is already satisfied it will return a low reward.
+            reward = Math.Min(nutritionReward, hunger);
+            // normalize reward as a percentage
+            reward /= animalModel.traits.maxEnergy;
+            animalModel.currentEnergy += nutritionReward;
             Destroy(food);
         }
-        else if (food.GetComponent<PlantController>()?.plantModel is IEdible ediblePlant)
+        
+        if (food.GetComponent<PlantController>()?.plantModel is IEdible ediblePlant && animalModel.CanEat(ediblePlant))
         {
-            animalModel.currentEnergy += ediblePlant.GetEaten();
+            
+            float nutritionReward = ediblePlant.GetEaten();
+            float hunger = animalModel.traits.maxEnergy - animalModel.currentEnergy;
+
+            //the reward for eating something should be the minimum of the actual nutrition gain and the hunger. Reason is that if an animal eats something that when it is already satisfied it will return a low reward.
+            reward = Math.Min(nutritionReward, hunger);
+            reward /= animalModel.traits.maxEnergy;
+            animalModel.currentEnergy += nutritionReward;
             Destroy(food);
         }
+
+        return reward;
     }
 
-    private void DrinkWater(GameObject water)
+    public float DrinkWater(GameObject water)
     {
-        if (water.gameObject.CompareTag("Water"))
+        float reward = 0f;
+        
+        if (water.gameObject.CompareTag("Water") && !animalModel.HydrationFull)
         {
+            // the reward should be proportional to how much hydration was gained when drinking
+            reward = animalModel.traits.maxHydration - animalModel.currentHydration;
+            // normalize reward as a percentage
+            reward /= animalModel.traits.maxHydration;
             animalModel.currentHydration = animalModel.traits.maxHydration;
         }
+
+        return reward;
     }
 
     //TODO a rabbit should be able to have more than one offspring at a time
@@ -295,41 +356,7 @@ public abstract class AnimalController : MonoBehaviour
     }
 
     /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
-
-    public void Awake()
-    {
-        //Create the FSM.
-        fsm = new FiniteStateMachine();
-
-        goToFoodState = new GoToFood(this, fsm);
-        fleeingState = new FleeingState(this, fsm);
-        wanderState = new Wander(this, fsm);
-        idleState = new Idle(this, fsm);
-        goToWaterState = new GoToWater(this, fsm);
-        matingStateState = new MatingState(this, fsm);
-        deadState = new Dead(this, fsm);
-        drinkingState = new DrinkingState(this, fsm);
-        eatingState = new EatingState(this, fsm);
-        goToMate = new GoToMate(this, fsm);
-        fsm.Initialize(wanderState);
-
-        animationController = new AnimationController(this);
-    }
-
-    protected void Start()
-    {
-        // Init the NavMesh agent
-        agent = GetComponent<NavMeshAgent>();
-        agent.autoBraking = false;
-        animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
-        agent.speed = animalModel.currentSpeed;
-
-
-        tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
-        EventSubscribe();
-
-        SetPhenotype();
-    }
+    
 
     //should be refactored so that this logic is in AnimalModel
     private void HandleDeathStatus()
@@ -351,6 +378,40 @@ public abstract class AnimalController : MonoBehaviour
         EventUnsubscribe();
     }
 
+    //General method that takes unknown gameobject as input and interacts with the given gameobject depending on what it is. It can be to e.g. consume or to mate
+    // result is the reward for interacting with something
+    public float Interact(GameObject gameObject)
+    {
+        float reward = 0f;
+
+        Debug.Log(gameObject.name);
+        switch (gameObject.tag)
+        {
+            case "Water":
+                return DrinkWater(gameObject);
+            case "Plant":
+                return EatFood(gameObject);
+            case "Animal":
+                if (TryGetComponent(out AnimalController otherAnimalController))
+                {
+                    AnimalModel otherAnimalModel = otherAnimalController.animalModel;
+                    //if we can eat the other animal we try to do so
+                    if (animalModel.CanEat(otherAnimalModel))
+                    {
+                        return EatFood(otherAnimalController.gameObject);
+
+                    }
+
+                    if (animalModel.IsSameSpecies(otherAnimalModel))
+                    {
+                        //Insert code for try to mate and also modify the method so that it returns a float for reward;
+                    }
+                }
+                break;
+        }
+
+        return reward;
+    }
 
     public abstract Vector3 getNormalizedScale();
 

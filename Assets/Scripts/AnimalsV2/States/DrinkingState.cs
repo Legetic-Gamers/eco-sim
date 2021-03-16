@@ -13,7 +13,7 @@ namespace AnimalsV2.States
     {
         private GameObject target;
 
-        public Action<GameObject> onDrinkWater;
+        public Func<GameObject,float> onDrinkWater;
         
         public DrinkingState(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine)
         {

@@ -1,16 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using AnimalsV2;
-using AnimalsV2.States;
-using AnimalsV2.States.AnimalsV2.States;
-using Unity.Barracuda;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
 using UnityEngine;
 using UnityEngine.AI;
-using static AnimalsV2.Priorities;
 
 public class AnimalBrainAgent : Agent
 {
@@ -410,16 +405,20 @@ public class AnimalBrainAgent : Agent
     //     }
     // }
     
-    private void HandleEating(GameObject obj)
+    private float HandleEating(GameObject obj)
     {
         AddReward(0.2f);
         world.totalScore += 0.2f;
+        // Alexander H: I had to set the action to return a float which represents the reward. This is used in the other ML implementation.
+        return 1f;
     }
 
-    private void HandleDrinking(GameObject obj)
+    private float HandleDrinking(GameObject obj)
     {
         AddReward(0.2f);
         world.totalScore += 0.2f;
+        // Alexander H: I had to set the action to return a float which represents the reward. This is used in the other ML implementation.
+        return 1f;
     }
 
     public void Update()

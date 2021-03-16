@@ -38,8 +38,6 @@ public class AnimalMovementBrain : Agent
         //change to a state which does not navigate the agent. If no decisionmaker is precent, it will stay at this state.
         animalController.fsm.ChangeState(animalController.idleState);
 
-        //
-
         EventSubscribe();
     }
 
@@ -57,10 +55,7 @@ public class AnimalMovementBrain : Agent
         transform.localPosition = new Vector3(Random.Range(-9.5f, 9.5f), 0, Random.Range(-9.5f, 9.5f));
         transform.rotation = Quaternion.Euler(new Vector3(0f, Random.Range(0, 360)));
         Debug.Log("reset!");
-        // Destroy(animalController);
-        // gameObject.AddComponent<RabbitController>();
         
-        //this.animalModel = new RabbitModel();
         
         animalModel.currentEnergy = animalModel.traits.maxEnergy;
         animalModel.currentSpeed = 0;
@@ -108,7 +103,7 @@ public class AnimalMovementBrain : Agent
         //move the agent depending on the speed
         movementVector = movementVector.normalized * animalController.animalModel.currentSpeed;
         
-        //NavigationUtilities.NavigateRelative(animalController, movementVector, 1 << NavMesh.GetAreaFromName("Walkable"));
+        NavigationUtilities.NavigateRelative(animalController, movementVector, 1 << NavMesh.GetAreaFromName("Walkable"));
     }
 
     //Used for testing, gives us control over the output from the ML algortihm.
@@ -117,10 +112,7 @@ public class AnimalMovementBrain : Agent
         base.Heuristic(in actionsOut);
         
         ActionSegment<float> continuousActions = actionsOut.ContinuousActions;
-        
-        Debug.Log(animalController.agent.hasPath);
-        
-        
+
         if (Input.GetKey(KeyCode.UpArrow))
         {
             print("up");
@@ -187,12 +179,16 @@ public class AnimalMovementBrain : Agent
         
     }
 
-
+    //NOTE: OnTriggerEnter needs a rigidbody + a collider with isTrigger checked to be able to trigger collisions with other colliders.
     private void OnTriggerEnter(Collider other)
     {
-        if (TryGetComponent(out AnimalController otherAnimalController))
+        //The simple logic is if we "collide with an object with a target tag" => "interact"
+        if (other.gameObject.layer == LayerMask.NameToLayer("Target"))
         {
-            
+            float reward;
+            reward = animalController.Interact(other.gameObject);
+            AddReward(reward);
         }
+        
     }
 }
