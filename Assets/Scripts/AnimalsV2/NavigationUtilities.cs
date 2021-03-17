@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
+using Random = UnityEngine.Random;
 
 namespace AnimalsV2
 {
@@ -52,7 +53,7 @@ namespace AnimalsV2
         /// <param name="a"> Animal to find objects near.</param>
         /// <param name="tag"> String tag to find objects of. </param>
         /// <returns> 3D position of the nearest object. </returns>
-        public static GameObject GetNearestObjectPosition(List<GameObject> allPercievedObjects, Vector3 thisPosition)
+        public static GameObject GetNearestObject(List<GameObject> allPercievedObjects, Vector3 thisPosition)
         {
             //Return if not objects with tag found.
             if (allPercievedObjects.Count == 0) return null;
@@ -125,6 +126,40 @@ namespace AnimalsV2
         //     return allPercievedObjectsWithTag;
         // }
 
-       
+        public static Vector3 RandomNavSphere(Vector3 origin, float dist, int layermask)
+        {
+            Vector3 randDirection = Random.insideUnitSphere * dist;
+
+            randDirection += origin;
+
+            NavMeshHit navHit;
+
+            NavMesh.SamplePosition(randDirection, out navHit, dist, layermask);
+
+            return navHit.position;
+        }
+
+        public static bool NavigateRelative(AnimalController animal, Vector3 relativeVector, int layerMask)
+        {
+            //if the relative vector (which we want to navigate through) is zero, we return. Alos if animal is null we return
+            if (relativeVector.Equals(Vector3.zero) || !animal)
+            {
+                return true;
+            }
+
+            Vector3 origin = animal.transform.position;
+            Vector3 destination = origin + relativeVector;
+            
+            NavMeshHit hit;
+            if (NavMesh.SamplePosition(destination, out hit, Vector3.Distance(origin, relativeVector), layerMask))
+            {
+                animal.agent.SetDestination(destination);
+                return true;
+            }
+            
+            return false;
+            
+        }
+        
     }
 }

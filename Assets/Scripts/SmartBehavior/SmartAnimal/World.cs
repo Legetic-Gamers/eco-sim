@@ -39,7 +39,7 @@ public class World : MonoBehaviour
 
     
 
-    public List<AnimalBrainAgent> agents;
+    public List<Agent> agents;
     public List<WolfController> wolves;
     public List<PlantController> plants;
     public List<GameObject> waters;
@@ -115,10 +115,17 @@ public class World : MonoBehaviour
                 Quaternion.Euler(new Vector3(0f, Random.Range(0f, 360f), 90f)));
 
             //Add agents to lists
-            AnimalBrainAgent agent = newObject.GetComponent<AnimalBrainAgent>();
+            Agent agent = newObject.GetComponent<Agent>();
             if (agent)
             {
-                agent.world = this;
+                if (TryGetComponent(out AnimalBrainAgent animalBrainAgent))
+                {
+                    animalBrainAgent.world = this;
+                } else if (TryGetComponent(out AnimalMovementBrain animalMovementBrain))
+                {
+                    animalMovementBrain.world = this;
+                }
+                
                 agents.Add(agent);
             }
 
@@ -261,7 +268,7 @@ public class World : MonoBehaviour
 
     private void HandleBirth(object sender, AnimalController.OnBirthEventArgs e)
     {
-        AnimalBrainAgent childAgent = e.child.GetComponent<AnimalBrainAgent>();
+        Agent childAgent = e.child.GetComponent<Agent>();
         if (childAgent != null)
         {
             agents.Add(childAgent);
@@ -278,7 +285,7 @@ public class World : MonoBehaviour
         }
     }
 
-    private static bool IsDead(AnimalBrainAgent agent)
+    private static bool IsDead(Agent agent)
     {
         //agent is dead if nonexistent
         if (agent == null)

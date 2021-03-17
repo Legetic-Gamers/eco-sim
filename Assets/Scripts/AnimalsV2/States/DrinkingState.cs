@@ -13,7 +13,7 @@ namespace AnimalsV2.States
     {
         private GameObject target;
 
-        public Action<GameObject> onDrinkWater;
+        public Func<GameObject,float> onDrinkWater;
         
         public DrinkingState(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine)
         {
@@ -64,7 +64,7 @@ namespace AnimalsV2.States
         private GameObject GetNearestWater()
         {
             Vector3 position = animal.transform.position;
-            return NavigationUtilities.GetNearestObjectPosition(animal.visibleWaterTargets, position);
+            return NavigationUtilities.GetNearestObject(animal.visibleWaterTargets, position);
         }
     }
 

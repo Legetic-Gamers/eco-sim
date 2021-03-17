@@ -20,7 +20,7 @@ public class AnimalBrainAgent : Agent
     private TickEventPublisher eventPublisher;
     private FiniteStateMachine fsm;
 
-
+    
     public World world;
 
 
@@ -51,12 +51,12 @@ public class AnimalBrainAgent : Agent
         base.OnEpisodeBegin();
 
         //Reset stuff 
-
+        
 
         //Reset animal position and rotation.
         // 
         //resetRabbit();
-
+        
         //ResetRabbit();
     }
 
@@ -68,9 +68,9 @@ public class AnimalBrainAgent : Agent
         Debug.Log("reset!");
         // Destroy(animalController);
         // gameObject.AddComponent<RabbitController>();
-
+        
         //this.animalModel = new RabbitModel();
-
+        
         animalModel.currentEnergy = animalModel.traits.maxEnergy;
         animalModel.currentSpeed = 0;
         animalModel.currentHealth = animalModel.traits.maxHealth;
@@ -78,6 +78,7 @@ public class AnimalBrainAgent : Agent
         animalModel.reproductiveUrge = 0.2f;
         animalModel.age = 0;
         animalController.fsm.absorbingState = false;
+
     }
 
 
@@ -111,6 +112,7 @@ public class AnimalBrainAgent : Agent
                 //sensor.AddObservation(firstFoodPosition);
                 foundFood = true;
             }
+            
         }
 
 
@@ -163,7 +165,7 @@ public class AnimalBrainAgent : Agent
         base.OnActionReceived(vectorAction);
         ActionSegment<int> discreteActions = vectorAction.DiscreteActions;
 
-
+        
         //hunger is the fraction of missing energy.
         float hunger = (animalModel.traits.maxEnergy - animalModel.currentEnergy) / animalModel.traits.maxEnergy;
         //thirst is the fraction of missing hydration.
@@ -210,7 +212,7 @@ public class AnimalBrainAgent : Agent
                 // world.totalScore += 0.1f;
                 //print("Wants offspring and found mate.");
             }
-
+            
             print("Look for Mate.");
         }
         else if (discreteActions[0] == 3)
@@ -220,7 +222,7 @@ public class AnimalBrainAgent : Agent
                 // AddReward(0.1f);
                 // world.totalScore += 0.1f;
             }
-
+            
             print("Look for food.");
         }
         else if (discreteActions[0] == 4)
@@ -230,18 +232,19 @@ public class AnimalBrainAgent : Agent
                 // AddReward(0.1f);
                 // world.totalScore += 0.1f;
             }
-
+            
             print("Flee!");
         }
     }
-
+    
     //Used to mark an action as IMPOSIBLE.
     public override void WriteDiscreteActionMask(IDiscreteActionMask actionMask)
     {
         //actionMask.WriteMask(branch, actionIndices);
-
+        
         //branch is the index (starting at 0) of the branch on which you want to mask the action
         //actionIndices is a list of int corresponding to the indices of the actions that the Agent cannot perform.
+
     }
 
     //Used for testing, gives us control over the output from the ML algortihm.
@@ -280,7 +283,6 @@ public class AnimalBrainAgent : Agent
         }
         else if (Input.GetKey(KeyCode.RightArrow))
         {
-           
             Vector3 position = gameObject.transform.position;
             position.z = position.z - 1f;
             NavMeshHit hit;
@@ -317,13 +319,14 @@ public class AnimalBrainAgent : Agent
             discreteActions[0] = 4;
             // ChangeState(animalController.fleeingState);
             // print("Flee!");
-        }
-        else if (Input.GetKey(KeyCode.Alpha0))
+        }else if (Input.GetKey(KeyCode.Alpha0))
         {
             HandleDeath();
             // ChangeState(animalController.fleeingState);
             // print("Flee!");
         }
+        
+        
     }
 
 
@@ -341,11 +344,15 @@ public class AnimalBrainAgent : Agent
 
         animalController.actionDeath += HandleDeath;
         // animalController.onBirth += HandleBirth;
-
+        
         animalController.matingStateState.onMate += HandleMate;
         animalController.eatingState.onEatFood += HandleEating;
         animalController.drinkingState.onDrinkWater += HandleDrinking;
+
+
     }
+
+    
 
 
     public void EventUnsubscribe()
@@ -354,13 +361,14 @@ public class AnimalBrainAgent : Agent
 
         animalController.actionDeath -= HandleDeath;
         // animalController.onBirth -= HandleBirth;
-
+        
         animalController.matingStateState.onMate -= HandleMate;
         animalController.eatingState.onEatFood -= HandleEating;
         animalController.drinkingState.onDrinkWater -= HandleDrinking;
+
     }
 
-
+    
     private void HandleDeath()
     {
         //Penalize for every year not lived.
@@ -374,7 +382,7 @@ public class AnimalBrainAgent : Agent
         //Task failed
         EndEpisode();
     }
-
+    
     private void HandleMate(GameObject obj)
     {
         AddReward(1f);
@@ -382,7 +390,7 @@ public class AnimalBrainAgent : Agent
         //Task achieved
         //EndEpisode();
     }
-
+    
     // private void HandleBirth(object sender, AnimalController.OnBirthEventArgs e)
     // {
     //     if (world != null)
@@ -395,17 +403,22 @@ public class AnimalBrainAgent : Agent
     //         
     //     }
     // }
-
-    private void HandleEating(GameObject obj)
+    
+    
+    private float HandleEating(GameObject obj)
     {
         AddReward(0.2f);
         world.totalScore += 0.2f;
+        // Alexander H: I had to set the action to return a float which represents the reward. This is used in the other ML implementation.
+        return 1f;
     }
 
-    private void HandleDrinking(GameObject obj)
+    private float HandleDrinking(GameObject obj)
     {
         AddReward(0.2f);
         world.totalScore += 0.2f;
+        // Alexander H: I had to set the action to return a float which represents the reward. This is used in the other ML implementation.
+        return 1f;
     }
 
     public void Update()

@@ -50,7 +50,7 @@ namespace AnimalsV2.States
             {
                 if (animal.agent.remainingDistance < 1.0f)
                 {
-                    Vector3 position = RandomNavSphere(animal.transform.position, 10,
+                    Vector3 position = NavigationUtilities.RandomNavSphere(animal.transform.position, 10,
                         1 << NavMesh.GetAreaFromName("Walkable"));
                     
                     //Vector3 position = new Vector3(Random.Range(-10.0f, 10.0f), 0, Random.Range(-10.0f, 10.0f)) + animal.transform.position;
@@ -68,19 +68,6 @@ namespace AnimalsV2.States
                 }
 
             }
-        }
-
-        public static Vector3 RandomNavSphere(Vector3 origin, float dist, int layermask)
-        {
-            Vector3 randDirection = Random.insideUnitSphere * dist;
-
-            randDirection += origin;
-
-            NavMeshHit navHit;
-
-            NavMesh.SamplePosition(randDirection, out navHit, dist, layermask);
-
-            return navHit.position;
         }
 /*
         public Tuple<GameObject, Priorities> FoundObject()

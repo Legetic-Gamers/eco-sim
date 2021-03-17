@@ -6,10 +6,11 @@ using UnityEngine;
 
 namespace AnimalsV2.States
 {
+
     public class EatingState : State
     {
-        public Action<GameObject> onEatFood;
 
+        public Func<GameObject, float> onEatFood;
         private GameObject target;
 
         public EatingState(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal,
