@@ -88,15 +88,20 @@ public abstract class AnimalController : MonoBehaviour
                 hydrationModifier = 0.05f;
                 reproductiveUrgeModifier = 1f;
 
+               
+
                 //TODO bad practice, hard coded values, this is temporary
                 if (animalModel is BearModel || animalModel is WolfModel)
                 {
+                    //Debug.Log("Chasing");
                     speedModifier = RunningSpeed;
                 }
                 else
                 {
                     speedModifier = JoggingSpeed;
                 }
+                
+                
 
                 //Debug.Log("varying parameters depending on state: Eating");
                 break;
@@ -112,6 +117,8 @@ public abstract class AnimalController : MonoBehaviour
                 energyModifier = 0.1f;
                 hydrationModifier = 0.05f;
                 reproductiveUrgeModifier = 1;
+                
+                speedModifier = JoggingSpeed;
 
                 break;
             }
@@ -125,6 +132,8 @@ public abstract class AnimalController : MonoBehaviour
                 energyModifier = 0.2f;
                 hydrationModifier = 0.2f;
                 reproductiveUrgeModifier = 0f;
+                
+                speedModifier = JoggingSpeed;
                 //Debug.Log("varying parameters depending on state: Wander");
                 break;
             case Wander _:
@@ -141,6 +150,14 @@ public abstract class AnimalController : MonoBehaviour
                 reproductiveUrgeModifier = 0f;
                 break;
         }
+        // if (animalModel is WolfModel)
+        // {
+        //     Debug.Log(speedModifier);
+        // }
+        
+        animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
+        agent.speed = animalModel.currentSpeed;
+        
     }
 
     private void VaryParameters()
@@ -159,10 +176,8 @@ public abstract class AnimalController : MonoBehaviour
 
         //https://www.uvm.edu/pdodds/research/papers/others/2017/hirt2017a.pdf
         //above link for actual empirical max speed.
-        animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
-        //TODO, maybe move from here?
-        agent.speed = animalModel.currentSpeed;
-
+        
+        
         animalModel.currentEnergy -= (animalModel.traits.size * 1) +
                                      (animalModel.traits.size * animalModel.currentSpeed) * energyModifier;
         animalModel.currentHydration -= (animalModel.traits.size * 1) +
@@ -170,7 +185,7 @@ public abstract class AnimalController : MonoBehaviour
         animalModel.reproductiveUrge += 0.1f * reproductiveUrgeModifier;
 
         //The age will increase 1 per 1 second.
-        animalModel.age += Time.deltaTime;
+        animalModel.age += 2;
     }
 
     protected void EventSubscribe()

@@ -34,7 +34,7 @@ public class ParameterUI : MonoBehaviour
         animalController = animal.GetComponent<AnimalController>();
         if (tickEventPublisher)
         {
-            tickEventPublisher.onParamTickEvent += UpdateUI;
+            tickEventPublisher.onSenseTickEvent += UpdateUI;
         }
     }
 
@@ -42,7 +42,7 @@ public class ParameterUI : MonoBehaviour
     {
         if (tickEventPublisher)
         {
-            tickEventPublisher.onParamTickEvent -= UpdateUI;
+            tickEventPublisher.onSenseTickEvent -= UpdateUI;
         }
         
     }

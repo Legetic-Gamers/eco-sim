@@ -76,7 +76,7 @@ namespace AnimalsV2
         }
 
         // used to display state in the UI
-        public abstract string ToString();
+        public abstract override string ToString();
 
         public abstract bool MeetRequirements();
         

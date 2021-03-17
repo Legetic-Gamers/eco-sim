@@ -42,12 +42,13 @@ public class FieldOfView : MonoBehaviour
             // don't add self
             if (target == gameObject) return;
             
+            //Debug.Log(target.name);
 
             Vector3 dirToTarget = (target.transform.position - transform.position).normalized;
 
             if (Vector3.Angle(transform.forward, dirToTarget) < angle / 2)
             {
-                //Debug.Log(target.name);
+                
                 float distToTarget = Vector3.Distance(transform.position, target.transform.position);
 
                 // if target is not obscured
@@ -74,6 +75,7 @@ public class FieldOfView : MonoBehaviour
     {
         AnimalController targetAnimalController = target.GetComponent<AnimalController>();
 
+        
         //if the targets animalModel can eat this animalModel: add to visibleHostileTargets
         if (targetAnimalController.animalModel.CanEat(animalController.animalModel))
         {
@@ -81,13 +83,17 @@ public class FieldOfView : MonoBehaviour
             animalController.actionPerceivedHostile?.Invoke(target);
 
         }  
-        //if this animalModel can the targets animalModel: add to visibleFoodTargets
-        else if (animalController.animalModel.CanEat(targetAnimalController.animalModel))
+        
+        //Debug.Log("Found Animal!");
+        //if this animalModel can eat the targets animalModel: add to visibleFoodTargets
+        if (animalController.animalModel.CanEat(targetAnimalController.animalModel))
         {
+            //Debug.Log("Found prey!");
             animalController.visibleFoodTargets.Add(target);
         }
+        
         //if the target is of same species: add to visibleFriendlyTargets
-        else if (animalController.animalModel.IsSameSpecies(targetAnimalController.animalModel))
+        if (animalController.animalModel.IsSameSpecies(targetAnimalController.animalModel))
         {
             animalController.visibleFriendlyTargets.Add(target);
         }

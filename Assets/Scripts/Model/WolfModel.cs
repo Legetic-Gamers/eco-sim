@@ -1,8 +1,9 @@
 ﻿using Model;
+using UnityEngine;
 
 public class WolfModel : AnimalModel, IEdible
 {
-    public WolfModel() : base(new Traits(3f, 200, 100, 100, 6,10,10,100,10,10,180,10,5),0)
+    public WolfModel() : base(new Traits(3f, 200, 100, 100, 2,1,10,100,10,10,180,15,7),0)
     {
         // Wolf specific initialization 
     }
@@ -25,6 +26,7 @@ public class WolfModel : AnimalModel, IEdible
     
     public override bool CanEat<T>(T obj)
     {
+        //Debug.Log(obj.GetType().Name);
         return obj is RabbitModel || obj is DeerModel;
     }
     

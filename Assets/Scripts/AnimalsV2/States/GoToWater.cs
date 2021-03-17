@@ -38,10 +38,11 @@ using UnityEngine;
                     // NavMeshHit hit;
                     // NavMesh.SamplePosition(pointToRunTo, out hit, 100, 1 << NavMesh.GetAreaFromName("Walkable"));
                     // animal.agent.SetDestination(hit.position);
-                    if (Vector3.Distance(animal.transform.position, closestWater.transform.position) <= 3f)
+                    if (Vector3.Distance(animal.transform.position, closestWater.transform.position) <= 2f)
                     {
                         finiteStateMachine.ChangeState(animal.drinkingState);
                     }    
+                    
                 }
                 
             }

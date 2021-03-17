@@ -171,7 +171,7 @@ public abstract class AnimalModel
             }
             else
             {
-                _currentSpeed = Mathf.Clamp(value, 0, traits.maxSpeed);
+                _currentSpeed = Mathf.Clamp(value, 0, traits.maxSpeed * traits.size);
             }
         }
     }

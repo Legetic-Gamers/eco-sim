@@ -129,19 +129,22 @@ public class AnimalBrainAgent : Agent
             }
         }
 
-        //TODO change from just first to something smarter. (Right now just get first heard or seen)
-        List<GameObject> hostiles = animalController?.visibleHostileTargets
-            .Concat(animalController?.heardHostileTargets)
-            .ToList();
-
-        if (hostiles.Count > 0)
+        
+        if (!(animalController is null))
         {
-            GameObject firstHostile = hostiles[0];
-            if (firstHostile != null)
+            List<GameObject> hostiles = animalController.visibleHostileTargets
+                .Concat(animalController.heardHostileTargets)
+                .ToList();
+
+            if (hostiles.Count > 0)
             {
-                // Vector3 firstHostilePosition = firstHostile.transform.position;
-                // sensor.AddObservation(firstHostilePosition);
-                foundHostile = true;
+                GameObject firstHostile = hostiles[0];
+                if (firstHostile != null)
+                {
+                    // Vector3 firstHostilePosition = firstHostile.transform.position;
+                    // sensor.AddObservation(firstHostilePosition);
+                    foundHostile = true;
+                }
             }
         }
 
@@ -166,17 +169,18 @@ public class AnimalBrainAgent : Agent
         //thirst is the fraction of missing hydration.
         float thirst = (animalModel.traits.maxHydration - animalModel.currentHydration) /
                        animalModel.traits.maxHydration;
-        float stressFactor = -0.05f; //-0.05 means max penalty = -0.1
+        float maxLifeReward = 0.05f;
 
         if (animalModel.IsAlive)
         {
             //Penalize the rabbit for being hungry and thirsty. This should make the agent try to stay satiated.
-            AddReward((hunger + thirst) * stressFactor);
-            //world.totalScore += (hunger + thirst) * stressFactor;
+            float uncomfortPenalty = (hunger + thirst)/2 * maxLifeReward;
 
-            //Reward staying alive. If completely satiated -> 0.1. Completely drained -> 0.
-            AddReward(2 * -stressFactor);
-            //world.totalScore += 2 * -stressFactor;
+            //Final reward
+            //If completely satiated -> maxLifeReward. Completely drained -> 0.
+            float lifeReward = maxLifeReward - uncomfortPenalty;
+            AddReward(lifeReward);
+            world.totalScore += lifeReward;
         }
 
 
@@ -204,7 +208,7 @@ public class AnimalBrainAgent : Agent
             {
                 // AddReward(0.1f);
                 // world.totalScore += 0.1f;
-                print("Wants offspring and found mate.");
+                //print("Wants offspring and found mate.");
             }
 
             print("Look for Mate.");
@@ -360,8 +364,8 @@ public class AnimalBrainAgent : Agent
     private void HandleDeath()
     {
         //Penalize for every year not lived.
-        // AddReward(animalModel.age - animalModel.traits.ageLimit);
-        world.totalScore += (int)(animalModel.age - animalModel.traits.ageLimit);
+        AddReward(- (1 - (animalModel.age / animalModel.traits.ageLimit)));
+        world.totalScore += (int)(- (1 - (animalModel.age / animalModel.traits.ageLimit)));
 
         ChangeState(animalController.deadState);
         EventUnsubscribe();

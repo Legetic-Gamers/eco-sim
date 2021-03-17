@@ -49,13 +49,18 @@ namespace AnimalsV2.States
                 GameObject closestFood = NavigationUtilities.GetNearestObjectPosition(nearbyFood, animal.transform.position);
                 if (closestFood != null && animal.agent.isActiveAndEnabled)
                 {
+                    if (closestFood.TryGetComponent(out AnimalController a))
+                    { //If we are going to eat an animal
+                        currentStateAnimation = StateAnimation.Running;
+                    }
+
                     Vector3 pointToRunTo = NavigationUtilities.RunToFromPoint(animal.transform, closestFood.transform.position, true);
                     //Move the animal using the navmeshagent.
                     NavigationUtilities.NavigateToPoint(animal,pointToRunTo);
                     // NavMeshHit hit;
                     // NavMesh.SamplePosition(pointToRunTo, out hit, 100, 1 << NavMesh.GetAreaFromName("Walkable"));
                     // animal.agent.SetDestination(hit.position);
-                    if (Vector3.Distance(animal.transform.position, closestFood.transform.position) <= 3f)
+                    if (Vector3.Distance(animal.transform.position, closestFood.transform.position) <= 2f)
                     {
                         animal.eatingState.SetTarget(closestFood);
                         finiteStateMachine.ChangeState(animal.eatingState);
