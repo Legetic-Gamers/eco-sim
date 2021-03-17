@@ -29,7 +29,7 @@ using UnityEngine;
             base.LogicUpdate();
             if (MeetRequirements())
             {
-                GameObject closestWater = NavigationUtilities.GetNearestObject(animal.visibleWaterTargets, animal.transform.position);
+                GameObject closestWater = NavigationUtilities.GetNearestObjectPosition(animal.visibleWaterTargets, animal.transform.position);
                 if (closestWater != null && animal.agent.isActiveAndEnabled)
                 {
                     Vector3 pointToRunTo = NavigationUtilities.RunToFromPoint(animal.transform, closestWater.transform.position, true);

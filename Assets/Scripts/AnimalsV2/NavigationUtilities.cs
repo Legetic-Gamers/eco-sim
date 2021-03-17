@@ -53,7 +53,7 @@ namespace AnimalsV2
         /// <param name="a"> Animal to find objects near.</param>
         /// <param name="tag"> String tag to find objects of. </param>
         /// <returns> 3D position of the nearest object. </returns>
-        public static GameObject GetNearestObject(List<GameObject> allPercievedObjects, Vector3 thisPosition)
+        public static GameObject GetNearestObjectPosition(List<GameObject> allPercievedObjects, Vector3 thisPosition)
         {
             //Return if not objects with tag found.
             if (allPercievedObjects.Count == 0) return null;
