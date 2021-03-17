@@ -105,16 +105,19 @@ public class AnimalMovementBrain : Agent
         //move the agent depending on the speed
         movementVector = movementVector.normalized * animalController.animalModel.currentSpeed;
         
+        //Debug.Log(movementVector.x + "   " + movementVector.y + "   " + movementVector.z);
+        
         NavigationUtilities.NavigateRelative(animalController, movementVector, 1 << NavMesh.GetAreaFromName("Walkable"));
     }
 
     //Used for testing, gives us control over the output from the ML algortihm.
     public override void Heuristic(in ActionBuffers actionsOut)
     {
-        base.Heuristic(in actionsOut);
+        //base.Heuristic(in actionsOut);
         
         ActionSegment<float> continuousActions = actionsOut.ContinuousActions;
 
+        /*
         if (Input.GetKey(KeyCode.UpArrow))
         {
             print("up");
@@ -135,6 +138,7 @@ public class AnimalMovementBrain : Agent
             print("right");
             continuousActions[2] = 1f;
         }
+        */
 
     }
     //Instead of updating/Making choices every frame
@@ -186,6 +190,7 @@ public class AnimalMovementBrain : Agent
         {
             float reward;
             reward = animalController.Interact(other.gameObject);
+            Debug.Log("reward: " + reward);
             AddReward(reward);
         }
         

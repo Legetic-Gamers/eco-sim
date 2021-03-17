@@ -141,7 +141,8 @@ namespace AnimalsV2
 
         public static bool NavigateRelative(AnimalController animal, Vector3 relativeVector, int layerMask)
         {
-            if (relativeVector == Vector3.zero && !animal)
+            //if the relative vector (which we want to navigate through) is zero, we return. Alos if animal is null we return
+            if (relativeVector.Equals(Vector3.zero) || !animal)
             {
                 return true;
             }
