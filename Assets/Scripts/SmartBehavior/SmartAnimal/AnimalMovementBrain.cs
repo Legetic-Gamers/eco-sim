@@ -141,9 +141,6 @@ public class AnimalMovementBrain : Agent
     //Listen to when parameters or senses were updated.
     private void EventSubscribe()
     {
-        //eventPublisher.onParamTickEvent += MakeDecision;
-        
-        //eventPublisher.onParamTickEvent += MakeDecision;
         eventPublisher.onSenseTickEvent += RequestDecision;
         
         animalController.actionDeath += HandleDeath;

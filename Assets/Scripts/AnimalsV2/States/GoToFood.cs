@@ -46,7 +46,7 @@ namespace AnimalsV2.States
             if (MeetRequirements())
             {
                 
-                GameObject closestFood = NavigationUtilities.GetNearestObjectPosition(nearbyFood, animal.transform.position);
+                GameObject closestFood = NavigationUtilities.GetNearestObject(nearbyFood, animal.transform.position);
                 if (closestFood != null && animal.agent.isActiveAndEnabled)
                 {
                     Vector3 pointToRunTo = NavigationUtilities.RunToFromPoint(animal.transform, closestFood.transform.position, true);
