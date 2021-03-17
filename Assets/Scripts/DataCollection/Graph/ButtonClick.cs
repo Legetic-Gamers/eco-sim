@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Collections.Generic;
 using JetBrains.Annotations;
 using UnityEngine;
 
@@ -7,17 +8,48 @@ using UnityEngine;
 public class ButtonClick : Window_Graph
 {
 
-    public static event EventHandler OnButtonPressed;
+    public static event EventHandler OnButtonX;
+    public static event EventHandler OnButtonY;
+    public static event EventHandler OnButtonSize;
+    public static event EventHandler OnButtonPopulation;
+    public static event EventHandler OnButtonTwoGraphs;
+    public static event EventHandler OnButtonOneGraph;
 
-    public void ButtonPressed()
+    public void ButtonX()
     {
-        OnButtonPressed?.Invoke(this, EventArgs.Empty);
+        OnButtonX?.Invoke(this, EventArgs.Empty);
+    }
+
+    public void ButtonY()
+    {
+        OnButtonY?.Invoke(this, EventArgs.Empty);
+    }
+    public void ButtonSize()
+    {
+        OnButtonSize?.Invoke(this, EventArgs.Empty);
+    }
+
+
+    public void ButtonPopulation()
+    {
+        OnButtonPopulation?.Invoke(this, EventArgs.Empty);
+    }
+
+    public void ButtonTwo()
+    {
+        IsTwoGraphs = true;
+        OnButtonTwoGraphs?.Invoke(this, EventArgs.Empty);
+    }
+    public void ButtonOne()
+    {
+        IsTwoGraphs = false;
+        OnButtonOneGraph?.Invoke(this, EventArgs.Empty);
     }
 
 
     public void OnButtonIncTruncate()
     {
-        if (TruncateFactor < ValueList.Count)
+        if (TruncateFactor < (Mathf.Max(List1.Count, List2.Count)))
             TruncateFactor++;
     }
 
@@ -36,5 +68,15 @@ public class ButtonClick : Window_Graph
     {
         if (GridCountY > 1)
             GridCountY--;
+    }
+
+    public void OnButtonOne()
+    {
+        
+    }
+
+    public void OnButtonTwo()
+    {
+        
     }
 }
