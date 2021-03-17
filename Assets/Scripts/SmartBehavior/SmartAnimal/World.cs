@@ -118,7 +118,7 @@ public class World : MonoBehaviour
             Agent agent = newObject.GetComponent<Agent>();
             if (agent)
             {
-                if (TryGetComponent(out AnimalBrainAgent animalBrainAgent))
+                if (agent is AnimalBrainAgent animalBrainAgent)
                 {
                     animalBrainAgent.world = this;
                 } else if (TryGetComponent(out AnimalMovementBrain animalMovementBrain))
