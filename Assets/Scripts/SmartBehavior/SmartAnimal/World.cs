@@ -5,6 +5,7 @@ using System.Linq;
 using AnimalsV2.States.AnimalsV2.States;
 using Unity.MLAgents;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.UI;
 using ViewController;
 using Random = UnityEngine.Random;
@@ -16,6 +17,9 @@ using Random = UnityEngine.Random;
 /// </summary>
 public class World : MonoBehaviour
 {
+    //Reference navmesh surface to allow for variable environment size.
+    public NavMeshSurface surface;
+
     //Objects that live in the environment
     [SerializeField] private GameObject food;
     [SerializeField] private GameObject rabbit;
@@ -30,7 +34,8 @@ public class World : MonoBehaviour
     [SerializeField] private float foodRespawnRate;
     
     //Specific to the environment size, used for spawning
-    [SerializeField] private float range;
+    [SerializeField] private float rangeX;
+    [SerializeField] private float rangeZ;
 
     
 
@@ -46,19 +51,34 @@ public class World : MonoBehaviour
 
     public void Awake()
     {
-        //ResetWorld();
-
         //Academy.Instance.OnEnvironmentReset += ResetWorld;
         
+        //Randomize environment size
+        float scaleX = Mathf.Round(Academy.Instance.EnvironmentParameters.GetWithDefault("envScaleX", 2.0f));
+        float scaleZ = Mathf.Round(Academy.Instance.EnvironmentParameters.GetWithDefault("envScaleZ", 2.0f));
+        //Set size of environment
+        transform.localScale = new Vector3(scaleX,1f,scaleZ);
+        //Set spawn bounds
+        rangeX = 5f * scaleX - 0.5f;
+        rangeZ = 5f * scaleZ - 0.5f;
+        //Build Navmesh
+        surface.BuildNavMesh();
         
-        numFood = (int )Mathf.Round(Academy.Instance.EnvironmentParameters.GetWithDefault("numFood", 15.0f));
-        numRabbits = (int )Mathf.Round(Mathf.Round(Academy.Instance.EnvironmentParameters.GetWithDefault("numRabbits", 3.0f)));
-        numWolves = (int )Mathf.Round(Mathf.Round(Academy.Instance.EnvironmentParameters.GetWithDefault("numWolves", 0.0f)));
+        //Randomize parameters
+        numFood = (int )Mathf.Round(Academy.Instance.EnvironmentParameters.GetWithDefault("numFood", 4.0f));
+        numRabbits = (int )Mathf.Round(Mathf.Round(Academy.Instance.EnvironmentParameters.GetWithDefault("numRabbits", 1.0f)));
+        numWolves = (int )Mathf.Round(Mathf.Round(Academy.Instance.EnvironmentParameters.GetWithDefault("numWolves", 2.0f)));
         numWater = (int )Mathf.Round(Mathf.Round(Academy.Instance.EnvironmentParameters.GetWithDefault("numWater", 3.0f)));
         foodRespawnRate = (int )Mathf.Round(Mathf.Round(Academy.Instance.EnvironmentParameters.GetWithDefault("foodRespawnRate", 100.0f)));
-
         
         
+        //Adjust parameters for environment size
+        //maxscale should be set to same as in config file (max_value for z and x scale).
+        int maxScale = 4;
+        numFood = (int) Mathf.Ceil((numFood * scaleX * scaleZ) / maxScale) + 10;//atleast 10 food.
+        numWater = (int) Mathf.Ceil((numWater* scaleX * scaleZ) / (2*maxScale)) + 1; 
+        numRabbits = (int) Mathf.Ceil((numRabbits * scaleX * scaleZ) / maxScale) +  1; //Atleast 2 rabbits. Divide by 4 to sort of normalize the scale factor with max scale.
+        numWolves = (int) Mathf.Ceil((numWolves * scaleX * scaleZ) / (2*maxScale)); // Should be a lot less wolves. Can be 0.
         
         m_Recorder = Academy.Instance.StatsRecorder;
 
@@ -90,8 +110,8 @@ public class World : MonoBehaviour
         for (int i = 0; i < num; i++)
         {
             //Instantiate
-            GameObject newObject = Instantiate(type, new Vector3(Random.Range(-range, range), 0,
-                    Random.Range(-range, range)) + transform.position,
+            GameObject newObject = Instantiate(type, new Vector3(Random.Range(-rangeX, rangeX), 0,
+                    Random.Range(-rangeZ, rangeZ)) + transform.position,
                 Quaternion.Euler(new Vector3(0f, Random.Range(0f, 360f), 90f)));
 
             //Add agents to lists
@@ -268,7 +288,7 @@ public class World : MonoBehaviour
 
         //agent is dead if dead
         AnimalController animalController = agent.GetComponent<AnimalController>();
-        if (animalController)
+        if (animalController != null)
         {
             if (animalController.fsm.CurrentState is Dead || !animalController.animalModel.IsAlive)
             {

@@ -2057,6 +2057,7 @@ GameObject:
   - component: {fileID: 1491304840260045172}
   - component: {fileID: -4900136795615843081}
   - component: {fileID: 3547626217965808460}
+  - component: {fileID: -3072218237354650290}
   m_Layer: 8
   m_Name: Wolf Grey
   m_TagString: Animal
@@ -2340,6 +2341,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c71b720863ec4e7a8484c019f6979fe3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &-3072218237354650290
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4362939137640418624}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0ca804d6b18f6d4db4ebe14203336f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animalSound: {fileID: 8300000, guid: e4aa6f48a36014dcc9d111bf13e6c85f, type: 3}
+  walking: {fileID: 0}
+  eating: {fileID: 0}
+  running: {fileID: 0}
+  attacking: {fileID: 0}
+  death: {fileID: 0}
+  sleeping: {fileID: 0}
 --- !u!1 &4362942483931802740
 GameObject:
   m_ObjectHideFlags: 0

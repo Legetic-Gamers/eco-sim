@@ -21,7 +21,12 @@ namespace AnimalsV2.States
         {
             base.Enter();
             currentStateAnimation = StateAnimation.Attack;
-            animal.agent.isStopped = true;
+            
+            if (animal.agent.isActiveAndEnabled && animal.agent.isOnNavMesh)
+            {
+                animal.agent.isStopped = true;
+            }
+
             //GetNearestFood();
             animal.StartCoroutine(EatFood());
         }
@@ -29,7 +34,10 @@ namespace AnimalsV2.States
         public override void Exit()
         {
             base.Exit();
-            animal.agent.isStopped = false;
+            if (animal.agent.isActiveAndEnabled && animal.agent.isOnNavMesh)
+            {
+                animal.agent.isStopped = false;
+            }
         }
 
         public override void LogicUpdate()
