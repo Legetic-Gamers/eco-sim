@@ -7,13 +7,12 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: LPW_Tree_B1_01
+  m_Name: TreeMaterial
   m_Shader: {fileID: -6465566751694194690, guid: 96de1f0891eba3042b3c84b7437e23a3,
     type: 3}
-  m_ShaderKeywords: _ENABLEHORIZONTALBENDING_ON _ENABLEHORIZONTALMOVEMENT_ON _ENABLEMAINBENDING_ON
-    _ENABLEVERTICALBENDING_ON _ENABLEVERTICALMOVEMENT_ON
+  m_ShaderKeywords: _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
   m_LightmapFlags: 4
-  m_EnableInstancingVariants: 1
+  m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
@@ -22,11 +21,11 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - Texture2D_6510D59B:
-        m_Texture: {fileID: 2800000, guid: 225da740038919f4ca9eaff413945956, type: 3}
+        m_Texture: {fileID: 2800000, guid: 2ac5c2be394e6924c926a7bebe690c69, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - Texture2D_E3528FBE:
-        m_Texture: {fileID: 2800000, guid: 225da740038919f4ca9eaff413945956, type: 3}
+        m_Texture: {fileID: 2800000, guid: 2ac5c2be394e6924c926a7bebe690c69, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
@@ -50,15 +49,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 225da740038919f4ca9eaff413945956, type: 3}
+        m_Texture: {fileID: 2800000, guid: 2ac5c2be394e6924c926a7bebe690c69, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
         m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _NoiseTexture:
-        m_Texture: {fileID: 2800000, guid: 325d48ff66bae3245b768b66049c7718, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
@@ -69,7 +64,7 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _texcoord:
+    - _SpecGlossMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -78,10 +73,10 @@ Material:
     - Vector1_42EB5EEC: 0.3
     - Vector1_6DDC62FF: 2
     - Vector1_893DCA18: 0.4
-    - Vector1_918D4D95: 2
+    - Vector1_918D4D95: 7
     - Vector1_91917DA: 0.3
     - Vector1_A14F17FC: 0.1
-    - Vector1_AE7D5921: 2
+    - Vector1_AE7D5921: 4
     - Vector1_B98C008C: 0.3
     - Vector1_BFA0FE28: 0.4
     - Vector1_C3824C7C: 0.3
@@ -93,37 +88,25 @@ Material:
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
-    - _GlossMapScale: 1
+    - _GlossMapScale: 0.2
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _MBAmplitude: 4
-    - _MBAmplitudeOffset: 2
-    - _MBDefaultBending: 0
-    - _MBFrequency: 1.11
-    - _MBFrequencyOffset: 0.4
-    - _MBMaxHeight: 8
-    - _MBPhase: 1
-    - _MBWindBlend: 0
-    - _MBWindDir: 90
-    - _MBWindDirOffset: 63
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
-    - _Smoothness: 0
-    - _SmoothnessTextureChannel: 0
+    - _SmoothnessTextureChannel: 1
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _UVSec: 0
     - _ZWrite: 1
-    - __dirty: 0
     m_Colors:
     - Color_59D500A6: {r: 0.23584905, g: 0.025587412, b: 0.025587412, a: 0}
     - Color_A6FA7443: {r: 0.23584905, g: 0.025587412, b: 0.025587412, a: 0}
-    - Color_C90FA907: {r: 0.4681825, g: 0.5943396, b: 0.5325773, a: 0}
+    - Color_B8C88667: {r: 0, g: 0, b: 0, a: 0}
+    - Color_C90FA907: {r: 0.5377358, g: 0.44247234, b: 0.22574759, a: 0}
     - Direction: {r: 0.3, g: 0.3, b: 0, a: 0}
-    - Vector2_D5100E42: {r: 0.3, g: 0.3, b: 0, a: 0}
+    - Vector2_D5100E42: {r: 1, g: 1, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _NoisePannerSpeed: {r: 0.08, g: 0.04, b: 0, a: 0}
-    - _NoiseTextureTilling: {r: 1, g: 1, b: 1, a: 1}
+    - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}

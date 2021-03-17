@@ -8,12 +8,12 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: LPW_Tree_C1_01
-  m_Shader: {fileID: -6465566751694194690, guid: 33ea7b19c60975249b58bc268ab58397,
+  m_Shader: {fileID: -6465566751694194690, guid: 96de1f0891eba3042b3c84b7437e23a3,
     type: 3}
   m_ShaderKeywords: _ENABLEHORIZONTALBENDING_ON _ENABLEHORIZONTALMOVEMENT_ON _ENABLEMAINBENDING_ON
     _ENABLEVERTICALBENDING_ON _ENABLEVERTICALMOVEMENT_ON
   m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
+  m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
@@ -22,6 +22,10 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - Texture2D_6510D59B:
+        m_Texture: {fileID: 2800000, guid: 225da740038919f4ca9eaff413945956, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Texture2D_E3528FBE:
         m_Texture: {fileID: 2800000, guid: 225da740038919f4ca9eaff413945956, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -70,10 +74,21 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
+    - Vector1_1A6F2BEE: 0.1
+    - Vector1_42EB5EEC: 0.3
+    - Vector1_6DDC62FF: 2
+    - Vector1_893DCA18: 0.4
+    - Vector1_918D4D95: 2
+    - Vector1_91917DA: 0.3
     - Vector1_A14F17FC: 0.1
+    - Vector1_AE7D5921: 2
     - Vector1_B98C008C: 0.3
     - Vector1_BFA0FE28: 0.4
     - Vector1_C3824C7C: 0.3
+    - Vector1_EEB92BFD: 2
+    - WindDensity: 5
+    - WindSpeed: 0.5
+    - WindStrength: 2
     - _BumpScale: 1
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
@@ -104,7 +119,10 @@ Material:
     - __dirty: 0
     m_Colors:
     - Color_59D500A6: {r: 0.23584905, g: 0.025587412, b: 0.025587412, a: 0}
+    - Color_A6FA7443: {r: 0.23584905, g: 0.025587412, b: 0.025587412, a: 0}
     - Color_C90FA907: {r: 0.4681825, g: 0.5943396, b: 0.5325773, a: 0}
+    - Direction: {r: 0.3, g: 0.3, b: 0, a: 0}
+    - Vector2_D5100E42: {r: 0.3, g: 0.3, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _NoisePannerSpeed: {r: 0.08, g: 0.04, b: 0, a: 0}
