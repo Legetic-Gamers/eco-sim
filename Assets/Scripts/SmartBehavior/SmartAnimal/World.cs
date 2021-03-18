@@ -128,9 +128,6 @@ public class World : MonoBehaviour
                 if (agent is AnimalBrainAgent animalBrainAgent)
                 {
                     animalBrainAgent.world = this;
-                } else if (TryGetComponent(out AnimalMovementBrain animalMovementBrain))
-                {
-                    animalMovementBrain.world = this;
                 }
                 
                 agents.Add(agent);

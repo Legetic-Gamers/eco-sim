@@ -422,7 +422,7 @@ public abstract class AnimalController : MonoBehaviour
     {
         float reward = 0f;
 
-        Debug.Log(gameObject.name);
+        //Debug.Log(gameObject.name);
         switch (gameObject.tag)
         {
             case "Water":

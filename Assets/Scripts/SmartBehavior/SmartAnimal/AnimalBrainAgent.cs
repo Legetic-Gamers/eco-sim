@@ -363,9 +363,13 @@ public class AnimalBrainAgent : Agent
         ChangeState(animalController.deadState);
         EventUnsubscribe();
 
-
+        
+        // world.SpawnNewRabbit();
+        
         //Task failed
         EndEpisode();
+        
+
     }
     
     private void HandleMate(GameObject obj)
