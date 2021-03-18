@@ -29,9 +29,7 @@ namespace AnimalsV2.States
         public override void Enter()
         {
             base.Enter();
-
-            currentStateAnimation = StateAnimation.Attack;
-
+            
             if (animal.agent.isActiveAndEnabled && animal.agent.isOnNavMesh)
             {
                 animal.agent.isStopped = true;
@@ -77,14 +75,13 @@ namespace AnimalsV2.States
         {
             AnimalController targetAnimalController = target.GetComponent<AnimalController>();
 
-            Debug.Log(targetAnimalController);
             // make sure target has an AnimalController and that its animalModel is same species
             // if (targetAnimalController != null &&  targetAnimalController.animalModel != null && targetAnimalController.animalModel.IsSameSpecies(animalController.animalModel) &&
             //     targetAnimalController.animalModel.WantingOffspring)
             // {
                 //Stop target
                 // targetAnimalController.agent.isStopped = true;
-                targetAnimalController.waitingState.SetWaitTime(targetAnimalController.matingStateState.matingTime);
+                targetAnimalController.waitingState.SetWaitTime(targetAnimalController.matingState.matingTime);
                 targetAnimalController.fsm.ChangeState(targetAnimalController.waitingState);
 
 
@@ -105,40 +102,13 @@ namespace AnimalsV2.States
         {
             return "Mating";
         }
-
-        // public override bool MeetRequirements()
-        // {
-        //     return GetFoundMate() != null && FoundMateIsClose();
-        // }
-
+        
         public override bool MeetRequirements()
         {
             return target != null;
-            ;
         }
 
-        // private GameObject GetFoundMate()
-        // {
-        //     List<GameObject> allNearbyFriendly = animal.heardFriendlyTargets.Concat(animal.visibleFriendlyTargets).ToList();
-        //
-        //     foreach(GameObject potentialMate in allNearbyFriendly)
-        //     {
-        //         if (potentialMate != null && potentialMate.TryGetComponent(out AnimalController potentialMateAnimalController))
-        //         {
-        //             // if (potentialMateAnimalController.animalModel.WantingOffspring)
-        //             // {
-        //                 return potentialMateAnimalController.gameObject;
-        //             // }
-        //         }
-        //     }
-        //
-        //     return null;
-        // }
-        //
-        // private bool FoundMateIsClose()
-        // {
-        //     return Vector3.Distance(GetFoundMate().transform.position, animal.transform.position) <= 2f;
-        // }
+        
         
         
     }

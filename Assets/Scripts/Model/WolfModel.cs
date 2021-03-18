@@ -1,11 +1,17 @@
-﻿using Model;
+﻿using System;
+using System.Collections.Generic;
+using Model;
 using UnityEngine;
 
 public class WolfModel : AnimalModel, IEdible
 {
+    private List<Type> canEat;
+
     public WolfModel() : base(new Traits(3f, 60, 100, 70, 2,1,10,100,10,10,180,15,7),0)
     {
         // Wolf specific initialization 
+        canEat = new List<Type>();
+        canEat.Add(typeof(RabbitModel));
     }
 
 
@@ -34,6 +40,7 @@ public class WolfModel : AnimalModel, IEdible
     {
         return obj is WolfModel;
     }
+
 
     public float GetEaten()
     {

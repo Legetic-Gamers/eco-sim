@@ -25,11 +25,11 @@ namespace AnimalsV2.States
         {
             base.Enter();
             currentStateAnimation = StateAnimation.Attack;
-            
+            /*
             if (animal.agent.isActiveAndEnabled && animal.agent.isOnNavMesh)
             {
                 animal.agent.isStopped = true;
-            }
+            }*/
             
             animal.StartCoroutine(DrinkWater());
             
@@ -55,6 +55,7 @@ namespace AnimalsV2.States
         public override void Exit()
         {
             base.Exit();
+            
             if (animal.agent.isActiveAndEnabled && animal.agent.isOnNavMesh)
             {
                 animal.agent.isStopped = false;
@@ -70,7 +71,7 @@ namespace AnimalsV2.States
         {
             onDrinkWater?.Invoke(target);
             // Wait a while then change state and resume walking
-            yield return new WaitForSeconds(1);
+            yield return new WaitForSeconds(2);
             finiteStateMachine.GoToDefaultState();
             animal.agent.isStopped = false;
 
@@ -94,7 +95,7 @@ namespace AnimalsV2.States
         
         public override bool MeetRequirements()
         {
-            return target != null;
+            return target != null && !animal.animalModel.HighHydration;
         }
 
         private GameObject GetNearestWater()

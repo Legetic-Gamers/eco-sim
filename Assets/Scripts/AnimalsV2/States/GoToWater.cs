@@ -35,13 +35,6 @@ using UnityEngine;
                     Vector3 pointToRunTo = NavigationUtilities.RunToFromPoint(animal.transform, closestWater.transform.position, true);
                     //Move the animal using the navmeshagent.
                     NavigationUtilities.NavigateToPoint(animal,pointToRunTo);
-                    // NavMeshHit hit;
-                    // NavMesh.SamplePosition(pointToRunTo, out hit, 100, 1 << NavMesh.GetAreaFromName("Walkable"));
-                    // animal.agent.SetDestination(hit.position);
-                    if(Vector3.SqrMagnitude(animal.transform.position - closestWater.transform.position) <= animal.agent.stoppingDistance){
-                        animal.drinkingState.SetTarget(closestWater);
-                        finiteStateMachine.ChangeState(animal.drinkingState);
-                    }    
                     
                 }
                 
@@ -55,7 +48,7 @@ using UnityEngine;
 
         public override string ToString()
         {
-            return "Going to water";
+            return "Go to water";
         }
 
         public override bool MeetRequirements()

@@ -34,14 +34,7 @@ namespace AnimalsV2.States
                     Vector3 pointToRunTo = NavigationUtilities.RunToFromPoint(animal.transform, foundMate.transform.position, true);
                     //Move the animal using the navmeshagent.
                     NavigationUtilities.NavigateToPoint(animal,pointToRunTo);
-                    // NavMeshHit hit;
-                    // NavMesh.SamplePosition(pointToRunTo, out hit, 100, 1 << NavMesh.GetAreaFromName("Walkable"));
-                    // animal.agent.SetDestination(hit.position);
-                    if (Vector3.SqrMagnitude(animal.transform.position - foundMate.transform.position) <= animal.agent.stoppingDistance)
-                    {
-                        animal.matingStateState.SetTarget(foundMate);
-                        finiteStateMachine.ChangeState(animal.matingStateState);
-                    }    
+                    
                 }
                 
             }
