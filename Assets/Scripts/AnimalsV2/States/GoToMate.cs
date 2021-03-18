@@ -37,8 +37,9 @@ namespace AnimalsV2.States
                     // NavMeshHit hit;
                     // NavMesh.SamplePosition(pointToRunTo, out hit, 100, 1 << NavMesh.GetAreaFromName("Walkable"));
                     // animal.agent.SetDestination(hit.position);
-                    if (Vector3.Distance(animal.transform.position, foundMate.transform.position) <= 2f)
+                    if (Vector3.SqrMagnitude(animal.transform.position - foundMate.transform.position) <= animal.agent.stoppingDistance)
                     {
+                        animal.matingStateState.SetTarget(foundMate);
                         finiteStateMachine.ChangeState(animal.matingStateState);
                     }    
                 }

@@ -27,11 +27,18 @@ public class World : MonoBehaviour
     [SerializeField] private GameObject water;
     
     //Environment parameters.
-    [SerializeField] private int numFood;
-    [SerializeField] private int numRabbits;
-    [SerializeField] private int numWolves;
-    [SerializeField] private int numWater;
-    [SerializeField] private float foodRespawnRate;
+    private int numFood;
+    private int numRabbits;
+    private int numWolves;
+    private int numWater;
+    private float foodRespawnRate;
+    
+    //Parameter defaults
+    [SerializeField] private int numFoodDefault;
+    [SerializeField] private int numRabbitsDefault;
+    [SerializeField] private int numWolvesDefault;
+    [SerializeField] private int numWaterDefault;
+    [SerializeField] private float foodRespawnRateDefault;
     
     //Specific to the environment size, used for spawning
     [SerializeField] private float rangeX;
@@ -65,11 +72,11 @@ public class World : MonoBehaviour
         surface.BuildNavMesh();
         
         //Randomize parameters
-        numFood = (int )Mathf.Round(Academy.Instance.EnvironmentParameters.GetWithDefault("numFood", 4.0f));
-        numRabbits = (int )Mathf.Round(Mathf.Round(Academy.Instance.EnvironmentParameters.GetWithDefault("numRabbits", 1.0f)));
-        numWolves = (int )Mathf.Round(Mathf.Round(Academy.Instance.EnvironmentParameters.GetWithDefault("numWolves", 2.0f)));
-        numWater = (int )Mathf.Round(Mathf.Round(Academy.Instance.EnvironmentParameters.GetWithDefault("numWater", 3.0f)));
-        foodRespawnRate = (int )Mathf.Round(Mathf.Round(Academy.Instance.EnvironmentParameters.GetWithDefault("foodRespawnRate", 100.0f)));
+        numFood = (int )Mathf.Round(Academy.Instance.EnvironmentParameters.GetWithDefault("numFood", numFoodDefault));
+        numRabbits = (int )Mathf.Round(Mathf.Round(Academy.Instance.EnvironmentParameters.GetWithDefault("numRabbits", numRabbitsDefault)));
+        numWolves = (int )Mathf.Round(Mathf.Round(Academy.Instance.EnvironmentParameters.GetWithDefault("numWolves", numWolvesDefault)));
+        numWater = (int )Mathf.Round(Mathf.Round(Academy.Instance.EnvironmentParameters.GetWithDefault("numWater", numWolvesDefault)));
+        foodRespawnRate = (int )Mathf.Round(Mathf.Round(Academy.Instance.EnvironmentParameters.GetWithDefault("foodRespawnRate", foodRespawnRateDefault)));
         
         
         //Adjust parameters for environment size

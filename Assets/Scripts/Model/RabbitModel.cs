@@ -4,7 +4,7 @@ using Model;
 public class RabbitModel : AnimalModel,IEdible
 {
 
-    public RabbitModel() : base(new Traits(1f, 50, 100, 60, 3,1,10,40,10,10,120,10,5),0)
+    public RabbitModel() : base(new Traits(1f, 40, 100, 50, 3,1,10,40,10,10,120,10,5),0)
     {
         // Rabbit specific initialization 
     }

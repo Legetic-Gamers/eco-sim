@@ -42,7 +42,7 @@ namespace AnimalsV2
         {
             // no decision making while fleeing!
             if (fsm.CurrentState is FleeingState || fsm.CurrentState is EatingState ||
-                fsm.CurrentState is DrinkingState || fsm.CurrentState is MatingState) return;
+                fsm.CurrentState is DrinkingState || fsm.CurrentState is MatingState || fsm.CurrentState is Waiting) return;
             Prioritize();
         }
 

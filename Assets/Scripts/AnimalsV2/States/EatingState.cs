@@ -43,7 +43,7 @@ namespace AnimalsV2.States
 
         public override void LogicUpdate()
         {
-            // base.LogicUpdate();
+            base.LogicUpdate();
             // if (MeetRequirements())
             // {
             //     EatFood(target);

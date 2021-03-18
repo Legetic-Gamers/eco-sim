@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.MLAgents;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -57,11 +58,12 @@ namespace AnimalsV2.States
                     Vector3 pointToRunTo = NavigationUtilities.RunToFromPoint(animal.transform, closestFood.transform.position, true);
                     //Move the animal using the navmeshagent.
                     NavigationUtilities.NavigateToPoint(animal,pointToRunTo);
-                    // NavMeshHit hit;
-                    // NavMesh.SamplePosition(pointToRunTo, out hit, 100, 1 << NavMesh.GetAreaFromName("Walkable"));
-                    // animal.agent.SetDestination(hit.position);
-                    if (Vector3.Distance(animal.transform.position, closestFood.transform.position) <= 2f)
-                    {
+                    
+                    // if (Vector3.Distance(animal.transform.position, closestFood.transform.position) <= 2f)
+                    // {
+                    
+                    if(Vector3.SqrMagnitude(animal.transform.position - closestFood.transform.position) <= animal.agent.stoppingDistance){
+                        
                         animal.eatingState.SetTarget(closestFood);
                         finiteStateMachine.ChangeState(animal.eatingState);
                     }  

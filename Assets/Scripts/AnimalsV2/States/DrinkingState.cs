@@ -4,6 +4,7 @@
  */
 
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -15,6 +16,7 @@ namespace AnimalsV2.States
 
         public Func<GameObject,float> onDrinkWater;
         
+        
         public DrinkingState(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine)
         {
         }
@@ -23,28 +25,57 @@ namespace AnimalsV2.States
         {
             base.Enter();
             currentStateAnimation = StateAnimation.Attack;
-            GetNearestWater();
+            
+            if (animal.agent.isActiveAndEnabled && animal.agent.isOnNavMesh)
+            {
+                animal.agent.isStopped = true;
+            }
+            
+            animal.StartCoroutine(DrinkWater());
+            
+            //GetNearestWater();
         }
+        
+        
 
         public override void LogicUpdate()
         {
             base.LogicUpdate();
-            if (MeetRequirements())
+            // if (MeetRequirements())
+            // {
+            //     
+            //     DrinkWater(target);
+            // }
+            // else
+            // {
+            //     finiteStateMachine.GoToDefaultState();
+            // }
+        }
+
+        public override void Exit()
+        {
+            base.Exit();
+            if (animal.agent.isActiveAndEnabled && animal.agent.isOnNavMesh)
             {
-                
-                DrinkWater(target);
-            }
-            else
-            {
-                finiteStateMachine.GoToDefaultState();
+                animal.agent.isStopped = false;
             }
         }
-        
 
-        public void DrinkWater(GameObject target)
+        public void SetTarget(GameObject target)
+        {
+            this.target = target;
+        }
+
+        public IEnumerator DrinkWater()
         {
             onDrinkWater?.Invoke(target);
+            // Wait a while then change state and resume walking
+            yield return new WaitForSeconds(1);
             finiteStateMachine.GoToDefaultState();
+            animal.agent.isStopped = false;
+
+            // Very important, this tells Unity to move onto next frame. Everything crashes without this
+            yield return null;
         }
 
         public override string ToString()
@@ -52,13 +83,18 @@ namespace AnimalsV2.States
             return "Drinking";
         }
 
+        // public override bool MeetRequirements()
+        // {
+        //     Vector3 position = animal.transform.position;
+        //     target = GetNearestWater();
+        //     if (target == null) return false;
+        //     bool isCloseEnough = Vector3.Distance(target.transform.position, position) <= 3f;
+        //     return animal.visibleWaterTargets.Count > 0 && isCloseEnough;
+        // }
+        
         public override bool MeetRequirements()
         {
-            Vector3 position = animal.transform.position;
-            target = GetNearestWater();
-            if (target == null) return false;
-            bool isCloseEnough = Vector3.Distance(target.transform.position, position) <= 3f;
-            return animal.visibleWaterTargets.Count > 0 && isCloseEnough;
+            return target != null;
         }
 
         private GameObject GetNearestWater()

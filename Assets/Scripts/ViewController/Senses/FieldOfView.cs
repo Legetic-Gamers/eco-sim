@@ -45,6 +45,9 @@ public class FieldOfView : MonoBehaviour
             //Debug.Log(target.name);
 
             Vector3 dirToTarget = (target.transform.position - transform.position).normalized;
+            
+            // if()
+            // Debug.DrawLine(transform.position, target.transform.position, Color.green, 2, false);
 
             if (Vector3.Angle(transform.forward, dirToTarget) < angle / 2)
             {

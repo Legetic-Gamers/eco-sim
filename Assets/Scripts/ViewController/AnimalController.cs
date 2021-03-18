@@ -5,15 +5,17 @@ using AnimalsV2;
 using AnimalsV2.States;
 using AnimalsV2.States.AnimalsV2.States;
 using Model;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 using ViewController;
+using Object = UnityEngine.Object;
 
 public abstract class AnimalController : MonoBehaviour
 {
     public AnimalModel animalModel;
 
-    public TickEventPublisher tickEventPublisher;
+    [HideInInspector] public TickEventPublisher tickEventPublisher;
 
     public Action<State> stateChange;
 
@@ -45,6 +47,7 @@ public abstract class AnimalController : MonoBehaviour
     public DrinkingState drinkingState;
     public EatingState eatingState;
     public GoToMate goToMate;
+    public Waiting waitingState;
 
     //Constants
     private const float JoggingSpeed = 0.4f;
@@ -82,6 +85,7 @@ public abstract class AnimalController : MonoBehaviour
         drinkingState = new DrinkingState(this, fsm);
         eatingState = new EatingState(this, fsm);
         goToMate = new GoToMate(this, fsm);
+        waitingState = new Waiting(this, fsm);
         fsm.Initialize(wanderState);
 
         animationController = new AnimationController(this);
@@ -163,6 +167,12 @@ public abstract class AnimalController : MonoBehaviour
                 reproductiveUrgeModifier = 1;
                 //Debug.Log("varying parameters depending on state: Mating");
                 break;
+            case Waiting _:
+                energyModifier = 0f;
+                hydrationModifier = 0.05f;
+                reproductiveUrgeModifier = 1;
+                //Debug.Log("varying parameters depending on state: Mating");
+                break;
             case GoToMate _:
                 energyModifier = 0.2f;
                 hydrationModifier = 0.2f;
@@ -231,7 +241,7 @@ public abstract class AnimalController : MonoBehaviour
             tickEventPublisher.onParamTickEvent += VaryParameters;
             tickEventPublisher.onParamTickEvent += HandleDeathStatus;
             // every 0.5 sec
-            tickEventPublisher.onSenseTickEvent += fsm.UpdateStatesLogic;    
+            //tickEventPublisher.onSenseTickEvent += fsm.UpdateStatesLogic;    
         }
         
         fsm.OnStateEnter += ChangeModifiers;
@@ -253,7 +263,7 @@ public abstract class AnimalController : MonoBehaviour
             tickEventPublisher.onParamTickEvent -= VaryParameters;
             tickEventPublisher.onParamTickEvent -= HandleDeathStatus;
             // every 0.5 sec
-            tickEventPublisher.onSenseTickEvent -= fsm.UpdateStatesLogic;    
+            //tickEventPublisher.onSenseTickEvent -= fsm.UpdateStatesLogic;    
         }
         
         
@@ -266,6 +276,11 @@ public abstract class AnimalController : MonoBehaviour
         matingStateState.onMate -= Mate;
 
         animationController.EventUnsubscribe();
+    }
+
+    private void Update()
+    {
+        fsm.UpdateStatesLogic();
     }
 
     //Set animals size based on traits.
@@ -329,38 +344,52 @@ public abstract class AnimalController : MonoBehaviour
         AnimalController targetAnimalController = target.GetComponent<AnimalController>();
 
         // make sure target has an AnimalController and that its animalModel is same species
-        if (targetAnimalController != null && targetAnimalController.animalModel.IsSameSpecies(animalModel))
+        if (targetAnimalController != null && targetAnimalController.animalModel.IsSameSpecies(animalModel) && targetAnimalController.animalModel.WantingOffspring)
         {
-            // Spawn child as a copy of the father at the position of the mother
-            //GameObject child = Instantiate(gameObject, gameObject.transform.position, gameObject.transform.rotation); //NOTE CHANGE SO THAT PREFAB IS USED
-            GameObject child = gameObject;
-
-
-            // Generate the offspring traits
-            AnimalModel childModel = animalModel.Mate(targetAnimalController.animalModel);
-            child.GetComponent<AnimalController>().animalModel = childModel;
-            //TODO promote laborTime to model or something.
+            
+            
+            //Pass energy and hydration to child
             float childEnergy = animalModel.currentEnergy * 0.25f +
                                 targetAnimalController.animalModel.currentEnergy * 0.25f;
-            StartCoroutine(GiveBirth(child, childEnergy, 5));
-
+            float childHydration = animalModel.currentHydration * 0.25f +
+                                   targetAnimalController.animalModel.currentHydration * 0.25f;
+            
+            //Expend energy and hydration
+            animalModel.currentEnergy = animalModel.currentEnergy * 0.75f;
+            targetAnimalController.animalModel.currentEnergy = targetAnimalController.animalModel.currentEnergy * 0.75f;
+            animalModel.currentHydration = animalModel.currentHydration * 0.75f;
+            targetAnimalController.animalModel.currentHydration = targetAnimalController.animalModel.currentHydration * 0.75f;
+            
             //Reset both reproductive urges. 
             animalModel.reproductiveUrge = 0f;
             targetAnimalController.animalModel.reproductiveUrge = 0f;
-
-            //Expend energy
-            animalModel.currentEnergy = animalModel.currentEnergy * 0.75f;
-            targetAnimalController.animalModel.currentEnergy = targetAnimalController.animalModel.currentEnergy * 0.75f;
+            
+            //TODO promote laborTime to model or something.
+            //Go into labor
+            // Spawn child as a copy of the father at the position of the mother
+            
+            // Generate the offspring traits
+            AnimalModel childModel = animalModel.Mate(targetAnimalController.animalModel);
+            StartCoroutine(GiveBirth(childModel, childEnergy, childHydration, 5));
+            
+            
         }
     }
 
-    IEnumerator GiveBirth(GameObject child, float newEnergy, float laborTime)
+    IEnumerator GiveBirth(AnimalModel childModel, float newEnergy, float newHydration, float laborTime)
     {
         yield return new WaitForSeconds(laborTime);
+        
+        
         //Instantiate here
-        child = Instantiate(child, gameObject.transform.position,
-            gameObject.transform.rotation); //NOTE CHANGE SO THAT PREFAB IS USED
+        // Object parentObject = EditorUtility.GetPrefabParent(gameObject); 
+        // string path = AssetDatabase.GetAssetPath(parentObject);
+        GameObject child = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Animals/Rabbit Brown.prefab");
+        child.GetComponent<AnimalController>().animalModel = childModel;
+        child = Instantiate(child, transform.position, transform.rotation);
+        //child = Instantiate(child, gameObject.transform.position,gameObject.transform.rotation); //NOTE CHANGE SO THAT PREFAB IS USED
         child.GetComponent<AnimalController>().animalModel.currentEnergy = newEnergy;
+        child.GetComponent<AnimalController>().animalModel.currentHydration = newHydration;
         
         onBirth?.Invoke(this,new OnBirthEventArgs{child = child});
     }
@@ -390,6 +419,7 @@ public abstract class AnimalController : MonoBehaviour
 
     public void OnDestroy()
     {
+        StopAllCoroutines();
         EventUnsubscribe();
     }
 

@@ -185,6 +185,9 @@ public class AnimalBrainAgent : Agent
             world.totalScore += lifeReward;
         }
 
+        //These states cannot be exited on the fly
+        if (fsm.CurrentState is FleeingState || fsm.CurrentState is EatingState ||
+            fsm.CurrentState is DrinkingState || fsm.CurrentState is MatingState || fsm.CurrentState is Waiting) return;
 
         //Switch state based on action produced by ML model.
         //We are rewarding successful state changes.
@@ -385,8 +388,8 @@ public class AnimalBrainAgent : Agent
     
     private void HandleMate(GameObject obj)
     {
-        AddReward(1f);
-        world.totalScore += 1f;
+        AddReward(0.5f);
+        world.totalScore += 0.5f;
         //Task achieved
         //EndEpisode();
     }
@@ -407,16 +410,16 @@ public class AnimalBrainAgent : Agent
     
     private float HandleEating(GameObject obj)
     {
-        AddReward(0.2f);
-        world.totalScore += 0.2f;
+        AddReward(0.1f);
+        world.totalScore += 0.1f;
         // Alexander H: I had to set the action to return a float which represents the reward. This is used in the other ML implementation.
         return 1f;
     }
 
     private float HandleDrinking(GameObject obj)
     {
-        AddReward(0.2f);
-        world.totalScore += 0.2f;
+        AddReward(0.1f);
+        world.totalScore += 0.1f;
         // Alexander H: I had to set the action to return a float which represents the reward. This is used in the other ML implementation.
         return 1f;
     }

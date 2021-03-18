@@ -55,7 +55,7 @@ namespace AnimalsV2.States
             }
             else
             {
-                timer--;
+                timer-=Time.deltaTime;
             }
 
             if (animal.agent.isActiveAndEnabled)
