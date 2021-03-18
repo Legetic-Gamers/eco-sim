@@ -16,6 +16,8 @@ using Random = UnityEngine.Random;
 
 public class Window_Graph : MonoBehaviour
 {
+    public Action<bool> SetGraphOne;
+    public Action<bool> SetGraphTwo;
 
     [SerializeField] private int dotSize = 5;
     [SerializeField] Color lineColor = new Color(1, 1, 1, .5f);
@@ -33,7 +35,8 @@ public class Window_Graph : MonoBehaviour
     private static int _truncateFactor = 1;
     private static int _gridCountY = 10;
     private int firstX = 0;
-    private static bool _isTwoGraphs = false;
+    private static bool _isGraphTwo = false;
+    private static bool _isGraphOne = false;
 
 
     private RectTransform window_graph;
@@ -73,10 +76,16 @@ public class Window_Graph : MonoBehaviour
         set => _list2 = value;
     }
 
-    public static bool IsTwoGraphs
+    public static bool IsGraphOne
     {
-        get => _isTwoGraphs;
-        set => _isTwoGraphs = value;
+        get => _isGraphOne;
+        set => _isGraphOne = value;
+    }
+
+    public static bool IsGraphTwo
+    {
+        get => _isGraphTwo;
+        set => _isGraphTwo = value;
     }
 
 
@@ -98,7 +107,7 @@ public class Window_Graph : MonoBehaviour
         graphContainer.sizeDelta = new Vector2(graphContainerSizeX, graphContainerSizeY);
         dashTemplateX.sizeDelta = new Vector2(graphContainerSizeY + 2, 1);
         dashTemplateY.sizeDelta = new Vector2(graphContainerSizeX + 2, 1);
-        //dh.Display += ShowGraph;
+        dh.Display += Draw;
         ButtonClick.OnButtonX += ReDrawX;
         ButtonClick.OnButtonY += ReDrawY;
         ButtonClick.OnButtonTwoGraphs += ReDraw2;
@@ -106,12 +115,12 @@ public class Window_Graph : MonoBehaviour
     }
     
     private float x = 0;
-    float delta = .1f;
+    float delta = .5f;
     private int count = 0;
-    List<int> testlist = new List<int>();
+
     
     
-public void Update()
+/*public void Update()
 {
     //testList = testlist;
     x += Time.deltaTime;
@@ -122,45 +131,80 @@ public void Update()
         x = 0;
         //DestroyGraph(gameObjectList);
         //ShowGraph(testlist);
-        //int r = Mathf.RoundToInt(Random.Range(0f, 20f + count));
+        int r = Mathf.RoundToInt(Random.Range(0f + count, 20f + count));
+        int r2 = Mathf.RoundToInt(Random.Range(0f + count*3, 20f + count));
         //testlist.Add(r);
+        //_list1.Add(r);
+        //_list2.Add(r2);
         //count++;
         //DestroyGraph(gameObjectList);
         //ShowGraph(_list1);
-        //DrawCurve(_list2, Color.blue);
+        //if (_isTwoGraphs)
+        //    DrawCurve(_list2, Color.blue);
     }
     
     
+}
+*/
+private void Draw(List<int> list1, List<int> list2)
+{
+    _list1 = list1;
+    _list2 = list2;
+    DestroyGraph(gameObjectList);
+    if (_isGraphOne && _isGraphTwo)
+    {
+        ShowGraph(list1);
+        DrawCurve(list2, Color.blue);
+    }
+        
+    else if (_isGraphOne)
+        ShowGraph(list1);
+    else if (_isGraphTwo)
+        ShowGraph(list2);
 }
 
 
 private void ReDrawX(object sender, EventArgs e)
 {
     DestroyGraph(gameObjectList);
-    ShowGraph(_list1);
-    if(_isTwoGraphs)
+    if (_isGraphOne && _isGraphTwo)
+    {
+        ShowGraph(_list1);
         DrawCurve(_list2, Color.blue);
+    }
+    else if (_isGraphOne)
+        ShowGraph(_list1);
+    else if (_isGraphTwo)
+        ShowGraph(_list2);
 }
 
 private void ReDrawY(object sender, EventArgs e)
 {
     DestroyGraph(gameObjectList);
-    ShowGraph(_list1);
-    if(_isTwoGraphs)
+    if (_isGraphOne && _isGraphTwo)
+    {
+        ShowGraph(_list1);
         DrawCurve(_list2, Color.blue);
+    }
+    else if (_isGraphOne)
+        ShowGraph(_list1);
+    else if (_isGraphTwo)
+        ShowGraph(_list2);
 }
 
 private void ReDraw2(object sender, EventArgs e)
 {
-    DestroyGraph(gameObjectList);
-    ShowGraph(_list1);
-    DrawCurve(_list2, Color.blue);
+    //DestroyGraph(gameObjectList);
+    //ShowGraph(_list1);
+    //DrawCurve(_list2, Color.blue);
+    SetGraphTwo(true);
 }
 
 private void ReDraw1(object sender, EventArgs e)
 {
-    DestroyGraph(gameObjectList);
-    ShowGraph(_list1);
+    //DestroyGraph(gameObjectList);
+    //ShowGraph(_list1);
+    SetGraphOne(true);
 }
 
     
@@ -278,7 +322,7 @@ private void ReDraw1(object sender, EventArgs e)
         float graphHeight = graphContainer.sizeDelta.y;
         float yMax = valueList.Max() * yBufferTop;
         int separatorCount = _gridCountY;
-        if (_isTwoGraphs)
+        if (_isGraphOne && _isGraphTwo)
             yMax = Mathf.Max(_list1.Max(), _list2.Max())*yBufferTop;
         for (int i = 0; i <= separatorCount; i++)
         {
@@ -312,7 +356,7 @@ private void ReDraw1(object sender, EventArgs e)
         float yMax = valueList.Max() * yBufferTop;
         int count = firstX;
 
-        if (_isTwoGraphs)
+        if (_isGraphOne && _isGraphTwo)
             yMax = Mathf.Max(_list1.Max(), _list2.Max()) * yBufferTop; 
         
 

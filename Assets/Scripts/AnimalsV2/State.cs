@@ -14,9 +14,17 @@ namespace AnimalsV2
     {
         Running,
         Walking,
-        LookingOut,
+        Attack,
         Idle,
+        Mating,
         Dead
+    }
+
+    public enum Priorities
+    {
+        Food,
+        Water,
+        Mate
     }
 
     public abstract class State
@@ -66,5 +74,11 @@ namespace AnimalsV2
         {
             return currentStateAnimation.ToString();
         }
+
+        // used to display state in the UI
+        public abstract string ToString();
+
+        public abstract bool MeetRequirements();
+        
     }
 }

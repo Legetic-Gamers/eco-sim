@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace AnimalsV2
 {
@@ -32,7 +33,19 @@ namespace AnimalsV2
 
             return animalTransform.position + Vector3.Normalize(pointToAnimalVector);
         }
-        
+
+        public static void NavigateToPoint(AnimalController animal,Vector3 position)
+        {
+            
+            NavMeshHit hit;
+            //TODO this maxDistance is what is causing rabbits to dance sometimes, if poisition cant be found.
+            if (NavMesh.SamplePosition(position, out hit, animal.agent.height * 2, 1 << NavMesh.GetAreaFromName("Walkable")))
+            {
+                animal.agent.SetDestination(hit.position);
+            }
+            
+        }
+
         /// <summary>
         /// Gives nearest object (of type with Tag in unity) to a given animal.
         /// </summary>
@@ -46,17 +59,25 @@ namespace AnimalsV2
             
             // Find closest object of all objects with tag
             GameObject nearbyObj = allPercievedObjects[0];
-            float closestDistance = Vector3.Distance(nearbyObj.transform.position, thisPosition);
-            //Get the closest game object
-            foreach (GameObject g in allPercievedObjects)
+
+            if (nearbyObj != null)
             {
-                float dist = Vector3.Distance(g.transform.position, thisPosition);
-                if (dist < closestDistance)
+                float closestDistance = Vector3.Distance(nearbyObj.transform.position, thisPosition);
+                //Get the closest game object
+                foreach (GameObject g in allPercievedObjects)
                 {
-                    closestDistance = dist;
-                    nearbyObj = g;
+                    if (g != null)
+                    {
+                        float dist = Vector3.Distance(g.transform.position, thisPosition);
+                        if (dist < closestDistance)
+                        {
+                            closestDistance = dist;
+                            nearbyObj = g;
+                        }
+                    }
                 }
             }
+
             return nearbyObj;
         }
         
@@ -74,7 +95,14 @@ namespace AnimalsV2
             Vector3 averagePosition = new Vector3();
             
             //Calculate the average
-            foreach (GameObject g in allPercievedObjects)  averagePosition += g.transform.position;
+            foreach (GameObject g in allPercievedObjects)
+            {
+                if (g != null)
+                {
+                    averagePosition += g.transform.position;
+                }
+
+            }
             averagePosition /= allPercievedObjects.Count;
             return averagePosition;
         }

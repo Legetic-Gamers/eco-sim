@@ -1,5 +1,83 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5008844849043387276
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4983618221499791169}
+  - component: {fileID: 7968821725206148526}
+  - component: {fileID: 9117412599635127386}
+  m_Layer: 5
+  m_Name: Text
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &4983618221499791169
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5008844849043387276}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: -0.006, y: 0.01, z: 1}
+  m_Children: []
+  m_Father: {fileID: 7109646816137998280}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 160, y: 20}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &7968821725206148526
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5008844849043387276}
+  m_CullTransparentMesh: 0
+--- !u!114 &9117412599635127386
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5008844849043387276}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FontData:
+    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_FontSize: 14
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 10
+    m_MaxSize: 40
+    m_Alignment: 7
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 0
+    m_LineSpacing: 0
+  m_Text: HEJEJE
 --- !u!1 &7109646815149258883
 GameObject:
   m_ObjectHideFlags: 0
@@ -12,8 +90,7 @@ GameObject:
   - component: {fileID: 7109646815149258887}
   - component: {fileID: 7109646815149258886}
   - component: {fileID: 7109646815149258885}
-  - component: {fileID: 7109646815149258936}
-  m_Layer: 8
+  m_Layer: 5
   m_Name: ParameterUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -100,24 +177,6 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &7109646815149258936
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7109646815149258883}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d9ab3eea0e754bd4db4e3b9bd1e48408, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  animal: {fileID: 0}
-  health: {fileID: 2491840454762174310}
-  energy: {fileID: 2491840453941846063}
-  hydration: {fileID: 2491840453156778334}
-  reproductiveUrge: {fileID: 2491840453074583465}
-  camera: {fileID: 0}
 --- !u!1 &7109646816137998295
 GameObject:
   m_ObjectHideFlags: 0
@@ -129,7 +188,8 @@ GameObject:
   - component: {fileID: 7109646816137998280}
   - component: {fileID: 7109646816137998282}
   - component: {fileID: 7109646816137998281}
-  m_Layer: 8
+  - component: {fileID: 8413700963402318243}
+  m_Layer: 5
   m_Name: Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -147,6 +207,7 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.8, y: 1, z: 1}
   m_Children:
+  - {fileID: 4983618221499791169}
   - {fileID: 6105287435918477958}
   - {fileID: 6105287435635752399}
   - {fileID: 6105287434311052478}
@@ -192,6 +253,26 @@ MonoBehaviour:
   m_ChildControlHeight: 0
   m_ChildScaleWidth: 1
   m_ChildScaleHeight: 1
+--- !u!114 &8413700963402318243
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7109646816137998295}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d6578aa830fc2443ba8eb7dd052ea65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animal: {fileID: 0}
+  state: {fileID: 9117412599635127386}
+  health: {fileID: 2491840454762174310}
+  energy: {fileID: 2491840453941846063}
+  hydration: {fileID: 2491840453156778334}
+  reproductiveUrge: {fileID: 2491840453074583465}
+  onlyUpdateNearCamera: 1
+  camera: {fileID: 0}
 --- !u!1001 &7109646815094159374
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -247,7 +328,7 @@ PrefabInstance:
     - target: {fileID: 3895856186456486536, guid: 0179ebae49359064f9830344c11ed98e,
         type: 3}
       propertyPath: m_RootOrder
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3895856186456486536, guid: 0179ebae49359064f9830344c11ed98e,
         type: 3}
@@ -419,7 +500,7 @@ PrefabInstance:
     - target: {fileID: 3895856186456486536, guid: 0179ebae49359064f9830344c11ed98e,
         type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3895856186456486536, guid: 0179ebae49359064f9830344c11ed98e,
         type: 3}
@@ -591,7 +672,7 @@ PrefabInstance:
     - target: {fileID: 3895856186456486536, guid: 0179ebae49359064f9830344c11ed98e,
         type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 3895856186456486536, guid: 0179ebae49359064f9830344c11ed98e,
         type: 3}
@@ -763,7 +844,7 @@ PrefabInstance:
     - target: {fileID: 3895856186456486536, guid: 0179ebae49359064f9830344c11ed98e,
         type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 3895856186456486536, guid: 0179ebae49359064f9830344c11ed98e,
         type: 3}

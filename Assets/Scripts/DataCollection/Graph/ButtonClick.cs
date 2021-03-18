@@ -37,12 +37,12 @@ public class ButtonClick : Window_Graph
 
     public void ButtonTwo()
     {
-        IsTwoGraphs = true;
+        IsGraphTwo = true;
         OnButtonTwoGraphs?.Invoke(this, EventArgs.Empty);
     }
     public void ButtonOne()
     {
-        IsTwoGraphs = false;
+        IsGraphOne = false;
         OnButtonOneGraph?.Invoke(this, EventArgs.Empty);
     }
 
@@ -69,14 +69,5 @@ public class ButtonClick : Window_Graph
         if (GridCountY > 1)
             GridCountY--;
     }
-
-    public void OnButtonOne()
-    {
-        
-    }
-
-    public void OnButtonTwo()
-    {
-        
-    }
+    
 }

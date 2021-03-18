@@ -21,13 +21,23 @@ namespace AnimalsV2
 
             //Get access to Animator to animate the animal.
             animator = this.animal.GetComponent<Animator>();
-
-            //Listen to state changes of the animals states to update animations.
-            animal.Fsm.OnStateEnter += FSM_OnStateEnter;
-            animal.Fsm.OnStateLogicUpdate += FSM_OnStateLogicUpdate;
-            animal.Fsm.OnStateExit += FSM_OnStateExit;
-
+            animator.Play("Base Layer." + StateAnimation.Walking,0);
             //Debug.Log("AnimationController listening to FSM");
+        }
+
+        public void EventSubscribe()
+        {
+            //Listen to state changes of the animals states to update animations.
+            animal.fsm.OnStateEnter += FSM_OnStateEnter;
+            animal.fsm.OnStateLogicUpdate += FSM_OnStateLogicUpdate;
+            animal.fsm.OnStateExit += FSM_OnStateExit;
+        }
+
+        public void EventUnsubscribe()
+        {
+            animal.fsm.OnStateEnter -= FSM_OnStateEnter;
+            animal.fsm.OnStateLogicUpdate -= FSM_OnStateLogicUpdate;
+            animal.fsm.OnStateExit -= FSM_OnStateExit;
         }
 
         //Animation parameters which need updating on state enter.
@@ -35,16 +45,23 @@ namespace AnimalsV2
         {
             //Debug.Log("Enter " + state.GetStateAnimation() +" Animation");
 
+            //animator.SetFloat("runningSpeed",animal.animalModel.GetSpeedPercentage);
             animator?.CrossFade("Base Layer." + state.GetStateAnimation(), transitionSpeed, 0);
         }
 
         //Animation parameters which need updating every frame
         //Pretty much a very indirect Update() that goes through the FSM.
         //Has access to the state that is being executed.
-        private void FSM_OnStateLogicUpdate(State state1)
+        private void FSM_OnStateLogicUpdate(State state)
         {
             //Use update() instead most likely
             //animator.SetFloat("runningSpeed",animal.Hunger);
+            
+            //If animation has changed.
+            // if (!animator.GetCurrentAnimatorStateInfo(0).IsName(state.GetStateAnimation()))
+            // {
+            //     animator?.CrossFade("Base Layer." + state.GetStateAnimation(), transitionSpeed, 0);
+            // }
         }
 
         //Animation parameters which need updating once a state ends
@@ -52,7 +69,11 @@ namespace AnimalsV2
         {
             //Debug.Log("Exit " + state.GetStateAnimation() +" Animation");
             animator?.CrossFade("Base Layer." + state.GetStateAnimation(), transitionSpeed, 0);
-            //animator.Play("Base Layer." + state,0);
+        }
+
+        public void PlayAnimation(StateAnimation animation, float transitionSpeed)
+        {
+            animator.CrossFade("Base Layer." + animation, transitionSpeed, 0);
         }
     }
 }

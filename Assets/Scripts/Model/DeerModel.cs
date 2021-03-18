@@ -1,6 +1,8 @@
-﻿public class DeerModel : AnimalModel
+﻿using Model;
+
+public class DeerModel : AnimalModel, IEdible
 {
-    public DeerModel() : base(new Traits(10, 300, 100, 100, 10,10,10,10,10,10,10,10, Traits.BehaviorType.Herbivore, Traits.Species.Rabbit),0)
+    public DeerModel() : base(new Traits(3, 100, 100, 100, 6,10,10,10,10,10,180,10,10),0)
     {
         // Set variables specific to deer
     }
@@ -12,8 +14,23 @@
 
     public override AnimalModel Mate(AnimalModel otherParent)
     {
-        Traits childTraits = traits.Crossover(otherParent.traits);
+        Traits childTraits = traits.Crossover(otherParent.traits, age, otherParent.age);
         //TODO logic for determining generation
         return new DeerModel(childTraits, 0);
+    }
+    
+    public override bool CanEat<T>(T obj)
+    {
+        return obj is PlantModel;
+    }
+    
+    public override bool IsSameSpecies<T>(T obj)
+    {
+        return obj is DeerModel;
+    }
+
+    public float GetEaten()
+    {
+        return 10f;
     }
 }

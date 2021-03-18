@@ -1,0 +1,78 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3103021667471890121
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3103021667471890126}
+  - component: {fileID: 3103021667471890125}
+  - component: {fileID: 3103021667471890124}
+  m_Layer: 0
+  m_Name: Terrain Generator
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3103021667471890126
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3103021667471890121}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3103021667471890125
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3103021667471890121}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53ff74c8b3071d6449d9014ae70f0b29, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  terrainMode: 1
+  colliderLevelOfDetailIndex: 0
+  detailLevels:
+  - lod: 0
+    visibleDistanceThreshold: 200
+  - lod: 1
+    visibleDistanceThreshold: 400
+  - lod: 4
+    visibleDistanceThreshold: 500
+  viewer: {fileID: 0}
+  fixedSizeX: 1
+  fixedSizeY: 1
+  navMeshSurface: {fileID: 0}
+  mapMaterial: {fileID: 2100000, guid: c3696b76f26176f49af1b8d5e637a5d1, type: 2}
+  meshSettings: {fileID: 11400000, guid: c1a12a890254ee747ab87a0dfc00b1c2, type: 2}
+  heightMapSettings: {fileID: 11400000, guid: ef68fb5454424dc48ae4cd4eb3471f6a, type: 2}
+  textureSettings: {fileID: 11400000, guid: eba7d01a565de0d4aa70842f6d639e83, type: 2}
+  waterSettings: {fileID: 11400000, guid: 234039fb0a4c373488e677b997ac4107, type: 2}
+  objectPlacementSettings: {fileID: 11400000, guid: 3cd42d55fdf5b4c41a64d853ba76d24b,
+    type: 2}
+--- !u!114 &3103021667471890124
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3103021667471890121}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f24f9c9c248055b4ea0e31d2237bdfd3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

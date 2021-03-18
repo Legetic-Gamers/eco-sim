@@ -1,6 +1,6 @@
 ﻿public class BearModel : AnimalModel
 {
-    public BearModel() : base(new Traits(10, 300, 100, 100, 10,10,10,10,10,10,10,10, Traits.BehaviorType.Omnivore, Traits.Species.Bear),0)
+    public BearModel() : base(new Traits(5, 100, 100, 100, 5,10,10,10,10,10,180,10,10),0)
     {
         // Set variables specific to bear
     }
@@ -12,9 +12,19 @@
 
     public override AnimalModel Mate(AnimalModel otherParent)
     {
-        Traits childTraits = traits.Crossover(otherParent.traits);
+        Traits childTraits = traits.Crossover(otherParent.traits, age, otherParent.age);
         //TODO logic to determine generation
 
         return new BearModel(childTraits, 0);
+    }
+    
+    public override bool CanEat<T>(T obj)
+    {
+        return obj is WolfModel || obj is RabbitModel || obj is DeerModel;
+    }
+    
+    public override bool IsSameSpecies<T>(T obj)
+    {
+        return obj is BearModel;
     }
 }
