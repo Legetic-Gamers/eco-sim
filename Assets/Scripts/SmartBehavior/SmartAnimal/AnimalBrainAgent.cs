@@ -378,9 +378,7 @@ public class AnimalBrainAgent : Agent
         
         //Task failed
         EndEpisode();
-
         
-
 
     }
     
