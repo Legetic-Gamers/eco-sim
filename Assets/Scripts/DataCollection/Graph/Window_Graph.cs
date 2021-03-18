@@ -35,8 +35,9 @@ public class Window_Graph : MonoBehaviour
     private static int _truncateFactor = 1;
     private static int _gridCountY = 10;
     private int firstX = 0;
+    private static bool _isGraphOne = true;
     private static bool _isGraphTwo = false;
-    private static bool _isGraphOne = false;
+    
 
 
     private RectTransform window_graph;
@@ -107,11 +108,10 @@ public class Window_Graph : MonoBehaviour
         graphContainer.sizeDelta = new Vector2(graphContainerSizeX, graphContainerSizeY);
         dashTemplateX.sizeDelta = new Vector2(graphContainerSizeY + 2, 1);
         dashTemplateY.sizeDelta = new Vector2(graphContainerSizeX + 2, 1);
-        dh.Display += Draw;
-        ButtonClick.OnButtonX += ReDrawX;
-        ButtonClick.OnButtonY += ReDrawY;
-        ButtonClick.OnButtonTwoGraphs += ReDraw2;
-        ButtonClick.OnButtonOneGraph += ReDraw1;
+        //dh.Display += Draw;
+        ButtonClick.OnButtonReDraw += ReDraw;
+        ButtonClick.OnButtonTwoGraphs += ReDraw;
+        ButtonClick.OnButtonOneGraph += ReDraw;
     }
     
     private float x = 0;
@@ -150,47 +150,35 @@ private void Draw(List<int> list1, List<int> list2)
 {
     _list1 = list1;
     _list2 = list2;
-    DestroyGraph(gameObjectList);
+    if (gameObjectList != null) DestroyGraph(gameObjectList);
     if (_isGraphOne && _isGraphTwo)
     {
-        ShowGraph(list1);
+        ShowGraph(list1, Color.red);
         DrawCurve(list2, Color.blue);
     }
         
     else if (_isGraphOne)
-        ShowGraph(list1);
+        ShowGraph(list1, Color.red);
     else if (_isGraphTwo)
-        ShowGraph(list2);
+        ShowGraph(list2, Color.blue);
 }
 
 
-private void ReDrawX(object sender, EventArgs e)
+private void ReDraw(object sender, EventArgs e)
 {
-    DestroyGraph(gameObjectList);
+    if (gameObjectList != null) DestroyGraph(gameObjectList);
     if (_isGraphOne && _isGraphTwo)
     {
-        ShowGraph(_list1);
+        ShowGraph(_list1, Color.red);
         DrawCurve(_list2, Color.blue);
     }
     else if (_isGraphOne)
-        ShowGraph(_list1);
+        ShowGraph(_list1, Color.red);
     else if (_isGraphTwo)
-        ShowGraph(_list2);
+        ShowGraph(_list2, Color.blue);
 }
 
-private void ReDrawY(object sender, EventArgs e)
-{
-    DestroyGraph(gameObjectList);
-    if (_isGraphOne && _isGraphTwo)
-    {
-        ShowGraph(_list1);
-        DrawCurve(_list2, Color.blue);
-    }
-    else if (_isGraphOne)
-        ShowGraph(_list1);
-    else if (_isGraphTwo)
-        ShowGraph(_list2);
-}
+
 
 private void ReDraw2(object sender, EventArgs e)
 {
@@ -209,10 +197,8 @@ private void ReDraw1(object sender, EventArgs e)
 
     
     // Draws entire graph.
-    private void ShowGraph(List<int> valueList)
+    private void ShowGraph(List<int> valueList, Color color)
     {
-
-        _list1 = valueList;
         if (valueList.Count == 0)
             return;
         var sizeDelta = graphContainer.sizeDelta;
@@ -221,7 +207,7 @@ private void ReDraw1(object sender, EventArgs e)
 
         AddGridX(valueList);
         AddGridY(valueList);
-        DrawCurve(valueList, lineColor);
+        DrawCurve(valueList, color);
         
     }
     

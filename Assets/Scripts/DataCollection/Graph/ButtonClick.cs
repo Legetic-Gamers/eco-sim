@@ -8,22 +8,19 @@ using UnityEngine;
 public class ButtonClick : Window_Graph
 {
 
-    public static event EventHandler OnButtonX;
-    public static event EventHandler OnButtonY;
+    public static event EventHandler OnButtonReDraw;
+   
     public static event EventHandler OnButtonSize;
     public static event EventHandler OnButtonPopulation;
     public static event EventHandler OnButtonTwoGraphs;
     public static event EventHandler OnButtonOneGraph;
 
-    public void ButtonX()
+    public void ButtonReDraw()
     {
-        OnButtonX?.Invoke(this, EventArgs.Empty);
+        OnButtonReDraw?.Invoke(this, EventArgs.Empty);
     }
 
-    public void ButtonY()
-    {
-        OnButtonY?.Invoke(this, EventArgs.Empty);
-    }
+
     public void ButtonSize()
     {
         OnButtonSize?.Invoke(this, EventArgs.Empty);
@@ -34,17 +31,19 @@ public class ButtonClick : Window_Graph
     {
         OnButtonPopulation?.Invoke(this, EventArgs.Empty);
     }
+    
+    public void ButtonOne()
+    {
+        IsGraphOne = !IsGraphOne;
+        OnButtonOneGraph?.Invoke(this, EventArgs.Empty);
+    }
 
     public void ButtonTwo()
     {
-        IsGraphTwo = true;
+        IsGraphTwo = !IsGraphTwo;
         OnButtonTwoGraphs?.Invoke(this, EventArgs.Empty);
     }
-    public void ButtonOne()
-    {
-        IsGraphOne = false;
-        OnButtonOneGraph?.Invoke(this, EventArgs.Empty);
-    }
+
 
 
     public void OnButtonIncTruncate()
