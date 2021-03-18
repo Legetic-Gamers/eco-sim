@@ -23,16 +23,18 @@ public class TickEventPublisher : MonoBehaviour
     {
         while (true)
         {
-            yield return new WaitForSeconds(2.0f);
             onParamTickEvent?.Invoke();
+            yield return new WaitForSeconds(2.0f);
+            
         }
     }
     private IEnumerator SenseTickEvent()
     {
         while (true)
         {
-            yield return new WaitForSeconds(.5f);
             onSenseTickEvent?.Invoke();
+            yield return new WaitForSeconds(.5f);
+            
         }
     }
 
@@ -40,8 +42,9 @@ public class TickEventPublisher : MonoBehaviour
     {
         while (true)
         {
-            yield return new WaitForSeconds(5f);
             onCollectorUpdate?.Invoke();
+            yield return new WaitForSeconds(5f);
+            
         }
     }
 

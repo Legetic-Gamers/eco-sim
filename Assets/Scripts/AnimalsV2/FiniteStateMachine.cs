@@ -52,7 +52,9 @@ namespace AnimalsV2
             // }
 
             // if the state is absorbing, meaning that state change is not possible or newState == CurrentState or newState does not meet requirements, we return
-            if(newState == CurrentState || absorbingState || !newState.MeetRequirements()) return false;
+            if( absorbingState || !newState.MeetRequirements()) return false;
+            //If we try to enter same state, don't do anything but essentially the state change was good.
+            if (newState == CurrentState) return true;
             
             if (CurrentState != null)
             {

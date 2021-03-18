@@ -198,44 +198,26 @@ public class AnimalBrainAgent : Agent
         }
         else if (discreteActions[0] == 1)
         {
-            if (ChangeState(animalController.goToWaterState))
-            {
-                // AddReward(0.1f);
-                // world.totalScore += 0.1f;
-            }
+            ChangeState(animalController.goToWaterState);
+            
 
 
             print("Look for Water.");
         }
         else if (discreteActions[0] == 2)
         {
-            if (ChangeState(animalController.goToMate))
-            {
-                // AddReward(0.1f);
-                // world.totalScore += 0.1f;
-                //print("Wants offspring and found mate.");
-            }
-            
+            ChangeState(animalController.goToMate);
+                
             print("Look for Mate.");
         }
         else if (discreteActions[0] == 3)
         {
-            if (ChangeState(animalController.goToFoodState))
-            {
-                // AddReward(0.1f);
-                // world.totalScore += 0.1f;
-            }
-            
+            ChangeState(animalController.goToFoodState);
             print("Look for food.");
         }
         else if (discreteActions[0] == 4)
         {
-            if (ChangeState(animalController.fleeingState))
-            {
-                // AddReward(0.1f);
-                // world.totalScore += 0.1f;
-            }
-            
+            ChangeState(animalController.fleeingState);
             print("Flee!");
         }
     }

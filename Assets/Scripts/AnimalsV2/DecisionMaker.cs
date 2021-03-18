@@ -99,6 +99,16 @@ namespace AnimalsV2
                 prio.Insert(0, Mate);
             }
 
+            // if (animalController is WolfController)
+            // {
+            //     String priolist = String.Empty;
+            //     foreach (var p in prio)
+            //     {
+            //         priolist += p + ", ";
+            //     }
+            //     Debug.Log(priolist);
+            // }
+
             //TODO det som händer här är att det blir alltid den som är sist i priority vi går till, which is bad.
             foreach (var priority in prio)
             {

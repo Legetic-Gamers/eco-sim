@@ -204,7 +204,7 @@ public abstract class AnimalModel
         currentHealth = traits.maxHealth;
         currentEnergy = traits.maxEnergy;
         currentHydration = traits.maxHydration;
-        reproductiveUrge = 0.2f;
+        reproductiveUrge = 0f;
         this.traits = traits;
     }
 
