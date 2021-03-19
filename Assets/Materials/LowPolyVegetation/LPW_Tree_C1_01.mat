@@ -86,6 +86,7 @@ Material:
     - Vector1_BFA0FE28: 0.4
     - Vector1_C3824C7C: 0.3
     - Vector1_EEB92BFD: 2
+    - WindCalm: 1
     - WindDensity: 5
     - WindSpeed: 0.5
     - WindStrength: 2

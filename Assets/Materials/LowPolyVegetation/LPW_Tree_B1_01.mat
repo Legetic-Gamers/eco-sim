@@ -86,8 +86,9 @@ Material:
     - Vector1_BFA0FE28: 0.4
     - Vector1_C3824C7C: 0.3
     - Vector1_EEB92BFD: 2
-    - WindDensity: 5
-    - WindSpeed: 0.5
+    - WindCalm: 5
+    - WindDensity: 1
+    - WindSpeed: 1
     - WindStrength: 2
     - _BumpScale: 1
     - _Cutoff: 0.5
@@ -119,7 +120,7 @@ Material:
     - __dirty: 0
     m_Colors:
     - Color_59D500A6: {r: 0.23584905, g: 0.025587412, b: 0.025587412, a: 0}
-    - Color_A6FA7443: {r: 0.23584905, g: 0.025587412, b: 0.025587412, a: 0}
+    - Color_A6FA7443: {r: 0.31132078, g: 0.14462002, b: 0.033775374, a: 0}
     - Color_C90FA907: {r: 0.4681825, g: 0.5943396, b: 0.5325773, a: 0}
     - Direction: {r: 0.3, g: 0.3, b: 0, a: 0}
     - Vector2_D5100E42: {r: 0.3, g: 0.3, b: 0, a: 0}
