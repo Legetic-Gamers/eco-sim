@@ -18,6 +18,8 @@ namespace DataCollection
         
         private TickEventPublisher tickEventPublisher;
         private Collector c;
+        private List<int> sendList1 = new List<int>();
+        private List<int> sendList2 = new List<int>();
         private List<string> traitNames = new List<string>
         {
             "size",
@@ -43,8 +45,11 @@ namespace DataCollection
         {
             tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
             tickEventPublisher.onCollectorUpdate += UpdateDataAndGraph;
+            ButtonClick bc = FindObjectOfType<ButtonClick>();
+            bc.GetListType += SetList;
             c = new Collector();
         }
+        
         
         /// <summary>
         /// Called by Animal Controller to log when a new animal is started in the scene.
@@ -58,6 +63,33 @@ namespace DataCollection
         public void LogDeadAnimal(AnimalModel animalModel)
         {
             c.CollectDeath(animalModel);
+        }
+
+        private void SetList(int a, int x, int y, int z)
+        {
+            List<int> tmplist = new List<int>();
+            switch (x)
+            {
+                case 0:
+                    if (z == 0) tmplist = ConvertFloatListToIntList(c.rabbitStatsPerGenMean[y]);
+                    if (z == 1) tmplist = ConvertFloatListToIntList((c.rabbitStatsPerGenVar[y]));
+                    break;
+                case 1:
+                    if (z == 0) tmplist = ConvertFloatListToIntList(c.wolfStatsPerGenMean[y]);
+                    if (z == 1) tmplist = ConvertFloatListToIntList((c.wolfStatsPerGenVar[y]));
+                    break;      
+                case 2:         
+                    if (z == 0) tmplist = ConvertFloatListToIntList(c.deerStatsPerGenMean[y]);
+                    if (z == 1) tmplist = ConvertFloatListToIntList((c.deerStatsPerGenVar[y]));
+                    break;      
+                case 3:         
+                    if (z == 0) tmplist = ConvertFloatListToIntList(c.bearStatsPerGenMean[y]);
+                    if (z == 1) tmplist = ConvertFloatListToIntList((c.bearStatsPerGenVar[y]));
+                    break;
+            }
+
+            if (a == 0) sendList1 = tmplist;
+            else sendList2 = tmplist;
         }
         
         /// <summary>
@@ -76,7 +108,8 @@ namespace DataCollection
         private void UpdateDataAndGraph()
         {
             c.Collect();
-            Display(ConvertFloatListToIntList(c.rabbitStatsPerGenMean[0]), ConvertFloatListToIntList(c.rabbitStatsPerGenVar[0]));
+            Display?.Invoke(sendList1,sendList2);
+            Debug.Log("Program reached data handler");
             //ExportDataToFile(0);
         }
         

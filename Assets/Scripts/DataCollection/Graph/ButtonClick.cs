@@ -8,6 +8,7 @@ using UnityEngine;
 public class ButtonClick : Window_Graph
 {
 
+    public Action<int,int, int, int> GetListType;
     public static event EventHandler OnButtonReDraw;
    
     public static event EventHandler OnButtonSize;
@@ -36,6 +37,7 @@ public class ButtonClick : Window_Graph
     {
         IsGraphOne = !IsGraphOne;
         OnButtonOneGraph?.Invoke(this, EventArgs.Empty);
+        GetListType?.Invoke(0,0,0,0);
     }
 
     public void ButtonTwo()

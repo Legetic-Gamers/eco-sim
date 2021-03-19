@@ -108,7 +108,7 @@ public class Window_Graph : MonoBehaviour
         graphContainer.sizeDelta = new Vector2(graphContainerSizeX, graphContainerSizeY);
         dashTemplateX.sizeDelta = new Vector2(graphContainerSizeY + 2, 1);
         dashTemplateY.sizeDelta = new Vector2(graphContainerSizeX + 2, 1);
-        //dh.Display += Draw;
+        dh.Display += Draw;
         ButtonClick.OnButtonReDraw += ReDraw;
         ButtonClick.OnButtonTwoGraphs += ReDraw;
         ButtonClick.OnButtonOneGraph += ReDraw;
