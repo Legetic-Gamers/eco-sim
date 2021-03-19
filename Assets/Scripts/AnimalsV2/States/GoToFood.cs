@@ -20,7 +20,7 @@ namespace AnimalsV2.States
         public GoToFood(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal,
             finiteStateMachine)
         {
-            
+            closestFood = null;
 
             nearbyFood = new List<GameObject>();
         }
@@ -87,6 +87,7 @@ namespace AnimalsV2.States
             }
             else
             {
+                
                 finiteStateMachine.GoToDefaultState();
             }
         }
@@ -103,9 +104,12 @@ namespace AnimalsV2.States
                 nearbyFood = nearbyFood.Concat(animal.visibleFoodTargets).ToList();
             if (animal.heardPreyTargets != null) // second list may be null
                 nearbyFood = nearbyFood.Concat(animal.heardPreyTargets).ToList();
-            
-            closestFood = NavigationUtilities.GetNearestObject(nearbyFood, animal.transform.position);
-            
+
+            if (animal != null)
+            {
+                closestFood = NavigationUtilities.GetNearestObject(nearbyFood, animal.transform.position);
+            }
+
             return closestFood != null && !(finiteStateMachine.CurrentState is EatingState);
         }
     }

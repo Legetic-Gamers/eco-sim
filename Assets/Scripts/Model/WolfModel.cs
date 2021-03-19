@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class WolfModel : AnimalModel, IEdible
 {
-    public WolfModel() : base(new Traits(3f, 60, 100, 70, 1.5f,1,10,100,10,10,180,15,7),0)
+    public WolfModel() : base(new Traits(3f, 60, 100, 70, 1.2f,1,10,100,10,10,180,15,7),0)
     {
         // Wolf specific initialization 
     }
