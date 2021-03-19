@@ -42,13 +42,6 @@ public class FieldOfView : MonoBehaviour
 
             // don't add self
             if (target == gameObject) continue;
-            
-            if (animalController.animalModel is WolfModel)
-            {
-                Debug.Log(target.name);
-            }
-            
-            //Debug.Log(target.name);
 
             Vector3 dirToTarget = (target.transform.position - transform.position).normalized;
 
