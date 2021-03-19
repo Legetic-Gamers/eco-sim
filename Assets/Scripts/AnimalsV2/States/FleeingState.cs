@@ -68,17 +68,17 @@ namespace AnimalsV2.States
                 {
                     animal.agent.SetDestination(hit.position);
                     
+                }//Try running perpendicular to front (Avoid walls).
+                else if (NavigationUtilities.PerpendicularPoint(animal.transform.position,animal.transform.forward,animal.transform.up,animal.agent.height*2,out pointToRunTo))
+                {
+                    animal.agent.SetDestination(pointToRunTo);
                     
-                }//Try running randomly if no other way found.
+                } //Try running randomly if no other way found.
                 else if(NavigationUtilities.RandomPoint(animal.transform.position, 10f,animal.agent.height*2, out pointToRunTo))
                 {
                     animal.agent.SetDestination(pointToRunTo);
                 }
-                // else
-                // {
-                //     
-                //     Debug.Log("Stuck");
-                // }
+                
                 
             }
 

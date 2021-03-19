@@ -79,6 +79,37 @@ namespace AnimalsV2
             result = Vector3.zero;
             return false;
         }
+        
+        /// <summary>
+        /// Creates a perpendicular vector to a sampled position if possible.
+        /// </summary>
+        /// <param name="front"></param>
+        /// <param name="up"></param>
+        /// <param name="result"></param>
+        /// <returns></returns>
+        
+        public static bool PerpendicularPoint(Vector3 center,Vector3 front, Vector3 up,float maxDist, out Vector3 result)
+        {
+            for (int i = 0; i < 30; i++)
+            {
+                Vector3 perpVec = center + Vector3.Cross(front,up).normalized;
+                
+                NavMeshHit hit;
+                if (NavMesh.SamplePosition(perpVec, out hit, maxDist, NavMesh.AllAreas))
+                {
+                    result = hit.position;
+                    return true;
+                    
+                    //Otherwise try other direction
+                }else if (NavMesh.SamplePosition(new Vector3(-perpVec.x,perpVec.y,-perpVec.z), out hit, maxDist, NavMesh.AllAreas))
+                {
+                    result = hit.position;
+                    return true;
+                }
+            }
+            result = Vector3.zero;
+            return false;
+        }
 
         /// <summary>
         /// Gives nearest object (of type with Tag in unity) to a given animal.
