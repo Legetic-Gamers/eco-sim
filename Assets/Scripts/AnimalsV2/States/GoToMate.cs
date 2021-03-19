@@ -42,8 +42,8 @@ namespace AnimalsV2.States
                     // animal.agent.SetDestination(hit.position);
                     if (Vector3.Distance(animal.transform.position, foundMate.transform.position) <= animal.agent.stoppingDistance)
                     {
-                        animal.matingStateState.SetTarget(foundMate);
-                        finiteStateMachine.ChangeState(animal.matingStateState);
+                        animal.matingState.SetTarget(foundMate);
+                        finiteStateMachine.ChangeState(animal.matingState);
                     }    
                 }
                 
