@@ -38,7 +38,12 @@ using UnityEngine;
                     // NavMeshHit hit;
                     // NavMesh.SamplePosition(pointToRunTo, out hit, 100, 1 << NavMesh.GetAreaFromName("Walkable"));
                     // animal.agent.SetDestination(hit.position);
-                    if(Vector3.SqrMagnitude(animal.transform.position - closestWater.transform.position) <= animal.agent.stoppingDistance){
+                    if (animal is WolfController)
+                    {
+                        Debug.Log("Water, Remaining: " + animal.agent.remainingDistance + " Stopping: " + animal.agent.stoppingDistance + " True?: " + (animal.agent.remainingDistance <= animal.agent.stoppingDistance));
+                    }
+
+                    if(animal.agent.remainingDistance <= animal.agent.stoppingDistance){
                         animal.drinkingState.SetTarget(closestWater);
                         finiteStateMachine.ChangeState(animal.drinkingState);
                     }    

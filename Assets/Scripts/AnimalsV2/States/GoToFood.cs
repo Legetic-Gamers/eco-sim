@@ -65,8 +65,14 @@ namespace AnimalsV2.States
 
                     // if (Vector3.Distance(animal.transform.position, closestFood.transform.position) <= 2f)
                     // {
+                    
+                    if (animal is WolfController)
+                    {
+                        Debug.Log("Food, distance: " + Vector3.Distance(animal.transform.position, closestFood.transform.position) + " Stopping: " + animal.agent.stoppingDistance + " True?: " + (Vector3.Distance(animal.transform.position, closestFood.transform.position) <=
+                                  animal.agent.stoppingDistance));
+                    }
 
-                    if (Vector3.SqrMagnitude(animal.transform.position - closestFood.transform.position) <=
+                    if (Vector3.Distance(animal.transform.position, closestFood.transform.position) <=
                         animal.agent.stoppingDistance)
                     {
                         animal.eatingState.SetTarget(closestFood);

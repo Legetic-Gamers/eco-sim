@@ -37,7 +37,7 @@ namespace AnimalsV2.States
                     // NavMeshHit hit;
                     // NavMesh.SamplePosition(pointToRunTo, out hit, 100, 1 << NavMesh.GetAreaFromName("Walkable"));
                     // animal.agent.SetDestination(hit.position);
-                    if (Vector3.SqrMagnitude(animal.transform.position - foundMate.transform.position) <= animal.agent.stoppingDistance)
+                    if (Vector3.Distance(animal.transform.position, foundMate.transform.position) <= animal.agent.stoppingDistance)
                     {
                         animal.matingStateState.SetTarget(foundMate);
                         finiteStateMachine.ChangeState(animal.matingStateState);
@@ -69,7 +69,7 @@ namespace AnimalsV2.States
             //Debug.Log("Nfriendly" + allNearbyFriendly.Count);
             foreach(GameObject potentialMate in allNearbyFriendly)
             {
-                if (potentialMate != null && potentialMate.TryGetComponent(out AnimalController potentialMateAnimalController) && potentialMateAnimalController.animalModel.WantingOffspring && potentialMateAnimalController.animalModel.IsAlive)
+                if (potentialMate != null && potentialMate.TryGetComponent(out AnimalController potentialMateAnimalController) && !(potentialMateAnimalController.fsm.CurrentState is MatingState) && potentialMateAnimalController.animalModel.WantingOffspring && potentialMateAnimalController.animalModel.IsAlive)
                 {
                     
                     return potentialMateAnimalController.gameObject;
