@@ -10,12 +10,13 @@ using UnityEngine;
 
         public GoToWater(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine)
         {
-            currentStateAnimation = StateAnimation.Walking;
+            
         }
 
         public override void Enter()
         {
             base.Enter();
+            currentStateAnimation = StateAnimation.Walking;
         }
 
         public override void HandleInput()
@@ -26,6 +27,8 @@ using UnityEngine;
 
         public override void LogicUpdate()
         {
+            
+            
             base.LogicUpdate();
             if (MeetRequirements())
             {

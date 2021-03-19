@@ -20,7 +20,7 @@ namespace AnimalsV2.States
         public GoToFood(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal,
             finiteStateMachine)
         {
-            currentStateAnimation = StateAnimation.Walking;
+            
 
             nearbyFood = new List<GameObject>();
         }
@@ -28,6 +28,14 @@ namespace AnimalsV2.States
         public override void Enter()
         {
             base.Enter();
+            currentStateAnimation = StateAnimation.Walking;
+            
+            if (closestFood != null && closestFood.TryGetComponent(out AnimalController a))
+            {
+                //If we are going to eat an animal
+                currentStateAnimation = StateAnimation.Running;
+                Debug.Log("Eat da animal");
+            }
         }
 
         public override void HandleInput()
@@ -47,16 +55,14 @@ namespace AnimalsV2.States
             if (animal.heardPreyTargets != null) // second list may be null
                 nearbyFood = nearbyFood.Concat(animal.heardPreyTargets).ToList();
 
+            
+            
             if (MeetRequirements())
             {
                 closestFood = NavigationUtilities.GetNearestObject(nearbyFood, animal.transform.position);
                 if (closestFood != null && animal.agent.isActiveAndEnabled)
                 {
-                    if (closestFood.TryGetComponent(out AnimalController a))
-                    {
-                        //If we are going to eat an animal
-                        currentStateAnimation = StateAnimation.Running;
-                    }
+                    
 
                     Vector3 pointToRunTo = closestFood.transform.position;
                     //Move the animal using the navmeshagent.
@@ -99,12 +105,7 @@ namespace AnimalsV2.States
                 nearbyFood = nearbyFood.Concat(animal.heardPreyTargets).ToList();
             
             closestFood = NavigationUtilities.GetNearestObject(nearbyFood, animal.transform.position);
-
-            if (closestFood == null)
-            {
-                Debug.Log(closestFood);
-            }
-
+            
             return closestFood != null && !(finiteStateMachine.CurrentState is EatingState);
         }
     }
