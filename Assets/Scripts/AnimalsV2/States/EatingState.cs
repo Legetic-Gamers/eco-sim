@@ -10,7 +10,7 @@ namespace AnimalsV2.States
     public class EatingState : State
     {
 
-        public Func<GameObject, float> onEatFood;
+        public Action<GameObject> onEatFood;
         private GameObject target;
 
         public EatingState(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal,

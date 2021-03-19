@@ -37,23 +37,26 @@ public class FieldOfView : MonoBehaviour
         // loop through targets within the entire circle to determine if they are in the view cone --> add to Targets list
         for (int i = 0; i < targetsInRadius.Length; i++)
         {
+            
             GameObject target = targetsInRadius[i].gameObject;
 
             // don't add self
-            if (target == gameObject) return;
+            if (target == gameObject) continue;
+            
+            if (animalController.animalModel is WolfModel)
+            {
+                Debug.Log(target.name);
+            }
             
             //Debug.Log(target.name);
 
             Vector3 dirToTarget = (target.transform.position - transform.position).normalized;
-            
-            // if()
-            // Debug.DrawLine(transform.position, target.transform.position, Color.green, 2, false);
 
             if (Vector3.Angle(transform.forward, dirToTarget) < angle / 2)
             {
                 
                 float distToTarget = Vector3.Distance(transform.position, target.transform.position);
-
+                
                 // if target is not obscured
                 if (!Physics.Raycast(transform.position, dirToTarget, distToTarget, obstacleMask))
                 {

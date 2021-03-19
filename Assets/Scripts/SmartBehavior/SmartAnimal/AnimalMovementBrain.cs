@@ -1,9 +1,12 @@
-﻿using AnimalsV2;
+﻿using System;
+using AnimalsV2;
+using Model;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
 using UnityEngine;
 using UnityEngine.AI;
+using ViewController;
 using Quaternion = UnityEngine.Quaternion;
 using Random = UnityEngine.Random;
 using Vector3 = UnityEngine.Vector3;
@@ -165,6 +168,8 @@ public class AnimalMovementBrain : Agent
         eventPublisher.onSenseTickEvent += RequestDecision;
         
         animalController.actionDeath += HandleDeath;
+        animalController.eatingState.onEatFood += HandleEat;
+        animalController.drinkingState.onDrinkWater += HandleDrink;
     }
 
 
@@ -199,19 +204,61 @@ public class AnimalMovementBrain : Agent
         
     }
 
+    private void HandleDrink(GameObject water)
+    {
+        float reward = 0f;
+
+        if (water.gameObject.CompareTag("Water") && !animalModel.HydrationFull)
+        {
+            // the reward should be proportional to how much hydration was gained when drinking
+            reward = animalModel.traits.maxHydration - animalModel.currentHydration;
+            // normalize reward as a percentage
+            reward /= animalModel.traits.maxHydration;
+            animalModel.currentHydration = animalModel.traits.maxHydration;
+        }
+        AddReward(reward);
+
+    }
+
+    private void HandleEat(GameObject food)
+    {
+        float reward = 0f;
+        //Give reward
+        if (food.GetComponent<AnimalController>()?.animalModel is IEdible edibleAnimal &&
+            animalModel.CanEat(edibleAnimal))
+        {
+            float nutritionReward = edibleAnimal.nutritionValue;
+            float hunger = animalModel.traits.maxEnergy - animalModel.currentEnergy;
+
+            //the reward for eating something should be the minimum of the actual nutrition gain and the hunger. Reason is that if an animal eats something that when it is already satisfied it will return a low reward.
+            reward = Math.Min(nutritionReward, hunger);
+            // normalize reward as a percentage
+            reward /= animalModel.traits.maxEnergy;
+            animalModel.currentEnergy += nutritionReward;
+            Destroy(food);
+        }
+
+        if (food.GetComponent<PlantController>()?.plantModel is IEdible ediblePlant && animalModel.CanEat(ediblePlant))
+        {
+            float nutritionReward = ediblePlant.nutritionValue;
+            float hunger = animalModel.traits.maxEnergy - animalModel.currentEnergy;
+
+            //the reward for eating something should be the minimum of the actual nutrition gain and the hunger. Reason is that if an animal eats something that when it is already satisfied it will return a low reward.
+            reward = Math.Min(nutritionReward, hunger);
+            reward /= animalModel.traits.maxEnergy;
+            animalModel.currentEnergy += nutritionReward;
+            Destroy(food);
+        }
+        AddReward(reward);
+    }
+
     //NOTE: OnTriggerEnter needs a rigidbody + a collider with isTrigger checked to be able to trigger collisions with other colliders.
     private void OnTriggerEnter(Collider other)
     {
         //The simple logic is if we "collide with an object with a target tag" => "interact"
         if (other.gameObject.layer == LayerMask.NameToLayer("Target") && animalController)
         {
-            float reward;
-            reward = animalController.InteractWithReward(other.gameObject);
-            if (reward > 0)
-            {
-                Debug.Log("reward: " + reward);
-            }
-            AddReward(reward);
+            animalController.Interact(other.gameObject);
         }
         
     }

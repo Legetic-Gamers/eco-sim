@@ -5,19 +5,19 @@ using UnityEngine;
 
 public class WolfModel : AnimalModel, IEdible
 {
-    private List<Type> canEat;
+    
+    public float nutritionValue { get; set; }
+
 
     public WolfModel() : base(new Traits(3f, 60, 100, 70, 2,1,10,100,10,10,180,15,7),0)
     {
-        // Wolf specific initialization 
-        canEat = new List<Type>();
-        canEat.Add(typeof(RabbitModel));
+        nutritionValue = traits.maxEnergy;
     }
 
 
     public WolfModel(Traits traits, int generation) : base(traits, generation)
     {
-        
+        nutritionValue = traits.maxEnergy;
     }
 
 
@@ -44,6 +44,6 @@ public class WolfModel : AnimalModel, IEdible
 
     public float GetEaten()
     {
-        return traits.maxEnergy;
+        return nutritionValue;
     }
 }

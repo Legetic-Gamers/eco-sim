@@ -59,10 +59,10 @@ public abstract class AnimalController : MonoBehaviour
     private float reproductiveUrgeModifier = 1f;
     private float speedModifier = JoggingSpeed; //100% of maxSpeed in model
 
-    public readonly List<GameObject> visibleHostileTargets = new List<GameObject>();
-    public readonly List<GameObject> visibleFriendlyTargets = new List<GameObject>();
-    public readonly List<GameObject> visibleFoodTargets = new List<GameObject>();
-    public readonly List<GameObject> visibleWaterTargets = new List<GameObject>();
+    public List<GameObject> visibleHostileTargets = new List<GameObject>();
+    public List<GameObject> visibleFriendlyTargets = new List<GameObject>();
+    public List<GameObject> visibleFoodTargets = new List<GameObject>();
+    public List<GameObject> visibleWaterTargets = new List<GameObject>();
 
     public readonly List<GameObject> heardHostileTargets = new List<GameObject>();
     public readonly List<GameObject> heardFriendlyTargets = new List<GameObject>();
@@ -277,53 +277,30 @@ public abstract class AnimalController : MonoBehaviour
         gameObject.transform.localScale = getNormalizedScale() * animalModel.traits.size;
     }
 
-    public float EatFood(GameObject food)
+    public void EatFood(GameObject food)
     {
-        float reward = 0f;
-        //Access food script to consume the food.
+
         if (food.GetComponent<AnimalController>()?.animalModel is IEdible edibleAnimal &&
             animalModel.CanEat(edibleAnimal))
-        {
-            float nutritionReward = edibleAnimal.GetEaten();
-            float hunger = animalModel.traits.maxEnergy - animalModel.currentEnergy;
-
-            //the reward for eating something should be the minimum of the actual nutrition gain and the hunger. Reason is that if an animal eats something that when it is already satisfied it will return a low reward.
-            reward = Math.Min(nutritionReward, hunger);
-            // normalize reward as a percentage
-            reward /= animalModel.traits.maxEnergy;
-            animalModel.currentEnergy += nutritionReward;
+        { 
+            animalModel.currentEnergy += edibleAnimal.GetEaten();
             Destroy(food);
         }
 
         if (food.GetComponent<PlantController>()?.plantModel is IEdible ediblePlant && animalModel.CanEat(ediblePlant))
         {
-            float nutritionReward = ediblePlant.GetEaten();
-            float hunger = animalModel.traits.maxEnergy - animalModel.currentEnergy;
-
-            //the reward for eating something should be the minimum of the actual nutrition gain and the hunger. Reason is that if an animal eats something that when it is already satisfied it will return a low reward.
-            reward = Math.Min(nutritionReward, hunger);
-            reward /= animalModel.traits.maxEnergy;
-            animalModel.currentEnergy += nutritionReward;
+            animalModel.currentEnergy += ediblePlant.GetEaten();
             Destroy(food);
         }
-
-        return reward;
     }
 
-    public float DrinkWater(GameObject water)
+    public void DrinkWater(GameObject water)
     {
-        float reward = 0f;
-
         if (water.gameObject.CompareTag("Water") && !animalModel.HydrationFull)
         {
-            // the reward should be proportional to how much hydration was gained when drinking
-            reward = animalModel.traits.maxHydration - animalModel.currentHydration;
-            // normalize reward as a percentage
-            reward /= animalModel.traits.maxHydration;
             animalModel.currentHydration = animalModel.traits.maxHydration;
         }
 
-        return reward;
     }
 
     //TODO a rabbit should be able to have more than one offspring at a time
@@ -416,9 +393,8 @@ public abstract class AnimalController : MonoBehaviour
 
     //General method that takes unknown gameobject as input and interacts with the given gameobject depending on what it is. It can be to e.g. consume or to mate
     // result is the reward for interacting with something
-    public float Interact(GameObject target)
+    public void Interact(GameObject target)
     {
-        float reward = 0f;
 
         //Debug.Log(gameObject.name);
         switch (target.tag)
@@ -427,7 +403,6 @@ public abstract class AnimalController : MonoBehaviour
                 drinkingState.SetTarget(target);
                 fsm.ChangeState(drinkingState);
                 break;
-                //return DrinkWater(gameObject);
             case "Plant":
                 if (target.TryGetComponent(out PlantController plantController) && animalModel.CanEat(plantController.plantModel))
                 {
@@ -435,7 +410,6 @@ public abstract class AnimalController : MonoBehaviour
                     fsm.ChangeState(eatingState);   
                 }
                 break;
-                //return EatFood(gameObject);
             case "Animal":
                 if (target.TryGetComponent(out AnimalController otherAnimalController))
                 {
@@ -445,62 +419,22 @@ public abstract class AnimalController : MonoBehaviour
                     {
                         eatingState.SetTarget(target);
                         fsm.ChangeState(eatingState);
-                        //return EatFood(otherAnimalController.gameObject);
                     }
 
                     if (animalModel.IsSameSpecies(otherAnimalModel))
                     {
-                        if (animalModel is WolfModel)
-                        {
-                            Debug.Log("otherAnimalModel: " + otherAnimalModel);
-                        }
-                        matingState.SetTarget(target);
-                        fsm.ChangeState(matingState);
+                        //matingState.SetTarget(target);
+                        //fsm.ChangeState(matingState);
                         //Insert code for try to mate and also modify the method so that it returns a float for reward;
                     }
                 }
                 break;
         }
 
-        return reward;
     }
     
-    public float InteractWithReward(GameObject target)
-    {
-        float reward = 0f;
-        
-        switch (target.tag)
-        {
-            case "Water":
-                return DrinkWater(target);
-            case "Plant":   
-                return EatFood(target);
-            case "Animal":
-                if (target.TryGetComponent(out AnimalController otherAnimalController))
-                {
-                    AnimalModel otherAnimalModel = otherAnimalController.animalModel;
-                    //if we can eat the other animal we try to do so
-                    if (animalModel.CanEat(otherAnimalModel))
-                    {
-                        return EatFood(otherAnimalController.gameObject);
-                    }
 
-                    if (animalModel.IsSameSpecies(otherAnimalModel))
-                    {
-                        /*
-                        matingState.SetTarget(target);
-                        fsm.ChangeState(matingState);
-                        //Insert code for try to mate and also modify the method so that it returns a float for reward;
-                        */
-                    }
-                }
-                break;
-        }
-
-        return reward;
-    }
-
-    /*
+    
     public void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Target"))
@@ -509,6 +443,5 @@ public abstract class AnimalController : MonoBehaviour
             Interact(other.gameObject);
         }
     }
-^*/
     public abstract Vector3 getNormalizedScale();
 }

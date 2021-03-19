@@ -394,20 +394,16 @@ public class AnimalBrainAgent : Agent
     // }
     
     
-    private float HandleEating(GameObject obj)
+    private void HandleEating(GameObject obj)
     {
         AddReward(0.1f);
         world.totalScore += 0.1f;
-        // Alexander H: I had to set the action to return a float which represents the reward. This is used in the other ML implementation.
-        return 1f;
     }
 
-    private float HandleDrinking(GameObject obj)
+    private void HandleDrinking(GameObject obj)
     {
         AddReward(0.1f);
         world.totalScore += 0.1f;
-        // Alexander H: I had to set the action to return a float which represents the reward. This is used in the other ML implementation.
-        return 1f;
     }
 
     public void Update()
