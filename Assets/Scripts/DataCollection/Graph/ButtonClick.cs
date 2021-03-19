@@ -1,8 +1,7 @@
 ﻿
 using System;
-using System.Collections.Generic;
-using JetBrains.Annotations;
 using UnityEngine;
+using UnityEngine.UI;
 
 
 public class ButtonClick : Window_Graph
@@ -15,6 +14,11 @@ public class ButtonClick : Window_Graph
     public static event EventHandler OnButtonPopulation;
     public static event EventHandler OnButtonTwoGraphs;
     public static event EventHandler OnButtonOneGraph;
+
+    public Sprite square;
+    public Sprite check;
+    public Button buttonOne;
+    public Button buttonTwo;
 
     public void ButtonReDraw()
     {
@@ -38,12 +42,33 @@ public class ButtonClick : Window_Graph
         IsGraphOne = !IsGraphOne;
         OnButtonOneGraph?.Invoke(this, EventArgs.Empty);
         GetListType?.Invoke(0,0,0,0);
+        if (IsGraphOne)
+        {
+            buttonOne.GetComponent<Image>().sprite = check;
+            buttonOne.GetComponent<Image>().color = Color.white;
+        }
+        else
+        {
+            buttonOne.GetComponent<Image>().sprite = square;
+            buttonOne.GetComponent<Image>().color = Color.grey;
+        }
     }
 
     public void ButtonTwo()
     {
         IsGraphTwo = !IsGraphTwo;
         OnButtonTwoGraphs?.Invoke(this, EventArgs.Empty);
+        GetListType?.Invoke(1,0,0,0);
+        if (IsGraphTwo)
+        {
+            buttonTwo.GetComponent<Image>().sprite = check;
+            buttonTwo.GetComponent<Image>().color = Color.white;
+        }
+        else
+        {
+            buttonTwo.GetComponent<Image>().sprite = square;
+            buttonTwo.GetComponent<Image>().color = Color.grey;
+        }
     }
 
 

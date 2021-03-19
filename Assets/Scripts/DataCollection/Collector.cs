@@ -32,10 +32,10 @@ namespace DataCollection
         These lists are contained in allStatsPerGeneration in order:
         public List<float> sizePerGeneration;
         public List<int> maxEnergyPerGeneration;
-        public List<int> maxHelathPerGeneration;
+        public List<int> maxHealthPerGeneration;
         public List<int> maxHydrationPerGeneration;
         public List<float> maxSpeedPerGeneration;
-        public List<float> edurancePerGeneration;
+        public List<float> endurancePerGeneration;
         public List<int> ageLimitPerGeneration;
         public List<float> temperatureResistPerGeneration;
         public List<float> desirabilityResistPerGeneration;

@@ -199,8 +199,7 @@ private void ReDraw1(object sender, EventArgs e)
     // Draws entire graph.
     private void ShowGraph(List<int> valueList, Color color)
     {
-        if (valueList.Count == 0)
-            return;
+        if (valueList.Count == 0) return;
         var sizeDelta = graphContainer.sizeDelta;
         float graphHeight = sizeDelta.y;
         float graphWidth = sizeDelta.x;
@@ -334,6 +333,8 @@ private void ReDraw1(object sender, EventArgs e)
     // Draws the curve of the graph.
     private void DrawCurve(List<int> valueList, Color color)
     {
+        if (valueList.Count == 0) return;
+
         var sizeDelta = graphContainer.sizeDelta;
         float graphHeight = sizeDelta.y;
         float graphWidth = sizeDelta.x;
@@ -343,8 +344,11 @@ private void ReDraw1(object sender, EventArgs e)
         int count = firstX;
 
         if (_isGraphOne && _isGraphTwo)
-            yMax = Mathf.Max(_list1.Max(), _list2.Max()) * yBufferTop; 
-        
+        {
+            if (_list1.Count == 0 || _list2.Count == 0) return;
+            yMax = Mathf.Max(_list1.Max(), _list2.Max()) * yBufferTop;
+        }
+
 
         GameObject lastCircleGameObject = null;
 

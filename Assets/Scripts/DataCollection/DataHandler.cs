@@ -109,7 +109,6 @@ namespace DataCollection
         {
             c.Collect();
             Display?.Invoke(sendList1,sendList2);
-            Debug.Log("Program reached data handler");
             //ExportDataToFile(0);
         }
         
