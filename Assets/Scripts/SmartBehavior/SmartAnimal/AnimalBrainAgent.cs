@@ -39,7 +39,7 @@ public class AnimalBrainAgent : Agent
         fsm = animalController.fsm;
         animalModel = animalController.animalModel;
 
-        eventPublisher = animalController.tickEventPublisher;
+        eventPublisher = FindObjectOfType<global::TickEventPublisher>();
 
         //
 
@@ -182,7 +182,7 @@ public class AnimalBrainAgent : Agent
             //If completely satiated -> maxLifeReward. Completely drained -> 0.
             float lifeReward = maxLifeReward - uncomfortPenalty;
             AddReward(lifeReward);
-            world.totalScore += lifeReward;
+            if(world) world.totalScore += lifeReward;
         }
 
         //These states cannot be exited on the fly
@@ -325,6 +325,7 @@ public class AnimalBrainAgent : Agent
     //Listen to when senses were updated.
     private void EventSubscribe()
     {
+        Debug.Log(eventPublisher);
         eventPublisher.onSenseTickEvent += RequestDecision;
 
         animalController.actionDeath += HandleDeath;
@@ -358,7 +359,7 @@ public class AnimalBrainAgent : Agent
     {
         //Penalize for every year not lived.
         AddReward(- (1 - (animalModel.age / animalModel.traits.ageLimit)));
-        world.totalScore += (int)(- (1 - (animalModel.age / animalModel.traits.ageLimit)));
+        if (world) world.totalScore += (int)(- (1 - (animalModel.age / animalModel.traits.ageLimit)));
 
         ChangeState(animalController.deadState);
         EventUnsubscribe();
@@ -394,16 +395,16 @@ public class AnimalBrainAgent : Agent
     // }
     
     
-    private void HandleEating(GameObject obj)
+    private void HandleEating(GameObject obj, float currentEnergy)
     {
         AddReward(0.1f);
-        world.totalScore += 0.1f;
+        if (world) world.totalScore += 0.1f;
     }
 
-    private void HandleDrinking(GameObject obj)
+    private void HandleDrinking(GameObject obj, float currentHydration)
     {
         AddReward(0.1f);
-        world.totalScore += 0.1f;
+        if (world) world.totalScore += 0.1f;
     }
 
     public void Update()

@@ -277,7 +277,7 @@ public abstract class AnimalController : MonoBehaviour
         gameObject.transform.localScale = getNormalizedScale() * animalModel.traits.size;
     }
 
-    public void EatFood(GameObject food)
+    public void EatFood(GameObject food, float currentEnergy)
     {
 
         if (food.GetComponent<AnimalController>()?.animalModel is IEdible edibleAnimal &&
@@ -294,7 +294,7 @@ public abstract class AnimalController : MonoBehaviour
         }
     }
 
-    public void DrinkWater(GameObject water)
+    public void DrinkWater(GameObject water, float currentHydration)
     {
         if (water.gameObject.CompareTag("Water") && !animalModel.HydrationFull)
         {

@@ -284,7 +284,7 @@ public class World : MonoBehaviour
         //Reset if all agents are dead.
         if (agents.All(agent => IsDead(agent) ))
         {
-            Debug.Log("Extinction");
+            //Debug.Log("Extinction");
             ResetWorld();
         }
     }

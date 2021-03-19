@@ -17,7 +17,7 @@ public class AnimalMovementBrain : Agent
     private AnimalController animalController;
     private AnimalModel animalModel;
     private TickEventPublisher eventPublisher;
-
+    private FiniteStateMachine fsm;
     
 
 
@@ -32,7 +32,7 @@ public class AnimalMovementBrain : Agent
     {
         animalController = GetComponent<AnimalController>();
         animalModel = animalController.animalModel;
-
+        fsm = animalController.fsm;
         eventPublisher = FindObjectOfType<global::TickEventPublisher>();
         
         //change to a state which does not navigate the agent. If no decisionmaker is precent, it will stay at this state.
@@ -182,73 +182,67 @@ public class AnimalMovementBrain : Agent
 
     }
     
+    
     private void HandleDeath()
     {
         //Penalize for every year not lived.
-        // AddReward(animalModel.age - animalModel.traits.ageLimit);
-        // world.totalScore += (int)(animalModel.age - animalModel.traits.ageLimit);
+        AddReward(- (1 - (animalModel.age / animalModel.traits.ageLimit)));
         
-        // if (world != null)
-        // {
-        //     world.agents.Remove(this);
-        // }
-
-        animalController.fsm.ChangeState(animalController.deadState);
         EventUnsubscribe();
-        
-        
+
+        ChangeState(animalController.deadState);
         // world.SpawnNewRabbit();
         
         //Task failed
-        //EndEpisode();
+        EndEpisode();
         
+
     }
 
-    private void HandleDrink(GameObject water)
+
+    private void HandleDrink(GameObject water, float currentHydration)
     {
         float reward = 0f;
-
-        if (water.gameObject.CompareTag("Water") && !animalModel.HydrationFull)
+        if (water.gameObject.CompareTag("Water"))
         {
+            Debug.Log("HERE");
             // the reward should be proportional to how much hydration was gained when drinking
-            reward = animalModel.traits.maxHydration - animalModel.currentHydration;
+            reward = animalModel.traits.maxHydration - currentHydration;
             // normalize reward as a percentage
             reward /= animalModel.traits.maxHydration;
-            animalModel.currentHydration = animalModel.traits.maxHydration;
         }
         AddReward(reward);
 
     }
 
-    private void HandleEat(GameObject food)
+    //The reason to why I have curentEnergy as an in-parameter is because currentEnergy is updated through EatFood before reward gets computed in AnimalMovementBrain
+    private void HandleEat(GameObject food, float currentEnergy)
     {
+        //Debug.Log("currentEnergy: " + animalController.animalModel.currentEnergy);
         float reward = 0f;
         //Give reward
         if (food.GetComponent<AnimalController>()?.animalModel is IEdible edibleAnimal &&
             animalModel.CanEat(edibleAnimal))
         {
             float nutritionReward = edibleAnimal.nutritionValue;
-            float hunger = animalModel.traits.maxEnergy - animalModel.currentEnergy;
+            float hunger = animalModel.traits.maxEnergy - currentEnergy;
 
             //the reward for eating something should be the minimum of the actual nutrition gain and the hunger. Reason is that if an animal eats something that when it is already satisfied it will return a low reward.
             reward = Math.Min(nutritionReward, hunger);
             // normalize reward as a percentage
             reward /= animalModel.traits.maxEnergy;
-            animalModel.currentEnergy += nutritionReward;
-            Destroy(food);
         }
 
         if (food.GetComponent<PlantController>()?.plantModel is IEdible ediblePlant && animalModel.CanEat(ediblePlant))
         {
             float nutritionReward = ediblePlant.nutritionValue;
-            float hunger = animalModel.traits.maxEnergy - animalModel.currentEnergy;
+            float hunger = animalModel.traits.maxEnergy - currentEnergy;
 
             //the reward for eating something should be the minimum of the actual nutrition gain and the hunger. Reason is that if an animal eats something that when it is already satisfied it will return a low reward.
             reward = Math.Min(nutritionReward, hunger);
             reward /= animalModel.traits.maxEnergy;
-            animalModel.currentEnergy += nutritionReward;
-            Destroy(food);
         }
+        //Debug.Log("Eating reward: " +reward);
         AddReward(reward);
     }
 
@@ -261,5 +255,11 @@ public class AnimalMovementBrain : Agent
             animalController.Interact(other.gameObject);
         }
         
+    }
+    
+    private bool ChangeState(State newState)
+    {
+        //Debug.Log(newState.ToString());
+        return fsm.ChangeState(newState);
     }
 }

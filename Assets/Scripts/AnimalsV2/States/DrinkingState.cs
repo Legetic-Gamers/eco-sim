@@ -14,7 +14,7 @@ namespace AnimalsV2.States
     {
         private GameObject target;
 
-        public Action<GameObject> onDrinkWater;
+        public Action<GameObject, float> onDrinkWater;
         
         
         public DrinkingState(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine)
@@ -69,7 +69,7 @@ namespace AnimalsV2.States
 
         public IEnumerator DrinkWater()
         {
-            onDrinkWater?.Invoke(target);
+            onDrinkWater?.Invoke(target, animal.animalModel.currentHydration);
             // Wait a while then change state and resume walking
             yield return new WaitForSeconds(2);
             finiteStateMachine.GoToDefaultState();

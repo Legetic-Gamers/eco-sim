@@ -10,7 +10,7 @@ namespace AnimalsV2.States
     public class EatingState : State
     {
 
-        public Action<GameObject> onEatFood;
+        public Action<GameObject, float> onEatFood;
         private GameObject target;
 
         public EatingState(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal,
@@ -63,7 +63,8 @@ namespace AnimalsV2.States
         private IEnumerator EatFood()
         {
             //Eat the food
-            onEatFood?.Invoke(target);
+            //The reason to why I have curentEnergy as an in-parameter is because currentEnergy is updated through EatFood before reward gets computed in AnimalMovementBrain
+            onEatFood?.Invoke(target, animal.animalModel.currentEnergy);
             
             
             // Wait a while then change state and resume walking
