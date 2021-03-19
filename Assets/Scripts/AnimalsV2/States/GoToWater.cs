@@ -32,18 +32,18 @@ using UnityEngine;
                 GameObject closestWater = NavigationUtilities.GetNearestObject(animal.visibleWaterTargets, animal.transform.position);
                 if (closestWater != null && animal.agent.isActiveAndEnabled)
                 {
-                    Vector3 pointToRunTo = NavigationUtilities.RunToFromPoint(animal.transform, closestWater.transform.position, true);
+                    Vector3 pointToRunTo = closestWater.transform.position;
                     //Move the animal using the navmeshagent.
                     NavigationUtilities.NavigateToPoint(animal,pointToRunTo);
                     // NavMeshHit hit;
                     // NavMesh.SamplePosition(pointToRunTo, out hit, 100, 1 << NavMesh.GetAreaFromName("Walkable"));
                     // animal.agent.SetDestination(hit.position);
-                    if (animal is WolfController)
-                    {
-                        Debug.Log("Water, Remaining: " + animal.agent.remainingDistance + " Stopping: " + animal.agent.stoppingDistance + " True?: " + (animal.agent.remainingDistance <= animal.agent.stoppingDistance));
-                    }
+                    // if (animal is WolfController)
+                    // {
+                    //     Debug.Log("Water, Remaining: " + animal.agent.remainingDistance + " Stopping: " + animal.agent.stoppingDistance + " True?: " + (animal.agent.remainingDistance <= animal.agent.stoppingDistance));
+                    // }
 
-                    if(animal.agent.remainingDistance <= animal.agent.stoppingDistance){
+                    if(Vector3.Distance(animal.transform.position, closestWater.transform.position) <= animal.agent.stoppingDistance){
                         animal.drinkingState.SetTarget(closestWater);
                         finiteStateMachine.ChangeState(animal.drinkingState);
                     }    

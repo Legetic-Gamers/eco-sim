@@ -96,6 +96,13 @@ namespace AnimalsV2.States
                 {
                     result = hit.position;
                     return true;
+                    
+                    //Try opposite direction to avoid clinging to walls.
+                }else if (NavMesh.SamplePosition(new Vector3(-randomPoint.x, randomPoint.y, -randomPoint.z), out hit,
+                    animal.agent.height * 2, NavMesh.AllAreas))
+                {
+                    result = hit.position;
+                    return true;
                 }
             }
             result = Vector3.zero;

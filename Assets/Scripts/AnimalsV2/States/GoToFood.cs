@@ -58,19 +58,18 @@ namespace AnimalsV2.States
                         currentStateAnimation = StateAnimation.Running;
                     }
 
-                    Vector3 pointToRunTo =
-                        NavigationUtilities.RunToFromPoint(animal.transform, closestFood.transform.position, true);
+                    Vector3 pointToRunTo = closestFood.transform.position;
                     //Move the animal using the navmeshagent.
                     NavigationUtilities.NavigateToPoint(animal, pointToRunTo);
 
                     // if (Vector3.Distance(animal.transform.position, closestFood.transform.position) <= 2f)
                     // {
                     
-                    if (animal is WolfController)
-                    {
-                        Debug.Log("Food, distance: " + Vector3.Distance(animal.transform.position, closestFood.transform.position) + " Stopping: " + animal.agent.stoppingDistance + " True?: " + (Vector3.Distance(animal.transform.position, closestFood.transform.position) <=
-                                  animal.agent.stoppingDistance));
-                    }
+                    // if (animal is WolfController)
+                    // {
+                    //     Debug.Log("Food, distance: " + Vector3.Distance(animal.transform.position, closestFood.transform.position) + " Stopping: " + animal.agent.stoppingDistance + " True?: " + (Vector3.Distance(animal.transform.position, closestFood.transform.position) <=
+                    //               animal.agent.stoppingDistance));
+                    // }
 
                     if (Vector3.Distance(animal.transform.position, closestFood.transform.position) <=
                         animal.agent.stoppingDistance)
@@ -98,7 +97,15 @@ namespace AnimalsV2.States
                 nearbyFood = nearbyFood.Concat(animal.visibleFoodTargets).ToList();
             if (animal.heardPreyTargets != null) // second list may be null
                 nearbyFood = nearbyFood.Concat(animal.heardPreyTargets).ToList();
-            return nearbyFood.Count > 0 && !(finiteStateMachine.CurrentState is EatingState);
+            
+            closestFood = NavigationUtilities.GetNearestObject(nearbyFood, animal.transform.position);
+
+            if (closestFood == null)
+            {
+                Debug.Log(closestFood);
+            }
+
+            return closestFood != null && !(finiteStateMachine.CurrentState is EatingState);
         }
     }
 }

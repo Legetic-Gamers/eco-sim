@@ -140,6 +140,11 @@ public abstract class AnimalController : MonoBehaviour
                 }
                 else
                 {
+                    // if (this is WolfController)
+                    // {
+                    //     Debug.Log("goToFoodState: " + goToFood + " Closest food: " + goToFood.closestFood);
+                    // }
+
                     speedModifier = JoggingSpeed;
                 }
 

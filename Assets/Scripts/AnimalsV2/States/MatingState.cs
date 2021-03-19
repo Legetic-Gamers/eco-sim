@@ -76,8 +76,7 @@ namespace AnimalsV2.States
         public IEnumerator Mate()
         {
             AnimalController targetAnimalController = target.GetComponent<AnimalController>();
-
-            Debug.Log(targetAnimalController);
+            
             // make sure target has an AnimalController and that its animalModel is same species
             // if (targetAnimalController != null &&  targetAnimalController.animalModel != null && targetAnimalController.animalModel.IsSameSpecies(animalController.animalModel) &&
             //     targetAnimalController.animalModel.WantingOffspring)

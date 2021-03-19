@@ -15,7 +15,7 @@ namespace AnimalsV2
     /// General purpose movement function. Add more general functions from states.  
     /// </summary>
     public static class NavigationUtilities
-    {   
+    {
         /// <summary>
         /// Calculates the point to run to given a character transform and target point to flee from or run towards.
         /// </summary>
@@ -23,28 +23,37 @@ namespace AnimalsV2
         /// <param name="targetPoint"> Point to run from or to. </param>
         /// <param name="toPoint">True: Run towards point, False: Run away from point</param>
         /// <returns></returns>
-        public static Vector3 RunToFromPoint(Transform animalTransform, Vector3 targetPoint,bool toPoint)
+        // public static Vector3 RunToFromPoint(Transform animalTransform, Vector3 targetPoint)
+        // {
+        //     Vector3 pointToAnimalVector;
+        //     
+        //     
+        //     // Set direction
+        //     pointToAnimalVector = targetPoint - animalTransform.position;
+        //
+        //     return animalTransform.position + Vector3.Normalize(pointToAnimalVector);
+        // }
+        public static Vector3 RunFromPoint(Transform animalTransform, Vector3 targetPoint)
         {
             Vector3 pointToAnimalVector;
-            
-            
+
+
             // Set direction
-            if (toPoint) pointToAnimalVector = targetPoint - animalTransform.position;
-            else pointToAnimalVector = animalTransform.position - targetPoint;
+
+            pointToAnimalVector = animalTransform.position - targetPoint;
 
             return animalTransform.position + Vector3.Normalize(pointToAnimalVector);
         }
 
-        public static void NavigateToPoint(AnimalController animal,Vector3 position)
+        public static void NavigateToPoint(AnimalController animal, Vector3 position)
         {
-            
             NavMeshHit hit;
             //TODO this maxDistance is what is causing rabbits to dance sometimes, if poisition cant be found.
-            if (NavMesh.SamplePosition(position, out hit, animal.agent.height * 2, 1 << NavMesh.GetAreaFromName("Walkable")))
+            if (NavMesh.SamplePosition(position, out hit, animal.agent.height * 2,
+                1 << NavMesh.GetAreaFromName("Walkable")))
             {
                 animal.agent.SetDestination(hit.position);
             }
-            
         }
 
         /// <summary>
@@ -57,44 +66,48 @@ namespace AnimalsV2
         {
             //Return if not objects with tag found.
             if (allPercievedObjects.Count == 0) return null;
-            
+
             // Find closest object of all objects with tag
             GameObject nearbyObj = allPercievedObjects[0];
+            float closestDistance = Mathf.Infinity;
 
             if (nearbyObj != null)
             {
-                float closestDistance = Vector3.Distance(nearbyObj.transform.position, thisPosition);
-                //Get the closest game object
-                foreach (GameObject g in allPercievedObjects)
+                closestDistance = Vector3.Distance(nearbyObj.transform.position, thisPosition);
+            }
+
+            //Get the closest game object
+            foreach (GameObject g in allPercievedObjects)
+            {
+                if (g != null)
                 {
-                    if (g != null)
+                    float dist = Vector3.Distance(g.transform.position, thisPosition);
+                    if (dist < closestDistance)
                     {
-                        float dist = Vector3.Distance(g.transform.position, thisPosition);
-                        if (dist < closestDistance)
-                        {
-                            closestDistance = dist;
-                            nearbyObj = g;
-                        }
+                        closestDistance = dist;
+                        nearbyObj = g;
                     }
                 }
             }
 
+
             return nearbyObj;
         }
-        
+
         /// <summary>
         /// This function could be extended upon to generate a better point.
         /// this would result in smarter fleeing behavior.
         /// </summary>
         /// <param name="a"> Animal to calculate positions from. </param>
         /// <returns> Vector3 </returns>
-        public static Vector3 GetNearObjectsAveragePosition(List<GameObject> allPercievedObjects,Vector3 defaultPosition)
+        public static Vector3 GetNearObjectsAveragePosition(List<GameObject> allPercievedObjects,
+            Vector3 defaultPosition)
         {
             //Return if not objects with tag found.
             if (allPercievedObjects.Count == 0) return defaultPosition;
-            
+
             Vector3 averagePosition = new Vector3();
-            
+
             //Calculate the average
             foreach (GameObject g in allPercievedObjects)
             {
@@ -102,8 +115,8 @@ namespace AnimalsV2
                 {
                     averagePosition += g.transform.position;
                 }
-
             }
+
             averagePosition /= allPercievedObjects.Count;
             return averagePosition;
         }
@@ -149,17 +162,15 @@ namespace AnimalsV2
 
             Vector3 origin = animal.transform.position;
             Vector3 destination = origin + relativeVector;
-            
+
             NavMeshHit hit;
             if (NavMesh.SamplePosition(destination, out hit, Vector3.Distance(origin, relativeVector), layerMask))
             {
                 animal.agent.SetDestination(destination);
                 return true;
             }
-            
+
             return false;
-            
         }
-        
     }
 }

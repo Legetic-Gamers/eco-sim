@@ -31,7 +31,7 @@ namespace AnimalsV2.States
                 GameObject foundMate = GetFoundMate();
                 if (foundMate != null && animal.agent.isActiveAndEnabled)
                 {
-                    Vector3 pointToRunTo = NavigationUtilities.RunToFromPoint(animal.transform, foundMate.transform.position, true);
+                    Vector3 pointToRunTo = foundMate.transform.position;
                     //Move the animal using the navmeshagent.
                     NavigationUtilities.NavigateToPoint(animal,pointToRunTo);
                     // NavMeshHit hit;

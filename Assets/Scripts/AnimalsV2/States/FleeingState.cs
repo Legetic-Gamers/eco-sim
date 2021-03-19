@@ -51,7 +51,7 @@ namespace AnimalsV2.States
             if (averagePosition != animal.transform.position)
             {
                 timer = startTimerValue;
-                pointToRunTo = NavigationUtilities.RunToFromPoint(animal.transform,averagePosition,false);
+                pointToRunTo = NavigationUtilities.RunFromPoint(animal.transform,averagePosition);
             }
             else
             {
