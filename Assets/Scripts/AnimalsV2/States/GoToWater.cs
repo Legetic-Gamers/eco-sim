@@ -8,9 +8,10 @@ using UnityEngine;
     public class GoToWater : State
     {
 
+        public GameObject closestWater { get; private set; }
         public GoToWater(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine)
         {
-            
+            closestWater = null;
         }
 
         public override void Enter()
@@ -32,7 +33,7 @@ using UnityEngine;
             base.LogicUpdate();
             if (MeetRequirements())
             {
-                GameObject closestWater = NavigationUtilities.GetNearestObject(animal.visibleWaterTargets, animal.transform.position);
+                closestWater = NavigationUtilities.GetNearestObject(animal.visibleWaterTargets, animal.transform.position);
                 if (closestWater != null && animal.agent.isActiveAndEnabled)
                 {
                     Vector3 pointToRunTo = closestWater.transform.position;

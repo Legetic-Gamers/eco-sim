@@ -63,6 +63,8 @@ namespace AnimalsV2
 
                 prio.Insert(0, Food);
                 prio.Insert(0, Water);
+
+                
             }
 
             if (animalModel.HighHydration && !animalModel.HighEnergy)
