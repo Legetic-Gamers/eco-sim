@@ -330,7 +330,7 @@ public class AnimalBrainAgent : Agent
         animalController.actionDeath += HandleDeath;
         // animalController.onBirth += HandleBirth;
         
-        animalController.matingStateState.onMate += HandleMate;
+        animalController.matingState.onMate += HandleMate;
         animalController.eatingState.onEatFood += HandleEating;
         animalController.drinkingState.onDrinkWater += HandleDrinking;
 
@@ -347,7 +347,7 @@ public class AnimalBrainAgent : Agent
         animalController.actionDeath -= HandleDeath;
         // animalController.onBirth -= HandleBirth;
         
-        animalController.matingStateState.onMate -= HandleMate;
+        animalController.matingState.onMate -= HandleMate;
         animalController.eatingState.onEatFood -= HandleEating;
         animalController.drinkingState.onDrinkWater -= HandleDrinking;
 
@@ -363,9 +363,13 @@ public class AnimalBrainAgent : Agent
         ChangeState(animalController.deadState);
         EventUnsubscribe();
 
-
+        
+        // world.SpawnNewRabbit();
+        
         //Task failed
         EndEpisode();
+        
+
     }
     
     private void HandleMate(GameObject obj)

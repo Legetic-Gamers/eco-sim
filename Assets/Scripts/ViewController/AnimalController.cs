@@ -42,7 +42,7 @@ public abstract class AnimalController : MonoBehaviour
     public Wander wanderState;
     public Idle idleState;
     public GoToWater goToWaterState;
-    public MatingState matingStateState;
+    public MatingState matingState;
     public Dead deadState;
     public DrinkingState drinkingState;
     public EatingState eatingState;
@@ -80,7 +80,7 @@ public abstract class AnimalController : MonoBehaviour
         wanderState = new Wander(this, fsm);
         idleState = new Idle(this, fsm);
         goToWaterState = new GoToWater(this, fsm);
-        matingStateState = new MatingState(this, fsm);
+        matingState = new MatingState(this, fsm);
         deadState = new Dead(this, fsm);
         drinkingState = new DrinkingState(this, fsm);
         eatingState = new EatingState(this, fsm);
@@ -134,8 +134,6 @@ public abstract class AnimalController : MonoBehaviour
                 {
                     energyModifier = 0.3f;
                     hydrationModifier = 0.15f;
-                    
-                    Debug.Log("Chasing");
                     speedModifier = RunningSpeed;
                 }
                 else
@@ -245,7 +243,7 @@ public abstract class AnimalController : MonoBehaviour
 
         drinkingState.onDrinkWater += DrinkWater;
 
-        matingStateState.onMate += Mate;
+        matingState.onMate += Mate;
 
         animationController.EventSubscribe();
     }
@@ -268,7 +266,7 @@ public abstract class AnimalController : MonoBehaviour
 
         drinkingState.onDrinkWater -= DrinkWater;
 
-        matingStateState.onMate -= Mate;
+        matingState.onMate -= Mate;
 
         animationController.EventUnsubscribe();
     }
@@ -429,19 +427,67 @@ public abstract class AnimalController : MonoBehaviour
 
     //General method that takes unknown gameobject as input and interacts with the given gameobject depending on what it is. It can be to e.g. consume or to mate
     // result is the reward for interacting with something
-    public float Interact(GameObject gameObject)
+    public float Interact(GameObject target)
     {
         float reward = 0f;
 
-        Debug.Log(gameObject.name);
-        switch (gameObject.tag)
+        //Debug.Log(gameObject.name);
+        switch (target.tag)
         {
             case "Water":
-                return DrinkWater(gameObject);
+                drinkingState.SetTarget(target);
+                fsm.ChangeState(drinkingState);
+                break;
+                //return DrinkWater(gameObject);
             case "Plant":
-                return EatFood(gameObject);
+                if (target.TryGetComponent(out PlantController plantController) && animalModel.CanEat(plantController.plantModel))
+                {
+                    eatingState.SetTarget(target);
+                    fsm.ChangeState(eatingState);   
+                }
+                break;
+                //return EatFood(gameObject);
             case "Animal":
-                if (TryGetComponent(out AnimalController otherAnimalController))
+                if (target.TryGetComponent(out AnimalController otherAnimalController))
+                {
+                    AnimalModel otherAnimalModel = otherAnimalController.animalModel;
+                    //if we can eat the other animal we try to do so
+                    if (animalModel.CanEat(otherAnimalModel))
+                    {
+                        eatingState.SetTarget(target);
+                        fsm.ChangeState(eatingState);
+                        //return EatFood(otherAnimalController.gameObject);
+                    }
+
+                    if (animalModel.IsSameSpecies(otherAnimalModel))
+                    {
+                        if (animalModel is WolfModel)
+                        {
+                            Debug.Log("otherAnimalModel: " + otherAnimalModel);
+                        }
+                        matingState.SetTarget(target);
+                        fsm.ChangeState(matingState);
+                        //Insert code for try to mate and also modify the method so that it returns a float for reward;
+                    }
+                }
+                break;
+        }
+
+        return reward;
+    }
+    
+    public float InteractWithReward(GameObject target)
+    {
+        float reward = 0f;
+        
+        switch (target.tag)
+        {
+            case "Water":
+                return DrinkWater(target);
+            case "Plant":   
+                return EatFood(target);
+            case "Animal":
+                if (target.TryGetComponent(out AnimalController otherAnimalController))
                 {
                     AnimalModel otherAnimalModel = otherAnimalController.animalModel;
                     //if we can eat the other animal we try to do so
@@ -452,15 +498,28 @@ public abstract class AnimalController : MonoBehaviour
 
                     if (animalModel.IsSameSpecies(otherAnimalModel))
                     {
+                        /*
+                        matingState.SetTarget(target);
+                        fsm.ChangeState(matingState);
                         //Insert code for try to mate and also modify the method so that it returns a float for reward;
+                        */
                     }
                 }
-
                 break;
         }
 
         return reward;
     }
 
+    /*
+    public void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.layer == LayerMask.NameToLayer("Target"))
+        {
+            
+            Interact(other.gameObject);
+        }
+    }
+^*/
     public abstract Vector3 getNormalizedScale();
 }

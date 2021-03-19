@@ -60,13 +60,6 @@ namespace AnimalsV2.States
             this.target = target;
         }
 
-        //public void EatFood(GameObject target)
-        // public void EatFood()
-        // {
-        //     onEatFood?.Invoke(target);
-        //     finiteStateMachine.GoToDefaultState();
-        // }
-
         private IEnumerator EatFood()
         {
             //Eat the food
@@ -89,24 +82,8 @@ namespace AnimalsV2.States
 
         public override bool MeetRequirements()
         {
-            //Vector3 position = animal.transform.position;
-            //target = GetNearestFood();
-            //if (target == null) return false;
-            //bool isCloseEnough = Vector3.Distance(target.transform.position, position) <= 2f;
-            //return animal.visibleFoodTargets.Count > 0 && isCloseEnough;
-            return target != null;
+            return target != null && !animal.animalModel.HighEnergy;
         }
 
-        // private GameObject GetNearestFood()
-        // {
-        //     Vector3 position = animal.transform.position;
-        //     List<GameObject> nearbyFood = new List<GameObject>();
-        //     if (animal.visibleFoodTargets !=null)// first list may be null
-        //             nearbyFood=nearbyFood.Concat(animal.visibleFoodTargets).ToList();
-        //         if (animal.heardPreyTargets != null)// second list may be null
-        //             nearbyFood= nearbyFood.Concat(animal.heardPreyTargets).ToList(); 
-        //     
-        //     return NavigationUtilities.GetNearestObjectPosition(nearbyFood, position);
-        // }
     }
 }

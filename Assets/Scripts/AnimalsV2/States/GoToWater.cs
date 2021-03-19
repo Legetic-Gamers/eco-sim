@@ -64,7 +64,7 @@ using UnityEngine;
 
         public override string ToString()
         {
-            return "Going to water";
+            return "Go to water";
         }
 
         public override bool MeetRequirements()

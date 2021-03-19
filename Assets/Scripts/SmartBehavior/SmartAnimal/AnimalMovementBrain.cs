@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using AnimalsV2;
+﻿using AnimalsV2;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
 using UnityEngine;
 using UnityEngine.AI;
+using Quaternion = UnityEngine.Quaternion;
 using Random = UnityEngine.Random;
+using Vector3 = UnityEngine.Vector3;
 
 public class AnimalMovementBrain : Agent
 {
@@ -18,7 +16,6 @@ public class AnimalMovementBrain : Agent
     private TickEventPublisher eventPublisher;
 
     
-    public World world;
 
 
     //We could have multiple brains, EX:
@@ -46,7 +43,7 @@ public class AnimalMovementBrain : Agent
         base.OnEpisodeBegin();
 
         //Reset animal position and rotation.
-        ResetRabbit();
+        //ResetRabbit();
     }
 
     private void ResetRabbit()
@@ -77,16 +74,20 @@ public class AnimalMovementBrain : Agent
         Vector3? nearestFoodPosition = NavigationUtilities.GetNearestObject(animalController.visibleFoodTargets, thisPosition)?.transform.position;
         Vector3? nearestWaterPosition = NavigationUtilities.GetNearestObject(animalController.visibleWaterTargets, thisPosition)?.transform.position;
 
-        Vector3? nearestFoodRelativePosition = nearestFoodPosition - thisPosition;
-        Vector3? nearestWaterRelativePosition = nearestWaterPosition - thisPosition;
+        Vector3 nearestFoodRelativePosition = (nearestFoodPosition - thisPosition) ?? Vector3.zero;
+        Vector3 nearestWaterRelativePosition = (nearestWaterPosition - thisPosition) ?? Vector3.zero;
+        
+        //Debug.Log(nearestFoodRelativePosition);
+        //Debug.Log(nearestWaterRelativePosition);
+        //Debug.Log("   ");
         
         sensor.AddObservation(animalModel.currentEnergy / animalModel.traits.maxEnergy);
         sensor.AddObservation(animalModel.currentHydration / animalModel.traits.maxHydration);
         //sensor.AddObservation(animalModel.currentHealth / animalModel.traits.maxHealth);
         //sensor.AddObservation(animalModel.reproductiveUrge / animalModel.traits.maxReproductiveUrge);
-        sensor.AddObservation(nearestFoodRelativePosition ?? thisPosition);
-        sensor.AddObservation(nearestWaterRelativePosition ?? thisPosition);
- 
+        sensor.AddObservation(nearestFoodRelativePosition);
+        sensor.AddObservation(nearestWaterRelativePosition);
+        //Debug.Log(sensor.ObservationSize());
 
     }
 
@@ -94,6 +95,22 @@ public class AnimalMovementBrain : Agent
     public override void OnActionReceived(ActionBuffers actions)
     {
         base.OnActionReceived(actions);
+        
+        //hunger is the fraction of missing energy.
+        float hunger = (animalModel.traits.maxEnergy - animalModel.currentEnergy)/animalModel.traits.maxEnergy;
+        //thirst is the fraction of missing hydration.
+        float thirst = (animalModel.traits.maxHydration - animalModel.currentHydration)/animalModel.traits.maxHydration;
+        float stressFactor = -0.05f;//-0.05 means max penalty = -0.1
+
+        if (animalModel.IsAlive)
+        {
+            //Penalize the rabbit for being hungry and thirsty. This should make the agent try to stay satiated.
+            AddReward((hunger + thirst) * stressFactor);
+
+            //Reward staying alive. If completely satiated -> 0.1. Completely drained -> 0.
+            AddReward(2 * -stressFactor);
+        }
+        
         
         float x = actions.ContinuousActions[0];
         float y = actions.ContinuousActions[1];
@@ -186,11 +203,14 @@ public class AnimalMovementBrain : Agent
     private void OnTriggerEnter(Collider other)
     {
         //The simple logic is if we "collide with an object with a target tag" => "interact"
-        if (other.gameObject.layer == LayerMask.NameToLayer("Target"))
+        if (other.gameObject.layer == LayerMask.NameToLayer("Target") && animalController)
         {
             float reward;
-            reward = animalController.Interact(other.gameObject);
-            Debug.Log("reward: " + reward);
+            reward = animalController.InteractWithReward(other.gameObject);
+            if (reward > 0)
+            {
+                Debug.Log("reward: " + reward);
+            }
             AddReward(reward);
         }
         

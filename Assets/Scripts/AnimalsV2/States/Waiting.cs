@@ -65,7 +65,7 @@ namespace AnimalsV2.States
 
         public override string ToString()
         {
-            return "Idle";
+            return "Waiting";
         }
 
         public override bool MeetRequirements()

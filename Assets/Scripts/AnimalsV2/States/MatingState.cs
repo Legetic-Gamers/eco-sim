@@ -83,7 +83,7 @@ namespace AnimalsV2.States
             // {
                 //Stop target
                 // targetAnimalController.agent.isStopped = true;
-                targetAnimalController.waitingState.SetWaitTime(targetAnimalController.matingStateState.matingTime);
+                targetAnimalController.waitingState.SetWaitTime(targetAnimalController.matingState.matingTime);
                 targetAnimalController.fsm.ChangeState(targetAnimalController.waitingState);
 
 
@@ -104,40 +104,13 @@ namespace AnimalsV2.States
         {
             return "Mating";
         }
-
-        // public override bool MeetRequirements()
-        // {
-        //     return GetFoundMate() != null && FoundMateIsClose();
-        // }
-
+        
         public override bool MeetRequirements()
         {
             return target != null;
-            ;
         }
 
-        // private GameObject GetFoundMate()
-        // {
-        //     List<GameObject> allNearbyFriendly = animal.heardFriendlyTargets.Concat(animal.visibleFriendlyTargets).ToList();
-        //
-        //     foreach(GameObject potentialMate in allNearbyFriendly)
-        //     {
-        //         if (potentialMate != null && potentialMate.TryGetComponent(out AnimalController potentialMateAnimalController))
-        //         {
-        //             // if (potentialMateAnimalController.animalModel.WantingOffspring)
-        //             // {
-        //                 return potentialMateAnimalController.gameObject;
-        //             // }
-        //         }
-        //     }
-        //
-        //     return null;
-        // }
-        //
-        // private bool FoundMateIsClose()
-        // {
-        //     return Vector3.Distance(GetFoundMate().transform.position, animal.transform.position) <= 2f;
-        // }
+        
         
         
     }
