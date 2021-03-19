@@ -17,7 +17,7 @@ namespace AnimalsV2.States
         public FleeingState(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal,
             finiteStateMachine)
         {
-            currentStateAnimation = Running;
+            
         }
 
         // own timer (note it's unit is number of LogicalUpdate ticks. This is the number of ticks in which the state will hold after MeetRequirements becomes false. We want the animal to run a little more than just outside of percieved predators space
@@ -28,6 +28,8 @@ namespace AnimalsV2.States
         {
             base.Enter();
             timer = startTimerValue;
+            
+            currentStateAnimation = Running;
         }
 
         public override void Exit()
@@ -62,8 +64,22 @@ namespace AnimalsV2.States
             {
                 // Move the animal using the NavMeshAgent.
                 NavMeshHit hit;
-                NavMesh.SamplePosition(pointToRunTo, out hit, 5, 1 << NavMesh.GetAreaFromName("Walkable"));
-                animal.agent.SetDestination(hit.position);
+                if (NavMesh.SamplePosition(pointToRunTo, out hit, animal.agent.height*2, 1 << NavMesh.GetAreaFromName("Walkable")))
+                {
+                    animal.agent.SetDestination(hit.position);
+                    
+                    
+                }//Try running randomly if no other way found.
+                else if(NavigationUtilities.RandomPoint(animal.transform.position, 10f,animal.agent.height*2, out pointToRunTo))
+                {
+                    animal.agent.SetDestination(pointToRunTo);
+                }
+                // else
+                // {
+                //     
+                //     Debug.Log("Stuck");
+                // }
+                
             }
 
             // if timer has ran out, we change to default state

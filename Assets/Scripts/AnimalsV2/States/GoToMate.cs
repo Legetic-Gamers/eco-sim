@@ -8,10 +8,10 @@ namespace AnimalsV2.States
     public class GoToMate : State
     {
         
-        public GameObject foundMate { get; private set; }
+        
         public GoToMate(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine)
         {
-            foundMate = null;
+            
         }
 
         public override void Enter()
@@ -31,7 +31,7 @@ namespace AnimalsV2.States
             base.LogicUpdate();
             if (MeetRequirements())
             {
-                foundMate = GetFoundMate();
+                GameObject foundMate = GetFoundMate();
                 if (foundMate != null && animal.agent.isActiveAndEnabled)
                 {
                     Vector3 pointToRunTo = foundMate.transform.position;

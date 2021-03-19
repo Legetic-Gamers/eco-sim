@@ -55,6 +55,30 @@ namespace AnimalsV2
                 animal.agent.SetDestination(hit.position);
             }
         }
+        
+        //https://docs.unity3d.com/ScriptReference/AI.NavMesh.SamplePosition.html
+        public static bool RandomPoint(Vector3 center, float range,float maxDist, out Vector3 result)
+        {
+            for (int i = 0; i < 30; i++)
+            {
+                Vector3 randomPoint = center + Random.insideUnitSphere * range;
+                NavMeshHit hit;
+                if (NavMesh.SamplePosition(randomPoint, out hit, maxDist, NavMesh.AllAreas))
+                {
+                    result = hit.position;
+                    return true;
+                    
+                    //Try opposite direction to avoid clinging to walls.
+                }else if (NavMesh.SamplePosition(new Vector3(-randomPoint.x, randomPoint.y, -randomPoint.z), out hit,
+                    maxDist, NavMesh.AllAreas))
+                {
+                    result = hit.position;
+                    return true;
+                }
+            }
+            result = Vector3.zero;
+            return false;
+        }
 
         /// <summary>
         /// Gives nearest object (of type with Tag in unity) to a given animal.

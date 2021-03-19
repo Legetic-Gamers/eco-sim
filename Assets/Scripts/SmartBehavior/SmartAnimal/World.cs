@@ -85,7 +85,7 @@ public class World : MonoBehaviour
         numFood = (int) Mathf.Ceil((numFood * scaleX * scaleZ) / maxScale) + 10;//atleast 10 food.
         numWater = (int) Mathf.Ceil((numWater* scaleX * scaleZ) / (2*maxScale)) + 1; 
         numRabbits = (int) Mathf.Ceil((numRabbits * scaleX * scaleZ) / maxScale) +  1; //Atleast 2 rabbits. Divide by 4 to sort of normalize the scale factor with max scale.
-        numWolves = (int) Mathf.Ceil((numWolves * scaleX * scaleZ) / (2*maxScale)); // Should be a lot less wolves. Can be 0.
+        numWolves = (int) Mathf.Ceil((numWolves * scaleX * scaleZ) / (3*maxScale)); // Should be a lot less wolves. Can be 0.
         
         m_Recorder = Academy.Instance.StatsRecorder;
 

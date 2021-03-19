@@ -34,7 +34,7 @@ namespace AnimalsV2.States
             {
                 //If we are going to eat an animal
                 currentStateAnimation = StateAnimation.Running;
-                Debug.Log("Eat da animal");
+                
             }
         }
 
@@ -54,15 +54,12 @@ namespace AnimalsV2.States
                 nearbyFood = nearbyFood.Concat(animal.visibleFoodTargets).ToList();
             if (animal.heardPreyTargets != null) // second list may be null
                 nearbyFood = nearbyFood.Concat(animal.heardPreyTargets).ToList();
-
-            
             
             if (MeetRequirements())
             {
                 closestFood = NavigationUtilities.GetNearestObject(nearbyFood, animal.transform.position);
                 if (closestFood != null && animal.agent.isActiveAndEnabled)
                 {
-                    
 
                     Vector3 pointToRunTo = closestFood.transform.position;
                     //Move the animal using the navmeshagent.
@@ -83,6 +80,10 @@ namespace AnimalsV2.States
                         animal.eatingState.SetTarget(closestFood);
                         finiteStateMachine.ChangeState(animal.eatingState);
                     }
+                }else
+                {
+                
+                    finiteStateMachine.GoToDefaultState();
                 }
             }
             else
