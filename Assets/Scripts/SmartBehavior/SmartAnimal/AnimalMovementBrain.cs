@@ -206,8 +206,11 @@ public class AnimalMovementBrain : Agent
         if (other.gameObject.layer == LayerMask.NameToLayer("Target") && animalController)
         {
             float reward;
-            reward = animalController.Interact(other.gameObject);
-            Debug.Log("reward: " + reward);
+            reward = animalController.InteractWithReward(other.gameObject);
+            if (reward > 0)
+            {
+                Debug.Log("reward: " + reward);
+            }
             AddReward(reward);
         }
         

@@ -464,7 +464,43 @@ public abstract class AnimalController : MonoBehaviour
 
         return reward;
     }
+    
+    public float InteractWithReward(GameObject target)
+    {
+        float reward = 0f;
+        
+        switch (target.tag)
+        {
+            case "Water":
+                return DrinkWater(target);
+            case "Plant":   
+                return EatFood(target);
+            case "Animal":
+                if (target.TryGetComponent(out AnimalController otherAnimalController))
+                {
+                    AnimalModel otherAnimalModel = otherAnimalController.animalModel;
+                    //if we can eat the other animal we try to do so
+                    if (animalModel.CanEat(otherAnimalModel))
+                    {
+                        return EatFood(otherAnimalController.gameObject);
+                    }
 
+                    if (animalModel.IsSameSpecies(otherAnimalModel))
+                    {
+                        /*
+                        matingState.SetTarget(target);
+                        fsm.ChangeState(matingState);
+                        //Insert code for try to mate and also modify the method so that it returns a float for reward;
+                        */
+                    }
+                }
+                break;
+        }
+
+        return reward;
+    }
+
+    /*
     public void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Target"))
@@ -473,6 +509,6 @@ public abstract class AnimalController : MonoBehaviour
             Interact(other.gameObject);
         }
     }
-
+^*/
     public abstract Vector3 getNormalizedScale();
 }
