@@ -61,8 +61,8 @@ public class World : MonoBehaviour
         //Academy.Instance.OnEnvironmentReset += ResetWorld;
         
         //Randomize environment size
-        float scaleX = Mathf.Round(Academy.Instance.EnvironmentParameters.GetWithDefault("envScaleX", 2.0f));
-        float scaleZ = Mathf.Round(Academy.Instance.EnvironmentParameters.GetWithDefault("envScaleZ", 2.0f));
+        float scaleX = Mathf.Round(Academy.Instance.EnvironmentParameters.GetWithDefault("envScaleX", 3.0f));
+        float scaleZ = Mathf.Round(Academy.Instance.EnvironmentParameters.GetWithDefault("envScaleZ", 3.0f));
         //Set size of environment
         transform.localScale = new Vector3(scaleX,1f,scaleZ);
         //Set spawn bounds
@@ -83,9 +83,9 @@ public class World : MonoBehaviour
         //maxscale should be set to same as in config file (max_value for z and x scale).
         int maxScale = 6;
         numFood = (int) Mathf.Ceil((numFood * scaleX * scaleZ) / maxScale) + 10;//atleast 10 food.
-        numWater = (int) Mathf.Ceil((numWater* scaleX * scaleZ) / (2*maxScale)) + 1; 
+        numWater = (int) Mathf.Ceil((numWater* scaleX * scaleZ) / (maxScale)) + 1; 
         numRabbits = (int) Mathf.Ceil((numRabbits * scaleX * scaleZ) / maxScale) +  1; //Atleast 2 rabbits. Divide by 4 to sort of normalize the scale factor with max scale.
-        numWolves = (int) Mathf.Ceil((numWolves * scaleX * scaleZ) / (3*maxScale)); // Should be a lot less wolves. Can be 0.
+        numWolves = (int) Mathf.Floor((numWolves * scaleX * scaleZ) / (2*maxScale)); // Should be a lot less wolves. Can be 0.
         
         m_Recorder = Academy.Instance.StatsRecorder;
 

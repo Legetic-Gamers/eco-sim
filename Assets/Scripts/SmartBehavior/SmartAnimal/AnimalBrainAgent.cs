@@ -402,6 +402,8 @@ public class AnimalBrainAgent : Agent
     {
         AddReward(0.1f);
         world.totalScore += 0.1f;
+
+        Debug.Log("DRUNK");
         // Alexander H: I had to set the action to return a float which represents the reward. This is used in the other ML implementation.
         return 1f;
     }
