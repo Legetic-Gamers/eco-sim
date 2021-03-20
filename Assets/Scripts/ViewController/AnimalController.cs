@@ -192,6 +192,18 @@ public abstract class AnimalController : MonoBehaviour
         animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
         agent.speed = animalModel.currentSpeed;
     }
+    
+    
+    private void ChangeModifiersBasic(State state)
+    {
+        energyModifier = 0.1f;
+        hydrationModifier = 0.05f;
+        reproductiveUrgeModifier = 1f;
+        
+        //Debug.Log("varying parameters
+        agent.speed = animalModel.currentSpeed;
+    }
+    
 
     private void VaryParameters()
     {
@@ -218,7 +230,7 @@ public abstract class AnimalController : MonoBehaviour
         animalModel.reproductiveUrge += 0.05f * reproductiveUrgeModifier;
 
         //The age will increase 1 per 1 second.
-        animalModel.age += 2;
+        animalModel.age += 1;
     }
 
     protected void EventSubscribe()
@@ -232,7 +244,7 @@ public abstract class AnimalController : MonoBehaviour
             //tickEventPublisher.onSenseTickEvent += fsm.UpdateStatesLogic;    
         }
 
-        fsm.OnStateEnter += ChangeModifiers;
+        fsm.OnStateEnter += ChangeModifiersBasic;
 
         eatingState.onEatFood += EatFood;
 
@@ -255,7 +267,7 @@ public abstract class AnimalController : MonoBehaviour
         }
 
 
-        fsm.OnStateEnter -= ChangeModifiers;
+        fsm.OnStateEnter -= ChangeModifiersBasic;
 
         eatingState.onEatFood -= EatFood;
 

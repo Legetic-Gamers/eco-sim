@@ -7,7 +7,8 @@ namespace AnimalsV2.States
 
         public Idle(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine)
         {
-            currentStateAnimation = StateAnimation.Idle;
+            //currentStateAnimation = StateAnimation.Idle;
+            currentStateAnimation = StateAnimation.Walking;
         }
 
         public override void Enter()

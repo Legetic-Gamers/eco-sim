@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Numerics;
 using AnimalsV2;
 using Model;
 using Unity.MLAgents;
@@ -35,8 +36,10 @@ public class AnimalMovementBrain : Agent
         fsm = animalController.fsm;
         eventPublisher = FindObjectOfType<global::TickEventPublisher>();
         
-        //change to a state which does not navigate the agent. If no decisionmaker is precent, it will stay at this state.
-        animalController.fsm.ChangeState(animalController.idleState);
+        //change to a state which does not navigate the agent. If no decisionmaker is present, it will stay at this state (if default state is also set).
+        fsm.SetDefaultState(animalController.idleState);
+        fsm.ChangeState(animalController.idleState);
+        
 
         EventSubscribe();
     }
@@ -73,24 +76,41 @@ public class AnimalMovementBrain : Agent
     {
         base.CollectObservations(sensor);
 
+        //Position of the animal
         Vector3 thisPosition = animalController.transform.position;
-        Vector3? nearestFoodPosition = NavigationUtilities.GetNearestObject(animalController.visibleFoodTargets, thisPosition)?.transform.position;
-        Vector3? nearestWaterPosition = NavigationUtilities.GetNearestObject(animalController.visibleWaterTargets, thisPosition)?.transform.position;
-
-        Vector3 nearestFoodRelativePosition = (nearestFoodPosition - thisPosition) ?? Vector3.zero;
-        Vector3 nearestWaterRelativePosition = (nearestWaterPosition - thisPosition) ?? Vector3.zero;
         
-        //Debug.Log(nearestFoodRelativePosition);
-        //Debug.Log(nearestWaterRelativePosition);
-        //Debug.Log("   ");
+        //Get the absolute vector for nearest food
+        Vector3 nearestFoodPosition = NavigationUtilities.GetNearestObject(animalController.visibleFoodTargets, thisPosition)?.transform.position ?? thisPosition;;
+        //Get the absolute vector for neares water
+        Vector3 nearestWaterPosition = NavigationUtilities.GetNearestObject(animalController.visibleWaterTargets, thisPosition)?.transform.position ?? thisPosition;;
+
+        //Convert to relative vector (based on animals position)
+        Vector3 nearestFoodRelativePosition = nearestFoodPosition - thisPosition;
+        Vector3 nearestWaterRelativePosition = nearestWaterPosition - thisPosition;
+
+        //Get the discrete magnitude of nearestFood and nearestWater. Note: The magnitude is squared to save computational power.
+        int nearestFoodMagnitude = (int)Math.Round(nearestFoodRelativePosition.sqrMagnitude);
+        int nearestWaterMagnitude = (int)Math.Round(nearestWaterRelativePosition.sqrMagnitude);
+
+        //Normalization of vector sensor helps the model immensenly (to tighten the possible observation confirmation space)
+        //https://forum.unity.com/threads/how-to-choose-observations.935741/
+        nearestFoodRelativePosition = Vector3.Normalize(nearestFoodRelativePosition);
+        nearestWaterRelativePosition = Vector3.Normalize(nearestWaterRelativePosition);
+        
+        //Debug.Log("NearestFoodRelativePosition: " + nearestFoodRelativePosition.x + " " + nearestFoodRelativePosition.y + " " + nearestFoodRelativePosition.z);
+        //Debug.Log("NearestWaterRelativePosition: " + nearestWaterRelativePosition.x + " " + nearestWaterRelativePosition.y + " " + nearestWaterRelativePosition.z);
+        //Debug.Log("NearestFoodMagnitude squeared: " + nearestFoodMagnitude);
+        //Debug.Log("NearestWaterMagnitude squeared: " + nearestWaterMagnitude);
+
         
         sensor.AddObservation(animalModel.currentEnergy / animalModel.traits.maxEnergy);
         sensor.AddObservation(animalModel.currentHydration / animalModel.traits.maxHydration);
         //sensor.AddObservation(animalModel.currentHealth / animalModel.traits.maxHealth);
         //sensor.AddObservation(animalModel.reproductiveUrge / animalModel.traits.maxReproductiveUrge);
         sensor.AddObservation(nearestFoodRelativePosition);
+        sensor.AddObservation(nearestFoodMagnitude);
         sensor.AddObservation(nearestWaterRelativePosition);
-        //Debug.Log(sensor.ObservationSize());
+        sensor.AddObservation(nearestWaterMagnitude);
 
     }
 
@@ -205,7 +225,6 @@ public class AnimalMovementBrain : Agent
         float reward = 0f;
         if (water.gameObject.CompareTag("Water"))
         {
-            Debug.Log("HERE");
             // the reward should be proportional to how much hydration was gained when drinking
             reward = animalModel.traits.maxHydration - currentHydration;
             // normalize reward as a percentage

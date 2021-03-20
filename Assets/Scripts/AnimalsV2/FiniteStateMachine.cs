@@ -97,5 +97,10 @@ namespace AnimalsV2
         {
             ChangeState(defaultState);
         }
+
+        public void SetDefaultState(State state)
+        {
+            defaultState = state;
+        }
     }
 }
