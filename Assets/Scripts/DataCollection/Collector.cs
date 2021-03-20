@@ -116,10 +116,14 @@ namespace DataCollection
                     GetNewMeanVariance(animalMean[trait][gen],animalVar[trait][gen], traitsInAnimal[indexTrait], animalTotal[gen]);
                 animalMean[trait][gen] = mean;
                 animalVar[trait][gen] = var;
-                if(trait == 0 && gen == 0) Debug.Log(var);
+                //if(trait == 0 && gen == 0) Debug.Log(mean);
                 indexTrait++;
             }
             totalAnimalsAlivePerGeneration[gen] += 1;
+            
+            //Debug.Log(rabbitStatsPerGenMean[0][0]);
+            
+            
         }
 
         /// <summary>

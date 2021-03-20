@@ -18,8 +18,8 @@ namespace DataCollection
         
         private TickEventPublisher tickEventPublisher;
         private Collector c;
-        private List<int> sendList1 = new List<int>();
-        private List<int> sendList2 = new List<int>();
+        private static List<int> _sendList1 = new List<int>();
+        private static  List<int> _sendList2 = new List<int>();
         private List<string> traitNames = new List<string>
         {
             "size",
@@ -36,7 +36,7 @@ namespace DataCollection
             "hearingRadius",
             "age"
         };
-        
+
         /// <summary>
         /// Find the Tick Event Publisher and subscribe to collecting tick
         /// Create a new collector to handle data manipulation. 
@@ -68,6 +68,7 @@ namespace DataCollection
         private void SetList(int a, int x, int y, int z)
         {
             List<int> tmplist = new List<int>();
+
             switch (x)
             {
                 case 0:
@@ -88,8 +89,9 @@ namespace DataCollection
                     break;
             }
 
-            if (a == 0) sendList1 = tmplist;
-            else sendList2 = tmplist;
+            if (a == 0) _sendList1 = tmplist;
+            
+            else _sendList2 = tmplist;
         }
         
         /// <summary>
@@ -108,7 +110,7 @@ namespace DataCollection
         private void UpdateDataAndGraph()
         {
             c.Collect();
-            Display?.Invoke(sendList1,sendList2);
+            Display?.Invoke(_sendList1, _sendList2);
             //ExportDataToFile(0);
         }
         
@@ -122,7 +124,7 @@ namespace DataCollection
             List<int> integerList = new List<int>();
             foreach (float f in list.ToArray())
             {
-                list.Add((int) f);
+                integerList.Add((int) f);
             }
 
             return integerList;

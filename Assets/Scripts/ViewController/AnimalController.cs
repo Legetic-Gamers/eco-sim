@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using AnimalsV2;
 using AnimalsV2.States;
 using AnimalsV2.States.AnimalsV2.States;
+using DataCollection;
 using Model;
 using UnityEngine;
 using UnityEngine.AI;
@@ -64,6 +65,8 @@ public abstract class AnimalController : MonoBehaviour
     public List<GameObject> heardHostileTargets = new List<GameObject>();
     public List<GameObject> heardFriendlyTargets = new List<GameObject>();
     public List<GameObject> heardPreyTargets = new List<GameObject>();
+
+    private DataHandler dh;
 
     public bool IsControllable { get; set; } = false;
 
@@ -323,12 +326,14 @@ public abstract class AnimalController : MonoBehaviour
         agent.autoBraking = false;
         animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
         agent.speed = animalModel.currentSpeed;
-
+        
 
         tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
         EventSubscribe();
 
         SetPhenotype();
+        dh = FindObjectOfType<DataHandler>();
+        dh.LogNewAnimal(animalModel);
     }
 
 

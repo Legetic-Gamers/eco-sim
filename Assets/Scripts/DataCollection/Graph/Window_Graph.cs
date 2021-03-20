@@ -30,11 +30,11 @@ public class Window_Graph : MonoBehaviour
     [SerializeField] private float graphContainerSizeX = 720;
     [SerializeField] private float graphContainerSizeY = 405;
 
-    private static List<int> _list1 = new List<int>() {1, 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 51};
+    private static List<int> _list1 = new List<int>() {0};
     private static List<int> _list2 = new List<int>() {1, 5, 10, 20, 10, 20, 40, 30, 60, 10, 10, 90, 80, 70, 50, 30, 10};
     private static int _truncateFactor = 1;
     private static int _gridCountY = 10;
-    private int firstX = 0;
+    private int firstX = 1;
     private static bool _isGraphOne = true;
     private static bool _isGraphTwo = false;
     
@@ -107,20 +107,20 @@ public class Window_Graph : MonoBehaviour
         window_graph.sizeDelta = new Vector2(windowGraphSizeX, windowGraphSizeY);
         graphContainer.sizeDelta = new Vector2(graphContainerSizeX, graphContainerSizeY);
         dashTemplateX.sizeDelta = new Vector2(graphContainerSizeY + 2, 1);
-        dashTemplateY.sizeDelta = new Vector2(graphContainerSizeX + 2, 1);
+        dashTemplateY.sizeDelta = new Vector2(graphContainerSizeX + 2, 1); 
         dh.Display += Draw;
         ButtonClick.OnButtonReDraw += ReDraw;
         ButtonClick.OnButtonTwoGraphs += ReDraw;
         ButtonClick.OnButtonOneGraph += ReDraw;
     }
-    
+    /*
     private float x = 0;
     float delta = .5f;
     private int count = 0;
 
     
     
-/*public void Update()
+public void Update()
 {
     //testList = testlist;
     x += Time.deltaTime;
@@ -138,7 +138,7 @@ public class Window_Graph : MonoBehaviour
         //_list2.Add(r2);
         //count++;
         //DestroyGraph(gameObjectList);
-        //ShowGraph(_list1);
+        ShowGraph(_list1, Color.red);
         //if (_isTwoGraphs)
         //    DrawCurve(_list2, Color.blue);
     }
