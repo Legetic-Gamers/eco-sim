@@ -117,8 +117,6 @@ public class AnimalMovementBrain : Agent
     //Called Every time the ML agent decides to take an action.
     public override void OnActionReceived(ActionBuffers actions)
     {
-        base.OnActionReceived(actions);
-        
         //hunger is the fraction of missing energy.
         float hunger = (animalModel.traits.maxEnergy - animalModel.currentEnergy)/animalModel.traits.maxEnergy;
         //thirst is the fraction of missing hydration.
@@ -153,8 +151,6 @@ public class AnimalMovementBrain : Agent
     //Used for testing, gives us control over the output from the ML algortihm.
     public override void Heuristic(in ActionBuffers actionsOut)
     {
-        //base.Heuristic(in actionsOut);
-        
         ActionSegment<float> continuousActions = actionsOut.ContinuousActions;
 
         /*
@@ -190,15 +186,18 @@ public class AnimalMovementBrain : Agent
         animalController.actionDeath += HandleDeath;
         animalController.eatingState.onEatFood += HandleEat;
         animalController.drinkingState.onDrinkWater += HandleDrink;
+        animalController.matingState.onMate += HandleMate;
     }
 
 
     public void EventUnsubscribe()
     {
-        // eventPublisher.onParamTickEvent -= MakeDecision;
         eventPublisher.onSenseTickEvent -= RequestDecision;
 
         animalController.actionDeath -= HandleDeath;
+        animalController.eatingState.onEatFood -= HandleEat;
+        animalController.drinkingState.onDrinkWater -= HandleDrink;
+        animalController.matingState.onMate -= HandleMate;
 
     }
     
@@ -209,14 +208,10 @@ public class AnimalMovementBrain : Agent
         AddReward(- (1 - (animalModel.age / animalModel.traits.ageLimit)));
         
         EventUnsubscribe();
-
         ChangeState(animalController.deadState);
-        // world.SpawnNewRabbit();
         
         //Task failed
         EndEpisode();
-        
-
     }
 
 
@@ -264,18 +259,14 @@ public class AnimalMovementBrain : Agent
         //Debug.Log("Eating reward: " +reward);
         AddReward(reward);
     }
-
-    //NOTE: OnTriggerEnter needs a rigidbody + a collider with isTrigger checked to be able to trigger collisions with other colliders.
-    private void OnTriggerEnter(Collider other)
-    {
-        //The simple logic is if we "collide with an object with a target tag" => "interact"
-        if (other.gameObject.layer == LayerMask.NameToLayer("Target") && animalController)
-        {
-            animalController.Interact(other.gameObject);
-        }
-        
-    }
     
+    private void HandleMate(GameObject obj)
+    {
+        AddReward(1f);
+        //Task achieved
+        //EndEpisode();
+    }
+
     private bool ChangeState(State newState)
     {
         //Debug.Log(newState.ToString());

@@ -99,7 +99,7 @@ namespace Tests
             AnimalBrainAgent animalBrainAgent = testWorld.smartAnimal.GetComponent<AnimalBrainAgent>();
             AnimalController animalController = testWorld.smartAnimal.GetComponent<AnimalController>();
             FiniteStateMachine fsm = animalController.fsm;
-            State stateToSwitchTo = fsm.CurrentState;
+            State stateToSwitchTo = fsm.currentState;
             
             
             ActionBuffers storedActionBuffers = animalBrainAgent.GetStoredActionBuffers();
@@ -125,10 +125,10 @@ namespace Tests
                     break;
             }
 
-            if (!(stateToSwitchTo == fsm.CurrentState || fsm.absorbingState || !stateToSwitchTo.MeetRequirements()))
+            if (!(stateToSwitchTo == fsm.currentState || fsm.absorbingState || !stateToSwitchTo.MeetRequirements()))
             {
                 //Assert that we actually switched state. Successful switch
-                Assert.Equals(stateToSwitchTo, fsm.CurrentState);
+                Assert.Equals(stateToSwitchTo, fsm.currentState);
             }
             
             yield return null;

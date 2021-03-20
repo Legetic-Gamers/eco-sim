@@ -55,33 +55,11 @@ namespace AnimalsV2.States
             {
                 if (animal.agent.remainingDistance <= animal.agent.stoppingDistance)
                 {
-                    //Vector3 position = new Vector3(Random.Range(-10.0f, 10.0f), 0, Random.Range(-10.0f, 10.0f)) + animal.transform.position;
-                   
-                    //Move the animal using the navmeshagent.
-                    NavMeshHit hit;
-                    //TODO this maxDistance is what is causing rabbits to dance sometimes, if poisition cant be found.
-                    // ALEXANDER H: https://docs.unity3d.com/ScriptReference/AI.NavMesh.SamplePosition.html recommends setting maxDistance as agents height * 2
-                    // if (NavMesh.SamplePosition(nextPosition, out hit, animal.agent.height * 2, 1 << NavMesh.GetAreaFromName("Walkable")))
-                    // {
-                    //     animal.agent.SetDestination(hit.position);
-                    //     
-                    //     //Set next 
-                    //     nextPosition = NavigationUtilities.RandomNavSphere(animal.transform.position, 10,
-                    //         1 << NavMesh.GetAreaFromName("Walkable"));
-                    // }
-                    // else
-                    // {
-                    //     nextPosition = new Vector3(-nextPosition.x, nextPosition.y, -nextPosition.z);
-                    // }
-
                     if(RandomPoint(animal.transform.position, 10f, out nextPosition))
                     {
                         animal.agent.SetDestination(nextPosition);
                     }
-
-
                 }
-
             }
         }
         
@@ -101,33 +79,7 @@ namespace AnimalsV2.States
             result = Vector3.zero;
             return false;
         }
-/*
-        public Tuple<GameObject, Priorities> FoundObject()
-        {
-            foreach (var priority in priorities)
-            {
-                switch (priority)
-                {
-                    case Food:
-                        if (food != null) return Tuple.Create(food, Food);
-                        break;
-                    case Water:
-                        if (water != null) return Tuple.Create(water, Water);
-                        break;
-                    case Mate:
-                        if (mate != null) return Tuple.Create(mate, Mate);
-                        break;
-                }
-            }
 
-            return null;
-        }
-
-        public void SetPriorities(List<Priorities> priorities)
-        {
-            this.priorities = priorities;
-        }
-        */
         public override string ToString()
         {
             return "Wandering";

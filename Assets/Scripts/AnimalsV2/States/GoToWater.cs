@@ -35,7 +35,6 @@ using UnityEngine;
                     Vector3 pointToRunTo = NavigationUtilities.RunToFromPoint(animal.transform, closestWater.transform.position, true);
                     //Move the animal using the navmeshagent.
                     NavigationUtilities.NavigateToPoint(animal,pointToRunTo);
-                    
                 }
                 
             }
@@ -54,7 +53,7 @@ using UnityEngine;
         public override bool MeetRequirements()
         {
             // rewuirements for this state are following
-            return animal.visibleWaterTargets.Count > 0 && !(finiteStateMachine.CurrentState is DrinkingState);
+            return animal.visibleWaterTargets.Count > 0;
         }
     }
 }

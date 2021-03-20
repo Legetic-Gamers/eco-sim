@@ -30,19 +30,13 @@ namespace AnimalsV2
 
             EventSubscribe();
         }
-
+        
 
         private void MakeDecision()
         {
-            //TODO STATE should be called ACTION instead?!
-            GetBestAction(animalModel);
-        }
-
-        private void GetBestAction(AnimalModel parameters)
-        {
             // no decision making while fleeing!
-            if (fsm.CurrentState is FleeingState || fsm.CurrentState is EatingState ||
-                fsm.CurrentState is DrinkingState || fsm.CurrentState is MatingState || fsm.CurrentState is Waiting) return;
+            if (fsm.currentState is FleeingState || fsm.currentState is EatingState ||
+                fsm.currentState is DrinkingState || fsm.currentState is MatingState || fsm.currentState is Waiting) return;
             Prioritize();
         }
 

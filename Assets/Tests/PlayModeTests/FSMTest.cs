@@ -34,7 +34,7 @@ namespace Tests
             Assert.NotNull(fsm);
             if (fsm != null)
             {
-                Assert.IsTrue(fsm.CurrentState is Wander);
+                Assert.IsTrue(fsm.currentState is Wander);
                 Assert.IsFalse(fsm.absorbingState);
             }
 
@@ -55,10 +55,10 @@ namespace Tests
             FiniteStateMachine fsm = animalController.fsm;
             
             //Check that initial state is correct.
-            Assert.IsTrue(fsm.CurrentState is Wander);
+            Assert.IsTrue(fsm.currentState is Wander);
             fsm.ChangeState(animalController.idleState);
             fsm.GoToDefaultState();
-            Assert.IsTrue(fsm.CurrentState is Wander);
+            Assert.IsTrue(fsm.currentState is Wander);
 
             //yield return new WaitForSeconds(3f);
             yield return null;
@@ -81,31 +81,31 @@ namespace Tests
             if (animalController.goToFoodState.MeetRequirements())
             {
                 fsm.ChangeState(animalController.goToFoodState);
-                Assert.IsTrue(fsm.CurrentState is GoToFood);
+                Assert.IsTrue(fsm.currentState is GoToFood);
             }
             else
             {
-                Assert.IsFalse(fsm.CurrentState is GoToFood);
+                Assert.IsFalse(fsm.currentState is GoToFood);
             }
             
             if (animalController.goToMate.MeetRequirements())
             {
                 fsm.ChangeState(animalController.goToMate);
-                Assert.IsTrue(fsm.CurrentState is GoToMate);
+                Assert.IsTrue(fsm.currentState is GoToMate);
             }
             else
             {
-                Assert.IsFalse(fsm.CurrentState is GoToMate);
+                Assert.IsFalse(fsm.currentState is GoToMate);
             }
             
             if (animalController.goToWaterState.MeetRequirements())
             {
                 fsm.ChangeState(animalController.goToWaterState);
-                Assert.IsTrue(fsm.CurrentState is GoToWater);
+                Assert.IsTrue(fsm.currentState is GoToWater);
             }
             else
             {
-                Assert.IsFalse(fsm.CurrentState is GoToWater);
+                Assert.IsFalse(fsm.currentState is GoToWater);
             }
 
 

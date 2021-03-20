@@ -84,7 +84,7 @@ namespace AnimalsV2.States
                 nearbyFood = nearbyFood.Concat(animal.visibleFoodTargets).ToList();
             if (animal.heardPreyTargets != null) // second list may be null
                 nearbyFood = nearbyFood.Concat(animal.heardPreyTargets).ToList();
-            return nearbyFood.Count > 0 && !(finiteStateMachine.CurrentState is EatingState);
+            return nearbyFood.Count > 0 && !(finiteStateMachine.currentState is EatingState);
         }
     }
 }

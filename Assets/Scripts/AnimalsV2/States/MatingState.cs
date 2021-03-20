@@ -56,14 +56,6 @@ namespace AnimalsV2.States
         public override void LogicUpdate()
         {
             base.LogicUpdate();
-            // if (MeetRequirements())
-            // {
-            //     Mate(GetFoundMate());
-            // }
-            // else
-            // {
-            //     finiteStateMachine.GoToDefaultState();
-            // }
         }
 
         public void SetTarget(GameObject target)
@@ -73,24 +65,18 @@ namespace AnimalsV2.States
 
         public IEnumerator Mate()
         {
-            AnimalController targetAnimalController = target.GetComponent<AnimalController>();
 
-            // make sure target has an AnimalController and that its animalModel is same species
-            // if (targetAnimalController != null &&  targetAnimalController.animalModel != null && targetAnimalController.animalModel.IsSameSpecies(animalController.animalModel) &&
-            //     targetAnimalController.animalModel.WantingOffspring)
-            // {
-                //Stop target
-                // targetAnimalController.agent.isStopped = true;
+            if (target.TryGetComponent(out AnimalController targetAnimalController))
+            {
                 targetAnimalController.waitingState.SetWaitTime(targetAnimalController.matingState.matingTime);
                 targetAnimalController.fsm.ChangeState(targetAnimalController.waitingState);
 
 
                 // Wait a while then change state and resume walking
                 yield return new WaitForSeconds(matingTime);
-                onMate?.Invoke(target);
-                
-            // }
-            
+                onMate?.Invoke(target);    
+            }
+
             finiteStateMachine.GoToDefaultState();
             animal.agent.isStopped = false;
 
@@ -105,7 +91,9 @@ namespace AnimalsV2.States
         
         public override bool MeetRequirements()
         {
-            return target != null;
+            return target != null && target.TryGetComponent(out AnimalController potentialMateAnimalController) &&
+                   potentialMateAnimalController.animalModel.WantingOffspring &&
+                   potentialMateAnimalController.animalModel.IsAlive && !(potentialMateAnimalController.fsm.currentState is MatingState);
         }
 
         

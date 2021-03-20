@@ -186,8 +186,8 @@ public class AnimalBrainAgent : Agent
         }
 
         //These states cannot be exited on the fly
-        if (fsm.CurrentState is FleeingState || fsm.CurrentState is EatingState ||
-            fsm.CurrentState is DrinkingState || fsm.CurrentState is MatingState || fsm.CurrentState is Waiting) return;
+        if (fsm.currentState is FleeingState || fsm.currentState is EatingState ||
+            fsm.currentState is DrinkingState || fsm.currentState is MatingState || fsm.currentState is Waiting) return;
 
         //Switch state based on action produced by ML model.
         //We are rewarding successful state changes.

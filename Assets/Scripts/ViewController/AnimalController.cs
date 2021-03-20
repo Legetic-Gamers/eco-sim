@@ -404,7 +404,7 @@ public abstract class AnimalController : MonoBehaviour
     }
 
     //General method that takes unknown gameobject as input and interacts with the given gameobject depending on what it is. It can be to e.g. consume or to mate
-    // result is the reward for interacting with something
+    // It is not guaranteed that the statechange will happen since meetrequirements has to be true for given statechange.
     public void Interact(GameObject target)
     {
 
@@ -431,13 +431,10 @@ public abstract class AnimalController : MonoBehaviour
                     {
                         eatingState.SetTarget(target);
                         fsm.ChangeState(eatingState);
-                    }
-
-                    if (animalModel.IsSameSpecies(otherAnimalModel))
+                    } else if (animalModel.IsSameSpecies(otherAnimalModel))
                     {
-                        //matingState.SetTarget(target);
-                        //fsm.ChangeState(matingState);
-                        //Insert code for try to mate and also modify the method so that it returns a float for reward;
+                        matingState.SetTarget(target);
+                        fsm.ChangeState(matingState);
                     }
                 }
                 break;
@@ -451,7 +448,6 @@ public abstract class AnimalController : MonoBehaviour
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Target"))
         {
-            
             Interact(other.gameObject);
         }
     }

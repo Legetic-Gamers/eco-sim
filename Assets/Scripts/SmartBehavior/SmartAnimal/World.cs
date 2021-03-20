@@ -301,7 +301,7 @@ public class World : MonoBehaviour
         AnimalController animalController = agent.GetComponent<AnimalController>();
         if (animalController != null)
         {
-            if (animalController.fsm.CurrentState is Dead || !animalController.animalModel.IsAlive)
+            if (animalController.fsm.currentState is Dead || !animalController.animalModel.IsAlive)
             {
                 return true;
             }
