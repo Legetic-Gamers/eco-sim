@@ -56,7 +56,7 @@ namespace AnimalsV2.States
             return animal.heardFriendlyTargets.Concat(animal.visibleFriendlyTargets).ToList().Count > 0 && !(finiteStateMachine.currentState is MatingState) && animal.animalModel.WantingOffspring && GetFoundMate() != null;
         }
 
-        private GameObject GetFoundMate()
+        public GameObject GetFoundMate()
         {
             List<GameObject> allNearbyFriendly = animal.heardFriendlyTargets.Concat(animal.visibleFriendlyTargets).ToList();
             //Debug.Log("Nfriendly" + allNearbyFriendly.Count);

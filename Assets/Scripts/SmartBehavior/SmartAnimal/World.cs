@@ -319,7 +319,11 @@ public class World : MonoBehaviour
 
     private void SpawnNewFood()
     {
-        CreateObjects(numFood, food);
+        if (numFoodDefault > 0)
+        {
+            CreateObjects(numFood, food);
+            
+        }
     }
 
    

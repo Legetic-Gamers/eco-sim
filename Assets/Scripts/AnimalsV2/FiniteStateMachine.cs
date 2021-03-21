@@ -63,9 +63,6 @@ namespace AnimalsV2
                 currentState.Exit();
                 OnStateExit?.Invoke(currentState);
             }
-            
-            Debug.Log("oldState: " + currentState);
-            Debug.Log("newState: " + newState);
 
             //Change state
             currentState = newState;

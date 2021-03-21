@@ -197,8 +197,8 @@ public abstract class AnimalController : MonoBehaviour
     private void ChangeModifiersBasic(State state)
     {
         energyModifier = 0.1f;
-        hydrationModifier = 0.05f;
-        reproductiveUrgeModifier = 1f;
+        hydrationModifier = 0.1f;
+        reproductiveUrgeModifier = 0.2f;
         
         //Debug.Log("varying parameters
         agent.speed = animalModel.currentSpeed;
