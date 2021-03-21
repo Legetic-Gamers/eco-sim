@@ -325,7 +325,6 @@ public class AnimalBrainAgent : Agent
     //Listen to when senses were updated.
     private void EventSubscribe()
     {
-        Debug.Log(eventPublisher);
         eventPublisher.onSenseTickEvent += RequestDecision;
 
         animalController.actionDeath += HandleDeath;

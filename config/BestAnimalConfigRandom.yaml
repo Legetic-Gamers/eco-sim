@@ -87,10 +87,10 @@ environment_parameters:
     sampler_type: uniform
     sampler_parameters:
         min_value: 2
-        max_value: 4
+        max_value: 6
 
   envScaleZ:
     sampler_type: uniform
     sampler_parameters:
         min_value: 2
-        max_value: 4
+        max_value: 6

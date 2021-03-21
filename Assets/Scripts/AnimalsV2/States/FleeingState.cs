@@ -17,7 +17,7 @@ namespace AnimalsV2.States
         public FleeingState(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal,
             finiteStateMachine)
         {
-            currentStateAnimation = Running;
+            
         }
 
         // own timer (note it's unit is number of LogicalUpdate ticks. This is the number of ticks in which the state will hold after MeetRequirements becomes false. We want the animal to run a little more than just outside of percieved predators space
@@ -28,6 +28,8 @@ namespace AnimalsV2.States
         {
             base.Enter();
             timer = startTimerValue;
+            
+            currentStateAnimation = Running;
         }
 
         public override void Exit()
@@ -51,7 +53,7 @@ namespace AnimalsV2.States
             if (averagePosition != animal.transform.position)
             {
                 timer = startTimerValue;
-                pointToRunTo = NavigationUtilities.RunToFromPoint(animal.transform,averagePosition,false);
+                pointToRunTo = NavigationUtilities.RunFromPoint(animal.transform,averagePosition);
             }
             else
             {
@@ -62,8 +64,22 @@ namespace AnimalsV2.States
             {
                 // Move the animal using the NavMeshAgent.
                 NavMeshHit hit;
-                NavMesh.SamplePosition(pointToRunTo, out hit, 5, 1 << NavMesh.GetAreaFromName("Walkable"));
-                animal.agent.SetDestination(hit.position);
+                if (NavMesh.SamplePosition(pointToRunTo, out hit, animal.agent.height*2, 1 << NavMesh.GetAreaFromName("Walkable")))
+                {
+                    animal.agent.SetDestination(hit.position);
+                    
+                }//Try running perpendicular to front (Avoid walls).
+                else if (NavigationUtilities.PerpendicularPoint(animal.transform.position,animal.transform.forward,animal.transform.up,animal.agent.height*2,out pointToRunTo))
+                {
+                    animal.agent.SetDestination(pointToRunTo);
+                    
+                } //Try running randomly if no other way found.
+                else if(NavigationUtilities.RandomPoint(animal.transform.position, 10f,animal.agent.height*2, out pointToRunTo))
+                {
+                    animal.agent.SetDestination(pointToRunTo);
+                }
+                
+                
             }
 
             // if timer has ran out, we change to default state

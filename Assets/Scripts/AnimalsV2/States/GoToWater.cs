@@ -10,12 +10,13 @@ using UnityEngine;
 
         public GoToWater(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine)
         {
-            currentStateAnimation = StateAnimation.Walking;
+            
         }
 
         public override void Enter()
         {
             base.Enter();
+            currentStateAnimation = StateAnimation.Walking;
         }
 
         public override void HandleInput()
@@ -32,9 +33,15 @@ using UnityEngine;
                 GameObject closestWater = NavigationUtilities.GetNearestObject(animal.visibleWaterTargets, animal.transform.position);
                 if (closestWater != null && animal.agent.isActiveAndEnabled)
                 {
-                    Vector3 pointToRunTo = NavigationUtilities.RunToFromPoint(animal.transform, closestWater.transform.position, true);
+                    Vector3 pointToRunTo = closestWater.transform.position;
                     //Move the animal using the navmeshagent.
                     NavigationUtilities.NavigateToPoint(animal,pointToRunTo);
+                    
+                    // if(Vector3.Distance(animal.transform.position, closestWater.transform.position) <= animal.agent.stoppingDistance){
+                    //     animal.drinkingState.SetTarget(closestWater);
+                    //     finiteStateMachine.ChangeState(animal.drinkingState);
+                    // }    
+                    
                 }
                 
             }

@@ -55,7 +55,14 @@ namespace AnimalsV2.States
             {
                 if (animal.agent.remainingDistance <= animal.agent.stoppingDistance)
                 {
-                    if(RandomPoint(animal.transform.position, 10f, out nextPosition))
+                    //Vector3 position = new Vector3(Random.Range(-10.0f, 10.0f), 0, Random.Range(-10.0f, 10.0f)) + animal.transform.position;
+                   
+                    //Move the animal using the navmeshagent.
+                    NavMeshHit hit;
+                    //TODO this maxDistance is what is causing rabbits to dance sometimes, if poisition cant be found.
+                    // ALEXANDER H: https://docs.unity3d.com/ScriptReference/AI.NavMesh.SamplePosition.html recommends setting maxDistance as agents height * 2
+
+                    if(NavigationUtilities.RandomPoint(animal.transform.position, 10f,animal.agent.height*2, out nextPosition))
                     {
                         animal.agent.SetDestination(nextPosition);
                     }
@@ -63,23 +70,6 @@ namespace AnimalsV2.States
             }
         }
         
-        //https://docs.unity3d.com/ScriptReference/AI.NavMesh.SamplePosition.html
-        bool RandomPoint(Vector3 center, float range, out Vector3 result)
-        {
-            for (int i = 0; i < 30; i++)
-            {
-                Vector3 randomPoint = center + Random.insideUnitSphere * range;
-                NavMeshHit hit;
-                if (NavMesh.SamplePosition(randomPoint, out hit, animal.agent.height * 2, NavMesh.AllAreas))
-                {
-                    result = hit.position;
-                    return true;
-                }
-            }
-            result = Vector3.zero;
-            return false;
-        }
-
         public override string ToString()
         {
             return "Wandering";

@@ -5,7 +5,7 @@ public class RabbitModel : AnimalModel,IEdible
 {
     public float nutritionValue { get; set; }
 
-    public RabbitModel() : base(new Traits(1f, 40, 100, 50, 3,1,10,200,10,10,120,10,5),0)
+    public RabbitModel() : base(new Traits(1f, 40, 100, 30, 4f,1,10,150,10,10,180,10,5),0)
     {
         // Rabbit specific initialization 
         

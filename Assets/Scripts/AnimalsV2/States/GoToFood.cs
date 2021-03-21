@@ -20,7 +20,7 @@ namespace AnimalsV2.States
         public GoToFood(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal,
             finiteStateMachine)
         {
-            currentStateAnimation = StateAnimation.Walking;
+            closestFood = null;
 
             nearbyFood = new List<GameObject>();
         }
@@ -28,6 +28,14 @@ namespace AnimalsV2.States
         public override void Enter()
         {
             base.Enter();
+            currentStateAnimation = StateAnimation.Walking;
+            
+            if (closestFood != null && closestFood.TryGetComponent(out AnimalController a))
+            {
+                //If we are going to eat an animal
+                currentStateAnimation = StateAnimation.Running;
+                
+            }
         }
 
         public override void HandleInput()
@@ -46,23 +54,29 @@ namespace AnimalsV2.States
                 nearbyFood = nearbyFood.Concat(animal.visibleFoodTargets).ToList();
             if (animal.heardPreyTargets != null) // second list may be null
                 nearbyFood = nearbyFood.Concat(animal.heardPreyTargets).ToList();
-
+            
             if (MeetRequirements())
             {
                 closestFood = NavigationUtilities.GetNearestObject(nearbyFood, animal.transform.position);
                 if (closestFood != null && animal.agent.isActiveAndEnabled)
                 {
-                    if (closestFood.TryGetComponent(out AnimalController a))
-                    {
-                        //If we are going to eat an animal
-                        currentStateAnimation = StateAnimation.Running;
-                    }
 
-                    Vector3 pointToRunTo =
-                        NavigationUtilities.RunToFromPoint(animal.transform, closestFood.transform.position, true);
+                    Vector3 pointToRunTo = closestFood.transform.position;
                     //Move the animal using the navmeshagent.
                     NavigationUtilities.NavigateToPoint(animal, pointToRunTo);
                     
+                    
+                    // if (Vector3.Distance(animal.transform.position, closestFood.transform.position) <=
+                    // animal.agent.stoppingDistance)
+                    // {
+                    //     animal.eatingState.SetTarget(closestFood);
+                    //     finiteStateMachine.ChangeState(animal.eatingState);
+                    // }
+                    
+                    
+                }else
+                {
+                    finiteStateMachine.GoToDefaultState();
                 }
             }
             else
@@ -80,11 +94,15 @@ namespace AnimalsV2.States
         public override bool MeetRequirements()
         {
             
-            if (animal.visibleFoodTargets != null) // first list may be null
-                nearbyFood = nearbyFood.Concat(animal.visibleFoodTargets).ToList();
-            if (animal.heardPreyTargets != null) // second list may be null
-                nearbyFood = nearbyFood.Concat(animal.heardPreyTargets).ToList();
-            return nearbyFood.Count > 0 && !(finiteStateMachine.currentState is EatingState);
+            nearbyFood = animal.heardPreyTargets.Concat(animal.visibleFoodTargets).ToList();
+            
+
+            if (animal != null)
+            {
+                closestFood = NavigationUtilities.GetNearestObject(nearbyFood, animal.transform.position);
+            }
+
+            return closestFood != null && !(finiteStateMachine.currentState is EatingState);
         }
     }
 }

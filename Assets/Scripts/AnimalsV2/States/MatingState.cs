@@ -23,13 +23,15 @@ namespace AnimalsV2.States
         public MatingState(AnimalController animalController, FiniteStateMachine finiteStateMachine) : base(
             animalController, finiteStateMachine)
         {
-            currentStateAnimation = StateAnimation.Mating;
+            
         }
 
         public override void Enter()
         {
             base.Enter();
-            
+
+            currentStateAnimation = StateAnimation.Mating;
+
             if (animal.agent.isActiveAndEnabled && animal.agent.isOnNavMesh)
             {
                 animal.agent.isStopped = true;
@@ -68,6 +70,7 @@ namespace AnimalsV2.States
 
             if (target.TryGetComponent(out AnimalController targetAnimalController))
             {
+                //Stop target
                 targetAnimalController.waitingState.SetWaitTime(targetAnimalController.matingState.matingTime);
                 targetAnimalController.fsm.ChangeState(targetAnimalController.waitingState);
 

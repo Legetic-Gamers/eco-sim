@@ -7,14 +7,17 @@ namespace AnimalsV2.States
 {
     public class GoToMate : State
     {
+        
+        
         public GoToMate(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine)
         {
-            currentStateAnimation = StateAnimation.Walking;
+            
         }
 
         public override void Enter()
         {
             base.Enter();
+            currentStateAnimation = StateAnimation.Walking;
         }
 
         public override void HandleInput()
@@ -31,10 +34,16 @@ namespace AnimalsV2.States
                 GameObject foundMate = GetFoundMate();
                 if (foundMate != null && animal.agent.isActiveAndEnabled)
                 {
-                    Vector3 pointToRunTo = NavigationUtilities.RunToFromPoint(animal.transform, foundMate.transform.position, true);
+                    Vector3 pointToRunTo = foundMate.transform.position;
                     //Move the animal using the navmeshagent.
                     NavigationUtilities.NavigateToPoint(animal,pointToRunTo);
                     
+                    
+                    // if (Vector3.Distance(animal.transform.position, foundMate.transform.position) <= animal.agent.stoppingDistance)
+                    // {
+                    //     animal.matingState.SetTarget(foundMate);
+                    //     finiteStateMachine.ChangeState(animal.matingState);
+                    // }    
                 }
                 
             }
@@ -62,7 +71,7 @@ namespace AnimalsV2.States
             //Debug.Log("Nfriendly" + allNearbyFriendly.Count);
             foreach(GameObject potentialMate in allNearbyFriendly)
             {
-                if (potentialMate != null && potentialMate.TryGetComponent(out AnimalController potentialMateAnimalController) && potentialMateAnimalController.animalModel.WantingOffspring && potentialMateAnimalController.animalModel.IsAlive && !(potentialMateAnimalController.fsm.currentState is MatingState))
+                if (potentialMate != null && potentialMate.TryGetComponent(out AnimalController potentialMateAnimalController) && !(potentialMateAnimalController.fsm.currentState is MatingState) && potentialMateAnimalController.animalModel.WantingOffspring && potentialMateAnimalController.animalModel.IsAlive)
                 {
                     
                     return potentialMateAnimalController.gameObject;

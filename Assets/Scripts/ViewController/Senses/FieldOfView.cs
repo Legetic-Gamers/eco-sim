@@ -37,11 +37,11 @@ public class FieldOfView : MonoBehaviour
         // loop through targets within the entire circle to determine if they are in the view cone --> add to Targets list
         for (int i = 0; i < targetsInRadius.Length; i++)
         {
-            
             GameObject target = targetsInRadius[i].gameObject;
 
             // don't add self
             if (target == gameObject) continue;
+            
 
             Vector3 dirToTarget = (target.transform.position - transform.position).normalized;
 
@@ -76,7 +76,7 @@ public class FieldOfView : MonoBehaviour
 
         
         //if the targets animalModel can eat this animalModel: add to visibleHostileTargets
-        if (targetAnimalController.animalModel.CanEat(animalController.animalModel))
+        if (targetAnimalController.animalModel.CanEat(animalController.animalModel) && targetAnimalController.animalModel.IsAlive)
         {
             animalController.visibleHostileTargets.Add(target);
             animalController.actionPerceivedHostile?.Invoke(target);
@@ -92,7 +92,7 @@ public class FieldOfView : MonoBehaviour
         }
         
         //if the target is of same species: add to visibleFriendlyTargets
-        if (animalController.animalModel.IsSameSpecies(targetAnimalController.animalModel))
+        if (animalController.animalModel.IsSameSpecies(targetAnimalController.animalModel) && targetAnimalController.animalModel.IsAlive)
         {
             animalController.visibleFriendlyTargets.Add(target);
         }

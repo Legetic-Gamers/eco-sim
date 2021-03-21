@@ -138,6 +138,11 @@ public abstract class AnimalController : MonoBehaviour
                 }
                 else
                 {
+                    // if (this is WolfController)
+                    // {
+                    //     Debug.Log("goToFoodState: " + goToFood + " Closest food: " + goToFood.closestFood);
+                    // }
+
                     speedModifier = JoggingSpeed;
                 }
 
@@ -318,7 +323,13 @@ public abstract class AnimalController : MonoBehaviour
     //TODO a rabbit should be able to have more than one offspring at a time
     void Mate(GameObject target)
     {
-        AnimalController targetAnimalController = target.GetComponent<AnimalController>();
+        AnimalController targetAnimalController = null;
+        if (target != null)
+        { 
+            targetAnimalController = target.GetComponent<AnimalController>();
+
+        }
+
 
         // make sure target has an AnimalController and that its animalModel is same species
         if (targetAnimalController != null && targetAnimalController.animalModel.IsSameSpecies(animalModel) &&
