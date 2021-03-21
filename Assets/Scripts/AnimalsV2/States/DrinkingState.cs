@@ -25,11 +25,11 @@ namespace AnimalsV2.States
         {
             base.Enter();
             currentStateAnimation = StateAnimation.Attack;
-            /*
+            
             if (animal.agent.isActiveAndEnabled && animal.agent.isOnNavMesh)
             {
                 animal.agent.isStopped = true;
-            }*/
+            }
             
             animal.StartCoroutine(DrinkWater());
             

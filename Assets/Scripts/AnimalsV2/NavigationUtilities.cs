@@ -199,12 +199,12 @@ namespace AnimalsV2
             return navHit.position;
         }
 
-        public static bool NavigateRelative(AnimalController animal, Vector3 relativeVector, int layerMask)
+        public static void NavigateRelative(AnimalController animal, Vector3 relativeVector, int layerMask)
         {
             //if the relative vector (which we want to navigate through) is zero, we return. Alos if animal is null we return
             if (relativeVector.Equals(Vector3.zero) || !animal)
             {
-                return true;
+                return;
             }
 
             Vector3 origin = animal.transform.position;
@@ -214,10 +214,10 @@ namespace AnimalsV2
             if (NavMesh.SamplePosition(destination, out hit, Vector3.Distance(origin, relativeVector), layerMask))
             {
                 animal.agent.SetDestination(destination);
-                return true;
+                return;
             }
 
-            return false;
+            return;
         }
     }
 }

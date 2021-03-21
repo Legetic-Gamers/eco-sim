@@ -60,26 +60,26 @@ public class AnimalBrainAgent : Agent
         //ResetRabbit();
     }
 
-    private void ResetRabbit()
-    {
-        //MAKE SURE YOU ARE USING LOCAL POSITION
-        transform.localPosition = new Vector3(Random.Range(-9.5f, 9.5f), 0, Random.Range(-9.5f, 9.5f));
-        transform.rotation = Quaternion.Euler(new Vector3(0f, Random.Range(0, 360)));
-        Debug.Log("reset!");
-        // Destroy(animalController);
-        // gameObject.AddComponent<RabbitController>();
-        
-        //this.animalModel = new RabbitModel();
-        
-        animalModel.currentEnergy = animalModel.traits.maxEnergy;
-        animalModel.currentSpeed = 0;
-        animalModel.currentHealth = animalModel.traits.maxHealth;
-        animalModel.currentHydration = animalModel.traits.maxHydration;
-        animalModel.reproductiveUrge = 0.2f;
-        animalModel.age = 0;
-        animalController.fsm.absorbingState = false;
-
-    }
+    // private void ResetRabbit()
+    // {
+    //     //MAKE SURE YOU ARE USING LOCAL POSITION
+    //     transform.localPosition = new Vector3(Random.Range(-9.5f, 9.5f), 0, Random.Range(-9.5f, 9.5f));
+    //     transform.rotation = Quaternion.Euler(new Vector3(0f, Random.Range(0, 360)));
+    //     Debug.Log("reset!");
+    //     // Destroy(animalController);
+    //     // gameObject.AddComponent<RabbitController>();
+    //     
+    //     //this.animalModel = new RabbitModel();
+    //     
+    //     animalModel.currentEnergy = animalModel.traits.maxEnergy;
+    //     animalModel.currentSpeed = 0;
+    //     animalModel.currentHealth = animalModel.traits.maxHealth;
+    //     animalModel.currentHydration = animalModel.traits.maxHydration;
+    //     animalModel.reproductiveUrge = 0.2f;
+    //     animalModel.age = 0;
+    //     animalController.fsm.absorbingState = false;
+    //
+    // }
 
 
     //Collecting observations that the ML agent should base its calculations on.
