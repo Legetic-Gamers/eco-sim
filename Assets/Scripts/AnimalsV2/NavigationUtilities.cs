@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.AI;
 using Random = UnityEngine.Random;
@@ -57,10 +58,13 @@ namespace AnimalsV2
         /// <param name="a"> Animal to find objects near.</param>
         /// <param name="tag"> String tag to find objects of. </param>
         /// <returns> 3D position of the nearest object. </returns>
-        public static GameObject GetNearestObject(List<GameObject> allPercievedObjects, Vector3 thisPosition)
+        public static GameObject GetNearestObject([CanBeNull] List<GameObject> allPercievedObjects, Vector3 thisPosition)
         {
+            if(allPercievedObjects == null)
+                Debug.Log("IS NULL");
+            
             //Return if not objects with tag found.
-            if (allPercievedObjects.Count == 0) return null;
+            if (allPercievedObjects == null || allPercievedObjects.Count == 0) return null;
             
             // Find closest object of all objects with tag
             GameObject nearbyObj = allPercievedObjects[0];
@@ -81,9 +85,10 @@ namespace AnimalsV2
                         }
                     }
                 }
+                return nearbyObj;
             }
-
-            return nearbyObj;
+            //This return was weird for me since it would be logical to return nearbyObj either if its null or not, but otherwise i get "Gameobject has been destroyed but you are still trying to access it
+            return null;
         }
         
         /// <summary>

@@ -79,10 +79,14 @@ public class AnimalMovementBrain : Agent
         base.CollectObservations(sensor);
 
         //Position of the animal
-        Vector3 thisPosition = animalController.transform.position;
+        Vector3 thisPosition = transform.position;
+        if (animalController == null)
+        {
+            Debug.Log("ANIMALCONTROLLER IS NULL");
+        }
         
         //Get the absolute vector for nearest food
-        Vector3 nearestFoodPosition = NavigationUtilities.GetNearestObject(animalController.visibleFoodTargets.Concat(animalController.heardPreyTargets).ToList(), thisPosition)?.transform.position ?? thisPosition;;
+        Vector3 nearestFoodPosition = NavigationUtilities.GetNearestObject(animalController.visibleFoodTargets.Concat(animalController.heardPreyTargets).ToList(), thisPosition)?.transform.position ?? thisPosition;
         //Get the absolute vector for neares water
         Vector3 nearestWaterPosition = NavigationUtilities.GetNearestObject(animalController.visibleWaterTargets, thisPosition)?.transform.position ?? thisPosition;;
         //Get the absolute vector for a potential mate
@@ -213,9 +217,6 @@ public class AnimalMovementBrain : Agent
     public override void Heuristic(in ActionBuffers actionsOut)
     {
         ActionSegment<float> continuousActions = actionsOut.ContinuousActions;
-
-        
-
     }
     //Instead of updating/Making choices every frame
     //Listen to when parameters or senses were updated.
@@ -265,8 +266,12 @@ public class AnimalMovementBrain : Agent
             // normalize reward as a percentage
             reward /= animalModel.traits.maxHydration;
         }
+        if (reward > 0f)
+        {
+            Debug.Log("drinking reward: " + reward);
+        }
         AddReward(reward);
-
+        RequestDecision();
     }
 
     //The reason to why I have curentEnergy as an in-parameter is because currentEnergy is updated through EatFood before reward gets computed in AnimalMovementBrain
@@ -285,9 +290,7 @@ public class AnimalMovementBrain : Agent
             reward = Math.Min(nutritionReward, hunger);
             // normalize reward as a percentage
             reward /= animalModel.traits.maxEnergy;
-        }
-
-        if (food.GetComponent<PlantController>()?.plantModel is IEdible ediblePlant && animalModel.CanEat(ediblePlant))
+        } else if (food.GetComponent<PlantController>()?.plantModel is IEdible ediblePlant && animalModel.CanEat(ediblePlant))
         {
             float nutritionReward = ediblePlant.nutritionValue;
             float hunger = animalModel.traits.maxEnergy - currentEnergy;
@@ -297,7 +300,12 @@ public class AnimalMovementBrain : Agent
             reward /= animalModel.traits.maxEnergy;
         }
         //Debug.Log("Eating reward: " +reward);
+        if (reward > 0f)
+        {
+            Debug.Log("eating reward: " + reward);
+        }
         AddReward(reward);
+        RequestDecision();
     }
     
     private void HandleMate(GameObject obj)
@@ -306,9 +314,10 @@ public class AnimalMovementBrain : Agent
         //EndEpisode();
     }
 
-    private bool ChangeState(State newState)
+    private void ChangeState(State newState)
     {
         //Debug.Log(newState.ToString());
-        return fsm.ChangeState(newState);
+        fsm.ChangeState(newState);
     }
+    
 }
