@@ -143,7 +143,7 @@ public abstract class AnimalController : MonoBehaviour
         }
     }
 
-    private void VaryParameters()
+    private void UpdateParameters()
     {
         /*
          * - Size * (deltaTemp / tempResist) * Const
@@ -178,7 +178,7 @@ public abstract class AnimalController : MonoBehaviour
         if (tickEventPublisher)
         {
             // every 2 sec
-            tickEventPublisher.onParamTickEvent += VaryParameters;
+            tickEventPublisher.onParamTickEvent += UpdateParameters;
             tickEventPublisher.onParamTickEvent += HandleDeathStatus;
             // every 0.5 sec
             tickEventPublisher.onSenseTickEvent += fsm.UpdateStatesLogic;    
@@ -200,7 +200,7 @@ public abstract class AnimalController : MonoBehaviour
         if (tickEventPublisher)
         {
             // every 2 sec
-            tickEventPublisher.onParamTickEvent -= VaryParameters;
+            tickEventPublisher.onParamTickEvent -= UpdateParameters;
             tickEventPublisher.onParamTickEvent -= HandleDeathStatus;
             // every 0.5 sec
             tickEventPublisher.onSenseTickEvent -= fsm.UpdateStatesLogic;    
@@ -352,12 +352,6 @@ public abstract class AnimalController : MonoBehaviour
         EventUnsubscribe();
     }
 
-
     public abstract Vector3 getNormalizedScale();
-    private void FixedUpdate()
-    {
-        //Update physics
-        //Fsm.UpdateStatesPhysics();
-    }
     
 }

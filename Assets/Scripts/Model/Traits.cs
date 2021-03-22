@@ -10,14 +10,58 @@ public class Traits
     /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
 
     public  float size { get; set; }
+    
     public float maxEnergy { get; set; }
     
     public float maxHydration { get; set; }
-    public float maxHealth { get; set; } // optional
     
+    public float maxHealth { get; set; }
+    
+    /// <summary>
+    /// for mass input to the function.
+    /// some default weights of the animals:
+    /// bear avg mass = 180 kg
+    /// deer avg mass = 110 kg
+    /// wolf avg mass = 70 kg
+    /// rabbit avg mass = 5 kg
+    ///
+    /// for comparison to the results of the function.
+    /// default speeds of the animals:
+    /// bear avg speed = 56 km/h 
+    /// deer avg speed = 48 km/h
+    /// wolf avg speed = 55 km/h
+    /// rabbit avg speed = 68 km/h (64-72 km/h)
+    ///
+    ///
+    /// function:
+    /// Vmax = aM^b * (1 - e^(-hM^i))
+    /// a = 26 (acceleration? can probably change this for each animal)
+    /// b = 0.24 (power-law in speed)
+    /// e = 2.72 
+    /// h = cf ~1
+    /// i = d - 1 + g (i = 0.51-1.21), choose i = 0.6
+    /// d = 0.75-0.94 (muscle force)
+    /// g = 0.76-1.27 (muscle mass)
+    /// c = 1 (otherwise unknown)
+    /// f = 1 (otherwise unknown)
+    /// M = mass of animal from above
+    ///
+    /// 'a' should vary between animals, here's proposed values:
+    /// bear = 0.175 at mass 180
+    /// deer = 0.20 at mass 110
+    /// wolf = 0.22 at mass 70
+    /// rabbit = 0.46 at mass 5
+    /// giving (at default weight) approximately same speed:
+    /// bear = 60.8
+    /// deer = 61.8
+    /// wolf = 61
+    /// rabbit = 62.8
+    /// 
+    /// </summary>
     public float maxSpeed { get; set; }
     
     public float maxReproductiveUrge { get; set; }
+    
     public float endurance { get; set; }
     
     public float ageLimit { get; set; }
@@ -26,20 +70,11 @@ public class Traits
     public float desirability { get; set; }
     public Color furColor = new Color(0.5f, 0.2f, 0.2f, 1.0f); // example
 
-    [Range(0, 360)] public float viewAngle;// affects width of FoV
+    [Range(0, 360)] public float viewAngle; // affects width of FoV
     public float viewRadius { get; set; } // distance
     
     public float hearingRadius { get; set; }
     
-    
-    /* 
-     * if we are to have smell:
-     * we should probably have some simple "wind" 
-     * that determines the direction of the "smell-cone" 
-
-    [Range(0, 360)] private float smellingAngle;
-    private float smellingRadius { get; set; }
-    */
 
     public Traits(
         float size,
