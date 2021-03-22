@@ -122,23 +122,26 @@ namespace AnimalsV2
             if (nearbyObj != null)
             {
                 closestDistance = Vector3.Distance(nearbyObj.transform.position, thisPosition);
-            }
 
-            //Get the closest game object
-            foreach (GameObject g in allPercievedObjects)
-            {
-                if (g != null)
+
+                //Get the closest game object
+                foreach (GameObject g in allPercievedObjects)
                 {
-                    float dist = Vector3.Distance(g.transform.position, thisPosition);
-                    if (dist < closestDistance)
+                    if (g != null)
                     {
-                        closestDistance = dist;
-                        nearbyObj = g;
+                        float dist = Vector3.Distance(g.transform.position, thisPosition);
+                        if (dist < closestDistance)
+                        {
+                            closestDistance = dist;
+                            nearbyObj = g;
+                        }
                     }
                 }
+
+                return nearbyObj;
             }
 
-            return nearbyObj;
+            return null;
         }
 
         /// <summary>
@@ -214,10 +217,8 @@ namespace AnimalsV2
             if (NavMesh.SamplePosition(destination, out hit, Vector3.Distance(origin, relativeVector), layerMask))
             {
                 animal.agent.SetDestination(destination);
-                return;
             }
 
-            return;
         }
     }
 }

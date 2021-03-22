@@ -21,14 +21,9 @@ public class AnimalMovementBrain : Agent
     private FiniteStateMachine fsm;
     private float turnSpeed = 300f;
 
-
-    //We could have multiple brains, EX:
-    // Brain to use when no wall is present
-    //public NNModel noWallBrain;
-    // Brain to use when a jumpable wall is present
-    //public NNModel smallWallBrain;
-    // Brain to use when a wall requiring a block to jump over is present
-    //public NNModel bigWallBrain;
+    public Action<float> onEpisodeBegin;
+    public Action<float> onEpisodeEnd;
+    
     public void Start()
     {
         animalController = GetComponent<AnimalController>();
@@ -47,27 +42,7 @@ public class AnimalMovementBrain : Agent
     public override void OnEpisodeBegin()
     {
         base.OnEpisodeBegin();
-
-        //Reset animal position and rotation.
-        //ResetRabbit();
-    }
-
-    private void ResetRabbit()
-    {
-        //MAKE SURE YOU ARE USING LOCAL POSITION
-        transform.localPosition = new Vector3(Random.Range(-9.5f, 9.5f), 0, Random.Range(-9.5f, 9.5f));
-        transform.rotation = Quaternion.Euler(new Vector3(0f, Random.Range(0, 360)));
-        Debug.Log("reset!");
-        
-        
-        animalModel.currentEnergy = animalModel.traits.maxEnergy;
-        animalModel.currentSpeed = 0;
-        animalModel.currentHealth = animalModel.traits.maxHealth;
-        animalModel.currentHydration = animalModel.traits.maxHydration;
-        animalModel.reproductiveUrge = 0.2f;
-        animalModel.age = 0;
-        animalController.fsm.absorbingState = false;
-
+        onEpisodeBegin.Invoke(100f);
     }
 
 
@@ -155,12 +130,13 @@ public class AnimalMovementBrain : Agent
     //steering inspired by: https://github.com/Unity-Technologies/ml-agents/blob/release_2_verified_docs/Project/Assets/ML-Agents/Examples/FoodCollector/Scripts/FoodCollectorAgent.cs
     public override void OnActionReceived(ActionBuffers actions)
     {
+        /*
         //hunger is the fraction of missing energy.
         float hunger = (animalModel.traits.maxEnergy - animalModel.currentEnergy)/animalModel.traits.maxEnergy;
         //thirst is the fraction of missing hydration.
         float thirst = (animalModel.traits.maxHydration - animalModel.currentHydration)/animalModel.traits.maxHydration;
         float stressFactor = -0.05f;//-0.05 means max penalty = -0.1
-
+        
         if (animalModel.IsAlive)
         {
             //Penalize the rabbit for being hungry and thirsty. This should make the agent try to stay satiated.
@@ -169,7 +145,9 @@ public class AnimalMovementBrain : Agent
             //Reward staying alive. If completely satiated -> 0.1. Completely drained -> 0.
             AddReward(2 * -stressFactor);
         }
-
+        */
+        
+        AddReward(0.0025f);
         Vector3 dirToGo = Vector3.zero;
         Vector3 rotateDir = Vector3.zero;
         int move = actions.DiscreteActions[0];
@@ -198,12 +176,12 @@ public class AnimalMovementBrain : Agent
     {
         ActionSegment<float> continuousActions = actionsOut.ContinuousActions;
     }
-    //Instead of updating/Making choices every frame
+    
     //Listen to when parameters or senses were updated.
     private void EventSubscribe()
     {
+        //Request decision on every sense tick
         eventPublisher.onSenseTickEvent += RequestDecision;
-        
         animalController.actionDeath += HandleDeath;
         animalController.eatingState.onEatFood += HandleEat;
         animalController.drinkingState.onDrinkWater += HandleDrink;
@@ -214,7 +192,6 @@ public class AnimalMovementBrain : Agent
     public void EventUnsubscribe()
     {
         eventPublisher.onSenseTickEvent -= RequestDecision;
-
         animalController.actionDeath -= HandleDeath;
         animalController.eatingState.onEatFood -= HandleEat;
         animalController.drinkingState.onDrinkWater -= HandleDrink;
@@ -228,11 +205,9 @@ public class AnimalMovementBrain : Agent
         //Penalize for every year not lived.
         AddReward(- (1 - (animalModel.age / animalModel.traits.ageLimit)));
         
-        EventUnsubscribe();
-        ChangeState(animalController.deadState);
-        
         //Task failed
         EndEpisode();
+        onEpisodeEnd.Invoke(100f);
     }
 
 
@@ -282,14 +257,14 @@ public class AnimalMovementBrain : Agent
     
     private void HandleMate(GameObject obj)
     {
-        AddReward(10f);
-        //EndEpisode();
+        AddReward(2f);
+        EndEpisode();
+        onEpisodeEnd.Invoke(100f);
     }
 
-    private void ChangeState(State newState)
+
+    private void OnDestroy()
     {
-        //Debug.Log(newState.ToString());
-        fsm.ChangeState(newState);
+        EventUnsubscribe();
     }
-    
 }
