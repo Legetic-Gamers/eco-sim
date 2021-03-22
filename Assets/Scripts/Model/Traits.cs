@@ -18,6 +18,9 @@ public class Traits
     public float maxHealth { get; set; }
     
     /// <summary>
+    /// based on the article for deciding the velocity of an animal:
+    /// more readable: https://www.biorxiv.org/content/10.1101/095018v1.full
+    /// alternate version: https://www.uvm.edu/pdodds/research/papers/others/2017/hirt2017a.pdf
     /// for mass input to the function.
     /// some default weights of the animals:
     /// bear avg mass = 180 kg
@@ -35,24 +38,25 @@ public class Traits
     ///
     /// function:
     /// Vmax = aM^b * (1 - e^(-hM^i))
-    /// a = 26 (acceleration? can probably change this for each animal)
+    /// a = 26 (acceleration? can change this for each animal)
     /// b = 0.24 (power-law in speed)
     /// e = 2.72 
-    /// h = cf ~1
-    /// i = d - 1 + g (i = 0.51-1.21), choose i = 0.6
+    /// h = cf = 1
+    /// i = d - 1 + g (i = 0.51-1.21 depending on d and g), choose i = 0.6
     /// d = 0.75-0.94 (muscle force)
     /// g = 0.76-1.27 (muscle mass)
     /// c = 1 (otherwise unknown)
     /// f = 1 (otherwise unknown)
     /// M = mass of animal from above
     ///
-    /// 'a' should vary between animals, here's proposed values:
+    /// 'a' should vary between animals, some proposed values:
     /// bear = 0.175 at mass 180
     /// deer = 0.20 at mass 110
     /// wolf = 0.22 at mass 70
     /// rabbit = 0.46 at mass 5
+    /// 
     /// giving (at default weight) approximately same speed:
-    /// bear = 60.8
+    /// bear = 60.9
     /// deer = 61.8
     /// wolf = 61
     /// rabbit = 62.8

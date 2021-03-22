@@ -51,10 +51,10 @@ public abstract class AnimalController : MonoBehaviour
     private const float RunningSpeed = 1f;
 
     //Modifiers
-    private float energyModifier;
-    private float hydrationModifier;
-    private float reproductiveUrgeModifier;
-    private float speedModifier = JoggingSpeed; //100% of maxSpeed in model
+    public float energyModifier;
+    public float hydrationModifier;
+    public float reproductiveUrgeModifier;
+    public float speedModifier = JoggingSpeed; //100% of maxSpeed in model
 
     public List<GameObject> visibleHostileTargets = new List<GameObject>();
     public List<GameObject> visibleFriendlyTargets = new List<GameObject>();
@@ -65,7 +65,6 @@ public abstract class AnimalController : MonoBehaviour
     public List<GameObject> heardFriendlyTargets = new List<GameObject>();
     public List<GameObject> heardPreyTargets = new List<GameObject>();
 
-    public bool IsControllable { get; set; } = false;
 
     /* /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\ */
     /*                                   Parameter handlers                                   */
@@ -84,93 +83,75 @@ public abstract class AnimalController : MonoBehaviour
         switch (state)
         {
             case GoToFood _:
-                energyModifier = 0f;
-                hydrationModifier = 0.05f;
-                reproductiveUrgeModifier = 1f;
-
                 //TODO bad practice, hard coded values, this is temporary
                 if (animalModel is BearModel || animalModel is WolfModel)
-                {
-                    speedModifier = RunningSpeed;
-                }
+                    HighEnergyState();
                 else
-                {
-                    speedModifier = JoggingSpeed;
-                }
-
-                //Debug.Log("varying parameters depending on state: Eating");
-                break;
-            case FleeingState _:
-                energyModifier = 1f;
-                hydrationModifier = 1f;
-                reproductiveUrgeModifier = 1f;
-                speedModifier = RunningSpeed;
-                //Debug.Log("varying parameters depending on state: FleeingState");
+                    MediumEnergyState();
                 break;
             case GoToWater _:
-            {
-                energyModifier = 0.1f;
-                hydrationModifier = 0.05f;
-                reproductiveUrgeModifier = 1;
-
-                break;
-            }
-            case Idle _:
-                energyModifier = 0f;
-                hydrationModifier = 0.05f;
-                reproductiveUrgeModifier = 1;
-                //Debug.Log("varying parameters depending on state: Mating");
+                MediumEnergyState();
                 break;
             case GoToMate _:
-                energyModifier = 0.2f;
-                hydrationModifier = 0.2f;
-                reproductiveUrgeModifier = 0f;
-                //Debug.Log("varying parameters depending on state: Wander");
+                MediumEnergyState();
+                break;
+            case FleeingState _:
+                HighEnergyState();
+                break;
+            case EatingState _:
+                LowEnergyState();
+                break;
+            case DrinkingState _:
+                LowEnergyState();
+                break;
+            case MatingState _:
+                HighEnergyState();
+                break;
+            case SearchingState _:
+                MediumEnergyState();
+                break;
+            case Idle _:
+                LowEnergyState();
                 break;
             case Wander _:
-                energyModifier = 0.1f;
-                hydrationModifier = 0.05f;
-                reproductiveUrgeModifier = 1f;
-
-                speedModifier = JoggingSpeed;
-                //Debug.Log("varying parameters depending on state: Wander");
+                LowEnergyState();
                 break;
             case Dead _:
                 energyModifier = 0f;
                 hydrationModifier = 0f;
                 reproductiveUrgeModifier = 0f;
+                speedModifier = 0f;
                 break;
         }
     }
 
+    private void HighEnergyState()
+    {
+        energyModifier = 1f;
+        hydrationModifier = 1f;
+        reproductiveUrgeModifier = 0f;
+        speedModifier = RunningSpeed;
+    }
+    private void MediumEnergyState()
+    {
+        energyModifier = 0.4f;
+        hydrationModifier = 0.1f;
+        reproductiveUrgeModifier = 1f;
+        speedModifier = JoggingSpeed;
+    }
+    private void LowEnergyState()
+    {
+        energyModifier = 0.2f;
+        hydrationModifier = 0.05f;
+        reproductiveUrgeModifier = 1f;
+        speedModifier = JoggingSpeed;
+    }
     private void UpdateParameters()
     {
-        /*
-         * - Size * (deltaTemp / tempResist) * Const
-         * - (Vision + Hearing + Smell) * Const
-         * - currentAge * Const
-         *
-         * when highEnergy (can be 0 or 1), also add:
-         * - Size * Speed * Const
-         *
-         * currentEnergy -= ( size * (deltaTemp / tempResist) + (vision + hearing + smell) + currentAge
-         *                  + (highEnergy * size * speed) ) * Const
-         */
-
-        //https://www.uvm.edu/pdodds/research/papers/others/2017/hirt2017a.pdf
-        //above link for actual empirical max speed.
-        animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
+        animalModel.UpdateParameters(energyModifier, hydrationModifier, reproductiveUrgeModifier, speedModifier);
+        
         //TODO, maybe move from here?
         agent.speed = animalModel.currentSpeed;
-
-        animalModel.currentEnergy -= (animalModel.traits.size * 1) +
-                                     (animalModel.traits.size * animalModel.currentSpeed) * energyModifier;
-        animalModel.currentHydration -= (animalModel.traits.size * 1) +
-                                        (animalModel.traits.size * animalModel.currentSpeed) * hydrationModifier;
-        animalModel.reproductiveUrge += 0.1f * reproductiveUrgeModifier;
-
-        //The age will increase 1 per 1 second.
-        animalModel.age += Time.deltaTime;
     }
 
     protected void EventSubscribe()
@@ -194,7 +175,6 @@ public abstract class AnimalController : MonoBehaviour
 
         animationController.EventSubscribe();
     }
-
     protected void EventUnsubscribe()
     {
         if (tickEventPublisher)
@@ -205,8 +185,7 @@ public abstract class AnimalController : MonoBehaviour
             // every 0.5 sec
             tickEventPublisher.onSenseTickEvent -= fsm.UpdateStatesLogic;    
         }
-        
-        
+
         fsm.OnStateEnter -= ChangeModifiers;
 
         eatingState.onEatFood -= EatFood;
@@ -217,13 +196,13 @@ public abstract class AnimalController : MonoBehaviour
 
         animationController.EventUnsubscribe();
     }
-
+    
     //Set animals size based on traits.
     private void SetPhenotype()
     {
         gameObject.transform.localScale = getNormalizedScale() * animalModel.traits.size;
     }
-
+    
     private void EatFood(GameObject food)
     {
         //Access food script to consume the food.
@@ -258,7 +237,6 @@ public abstract class AnimalController : MonoBehaviour
             // Spawn child as a copy of the father at the position of the mother
             //GameObject child = Instantiate(gameObject, gameObject.transform.position, gameObject.transform.rotation); //NOTE CHANGE SO THAT PREFAB IS USED
             GameObject child = gameObject;
-
 
             // Generate the offspring traits
             AnimalModel childModel = animalModel.Mate(targetAnimalController.animalModel);
@@ -330,7 +308,6 @@ public abstract class AnimalController : MonoBehaviour
 
         SetPhenotype();
     }
-
 
     //should be refactored so that this logic is in AnimalModel
     private void HandleDeathStatus()

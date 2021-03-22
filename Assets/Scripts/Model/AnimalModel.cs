@@ -196,22 +196,7 @@ public abstract class AnimalModel
         }
     }
 
-
-    public AnimalModel(Traits traits, int generation)
-    {
-        // initializing parameters
-        age = 0;
-        currentHealth = traits.maxHealth;
-        currentEnergy = traits.maxEnergy;
-        currentHydration = traits.maxHydration;
-        reproductiveUrge = 0.2f;
-        this.traits = traits;
-    }
-
     public bool IsAlive => (currentHealth > 0 && currentEnergy > 0 && age < traits.ageLimit && currentHydration > 0);
-
-
-    public abstract AnimalModel Mate(AnimalModel otherParent);
 
     public float GetHealthPercentage => currentHealth / traits.maxEnergy;
 
@@ -252,7 +237,33 @@ public abstract class AnimalModel
 
     public bool LowHealth => currentHealth < 30;
 
+    public AnimalModel(Traits traits, int generation)
+    {
+        // initializing parameters
+        age = 0;
+        currentHealth = traits.maxHealth;
+        currentEnergy = traits.maxEnergy;
+        currentHydration = traits.maxHydration;
+        reproductiveUrge = 0.2f;
+        this.traits = traits;
+    }
 
+    public void UpdateParameters(float energyModifier, float hydrationModifier, float reproductiveUrgeModifier,
+        float speedModifier)
+    {
+        //The age will increase 1 per 1 second.
+        age += Time.deltaTime;
+        
+        currentSpeed = traits.maxSpeed * speedModifier;
+        
+        currentEnergy -= age + traits.size *
+            (traits.viewRadius + traits.hearingRadius + energyModifier * currentSpeed);
+        currentHydration -= (traits.size * 1) + (traits.size * currentSpeed) * hydrationModifier;
+        reproductiveUrge += 0.1f * reproductiveUrgeModifier;
+    }
+    
+    public abstract AnimalModel Mate(AnimalModel otherParent);
+    
     public abstract bool CanEat<T>(T obj);
 
     public abstract bool IsSameSpecies<T>(T obj);
