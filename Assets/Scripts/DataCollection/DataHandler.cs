@@ -18,8 +18,58 @@ namespace DataCollection
         
         private TickEventPublisher tickEventPublisher;
         private Collector c;
-        private static List<int> _sendList1 = new List<int>();
-        private static  List<int> _sendList2 = new List<int>();
+        private List<int> sendList1 = new List<int>();
+        private List<int> sendList2 = new List<int>();
+        
+        private static int _speciesNumber1 = 0;
+        private static int _traitNumber1 = 0;
+        private static int _dataTypeNumber1 = 0;
+        private static int _speciesNumber2 = 0;
+        private static int _traitNumber2 = 0;
+        private static int _dataTypeNumber2 = 0;
+
+        public static int SpeciesNumber1
+        {
+            get => _speciesNumber1;
+            set => _speciesNumber1 = value;
+        }
+
+        public static int SpeciesNumber2
+        {
+            get => _speciesNumber2;
+            set => _speciesNumber2 = value;
+        }
+
+        public static int TraitNumber1
+        {
+            get => _traitNumber1;
+            set => _traitNumber1 = value;
+        }
+
+        public static int TraitNumber2
+        {
+            get => _traitNumber2;
+            set => _traitNumber2 = value;
+        }
+
+        public static int DataTypeNumber1
+        {
+            get => _dataTypeNumber1;
+            set => _dataTypeNumber1 = value;
+        }
+
+        public static int DataTypeNumber2
+        {
+            get => _dataTypeNumber2;
+            set => _dataTypeNumber2 = value;
+        }
+
+        enum listTypes
+        {
+            
+        }
+
+
         private List<string> traitNames = new List<string>
         {
             "size",
@@ -68,6 +118,7 @@ namespace DataCollection
         private void SetList(int a, int x, int y, int z)
         {
             List<int> tmplist = new List<int>();
+            
 
             switch (x)
             {
@@ -89,9 +140,21 @@ namespace DataCollection
                     break;
             }
 
-            if (a == 0) _sendList1 = tmplist;
-            
-            else _sendList2 = tmplist;
+            if (a == 0)
+            {
+                sendList1 = tmplist;
+                _speciesNumber1 = x;
+                _traitNumber1 = y;
+                _dataTypeNumber1 = z;
+            }
+
+            else
+            {
+                sendList2 = tmplist;
+                _speciesNumber2 = x;
+                _traitNumber2 = y;
+                _dataTypeNumber2 = z;
+            }
         }
         
         /// <summary>
@@ -110,7 +173,9 @@ namespace DataCollection
         private void UpdateDataAndGraph()
         {
             c.Collect();
-            Display?.Invoke(_sendList1, _sendList2);
+            SetList(0,_speciesNumber1,_traitNumber1,_dataTypeNumber1);
+            SetList(1,_speciesNumber2,_traitNumber2,_dataTypeNumber2);
+            Display?.Invoke(sendList1, sendList2);
             //ExportDataToFile(0);
         }
         

@@ -9,11 +9,15 @@ public class ButtonClick : Window_Graph
 
     public Action<int,int, int, int> GetListType;
     public static event EventHandler OnButtonReDraw;
-   
-    public static event EventHandler OnButtonSize;
-    public static event EventHandler OnButtonPopulation;
-    public static event EventHandler OnButtonTwoGraphs;
-    public static event EventHandler OnButtonOneGraph;
+
+
+    public Dropdown dropdownSpecies1;
+    public Dropdown dropdownSpecies2;
+    public Dropdown dropdownTrait1;
+    public Dropdown dropdownTrait2;
+    
+    
+ 
 
     public Sprite square;
     public Sprite check;
@@ -24,24 +28,11 @@ public class ButtonClick : Window_Graph
     {
         OnButtonReDraw?.Invoke(this, EventArgs.Empty);
     }
-
-
-    public void ButtonSize()
-    {
-        OnButtonSize?.Invoke(this, EventArgs.Empty);
-    }
-
-
-    public void ButtonPopulation()
-    {
-        OnButtonPopulation?.Invoke(this, EventArgs.Empty);
-    }
+    
     
     public void ButtonOne()
     {
         IsGraphOne = !IsGraphOne;
-        OnButtonOneGraph?.Invoke(this, EventArgs.Empty);
-        GetListType?.Invoke(0,0,0,0);
         if (IsGraphOne)
         {
             buttonOne.GetComponent<Image>().sprite = check;
@@ -52,13 +43,12 @@ public class ButtonClick : Window_Graph
             buttonOne.GetComponent<Image>().sprite = square;
             buttonOne.GetComponent<Image>().color = Color.grey;
         }
+        OnButtonReDraw?.Invoke(this, EventArgs.Empty);
     }
 
     public void ButtonTwo()
     {
         IsGraphTwo = !IsGraphTwo;
-        OnButtonTwoGraphs?.Invoke(this, EventArgs.Empty);
-        GetListType?.Invoke(1,0,0,0);
         if (IsGraphTwo)
         {
             buttonTwo.GetComponent<Image>().sprite = check;
@@ -69,9 +59,25 @@ public class ButtonClick : Window_Graph
             buttonTwo.GetComponent<Image>().sprite = square;
             buttonTwo.GetComponent<Image>().color = Color.grey;
         }
+        OnButtonReDraw?.Invoke(this, EventArgs.Empty);
     }
 
+    public void DropDown()
+    {
+        int species1 = dropdownSpecies1.GetComponent<Dropdown>().value;
+        int species2 = dropdownSpecies2.GetComponent<Dropdown>().value;
+        int trait1 = dropdownTrait1.GetComponent<Dropdown>().value;
+        int trait2 = dropdownTrait2.GetComponent<Dropdown>().value;
 
+        GetListType(0, species1, trait1, 0);
+        GetListType(1, species2, trait2, 0);
+        
+        OnButtonReDraw?.Invoke(this, EventArgs.Empty);
+
+
+    }
+
+    
 
     public void OnButtonIncTruncate()
     {

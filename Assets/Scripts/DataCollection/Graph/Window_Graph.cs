@@ -110,8 +110,6 @@ public class Window_Graph : MonoBehaviour
         dashTemplateY.sizeDelta = new Vector2(graphContainerSizeX + 2, 1); 
         dh.Display += Draw;
         ButtonClick.OnButtonReDraw += ReDraw;
-        ButtonClick.OnButtonTwoGraphs += ReDraw;
-        ButtonClick.OnButtonOneGraph += ReDraw;
     }
     /*
     private float x = 0;
@@ -340,13 +338,13 @@ private void ReDraw1(object sender, EventArgs e)
         float graphWidth = sizeDelta.x;
         int numberOfValues = valueList.Count;
         float xDelta = graphWidth / numberOfValues;
-        float yMax = valueList.Max() * yBufferTop;
+        float yMax = valueList.Max() *yBufferTop;
         int count = firstX;
 
         if (_isGraphOne && _isGraphTwo)
         {
             if (_list1.Count == 0 || _list2.Count == 0) return;
-            yMax = Mathf.Max(_list1.Max(), _list2.Max()) * yBufferTop;
+            yMax = Mathf.Max(_list1.Max(), _list2.Max()) *yBufferTop;
         }
 
 
