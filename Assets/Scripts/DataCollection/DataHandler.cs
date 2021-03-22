@@ -28,42 +28,6 @@ namespace DataCollection
         private static int _traitNumber2 = 0;
         private static int _dataTypeNumber2 = 0;
 
-        public static int SpeciesNumber1
-        {
-            get => _speciesNumber1;
-            set => _speciesNumber1 = value;
-        }
-
-        public static int SpeciesNumber2
-        {
-            get => _speciesNumber2;
-            set => _speciesNumber2 = value;
-        }
-
-        public static int TraitNumber1
-        {
-            get => _traitNumber1;
-            set => _traitNumber1 = value;
-        }
-
-        public static int TraitNumber2
-        {
-            get => _traitNumber2;
-            set => _traitNumber2 = value;
-        }
-
-        public static int DataTypeNumber1
-        {
-            get => _dataTypeNumber1;
-            set => _dataTypeNumber1 = value;
-        }
-
-        public static int DataTypeNumber2
-        {
-            get => _dataTypeNumber2;
-            set => _dataTypeNumber2 = value;
-        }
-
         enum listTypes
         {
             
