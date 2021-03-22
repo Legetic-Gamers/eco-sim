@@ -249,7 +249,7 @@ public abstract class AnimalController : MonoBehaviour
             //tickEventPublisher.onSenseTickEvent += fsm.UpdateStatesLogic;    
         }
 
-        fsm.OnStateEnter += ChangeModifiersBasic;
+        fsm.OnStateEnter += ChangeModifiers;
 
         eatingState.onEatFood += EatFood;
 
@@ -272,7 +272,7 @@ public abstract class AnimalController : MonoBehaviour
         }
 
 
-        fsm.OnStateEnter -= ChangeModifiersBasic;
+        fsm.OnStateEnter -= ChangeModifiers;
 
         eatingState.onEatFood -= EatFood;
 

@@ -30,7 +30,7 @@ namespace AnimalsV2.States
         {
             base.Enter();
 
-            currentStateAnimation = StateAnimation.Mating;
+            currentStateAnimation = StateAnimation.Attack;
 
             if (animal.agent.isActiveAndEnabled && animal.agent.isOnNavMesh)
             {
