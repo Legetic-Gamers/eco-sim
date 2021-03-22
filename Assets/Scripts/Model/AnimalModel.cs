@@ -256,4 +256,7 @@ public abstract class AnimalModel
     public abstract bool CanEat<T>(T obj);
 
     public abstract bool IsSameSpecies<T>(T obj);
+
+    public float ThirstPercentage => (traits.maxHydration - currentHydration) / traits.maxHydration;
+    public float HungerPercentage => (traits.maxEnergy - currentEnergy)/traits.maxEnergy;
 }

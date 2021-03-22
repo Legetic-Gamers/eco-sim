@@ -82,8 +82,8 @@ public class World : MonoBehaviour
         //Adjust parameters for environment size
         //maxscale should be set to same as in config file (max_value for z and x scale).
         int maxScale = 6;
-        numFood = (int) Mathf.Ceil((numFood * scaleX * scaleZ) / maxScale) + 10;//atleast 10 food.
-        numWater = (int) Mathf.Ceil((numWater* scaleX * scaleZ) / (maxScale)) + 1; 
+        numFood = (int) Mathf.Ceil((numFood * scaleX * scaleZ) / maxScale) + 15;//atleast 10 food.
+        numWater = (int) Mathf.Ceil((numWater* scaleX * scaleZ) / (maxScale)) + 2; 
         numRabbits = (int) Mathf.Ceil((numRabbits * scaleX * scaleZ) / maxScale) +  1; //Atleast 2 rabbits. Divide by 4 to sort of normalize the scale factor with max scale.
         numWolves = (int) Mathf.Floor((numWolves * scaleX * scaleZ) / (2*maxScale)); // Should be a lot less wolves. Can be 0.
         
