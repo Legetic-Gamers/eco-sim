@@ -9,6 +9,7 @@ namespace DataCollection
 {
     public class Collector
     {
+        private int cap = 13;
         // Index is generation
         public List<int> totalAnimalsAlivePerGeneration;
 
@@ -30,6 +31,7 @@ namespace DataCollection
 
         /*
         These lists are contained in allStatsPerGeneration in order:
+        Traits:
         public List<float> sizePerGeneration;
         public List<int> maxEnergyPerGeneration;
         public List<int> maxHelathPerGeneration;
@@ -42,8 +44,9 @@ namespace DataCollection
         public List<float> viewAnglePerGeneration;
         public List<float> viewRadiusPerGeneration;
         public List<float> hearingRadiusPerGeneration;
-        
+        Age:
         public List<int> agePerGeneration;
+        public List<int> birthRatePerGeneration;
         */
 
         /// <summary>
@@ -51,26 +54,27 @@ namespace DataCollection
         /// </summary>
         public Collector()
         {
+            
             // Initialize allStatsPerGeneration as list of lists, with the first (0 th) generation set to 0 for all traits. 
-            rabbitStatsPerGenMean = new List<List<float>>(13);
-            wolfStatsPerGenMean = new List<List<float>>(13);
-            deerStatsPerGenMean = new List<List<float>>(13);
-            bearStatsPerGenMean = new List<List<float>>(13);
+            rabbitStatsPerGenMean = new List<List<float>>(cap);
+            wolfStatsPerGenMean = new List<List<float>>(cap);
+            deerStatsPerGenMean = new List<List<float>>(cap);
+            bearStatsPerGenMean = new List<List<float>>(cap);
             
-            rabbitStatsPerGenVar = new List<List<float>>(13);
-            wolfStatsPerGenVar = new List<List<float>>(13);
-            deerStatsPerGenVar = new List<List<float>>(13);
-            bearStatsPerGenVar = new List<List<float>>(13);
+            rabbitStatsPerGenVar = new List<List<float>>(cap);
+            wolfStatsPerGenVar = new List<List<float>>(cap);
+            deerStatsPerGenVar = new List<List<float>>(cap);
+            bearStatsPerGenVar = new List<List<float>>(cap);
             
-            for (int i = 0; i < 13; i++) rabbitStatsPerGenMean.Add(new List<float>{0});
-            for (int i = 0; i < 13; i++) wolfStatsPerGenMean.Add(new List<float>{0});
-            for (int i = 0; i < 13; i++) deerStatsPerGenMean.Add(new List<float>{0});
-            for (int i = 0; i < 13; i++) bearStatsPerGenMean.Add(new List<float>{0});
+            for (int i = 0; i < cap; i++) rabbitStatsPerGenMean.Add(new List<float>{0});
+            for (int i = 0; i < cap; i++) wolfStatsPerGenMean.Add(new List<float>{0});
+            for (int i = 0; i < cap; i++) deerStatsPerGenMean.Add(new List<float>{0});
+            for (int i = 0; i < cap; i++) bearStatsPerGenMean.Add(new List<float>{0});
             
-            for (int i = 0; i < 13; i++) rabbitStatsPerGenVar.Add(new List<float>{0});
-            for (int i = 0; i < 13; i++) wolfStatsPerGenVar.Add(new List<float>{0});
-            for (int i = 0; i < 13; i++) deerStatsPerGenVar.Add(new List<float>{0});
-            for (int i = 0; i < 13; i++) bearStatsPerGenVar.Add(new List<float>{0});
+            for (int i = 0; i < cap; i++) rabbitStatsPerGenVar.Add(new List<float>{0});
+            for (int i = 0; i < cap; i++) wolfStatsPerGenVar.Add(new List<float>{0});
+            for (int i = 0; i < cap; i++) deerStatsPerGenVar.Add(new List<float>{0});
+            for (int i = 0; i < cap; i++) bearStatsPerGenVar.Add(new List<float>{0});
 
             totalAnimalsAlivePerGeneration = new List<int> {GameObject.FindGameObjectsWithTag("Animal").Length};
             
@@ -110,7 +114,7 @@ namespace DataCollection
             // Mean and variance running update
             int indexTrait = 0;
             animalTotal[gen] += 1;
-            for (int trait = 0; trait < 12; trait++)
+            for (int trait = 0; trait < cap - 1 ; trait++)
             {
                 (float mean, float var) =
                     GetNewMeanVariance(animalMean[trait][gen],animalVar[trait][gen], traitsInAnimal[indexTrait], animalTotal[gen]);
@@ -119,6 +123,14 @@ namespace DataCollection
                 if(trait == 0 && gen == 0) Debug.Log(var);
                 indexTrait++;
             }
+            
+            // Update the birth rate
+            (float meanBirthRate, float varBirthRate) =
+                GetNewMeanVariance(animalMean[cap][gen],animalVar[cap][gen], (animalTotal[gen+1] / animalTotal[gen]), animalTotal[gen]);
+            animalMean[cap][gen] = meanBirthRate;
+            animalVar[cap][gen] = varBirthRate;
+            
+            // Finally add to the total of animals
             totalAnimalsAlivePerGeneration[gen] += 1;
         }
 
@@ -132,12 +144,13 @@ namespace DataCollection
             
             // Changes the referenced lists depending on the species of the animal. 
             (List<List<float>> animalMean, List<List<float>> animalVar, List<float> animalTotal) = GetAnimalList(am);
-
+            
             (float mean, float var) =
                 GetNewMeanVariance(animalMean[12][gen], animalVar[12][gen], am.age, animalTotal[gen]);
                 
             animalMean[12][gen] = mean;
             animalVar[12][gen] = var;
+            
         }
 
         /// <summary>

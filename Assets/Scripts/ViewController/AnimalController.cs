@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using AnimalsV2;
 using AnimalsV2.States;
 using AnimalsV2.States.AnimalsV2.States;
+using DataCollection;
 using Model;
 using UnityEngine;
 using UnityEngine.AI;
@@ -33,7 +35,13 @@ public abstract class AnimalController : MonoBehaviour
 
     public FiniteStateMachine fsm;
     private AnimationController animationController;
+    
+    // Measure age of animals
+    private Stopwatch stopWatch = new Stopwatch();
+    private TimeSpan age;
 
+    private DataHandler dh;
+    
     //States
     public FleeingState fleeingState;
     public GoToFood goToFoodState;
@@ -314,6 +322,8 @@ public abstract class AnimalController : MonoBehaviour
         fsm.Initialize(wanderState);
 
         animationController = new AnimationController(this);
+
+        dh = FindObjectOfType<DataHandler>();
     }
 
     protected void Start()
@@ -324,7 +334,8 @@ public abstract class AnimalController : MonoBehaviour
         animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
         agent.speed = animalModel.currentSpeed;
 
-
+        dh.LogNewAnimal(animalModel);
+        
         tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
         EventSubscribe();
 
@@ -337,6 +348,7 @@ public abstract class AnimalController : MonoBehaviour
     {
         if (!animalModel.IsAlive)
         {
+            dh.LogDeadAnimal(animalModel);
             //Debug.Log("Energy: "+animalModel.currentEnergy + "Hydration: "+ animalModel.currentHydration);
 
             // invoke death state with method HandleDeath() in decisionmaker
