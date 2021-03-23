@@ -152,7 +152,19 @@ public abstract class AnimalController : MonoBehaviour
         
         //TODO, maybe move from here?
         agent.speed = animalModel.currentSpeed;
+        // testing
+        speed = animalModel.currentSpeed;
+        maxSpeed = animalModel.traits.maxSpeed;
+        carrying = animalModel.Carrying;
+        size = animalModel.traits.size;
+        age = animalModel.age;
     }
+
+    public bool carrying;
+    public float speed;
+    public float maxSpeed;
+    public float size;
+    public float age;
 
     protected void EventSubscribe()
     {
