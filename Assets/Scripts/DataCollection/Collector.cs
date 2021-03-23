@@ -2,14 +2,17 @@
  * Author: Johan A.
  */
 
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 using UnityEngine;
 
 namespace DataCollection
 {
     public class Collector
     {
-        private int cap = 13;
+        private int cap = 15;
         // Index is generation
         public List<int> totalAnimalsAlivePerGeneration;
 
@@ -28,9 +31,12 @@ namespace DataCollection
         public List<float> wolfTotalAlivePerGen;
         public List<float> deerTotalAlivePerGen;
         public List<float> bearTotalAlivePerGen;
+        
+        //Special, index is the cause and the content is the total dead of that cause
+        public Dictionary<AnimalController.CauseOfDeath, int> causeOfDeath = new Dictionary<AnimalController.CauseOfDeath, int>();
 
         /*
-        These lists are contained in allStatsPerGeneration in order:
+        These lists are contained in *animal*StatsPerGeneration*Mean/Var* in order:
         Traits:
         public List<float> sizePerGeneration;
         public List<int> maxEnergyPerGeneration;
@@ -44,7 +50,7 @@ namespace DataCollection
         public List<float> viewAnglePerGeneration;
         public List<float> viewRadiusPerGeneration;
         public List<float> hearingRadiusPerGeneration;
-        Age:
+        Death:
         public List<int> agePerGeneration;
         public List<int> birthRatePerGeneration;
         */
@@ -104,7 +110,7 @@ namespace DataCollection
         public void CollectBirth(AnimalModel am)
         {
             int gen = am.generation;
-            
+
             // Changes the referenced lists depending on the species of the animal. 
             (List<List<float>> animalMean, List<List<float>> animalVar, List<float> animalTotal) = GetAnimalList(am);
 
@@ -113,32 +119,39 @@ namespace DataCollection
 
             // Mean and variance running update
             int indexTrait = 0;
-            animalTotal[gen] += 1;
-            for (int trait = 0; trait < cap - 1 ; trait++)
+            
+            if(animalTotal.Count <= gen) animalTotal.Add(1);
+            else animalTotal[gen] += 1;
+
+            for (int trait = 0; trait < 11 ; trait++)
             {
+                if(animalMean[trait].Count <= gen) animalMean[trait].Add(0);
+                if(animalVar[trait].Count <= gen) animalVar[trait].Add(0);
                 (float mean, float var) =
-                    GetNewMeanVariance(animalMean[trait][gen],animalVar[trait][gen], traitsInAnimal[indexTrait], animalTotal[gen]);
-                animalMean[trait][gen] = mean;
-                animalVar[trait][gen] = var;
-                if(trait == 0 && gen == 0) Debug.Log(var);
+                        GetNewMeanVariance(animalMean[trait][gen],animalVar[trait][gen], traitsInAnimal[indexTrait], animalTotal[gen]);
+                if(animalMean.Count <= gen) animalMean[trait].Add(mean);
+                else animalMean[trait][gen] = mean;
+                if(animalVar.Count <= gen) animalVar[trait].Add(var);
+                else animalVar[trait][gen] = var;
                 indexTrait++;
             }
             
             // Update the birth rate
-            (float meanBirthRate, float varBirthRate) =
-                GetNewMeanVariance(animalMean[cap][gen],animalVar[cap][gen], (animalTotal[gen+1] / animalTotal[gen]), animalTotal[gen]);
-            animalMean[cap][gen] = meanBirthRate;
-            animalVar[cap][gen] = varBirthRate;
-            
+            /*(float meanBirthRate, float varBirthRate) =
+                GetNewMeanVariance(animalMean[cap - 1][gen],animalVar[cap - 1][gen], (animalTotal[gen+1] / animalTotal[gen]), animalTotal[gen]);
+            animalMean[cap - 1][gen] = meanBirthRate;
+            animalVar[cap - 1][gen] = varBirthRate;
+            */
             // Finally add to the total of animals
-            totalAnimalsAlivePerGeneration[gen] += 1;
+            if (totalAnimalsAlivePerGeneration.Count <= gen) totalAnimalsAlivePerGeneration.Add(1);
+            else totalAnimalsAlivePerGeneration[gen] += 1;
         }
 
         /// <summary>
         /// Update the age statistics when animals die. 
         /// </summary>
         /// <param name="am"> Animal Model of killed animal. </param>
-        public void CollectDeath(AnimalModel am)
+        public void CollectDeath(AnimalModel am, AnimalController.CauseOfDeath cause)
         {
             int gen = am.generation;
             
@@ -150,6 +163,17 @@ namespace DataCollection
                 
             animalMean[12][gen] = mean;
             animalVar[12][gen] = var;
+
+            switch (cause)
+            {
+                case AnimalController.CauseOfDeath.Eaten:
+                    
+                    break;
+                case AnimalController.CauseOfDeath.Hunger:
+                    break;
+                case AnimalController.CauseOfDeath.Hydration:
+                    break;
+            }
             
         }
 

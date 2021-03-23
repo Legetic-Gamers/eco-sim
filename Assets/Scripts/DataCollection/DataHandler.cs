@@ -96,9 +96,9 @@ namespace DataCollection
             c.CollectBirth(animalModel);
         }
         
-        public void LogDeadAnimal(AnimalModel animalModel)
+        public void LogDeadAnimal(AnimalModel animalModel, AnimalController.CauseOfDeath causeOfDeath)
         {
-            c.CollectDeath(animalModel);
+            c.CollectDeath(animalModel, causeOfDeath);
         }
         
         /// <summary>

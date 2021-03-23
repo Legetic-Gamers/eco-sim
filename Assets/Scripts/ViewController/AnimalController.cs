@@ -36,11 +36,16 @@ public abstract class AnimalController : MonoBehaviour
     public FiniteStateMachine fsm;
     private AnimationController animationController;
     
-    // Measure age of animals
-    private Stopwatch stopWatch = new Stopwatch();
-    private TimeSpan age;
-
+    // Add a data handler
     private DataHandler dh;
+
+    public enum CauseOfDeath
+    {
+        Hydration,
+        Eaten,
+        Health,
+        Hunger,
+    };
     
     //States
     public FleeingState fleeingState;
@@ -335,7 +340,7 @@ public abstract class AnimalController : MonoBehaviour
         agent.speed = animalModel.currentSpeed;
 
         dh.LogNewAnimal(animalModel);
-        
+
         tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
         EventSubscribe();
 
@@ -348,8 +353,12 @@ public abstract class AnimalController : MonoBehaviour
     {
         if (!animalModel.IsAlive)
         {
-            dh.LogDeadAnimal(animalModel);
-            //Debug.Log("Energy: "+animalModel.currentEnergy + "Hydration: "+ animalModel.currentHydration);
+            CauseOfDeath cause;
+            if (animalModel.currentEnergy == 0) cause = CauseOfDeath.Hunger;
+            if (animalModel.currentHealth == 0) cause = CauseOfDeath.Health;
+            if (animalModel.currentHydration == 0) cause = CauseOfDeath.Hydration;
+            else cause = CauseOfDeath.Eaten;
+            dh.LogDeadAnimal(animalModel, cause);
 
             // invoke death state with method HandleDeath() in decisionmaker
             actionDeath?.Invoke();
