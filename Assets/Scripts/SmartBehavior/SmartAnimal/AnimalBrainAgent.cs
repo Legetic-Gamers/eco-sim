@@ -199,9 +199,6 @@ public class AnimalBrainAgent : Agent
         else if (discreteActions[0] == 1)
         {
             ChangeState(animalController.goToWaterState);
-            
-
-
             print("Look for Water.");
         }
         else if (discreteActions[0] == 2)
@@ -374,8 +371,8 @@ public class AnimalBrainAgent : Agent
     
     private void HandleMate(GameObject obj)
     {
-        AddReward(0.5f);
-        world.totalScore += 0.5f;
+        AddReward(1f);
+        world.totalScore += 1f;
         //Task achieved
         //EndEpisode();
     }
@@ -393,17 +390,19 @@ public class AnimalBrainAgent : Agent
     //     }
     // }
     
-    
-    private void HandleEating(GameObject obj, float currentEnergy)
+    //Higher rewards for satiating thirst more. So if after the animal drank it is fully satiated
+    private void HandleEating(GameObject obj, float previousEnergy)
     {
-        AddReward(0.1f);
-        if (world) world.totalScore += 0.1f;
+        float oldHunger = ((animalModel.traits.maxEnergy - previousEnergy) / animalModel.traits.maxEnergy);
+        AddReward(0.1f * oldHunger);
+        if (world) world.totalScore += 0.1f * oldHunger;
     }
 
-    private void HandleDrinking(GameObject obj, float currentHydration)
+    private void HandleDrinking(GameObject obj, float previousHydration)
     {
-        AddReward(0.1f);
-        if (world) world.totalScore += 0.1f;
+        float oldThirst = ((animalModel.traits.maxHydration - previousHydration) / animalModel.traits.maxHydration);
+        AddReward(0.1f * oldThirst);
+        if (world) world.totalScore += 0.1f * oldThirst;
     }
 
     public void Update()

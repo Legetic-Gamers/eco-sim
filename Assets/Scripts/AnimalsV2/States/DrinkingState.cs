@@ -71,9 +71,11 @@ namespace AnimalsV2.States
         {
             onDrinkWater?.Invoke(target, animal.animalModel.currentHydration);
             // Wait a while then change state and resume walking
-            yield return new WaitForSeconds(2);
+            yield return new WaitForSeconds(1);
             finiteStateMachine.GoToDefaultState();
             animal.agent.isStopped = false;
+            Debug.Log("Succesfully drank.");
+
 
             // Very important, this tells Unity to move onto next frame. Everything crashes without this
             yield return null;

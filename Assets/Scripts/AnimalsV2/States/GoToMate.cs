@@ -39,11 +39,11 @@ namespace AnimalsV2.States
                     NavigationUtilities.NavigateToPoint(animal,pointToRunTo);
                     
                     
-                    // if (Vector3.Distance(animal.transform.position, foundMate.transform.position) <= animal.agent.stoppingDistance)
-                    // {
-                    //     animal.matingState.SetTarget(foundMate);
-                    //     finiteStateMachine.ChangeState(animal.matingState);
-                    // }    
+                    if (Vector3.Distance(animal.transform.position, foundMate.transform.position) <= animal.agent.stoppingDistance + 0.2)
+                    {
+                        animal.matingState.SetTarget(foundMate);
+                        finiteStateMachine.ChangeState(animal.matingState);
+                    }    
                 }
                 
             }

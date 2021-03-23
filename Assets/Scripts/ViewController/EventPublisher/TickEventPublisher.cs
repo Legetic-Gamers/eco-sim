@@ -24,7 +24,7 @@ public class TickEventPublisher : MonoBehaviour
         while (true)
         {
             onParamTickEvent?.Invoke();
-            yield return new WaitForSeconds(2.0f);
+            yield return new WaitForSeconds(2.0f / Time.timeScale);
             
         }
     }
@@ -33,7 +33,10 @@ public class TickEventPublisher : MonoBehaviour
         while (true)
         {
             onSenseTickEvent?.Invoke();
-            yield return new WaitForSeconds(.5f);
+            //Debug.Log(Time.timeScale);
+            
+            //Senses update should scale with timescale.
+            yield return new WaitForSeconds(.5f / Time.timeScale);
             
         }
     }

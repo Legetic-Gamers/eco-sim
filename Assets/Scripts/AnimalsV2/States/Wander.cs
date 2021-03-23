@@ -31,9 +31,8 @@ namespace AnimalsV2.States
         public override void Enter()
         {
             base.Enter();
-            
-            nextPosition = NavigationUtilities.RandomNavSphere(animal.transform.position, 10,
-                1 << NavMesh.GetAreaFromName("Walkable"));
+
+            nextPosition = animal.transform.position;
         }
 
         public override void HandleInput()
@@ -53,10 +52,10 @@ namespace AnimalsV2.States
             */
             if (animal.agent.isActiveAndEnabled)
             {
-                if (animal.agent.remainingDistance <= animal.agent.stoppingDistance)
+                if (Vector3.Distance(animal.transform.position, nextPosition) <= animal.agent.stoppingDistance + 0.2)
                 {
                     //Vector3 position = new Vector3(Random.Range(-10.0f, 10.0f), 0, Random.Range(-10.0f, 10.0f)) + animal.transform.position;
-                   
+                    //Debug.Log("Framme!");
                     //Move the animal using the navmeshagent.
                     NavMeshHit hit;
                     //TODO this maxDistance is what is causing rabbits to dance sometimes, if poisition cant be found.
@@ -65,8 +64,12 @@ namespace AnimalsV2.States
                     if(NavigationUtilities.RandomPoint(animal.transform.position, 10f,animal.agent.height*2, out nextPosition))
                     {
                         animal.agent.SetDestination(nextPosition);
+                    }else
+                    {
+                        //Debug.Log("Dist: " + Vector3.Distance(animal.transform.position, nextPosition)+ " Stopping: " + animal.agent.stoppingDistance);
                     }
                 }
+                
             }
         }
         

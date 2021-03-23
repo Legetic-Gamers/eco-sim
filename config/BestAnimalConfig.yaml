@@ -100,3 +100,12 @@ behaviors:
         strength: 0.02
         encoding_size: 256
         learning_rate: 3.0e-4
+
+engine_settings:
+  width: 84
+  height: 84
+  quality_level: 5
+  time_scale: 5
+  target_frame_rate: -1
+  capture_frame_rate: 60
+  no_graphics: false

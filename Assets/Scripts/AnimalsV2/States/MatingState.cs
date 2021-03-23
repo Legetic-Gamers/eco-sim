@@ -30,7 +30,7 @@ namespace AnimalsV2.States
         {
             base.Enter();
 
-            currentStateAnimation = StateAnimation.Mating;
+            currentStateAnimation = StateAnimation.Attack;
 
             if (animal.agent.isActiveAndEnabled && animal.agent.isOnNavMesh)
             {
@@ -77,7 +77,9 @@ namespace AnimalsV2.States
 
                 // Wait a while then change state and resume walking
                 yield return new WaitForSeconds(matingTime);
-                onMate?.Invoke(target);    
+                onMate?.Invoke(target);
+                Debug.Log("Succesfully mated.");
+
             }
 
             finiteStateMachine.GoToDefaultState();

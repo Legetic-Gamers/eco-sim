@@ -37,10 +37,10 @@ using UnityEngine;
                     //Move the animal using the navmeshagent.
                     NavigationUtilities.NavigateToPoint(animal,pointToRunTo);
                     
-                    // if(Vector3.Distance(animal.transform.position, closestWater.transform.position) <= animal.agent.stoppingDistance){
-                    //     animal.drinkingState.SetTarget(closestWater);
-                    //     finiteStateMachine.ChangeState(animal.drinkingState);
-                    // }    
+                    if(Vector3.Distance(animal.transform.position, closestWater.transform.position) <= animal.agent.stoppingDistance + 0.2){
+                        animal.drinkingState.SetTarget(closestWater);
+                        finiteStateMachine.ChangeState(animal.drinkingState);
+                    }    
                     
                 }
                 
@@ -60,7 +60,7 @@ using UnityEngine;
         public override bool MeetRequirements()
         {
             // rewuirements for this state are following
-            return animal.visibleWaterTargets.Count > 0;
+            return animal.visibleWaterTargets.Count > 0 && !animal.animalModel.HighHydration;
         }
     }
 }
