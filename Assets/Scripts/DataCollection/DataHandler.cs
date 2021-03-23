@@ -139,6 +139,9 @@ namespace DataCollection
             c.Collect();
             SetList(0,_speciesNumber1,_traitNumber1,_dataTypeNumber1);
             SetList(1,_speciesNumber2,_traitNumber2,_dataTypeNumber2);
+            //for (int i = 0; i < c.rabbitStatsPerGenMean[0].Count; i++)
+            //    Debug.Log("element:" + i + "  " + c.rabbitStatsPerGenMean[0][i]);
+            
             Display?.Invoke(sendList1, sendList2);
             //ExportDataToFile(0);
         }
