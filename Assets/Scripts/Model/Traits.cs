@@ -16,7 +16,7 @@ public class Traits
     public float maxHydration { get; set; }
     
     public float maxHealth { get; set; }
-    
+
     /// <summary>
     /// based on the article for deciding the velocity of an animal:
     /// more readable: https://www.biorxiv.org/content/10.1101/095018v1.full
@@ -62,7 +62,34 @@ public class Traits
     /// rabbit = 62.8
     /// 
     /// </summary>
-    public float maxSpeed { get; set; }
+    public float acceleration { get; set; }
+
+    public float mass { get; set; }
+    
+    private float _maxSpeed;
+
+    public float maxSpeed 
+    { 
+        get => _maxSpeed;
+
+        set
+        {
+            // need to set acceleration and mass.
+            float bPow = 0.24f;
+            float bodymassAccel = acceleration * Mathf.Pow(mass, bPow);
+            
+            float muscleForce = 0.8f;
+            float muscleMass = 0.8f;
+            float i = muscleForce - 1 + muscleMass;
+            float massI = Mathf.Pow(mass, i);
+            
+            float h = 1 * 1; // c * f
+            float ePow = 1 - Mathf.Pow(2.71828f, -h * massI);
+
+            _maxSpeed = bodymassAccel * ePow - mass; // -mass causes the curve to crest and then curve down
+            
+        }
+    }
     
     public float maxReproductiveUrge { get; set; }
     
