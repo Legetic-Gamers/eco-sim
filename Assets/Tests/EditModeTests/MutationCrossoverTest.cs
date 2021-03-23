@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
@@ -13,15 +12,16 @@ namespace Tests
         public void TestCrossover()
         {
             // Initialize two parents
-            AnimalModel parent1 = new RabbitModel(new Traits(10,10,10,10,10,1,10,10,10,10,10,10,10), 0);
-            AnimalModel parent2 = new RabbitModel(new Traits(1,1,1,1,1,1,1,1,1,1,1,1,1), 1);
+            AnimalModel parent1 = new RabbitModel(new Traits(10,10,10,10, 10,1,10,10,10,10,10,10,10), 0);
+            AnimalModel parent2 = new RabbitModel(new Traits(1,1,1,1, 1,1,1,1,1,1,1,1,1), 1);
 
             // Set age
             parent1.age = 80;
             parent2.age = 20;
-            
+
+            System.Random rng = new System.Random();
             // Mate
-            AnimalModel child = parent1.Mate(parent2);
+            AnimalModel child = parent1.Mate(rng, parent2);
             
             // We make sure that parent1 is much likely to pass down the gense in comparison to parent2
             Debug.Log("Click on me to see traits after crossover"+ "\n" + 

@@ -1,6 +1,7 @@
-﻿public class BearModel : AnimalModel
+﻿using System;
+public class BearModel : AnimalModel
 {
-    public BearModel() : base(new Traits(5, 100, 100, 100, 5,10,10,10,10,10,180,10,10),0)
+    public BearModel() : base(new Traits(5f, 100, 100, 100, 6f, 10,10,10,10,10,180,10,10),0)
     {
         // Set variables specific to bear
     }
@@ -10,11 +11,11 @@
         
     }
 
-    public override AnimalModel Mate(AnimalModel otherParent)
+    public override AnimalModel Mate(Random rng, AnimalModel otherParent)
     {
-        Traits childTraits = traits.Crossover(otherParent.traits, age, otherParent.age);
+        Traits childTraits = traits.Crossover(rng, otherParent.traits, age, otherParent.age);
+        childTraits.Mutatation(rng);
         //TODO logic to determine generation
-
         return new BearModel(childTraits, 0);
     }
     

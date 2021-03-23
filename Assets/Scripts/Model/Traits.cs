@@ -21,14 +21,12 @@ public class Traits
     /// based on the article for deciding the velocity of an animal:
     /// more readable: https://www.biorxiv.org/content/10.1101/095018v1.full
     /// alternate version: https://www.uvm.edu/pdodds/research/papers/others/2017/hirt2017a.pdf
-    /// for mass input to the function.
     /// some default weights of the animals:
     /// bear avg mass = 180 kg
     /// deer avg mass = 110 kg
     /// wolf avg mass = 70 kg
     /// rabbit avg mass = 5 kg
     ///
-    /// for comparison to the results of the function.
     /// default speeds of the animals:
     /// bear avg speed = 56 km/h 
     /// deer avg speed = 48 km/h
@@ -49,45 +47,45 @@ public class Traits
     /// f = 1 (otherwise unknown)
     /// M = mass of animal from above
     ///
-    /// 'a' should vary between animals, some proposed values:
-    /// bear = 0.175 at mass 180
-    /// deer = 0.20 at mass 110
-    /// wolf = 0.22 at mass 70
-    /// rabbit = 0.46 at mass 5
+    /// here are some proposed values of 'a' and 'mass' if using mass instead of size:
+    /// bear = 17.5 at mass 180
+    /// deer = 20 at mass 110
+    /// wolf = 22 at mass 70
+    /// rabbit = 46 at mass 5
     /// 
-    /// giving (at default weight) approximately same speed:
+    /// using the proposed values, would get (at default weight) approximately same speed:
     /// bear = 60.9
     /// deer = 61.8
     /// wolf = 61
     /// rabbit = 62.8
-    /// 
+    ///
+    ///
+    /// Note that we are currently using size instead of mass, for simplicity.
     /// </summary>
+
     public float acceleration { get; set; }
 
-    public float mass { get; set; }
-    
     private float _maxSpeed;
-
     public float maxSpeed 
     { 
         get => _maxSpeed;
 
         set
         {
-            // need to set acceleration and mass.
             float bPow = 0.24f;
-            float bodymassAccel = acceleration * Mathf.Pow(mass, bPow);
+            float bodymassAccel = acceleration * Mathf.Pow(size, bPow);
             
             float muscleForce = 0.8f;
             float muscleMass = 0.8f;
             float i = muscleForce - 1 + muscleMass;
-            float massI = Mathf.Pow(mass, i);
+            float massI = Mathf.Pow(size, i);
             
             float h = 1 * 1; // c * f
             float ePow = 1 - Mathf.Pow(2.71828f, -h * massI);
 
-            _maxSpeed = bodymassAccel * ePow - mass; // -mass causes the curve to crest and then curve down
-            
+            float limiter = Mathf.Pow(size, 1f);
+            float speed = bodymassAccel * ePow - limiter;
+            _maxSpeed = Mathf.Clamp(speed,0.5f,25);
         }
     }
     
@@ -112,7 +110,7 @@ public class Traits
         float maxEnergy, 
         float maxHealth,
         float maxHydration,
-        float maxSpeed,
+        float acceleration,
         float maxReproductiveUrge,
         float endurance, 
         float ageLimit, 
@@ -127,7 +125,8 @@ public class Traits
         this.maxEnergy = maxEnergy;
         this.maxHealth = maxHealth;
         this.maxHydration = maxHydration;
-        this.maxSpeed = maxSpeed;
+        this.acceleration = acceleration;
+        maxSpeed = maxSpeed;
         this.maxReproductiveUrge = maxReproductiveUrge;
         this.endurance = endurance;
         this.ageLimit = ageLimit;
@@ -139,10 +138,10 @@ public class Traits
     }
     
     
-    public Traits Crossover(Traits otherParentTraits, float firstParentAge, float secondParentAge)
+    public Traits Crossover(System.Random rng, Traits otherParentTraits, float firstParentAge, float secondParentAge)
     {
         // create a copy of parent one's genes
-        Traits childTraits = new Traits(size, maxEnergy, maxHealth, maxHydration, maxSpeed,maxReproductiveUrge, endurance, ageLimit,
+        Traits childTraits = new Traits(size, maxEnergy, maxHealth, maxHydration, acceleration, maxReproductiveUrge, endurance, ageLimit,
             temperatureResist, desirability, viewAngle, viewRadius, hearingRadius);
         
         try
@@ -157,18 +156,16 @@ public class Traits
 
             // Get a probability of getting the gene from the other parent (which will be used for each trait in the process)
             float threshold = secondParentAge / totalAge;
-            
-            System.Random rnd = new System.Random();
 
-            // Get type and iterate through all the traits as properties, this solution does not depend on which or how many properties there is
+            // Get type and iterate through all the traits as properties, this solution does not depend on which or how many properties there are
             Type type = GetType();
             foreach (PropertyInfo info in type.GetProperties())
             {
-                // randomize a number between 0 and 1 
-                double rng = rnd.NextDouble();
+                // randomize a number between 0 and 1
+                double rnd = rng.NextDouble();
                 
                 // if rng value is within the threshold, we set the current trait to the other parents value
-                if (rng < threshold)
+                if (rnd < threshold)
                 {
                     info.SetValue(childTraits, info.GetValue(otherParentTraits));
                 }
@@ -183,7 +180,7 @@ public class Traits
         return childTraits;
     }
 
-    public void Mutatation()
+    public void Mutatation(System.Random rng)
     {
         try
         {
@@ -192,21 +189,19 @@ public class Traits
             
             // factor to determine what max value (depending on currentValue) is allowed.
             const float mutationFactor = 2f;
-
-            System.Random rnd = new System.Random();
-
+            
             // Get type and iterate through all the traits as properties, this solution does not depend on which or how many properties there is
             Type type = GetType();
             foreach (PropertyInfo info in type.GetProperties())
             {
                 // randomize a number between 0 and 1 
-                double rng = rnd.NextDouble();
+                double rnd = rng.NextDouble();
 
                 // if rng value is within the threshold for mutation, we want to mutate the current trait
-                if (rng < mutationRate)
+                if (rnd < mutationRate)
                 {
                     float currentValue = (float) info.GetValue(this);
-                    float mutatedValue = (float) rnd.NextDouble() * currentValue * mutationFactor;
+                    float mutatedValue = (float) rng.NextDouble() * currentValue * mutationFactor;
                     info.SetValue(this, mutatedValue);
                 }
             }

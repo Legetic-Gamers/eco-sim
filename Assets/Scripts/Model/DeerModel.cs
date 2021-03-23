@@ -1,8 +1,9 @@
-﻿using Model;
+﻿using System;
+using Model;
 
 public class DeerModel : AnimalModel, IEdible
 {
-    public DeerModel() : base(new Traits(3, 100, 100, 100, 6,10,10,10,10,10,180,10,10),0)
+    public DeerModel() : base(new Traits(3.25f, 100, 100, 100, 5.6f, 10,10,10,10,10,180,10,10),0)
     {
         // Set variables specific to deer
     }
@@ -12,9 +13,10 @@ public class DeerModel : AnimalModel, IEdible
 
     }
 
-    public override AnimalModel Mate(AnimalModel otherParent)
+    public override AnimalModel Mate(Random rng, AnimalModel otherParent)
     {
-        Traits childTraits = traits.Crossover(otherParent.traits, age, otherParent.age);
+        Traits childTraits = traits.Crossover(rng, otherParent.traits, age, otherParent.age);
+        childTraits.Mutatation(rng);
         //TODO logic for determining generation
         return new DeerModel(childTraits, 0);
     }

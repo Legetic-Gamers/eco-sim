@@ -51,11 +51,14 @@ public abstract class AnimalController : MonoBehaviour
     private const float RunningSpeed = 1f;
 
     //Modifiers
-    public float energyModifier;
-    public float hydrationModifier;
-    public float reproductiveUrgeModifier;
-    public float speedModifier = JoggingSpeed; //100% of maxSpeed in model
+    [HideInInspector] public float energyModifier;
+    [HideInInspector] public float hydrationModifier;
+    [HideInInspector] public float reproductiveUrgeModifier;
+    [HideInInspector] public float speedModifier = JoggingSpeed; //100% of maxSpeed in model
 
+    private bool wantsToMate;
+
+    //target lists
     public List<GameObject> visibleHostileTargets = new List<GameObject>();
     public List<GameObject> visibleFriendlyTargets = new List<GameObject>();
     public List<GameObject> visibleFoodTargets = new List<GameObject>();
@@ -65,11 +68,8 @@ public abstract class AnimalController : MonoBehaviour
     public List<GameObject> heardFriendlyTargets = new List<GameObject>();
     public List<GameObject> heardPreyTargets = new List<GameObject>();
 
-
-    /* /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\ */
-    /*                                   Parameter handlers                                   */
     /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
-
+    
     /// <summary>
     /// Parameter levels are to constantly be ticking down.
     /// Using tickEvent so as to not need a separate yielding tick thread for each animal.
@@ -152,7 +152,19 @@ public abstract class AnimalController : MonoBehaviour
         
         //TODO, maybe move from here?
         agent.speed = animalModel.currentSpeed;
+        // testing
+        speed = animalModel.currentSpeed;
+        maxSpeed = animalModel.traits.maxSpeed;
+        carrying = animalModel.Carrying;
+        size = animalModel.traits.size;
+        age = animalModel.age;
     }
+
+    public bool carrying;
+    public float speed;
+    public float maxSpeed;
+    public float size;
+    public float age;
 
     protected void EventSubscribe()
     {
@@ -197,6 +209,8 @@ public abstract class AnimalController : MonoBehaviour
         animationController.EventUnsubscribe();
     }
     
+    /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
+    
     //Set animals size based on traits.
     private void SetPhenotype()
     {
@@ -229,50 +243,68 @@ public abstract class AnimalController : MonoBehaviour
     //TODO a rabbit should be able to have more than one offspring at a time
     void Mate(GameObject target)
     {
+        wantsToMate = true;
+        
         AnimalController targetAnimalController = target.GetComponent<AnimalController>();
 
-        // make sure target has an AnimalController and that its animalModel is same species
-        if (targetAnimalController != null && targetAnimalController.animalModel.IsSameSpecies(animalModel))
+        System.Random rng = new System.Random();
+        // random offset in case both animals have the same age
+        float rnd = (float) rng.NextDouble() * 0.00001f;
+        // prevent both parties from becoming pregnant by favoring the older animal as carrier.
+        if (targetAnimalController.wantsToMate && 
+            targetAnimalController.animalModel.age + rnd > animalModel.age)
+            wantsToMate = false; 
+        
+        // make sure target has an AnimalController, that its animalModel is same species, and neither animal is already carrying
+        if (wantsToMate && targetAnimalController && 
+            targetAnimalController.animalModel.IsSameSpecies(animalModel) && 
+            !animalModel.Carrying && !targetAnimalController.animalModel.Carrying)
         {
-            // Spawn child as a copy of the father at the position of the mother
-            //GameObject child = Instantiate(gameObject, gameObject.transform.position, gameObject.transform.rotation); //NOTE CHANGE SO THAT PREFAB IS USED
-            GameObject child = gameObject;
 
-            // Generate the offspring traits
-            AnimalModel childModel = animalModel.Mate(targetAnimalController.animalModel);
-            child.GetComponent<AnimalController>().animalModel = childModel;
             //TODO promote laborTime to model or something.
             float childEnergy = animalModel.currentEnergy * 0.25f +
                                 targetAnimalController.animalModel.currentEnergy * 0.25f;
-            StartCoroutine(GiveBirth(child, childEnergy, 5));
+            // Expend energy
+            animalModel.currentEnergy *= 0.75f;
+            targetAnimalController.animalModel.currentEnergy *= 0.75f;
+            
+            // Generate the offspring's traits
+            AnimalModel childModel = animalModel.Mate(rng, targetAnimalController.animalModel);
+            
+            // Spawn child as a copy of this parent
+            GameObject child = gameObject;
+            // Wait some time before giving birth
+            animalModel.Carrying = true;
+            StartCoroutine(GiveBirth(child, childModel, childEnergy, 5));
 
-            //Reset both reproductive urges. 
+            // Reset both reproductive urges. 
             animalModel.reproductiveUrge = 0f;
             targetAnimalController.animalModel.reproductiveUrge = 0f;
-
-            //Expend energy
-            animalModel.currentEnergy = animalModel.currentEnergy * 0.75f;
-            targetAnimalController.animalModel.currentEnergy = targetAnimalController.animalModel.currentEnergy * 0.75f;
         }
     }
 
-    IEnumerator GiveBirth(GameObject child, float newEnergy, float laborTime)
+    IEnumerator GiveBirth(GameObject child, AnimalModel childModel, float newEnergy, float laborTime)
     {
         yield return new WaitForSeconds(laborTime);
         //Instantiate here
         child = Instantiate(child, gameObject.transform.position,
             gameObject.transform.rotation); //NOTE CHANGE SO THAT PREFAB IS USED
-        child.GetComponent<AnimalController>().animalModel.currentEnergy = newEnergy;
         
+        child.GetComponent<AnimalController>().animalModel = childModel;
+        child.GetComponent<AnimalController>().animalModel.currentEnergy = newEnergy;
+
+        // update the childs speed (in case of mutation).
+        child.GetComponent<AnimalController>().animalModel.traits.maxSpeed = 1;
+        animalModel.Carrying = false;
         onBirth?.Invoke(this,new OnBirthEventArgs{child = child});
     }
 
+    /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
+    
     public void DestroyGameObject(float delay)
     {
         Destroy(gameObject, delay);
     }
-
-    /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
 
     public void Awake()
     {

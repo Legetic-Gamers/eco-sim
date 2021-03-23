@@ -91,18 +91,18 @@ namespace ViewController.Senses
             AnimalController targetAnimalController = target.GetComponent<AnimalController>();
 
             //if the targets animalModel can eat this animalModel: add to visibleHostileTargets
-            if (targetAnimalController.animalModel.CanEat(animalController.animalModel))
+            if (targetAnimalController.animalModel.CanEat(animalController.animalModel) && targetAnimalController.animalModel.IsAlive)
             {
                 animalController.heardHostileTargets.Add(target);
                 animalController.actionPerceivedHostile?.Invoke(target);
             }
             //if the target is of same species: add to visibleFriendlyTargets
-            else if (animalController.animalModel.IsSameSpecies(targetAnimalController.animalModel))
+            else if (animalController.animalModel.IsSameSpecies(targetAnimalController.animalModel) && targetAnimalController.animalModel.IsAlive)
             {
                 animalController.heardFriendlyTargets.Add(target);
             }
             //if this animalModel can eat the targets animalModel: add to visibleFoodTargets
-            else if (animalController.animalModel.CanEat(targetAnimalController.animalModel))
+            else if (animalController.animalModel.CanEat(targetAnimalController.animalModel) )
             {
                 animalController.heardPreyTargets.Add(target);
             }
@@ -113,7 +113,7 @@ namespace ViewController.Senses
             AnimalController targetAnimalController = target.GetComponent<AnimalController>();
 
             //if the targets animalModel can eat this animalModel: add to visibleHostileTargets
-            if (targetAnimalController.animalModel.CanEat(animalController.animalModel))
+            if (targetAnimalController.animalModel.CanEat(animalController.animalModel) && targetAnimalController.animalModel.IsAlive)
             {
                 animalController.visibleHostileTargets.Add(target);
                 animalController.actionPerceivedHostile?.Invoke(target);
@@ -125,7 +125,7 @@ namespace ViewController.Senses
                 animalController.visibleFoodTargets.Add(target);
             }
             //if the target is of same species: add to visibleFriendlyTargets
-            else if (animalController.animalModel.IsSameSpecies(targetAnimalController.animalModel))
+            else if (animalController.animalModel.IsSameSpecies(targetAnimalController.animalModel) && targetAnimalController.animalModel.IsAlive)
             {
                 animalController.visibleFriendlyTargets.Add(target);
             }

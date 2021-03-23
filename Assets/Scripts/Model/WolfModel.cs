@@ -1,8 +1,9 @@
-﻿using Model;
+﻿using System;
+using Model;
 
 public class WolfModel : AnimalModel, IEdible
 {
-    public WolfModel() : base(new Traits(3f, 200, 100, 100, 6,10,10,100,10,10,180,10,5),0)
+    public WolfModel() : base(new Traits(2.35f, 200, 100, 100, 5.55f, 10,10,100,10,10,180,10,5),0)
     {
         // Wolf specific initialization 
     }
@@ -14,10 +15,10 @@ public class WolfModel : AnimalModel, IEdible
     }
 
 
-    public override AnimalModel Mate(AnimalModel otherParent)
+    public override AnimalModel Mate(Random rng, AnimalModel otherParent)
     {
-        Traits childTraits = traits.Crossover(otherParent.traits, age, otherParent.age);
-        childTraits.Mutatation();
+        Traits childTraits = traits.Crossover(rng, otherParent.traits, age, otherParent.age);
+        childTraits.Mutatation(rng);
         //TODO logic to determine generation
         return new WolfModel(childTraits,0);
     }

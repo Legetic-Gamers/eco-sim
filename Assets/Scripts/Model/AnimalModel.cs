@@ -107,7 +107,7 @@ public abstract class AnimalModel
 
     public float currentHealth
     {
-        get { return _currentHealth; }
+        get => _currentHealth;
         set
         {
             if (traits == null)
@@ -126,7 +126,7 @@ public abstract class AnimalModel
 
     public float currentEnergy
     {
-        get { return _currentEnergy; }
+        get => _currentEnergy;
         set
         {
             if (traits == null)
@@ -144,7 +144,7 @@ public abstract class AnimalModel
 
     public float currentHydration
     {
-        get { return _currentHydration; }
+        get => _currentHydration;
         set
         {
             if (traits == null)
@@ -162,7 +162,7 @@ public abstract class AnimalModel
 
     public float currentSpeed
     {
-        get { return _currentSpeed; }
+        get => _currentSpeed;
         set
         {
             if (traits == null)
@@ -182,7 +182,7 @@ public abstract class AnimalModel
     private float _reproductiveUrge;
     public float reproductiveUrge
     {
-        get { return _reproductiveUrge; }
+        get => _reproductiveUrge;
         set
         {
             if (traits == null)
@@ -195,6 +195,8 @@ public abstract class AnimalModel
             }
         }
     }
+
+    public bool Carrying;
 
     public bool IsAlive => (currentHealth > 0 && currentEnergy > 0 && age < traits.ageLimit && currentHydration > 0);
 
@@ -240,6 +242,7 @@ public abstract class AnimalModel
     public AnimalModel(Traits traits, int generation)
     {
         // initializing parameters
+        this.generation = generation;
         age = 0;
         currentHealth = traits.maxHealth;
         currentEnergy = traits.maxEnergy;
@@ -256,13 +259,13 @@ public abstract class AnimalModel
         
         currentSpeed = traits.maxSpeed * speedModifier;
         
-        currentEnergy -= age + traits.size *
-            (traits.viewRadius + traits.hearingRadius + energyModifier * currentSpeed);
-        currentHydration -= (traits.size * 1) + (traits.size * currentSpeed) * hydrationModifier;
+        //currentEnergy -= age + traits.size *
+        //    (traits.viewRadius + traits.hearingRadius + energyModifier * currentSpeed);
+        //currentHydration -= (traits.size * 1) + (traits.size * currentSpeed) * hydrationModifier;
         reproductiveUrge += 0.1f * reproductiveUrgeModifier;
     }
     
-    public abstract AnimalModel Mate(AnimalModel otherParent);
+    public abstract AnimalModel Mate(System.Random rng, AnimalModel otherParent);
     
     public abstract bool CanEat<T>(T obj);
 
