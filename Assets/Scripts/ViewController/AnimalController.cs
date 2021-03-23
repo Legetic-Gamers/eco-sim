@@ -99,7 +99,7 @@ public abstract class AnimalController : MonoBehaviour
     {
         // Init the NavMesh agent
         agent = GetComponent<NavMeshAgent>();
-        agent.autoBraking = false;
+        agent.autoBraking = true;
         animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
 
         //Can be used later.
@@ -468,14 +468,5 @@ public abstract class AnimalController : MonoBehaviour
 
     }
     
-
-    
-    // public void OnTriggerEnter(Collider other)
-    // {
-    //     if (other.gameObject.layer == LayerMask.NameToLayer("Target"))
-    //     {
-    //         Interact(other.gameObject);
-    //     }
-    // }
     public abstract Vector3 getNormalizedScale();
 }

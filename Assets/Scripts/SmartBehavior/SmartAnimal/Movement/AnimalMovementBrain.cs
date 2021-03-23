@@ -235,4 +235,12 @@ public class AnimalMovementBrain : Agent, IAgent
         EventUnsubscribe();
     }
     
+    public void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.layer == LayerMask.NameToLayer("Target"))
+        {
+            animalController.Interact(other.gameObject);
+        }
+    }
+    
 }

@@ -36,8 +36,8 @@ public class SteeringAcademy : MonoBehaviour
     public void Awake()
     {
         //Randomize environment size
-        float scaleX = Mathf.Round(Academy.Instance.EnvironmentParameters.GetWithDefault("envScaleX", 2.0f));
-        float scaleZ = Mathf.Round(Academy.Instance.EnvironmentParameters.GetWithDefault("envScaleZ", 2.0f));
+        float scaleX = Academy.Instance.EnvironmentParameters.GetWithDefault("envScaleX", 0.8f);
+        float scaleZ = Academy.Instance.EnvironmentParameters.GetWithDefault("envScaleZ", 0.8f);
         //Set size of environment
         transform.localScale = new Vector3(scaleX,1f,scaleZ);
         //Set spawn bounds
@@ -45,11 +45,11 @@ public class SteeringAcademy : MonoBehaviour
         rangeZ = 5f * scaleZ - 0.5f;
         //Build Navmesh
         
-        surface.BuildNavMesh();
+        //surface.BuildNavMesh();
         m_Recorder = Academy.Instance.StatsRecorder;
         agentBrain = agent.GetComponent<IAgent>();
-        agentBrain.onEpisodeEnd += PopulateEnvironment;
-        agentBrain.onEpisodeBegin += ClearEnvironment;
+        agentBrain.onEpisodeBegin += PopulateEnvironment;
+        agentBrain.onEpisodeEnd += ClearEnvironment;
         animalController = agent.GetComponent<AnimalController>();
     }
 
@@ -116,8 +116,8 @@ public class SteeringAcademy : MonoBehaviour
             AnimalModel animalModel = animalController.animalModel;
             
             //MAKE SURE YOU ARE USING LOCAL POSITION
-            agent.transform.position = new Vector3(Random.Range(-rangeX, rangeX), 0,
-                Random.Range(-rangeZ, rangeZ)) + transform.position;
+            agent.transform.localPosition = new Vector3(Random.Range(-rangeX, rangeX), 0,
+                Random.Range(-rangeZ, rangeZ));
             agent.transform.rotation = Quaternion.Euler(new Vector3(0f, Random.Range(0f, 360f), 90f));
 
             animalModel.currentEnergy = animalModel.traits.maxEnergy;
@@ -132,8 +132,8 @@ public class SteeringAcademy : MonoBehaviour
     
     private void OnDestroy()
     {
-        agentBrain.onEpisodeEnd -= PopulateEnvironment;
-        agentBrain.onEpisodeBegin -= ClearEnvironment;    
+        agentBrain.onEpisodeEnd -= ClearEnvironment;
+        agentBrain.onEpisodeBegin -= PopulateEnvironment;    
     }
 
 }

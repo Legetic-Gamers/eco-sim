@@ -10,6 +10,8 @@ public class OrbitCameraController : MonoBehaviour
 
     public Transform followTransform;
 
+    [SerializeField] private bool navigateWithKeyboard;
+    
     public float normalSpeed;
     public float fastSpeed;
     public float movementSpeed;
@@ -125,15 +127,18 @@ public class OrbitCameraController : MonoBehaviour
             movementSpeed = normalSpeed;
         }
 
-        float vdir = Input.GetAxis("Vertical");
-        float hdir = Input.GetAxis("Horizontal");
-        if (vdir != 0)
+        if (navigateWithKeyboard)
         {
-            newPosition += (transform.forward * movementSpeed * vdir);
-        }
-        if (hdir != 0)
-        {
-            newPosition += (transform.right * movementSpeed * hdir);
+            float vdir = Input.GetAxis("Vertical");
+            float hdir = Input.GetAxis("Horizontal");
+            if (vdir != 0)
+            {
+                newPosition += (transform.forward * movementSpeed * vdir);
+            }
+            if (hdir != 0)
+            {
+                newPosition += (transform.right * movementSpeed * hdir);
+            }   
         }
 
         if (Input.GetKey(KeyCode.Q))
