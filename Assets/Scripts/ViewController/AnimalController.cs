@@ -309,14 +309,14 @@ public abstract class AnimalController : MonoBehaviour
     public void EatFood(GameObject food, float currentEnergy)
     {
 
-        if (food.GetComponent<AnimalController>()?.animalModel is IEdible edibleAnimal &&
+        if (food != null && food.GetComponent<AnimalController>()?.animalModel is IEdible edibleAnimal &&
             animalModel.CanEat(edibleAnimal))
         { 
             animalModel.currentEnergy += edibleAnimal.GetEaten();
             Destroy(food);
         }
 
-        if (food.GetComponent<PlantController>()?.plantModel is IEdible ediblePlant && animalModel.CanEat(ediblePlant))
+        if (food != null && food.GetComponent<PlantController>()?.plantModel is IEdible ediblePlant && animalModel.CanEat(ediblePlant))
         {
             animalModel.currentEnergy += ediblePlant.GetEaten();
             Destroy(food);

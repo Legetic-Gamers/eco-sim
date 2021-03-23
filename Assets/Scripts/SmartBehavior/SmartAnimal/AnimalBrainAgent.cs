@@ -186,33 +186,38 @@ public class AnimalBrainAgent : Agent
         }
 
         //These states cannot be exited on the fly
-        if (fsm.currentState is FleeingState || fsm.currentState is EatingState ||
-            fsm.currentState is DrinkingState || fsm.currentState is MatingState || fsm.currentState is Waiting) return;
+        if (!(fsm.currentState is FleeingState || fsm.currentState is EatingState ||
+              fsm.currentState is DrinkingState || fsm.currentState is MatingState || fsm.currentState is Waiting))
+        {
 
-        //Switch state based on action produced by ML model.
-        //We are rewarding successful state changes.
-        if (discreteActions[0] == 0)
-        {
-            ChangeState(animalController.wanderState);
-            print("Wander.");
+            //Switch state based on action produced by ML model.
+            //We are rewarding successful state changes.
+            if (discreteActions[0] == 0)
+            {
+                ChangeState(animalController.wanderState);
+                print("Wander.");
+            }
+            else if (discreteActions[0] == 1)
+            {
+                ChangeState(animalController.goToWaterState);
+                print("Look for Water.");
+            }
+            else if (discreteActions[0] == 2)
+            {
+                ChangeState(animalController.goToMate);
+
+                print("Look for Mate.");
+            }
+            else if (discreteActions[0] == 3)
+            {
+                ChangeState(animalController.goToFoodState);
+                print("Look for food.");
+            }
+
         }
-        else if (discreteActions[0] == 1)
-        {
-            ChangeState(animalController.goToWaterState);
-            print("Look for Water.");
-        }
-        else if (discreteActions[0] == 2)
-        {
-            ChangeState(animalController.goToMate);
-                
-            print("Look for Mate.");
-        }
-        else if (discreteActions[0] == 3)
-        {
-            ChangeState(animalController.goToFoodState);
-            print("Look for food.");
-        }
-        else if (discreteActions[0] == 4)
+
+        //Fleeing can bypass waiting and such.
+        if (discreteActions[0] == 4)
         {
             ChangeState(animalController.fleeingState);
             print("Flee!");

@@ -96,7 +96,7 @@ namespace AnimalsV2.States
         
         public override bool MeetRequirements()
         {
-            return target != null && target.TryGetComponent(out AnimalController potentialMateAnimalController) &&
+            return target != null  && target.TryGetComponent(out AnimalController potentialMateAnimalController) &&
                    potentialMateAnimalController.animalModel.WantingOffspring &&
                    potentialMateAnimalController.animalModel.IsAlive && !(potentialMateAnimalController.fsm.currentState is MatingState);
         }
