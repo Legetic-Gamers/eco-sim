@@ -16,13 +16,13 @@ namespace AnimalsV2.States
         public EatingState(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal,
             finiteStateMachine)
         {
+            currentStateAnimation = StateAnimation.Attack;
         }
 
         public override void Enter()
         {
             base.Enter();
-            currentStateAnimation = StateAnimation.Attack;
-            
+
             if (animal.agent.isActiveAndEnabled && animal.agent.isOnNavMesh)
             {
                 animal.agent.isStopped = true;
@@ -44,14 +44,6 @@ namespace AnimalsV2.States
         public override void LogicUpdate()
         {
             base.LogicUpdate();
-            // if (MeetRequirements())
-            // {
-            //     EatFood(target);
-            // }
-            // else
-            // {
-            //     finiteStateMachine.GoToDefaultState();
-            // }
         }
 
         //New

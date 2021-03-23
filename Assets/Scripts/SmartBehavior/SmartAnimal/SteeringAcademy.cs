@@ -5,6 +5,7 @@ using Unity.MLAgents;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -15,28 +16,45 @@ using Random = UnityEngine.Random;
 /// </summary>
 public class SteeringAcademy : MonoBehaviour
 {
-
+    
     [SerializeField] private GameObject agent;
     [SerializeField] private List<EnvironmentObject> environmentObjects;
 
-    private AnimalMovementBrain agentBrain;
+    private AnimalController animalController;
+    
+    private float rangeX;
+    private float rangeZ;
+    
+    private IAgent agentBrain;
 
+    public NavMeshSurface surface;
     
     public float totalScore;
     public Text scoreText;
     StatsRecorder m_Recorder;
 
-    public void Start()
+    public void Awake()
     {
+        //Randomize environment size
+        float scaleX = Mathf.Round(Academy.Instance.EnvironmentParameters.GetWithDefault("envScaleX", 2.0f));
+        float scaleZ = Mathf.Round(Academy.Instance.EnvironmentParameters.GetWithDefault("envScaleZ", 2.0f));
+        //Set size of environment
+        transform.localScale = new Vector3(scaleX,1f,scaleZ);
+        //Set spawn bounds
+        rangeX = 5f * scaleX - 0.5f;
+        rangeZ = 5f * scaleZ - 0.5f;
+        //Build Navmesh
+        
+        surface.BuildNavMesh();
         m_Recorder = Academy.Instance.StatsRecorder;
-        agentBrain = agent.GetComponent<AnimalMovementBrain>();
-        agentBrain.onEpisodeEnd += HandleEndEpisode;
-        agentBrain.onEpisodeBegin += HandleBeginEpisode;
+        agentBrain = agent.GetComponent<IAgent>();
+        agentBrain.onEpisodeEnd += PopulateEnvironment;
+        agentBrain.onEpisodeBegin += ClearEnvironment;
+        animalController = agent.GetComponent<AnimalController>();
     }
 
     public void Update()
     {
-        //agents = FindObjectsOfType<AnimalBrainAgent>();
 
         if(scoreText) scoreText.text = $"Score: {totalScore}";
 
@@ -47,11 +65,11 @@ public class SteeringAcademy : MonoBehaviour
         {
             m_Recorder.Add("TotalScore", totalScore);
         }
+        
     }
 
-    private void HandleBeginEpisode(float temp)
+    private void PopulateEnvironment(float temp)
     {
-        Debug.Log("Begin episode!");
         foreach (EnvironmentObject envObj in environmentObjects)
         {
             CreateObjectInstances(envObj);
@@ -59,12 +77,11 @@ public class SteeringAcademy : MonoBehaviour
         ResetAgent();
     }
 
-    private void HandleEndEpisode(float temp)
+    private void ClearEnvironment(float temp)
     {
-        Debug.Log("End episode!");
         foreach (EnvironmentObject envObj in environmentObjects)
         {
-            ClearObjectInstances(envObj);
+            RemoveObjectInstances(envObj);
         }
     }
 
@@ -74,15 +91,15 @@ public class SteeringAcademy : MonoBehaviour
         //We want to create amountPerRound number of units
         for (int i = 0; i < environmentObject.amountPerRound; i++)
         {
-            GameObject obj = Instantiate(environmentObject.prefab, transform);
-            obj.transform.localPosition = GetRandomPointOnPlane();
-            obj.transform.rotation = GetRandomRotation();
+            GameObject obj = Instantiate(environmentObject.prefab, transform, false);
+            obj.transform.position = obj.transform.position +
+                                     new Vector3(Random.Range(-rangeX, rangeX), 0, Random.Range(-rangeZ, rangeZ));
             environmentObject.instances.Add(obj);
         }
     }
     
     //Clear all objects of a given environment object
-    void ClearObjectInstances(EnvironmentObject environmentObject)
+    void RemoveObjectInstances(EnvironmentObject environmentObject)
     {
         foreach (GameObject obj in environmentObject.instances)
         {
@@ -91,52 +108,32 @@ public class SteeringAcademy : MonoBehaviour
         environmentObject.instances.Clear();
     }
     
-    private Vector3 GetRandomPointOnPlane()
-    {
-        //Get the planes localscale (which is 5m per unit)
-        float planeRadiusX = Mathf.Abs(transform.localScale.x) * 5/2;
-        float planeRadiusY = Mathf.Abs(transform.localScale.y) * 5/2;
-        
-        //Give some marginal from walls
-        planeRadiusX -= 1;
-        planeRadiusY -= 1;
-        
-        //Get random vector on plane
-        return new Vector3(Random.Range(-planeRadiusX, planeRadiusX), transform.position.y,
-            Random.Range(-planeRadiusY, planeRadiusY));
-    }
-
-    private Quaternion GetRandomRotation()
-    {
-        return Quaternion.Euler(new Vector3(0f, Random.Range(0f, 360f), 90f));
-    }
     
     private void ResetAgent()
     {
         if (agent.TryGetComponent(out AnimalController animalController) && animalController.animalModel != null)
         {
             AnimalModel animalModel = animalController.animalModel;
+            
             //MAKE SURE YOU ARE USING LOCAL POSITION
-            agent.transform.localPosition = GetRandomPointOnPlane();
-            agent.transform.rotation = Quaternion.Euler(new Vector3(0f, Random.Range(0, 360)));
-            Debug.Log("reset!");
-        
-        
+            agent.transform.position = new Vector3(Random.Range(-rangeX, rangeX), 0,
+                Random.Range(-rangeZ, rangeZ)) + transform.position;
+            agent.transform.rotation = Quaternion.Euler(new Vector3(0f, Random.Range(0f, 360f), 90f));
+
             animalModel.currentEnergy = animalModel.traits.maxEnergy;
-            animalModel.currentSpeed = 0;
             animalModel.currentHealth = animalModel.traits.maxHealth;
             animalModel.currentHydration = animalModel.traits.maxHydration;
             animalModel.reproductiveUrge = 0.2f;
             animalModel.age = 0;
-            animalController.fsm.absorbingState = false;    
+            animalController.fsm.absorbingState = false;
         }
     }
     
     
     private void OnDestroy()
     {
-        agentBrain.onEpisodeEnd -= HandleEndEpisode;
-        agentBrain.onEpisodeBegin -= HandleBeginEpisode;
+        agentBrain.onEpisodeEnd -= PopulateEnvironment;
+        agentBrain.onEpisodeBegin -= ClearEnvironment;    
     }
 
 }
@@ -159,4 +156,5 @@ public class EnvironmentObject
     {
         return tag.ToString();
     }
+    
 }

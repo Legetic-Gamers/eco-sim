@@ -26,9 +26,6 @@ namespace AnimalsV2.States
         public override void LogicUpdate()
         {
             base.LogicUpdate();
-            Debug.Log("hasPath: " + animal.agent.hasPath);
-            Debug.Log("pathPending: " + animal.agent.pathPending);
-            
         }
         
         public override string ToString()

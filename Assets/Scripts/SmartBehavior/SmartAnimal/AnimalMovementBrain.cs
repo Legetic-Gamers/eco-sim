@@ -8,11 +8,10 @@ using Unity.MLAgents.Sensors;
 using UnityEngine;
 using UnityEngine.AI;
 using ViewController;
-using Quaternion = UnityEngine.Quaternion;
 using Random = UnityEngine.Random;
 using Vector3 = UnityEngine.Vector3;
 
-public class AnimalMovementBrain : Agent
+public class AnimalMovementBrain : Agent, IAgent
 {
     //ANIMAL RELATED THINGS
     private AnimalController animalController;
@@ -20,9 +19,10 @@ public class AnimalMovementBrain : Agent
     private TickEventPublisher eventPublisher;
     private FiniteStateMachine fsm;
     private float turnSpeed = 300f;
+    
+    public Action<float> onEpisodeBegin { get; set; }
+    public Action<float> onEpisodeEnd { get; set; }
 
-    public Action<float> onEpisodeBegin;
-    public Action<float> onEpisodeEnd;
     
     public void Start()
     {
@@ -31,27 +31,23 @@ public class AnimalMovementBrain : Agent
         fsm = animalController.fsm;
         eventPublisher = FindObjectOfType<global::TickEventPublisher>();
         
+        
         //change to a state which does not navigate the agent. If no decisionmaker is present, it will stay at this state (if default state is also set).
         fsm.SetDefaultState(animalController.idleState);
         fsm.ChangeState(animalController.idleState);
-        
-
         EventSubscribe();
     }
-
+    
     public override void OnEpisodeBegin()
     {
-        base.OnEpisodeBegin();
-        onEpisodeBegin.Invoke(100f);
+        onEpisodeBegin?.Invoke(100f);
     }
-
+    
 
     //Collecting observations that the ML agent should base its calculations on.
     //Choices based on https://github.com/Unity-Technologies/ml-agents/blob/release_2_verified_docs/docs/Learning-Environment-Design-Agents.md#vector-observations
     public override void CollectObservations(VectorSensor sensor)
     {
-        base.CollectObservations(sensor);
-
         //Position of the animal
         Vector3 thisPosition = transform.position;
         if (animalController == null)
@@ -60,68 +56,40 @@ public class AnimalMovementBrain : Agent
         }
         
         //Get the absolute vector for nearest food
-        Vector3 nearestFoodPosition = NavigationUtilities.GetNearestObject(animalController.visibleFoodTargets.Concat(animalController.heardPreyTargets).ToList(), thisPosition)?.transform.position ?? thisPosition;
+        Vector3 nearestFood = NavigationUtilities.GetNearestObject(animalController.visibleFoodTargets.Concat(animalController.heardPreyTargets).ToList(), thisPosition)?.transform.position ?? thisPosition;
         //Get the absolute vector for neares water
-        Vector3 nearestWaterPosition = NavigationUtilities.GetNearestObject(animalController.visibleWaterTargets, thisPosition)?.transform.position ?? thisPosition;;
+        Vector3 nearestWater = NavigationUtilities.GetNearestObject(animalController.visibleWaterTargets, thisPosition)?.transform.position ?? thisPosition;;
         //Get the absolute vector for a potential mate
-        Vector3 potentialMatePosition = animalController.goToMate.GetFoundMate()?.transform.position ?? thisPosition;
+        Vector3 potentialMate = animalController.goToMate.GetFoundMate()?.transform.position ?? thisPosition;
         
-        //Convert to relative vector (based on animals position)
-        nearestFoodPosition = nearestFoodPosition - thisPosition;
-        nearestWaterPosition = nearestWaterPosition - thisPosition;
-        potentialMatePosition = potentialMatePosition - thisPosition;
-        /*
-
-
-        //Normalization of vector sensor helps the model immensenly (to tighten the possible observation confirmation space)
-        //https://forum.unity.com/threads/how-to-choose-observations.935741/
-        nearestFoodPosition = nearestFoodPosition.normalized;
-        nearestWaterPosition = nearestWaterPosition.normalized;
-        potentialMatePosition = potentialMatePosition.normalized;
+        //Get Vector between animal and targets
+        nearestFood = nearestFood - thisPosition;
+        nearestWater = nearestWater - thisPosition;
+        potentialMate = potentialMate - thisPosition;
         
-        sensor.AddObservation(animalModel.currentEnergy / animalModel.traits.maxEnergy);
-        sensor.AddObservation(nearestFoodPosition);
-        sensor.AddObservation(nearestFoodDistance);
-
-        sensor.AddObservation(animalModel.currentHydration / animalModel.traits.maxHydration);        
-        sensor.AddObservation(nearestWaterPosition);
-        sensor.AddObservation(nearestWaterDistance);
-
-        sensor.AddObservation(animalModel.WantingOffspring);
-        sensor.AddObservation(potentialMatePosition);
-        sensor.AddObservation(potentialMateDistance);        
-        */
-        
-        // Project on plane so that we guarantee to compute an angle that represents the angle around the y-axis
-        nearestFoodPosition.y = thisPosition.y;
-        nearestWaterPosition.y = thisPosition.y;
-        potentialMatePosition.y = thisPosition.y;
-                
-        // Compute angle between the animals forward-vector and the target
-        float angleToNearestFood = Vector3.SignedAngle(transform.forward, nearestFoodPosition, Vector3.up)/180f;
-        float angleToNearestWater = Vector3.SignedAngle(transform.forward, nearestWaterPosition, Vector3.up)/180f;
-        float angleToPotentialMate = Vector3.SignedAngle(transform.forward, nearestFoodPosition, Vector3.up)/180f;
-        
+        // Convert to local coordinate system direction (NOTE: since they're directions they will be normalized)
+        nearestFood = transform.InverseTransformDirection(nearestFood);
+        nearestWater = transform.InverseTransformDirection(nearestWater);
+        potentialMate = transform.InverseTransformDirection(potentialMate);
         
         //Get the discrete magnitude of nearestFood, nearestWater potentialMate. (Normalized)
-        int nearestFoodDistance= (int)Math.Round(nearestFoodPosition.magnitude/animalModel.traits.viewRadius);
-        int nearestWaterDistance = (int)Math.Round(nearestWaterPosition.magnitude/animalModel.traits.viewRadius);
-        int potentialMateDistance = (int) Math.Round(potentialMatePosition.magnitude/animalModel.traits.viewRadius);
-
-        //sensor.AddObservation(animalModel.currentHealth / animalModel.traits.maxHealth);
-        //sensor.AddObservation(animalModel.reproductiveUrge / animalModel.traits.maxReproductiveUrge);
+        int nearestFoodDistance= (int)Math.Round(nearestFood.magnitude);
+        int nearestWaterDistance = (int)Math.Round(nearestWater.magnitude);
+        int potentialMateDistance = (int) Math.Round(potentialMate.magnitude);
         
-        sensor.AddObservation(animalModel.currentEnergy / animalModel.traits.maxEnergy);
-        sensor.AddObservation(angleToNearestFood);
+        sensor.AddObservation(nearestFood);
         sensor.AddObservation(nearestFoodDistance);
+        sensor.AddObservation(animalModel.HungerPercentage);
         
-        sensor.AddObservation(animalModel.currentHydration / animalModel.traits.maxHydration);
-        sensor.AddObservation(angleToNearestWater);
+        sensor.AddObservation(nearestWater);
         sensor.AddObservation(nearestWaterDistance);
+        sensor.AddObservation(animalModel.ThirstPercentage);
         
-        sensor.AddObservation(animalModel.WantingOffspring);
-        sensor.AddObservation(angleToPotentialMate);
+        sensor.AddObservation(potentialMate);
         sensor.AddObservation(potentialMateDistance);
+        sensor.AddObservation(animalModel.WantingOffspring);
+        
+        sensor.AddObservation(transform.InverseTransformDirection(animalController.agent.velocity));
 
 
     }
@@ -152,6 +120,7 @@ public class AnimalMovementBrain : Agent
         Vector3 rotateDir = Vector3.zero;
         int move = actions.DiscreteActions[0];
         int rotateAxis = actions.DiscreteActions[1];
+        
 
         if (move == 1)
         {
@@ -222,7 +191,6 @@ public class AnimalMovementBrain : Agent
             reward /= animalModel.traits.maxHydration;
         }
         AddReward(reward);
-        RequestDecision();
     }
 
     //The reason to why I have curentEnergy as an in-parameter is because currentEnergy is updated through EatFood before reward gets computed in AnimalMovementBrain
@@ -252,8 +220,8 @@ public class AnimalMovementBrain : Agent
         }
 
         AddReward(reward);
-        RequestDecision();
     }
+    
     
     private void HandleMate(GameObject obj)
     {
@@ -262,9 +230,9 @@ public class AnimalMovementBrain : Agent
         onEpisodeEnd.Invoke(100f);
     }
 
-
     private void OnDestroy()
     {
         EventUnsubscribe();
     }
+    
 }

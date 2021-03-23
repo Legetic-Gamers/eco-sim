@@ -15,6 +15,9 @@ using Vector3 = UnityEngine.Vector3;
 
 public class AnimalRayBrain : Agent
 {
+    [SerializeField] private GameObject environment;
+    private SteeringAcademy environmentAcademy;
+    
     //ANIMAL RELATED THINGS
     private AnimalController animalController;
     private AnimalModel animalModel;
@@ -22,15 +25,7 @@ public class AnimalRayBrain : Agent
     private FiniteStateMachine fsm;
     private float turnSpeed = 300f;
     
-
-
-    //We could have multiple brains, EX:
-    // Brain to use when no wall is present
-    //public NNModel noWallBrain;
-    // Brain to use when a jumpable wall is present
-    //public NNModel smallWallBrain;
-    // Brain to use when a wall requiring a block to jump over is present
-    //public NNModel bigWallBrain;
+    
     public void Start()
     {
         animalController = GetComponent<AnimalController>();
@@ -41,36 +36,8 @@ public class AnimalRayBrain : Agent
         //change to a state which does not navigate the agent. If no decisionmaker is present, it will stay at this state (if default state is also set).
         fsm.SetDefaultState(animalController.idleState);
         fsm.ChangeState(animalController.idleState);
-
         EventSubscribe();
     }
-
-    public override void OnEpisodeBegin()
-    {
-        base.OnEpisodeBegin();
-
-        //Reset animal position and rotation.
-        //ResetRabbit();
-    }
-
-    private void ResetRabbit()
-    {
-        //MAKE SURE YOU ARE USING LOCAL POSITION
-        transform.localPosition = new Vector3(Random.Range(-9.5f, 9.5f), 0, Random.Range(-9.5f, 9.5f));
-        transform.rotation = Quaternion.Euler(new Vector3(0f, Random.Range(0, 360)));
-        Debug.Log("reset!");
-        
-        
-        animalModel.currentEnergy = animalModel.traits.maxEnergy;
-        animalModel.currentSpeed = 0;
-        animalModel.currentHealth = animalModel.traits.maxHealth;
-        animalModel.currentHydration = animalModel.traits.maxHydration;
-        animalModel.reproductiveUrge = 0.2f;
-        animalModel.age = 0;
-        animalController.fsm.absorbingState = false;
-
-    }
-
 
     //Collecting observations that the ML agent should base its calculations on.
     //Choices based on https://github.com/Unity-Technologies/ml-agents/blob/release_2_verified_docs/docs/Learning-Environment-Design-Agents.md#vector-observations
@@ -87,11 +54,6 @@ public class AnimalRayBrain : Agent
     //steering inspired by: https://github.com/Unity-Technologies/ml-agents/blob/release_2_verified_docs/Project/Assets/ML-Agents/Examples/FoodCollector/Scripts/FoodCollectorAgent.cs
     public override void OnActionReceived(ActionBuffers actions)
     {
-        if (animalModel.IsAlive)
-        {
-            AddReward(0.0025f);
-        }
-
         Vector3 dirToGo = Vector3.zero;
         Vector3 rotateDir = Vector3.zero;
         int move = actions.DiscreteActions[0];
@@ -111,27 +73,10 @@ public class AnimalRayBrain : Agent
                 rotateDir = transform.up;
                 break;
         }
+
         transform.Rotate(rotateDir, Time.fixedDeltaTime * turnSpeed);
         NavigationUtilities.NavigateRelative(animalController, dirToGo, 1 << NavMesh.GetAreaFromName("Walkable"));
-        
 
-
-
-        /*  Continuous actions take noticeably longer to train.
-        float x = actions.ContinuousActions[0];
-        float z = actions.ContinuousActions[1];
-        
-
-        //output vector for movement, next step it has to be normalized (so that it resembles a directional vector)
-        Vector3 movementVector = new Vector3(x, animalController.transform.position.y, z);
-        
-        //move the agent depending on the speed
-        movementVector = movementVector.normalized * animalController.animalModel.currentSpeed;
-        
-        //Debug.Log(movementVector.x + "   " + movementVector.y + "   " + movementVector.z);
-        
-        NavigationUtilities.NavigateRelative(animalController, movementVector, 1 << NavMesh.GetAreaFromName("Walkable"));
-        */
     }
 
     //Used for testing, gives us control over the output from the ML algortihm.
@@ -169,10 +114,6 @@ public class AnimalRayBrain : Agent
     {
         //Penalize for every year not lived.
         AddReward(- (1 - (animalModel.age / animalModel.traits.ageLimit)));
-        
-        EventUnsubscribe();
-        fsm.ChangeState(animalController.deadState);
-        
         //Task failed
         EndEpisode();
     }
@@ -221,17 +162,19 @@ public class AnimalRayBrain : Agent
         //Debug.Log("Eating reward: " +reward);
  
         AddReward(reward);
-        RequestDecision();
     }
     
     private void HandleMate(GameObject obj)
     {
-        SetReward(5f);
+        SetReward(2f);
         EndEpisode();
     }
+    
+    
 
     private void OnDestroy()
     {
         EndEpisode();
     }
+    
 }

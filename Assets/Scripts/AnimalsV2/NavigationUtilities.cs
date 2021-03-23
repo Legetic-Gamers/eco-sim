@@ -214,7 +214,7 @@ namespace AnimalsV2
             Vector3 destination = origin + relativeVector;
 
             NavMeshHit hit;
-            if (NavMesh.SamplePosition(destination, out hit, Vector3.Distance(origin, relativeVector), layerMask))
+            if (NavMesh.SamplePosition(destination, out hit, Vector3.Distance(origin, relativeVector), layerMask) && !animal.agent.isStopped)
             {
                 animal.agent.SetDestination(destination);
             }
