@@ -376,8 +376,8 @@ public class AnimalBrainAgent : Agent
     
     private void HandleMate(GameObject obj)
     {
-        AddReward(1f);
-        world.totalScore += 1f;
+        AddReward(5f);
+        world.totalScore += 5f;
         //Task achieved
         //EndEpisode();
     }

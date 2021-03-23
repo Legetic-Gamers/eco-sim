@@ -65,14 +65,13 @@ namespace AnimalsV2.States
         private IEnumerator EatFood()
         {
             
-            
+            //Eat the food
+            //The reason to why I have curentEnergy as an in-parameter is because currentEnergy is updated through EatFood before reward gets computed in AnimalMovementBrain
+            onEatFood?.Invoke(target, animal.animalModel.currentEnergy);
             
             // Wait a while then change state and resume walking
             yield return new WaitForSeconds(1);
             
-            //Eat the food
-            //The reason to why I have curentEnergy as an in-parameter is because currentEnergy is updated through EatFood before reward gets computed in AnimalMovementBrain
-            onEatFood?.Invoke(target, animal.animalModel.currentEnergy);
             
             if (animal.agent.isActiveAndEnabled && animal.agent.isOnNavMesh)
             {
