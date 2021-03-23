@@ -66,12 +66,12 @@ namespace AnimalsV2.States
                     NavigationUtilities.NavigateToPoint(animal, pointToRunTo);
                     
                     
-                    // if (Vector3.Distance(animal.transform.position, closestFood.transform.position) <=
-                    // animal.agent.stoppingDistance)
-                    // {
-                    //     animal.eatingState.SetTarget(closestFood);
-                    //     finiteStateMachine.ChangeState(animal.eatingState);
-                    // }
+                    if (Vector3.Distance(animal.transform.position, closestFood.transform.position) <=
+                    animal.agent.stoppingDistance + 0.2)
+                    {
+                        animal.eatingState.SetTarget(closestFood);
+                        finiteStateMachine.ChangeState(animal.eatingState);
+                    }
                     
                     
                 }else
@@ -102,7 +102,7 @@ namespace AnimalsV2.States
                 closestFood = NavigationUtilities.GetNearestObject(nearbyFood, animal.transform.position);
             }
 
-            return closestFood != null && !(finiteStateMachine.currentState is EatingState);
+            return closestFood != null && !(finiteStateMachine.currentState is EatingState) && !animal.animalModel.HighEnergy;
         }
     }
 }

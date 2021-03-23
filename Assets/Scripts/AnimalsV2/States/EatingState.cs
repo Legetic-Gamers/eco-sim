@@ -39,6 +39,8 @@ namespace AnimalsV2.States
             {
                 animal.agent.isStopped = false;
             }
+            
+            //animal.StopCoroutine(EatFood());
         }
 
         public override void LogicUpdate()
@@ -70,7 +72,12 @@ namespace AnimalsV2.States
             // Wait a while then change state and resume walking
             yield return new WaitForSeconds(1);
             finiteStateMachine.GoToDefaultState();
-            animal.agent.isStopped = false;
+            
+            if (animal.agent.isActiveAndEnabled && animal.agent.isOnNavMesh)
+            {
+                animal.agent.isStopped = false;
+            }
+            Debug.Log("Succesfully ate.");
 
             // Very important, this tells Unity to move onto next frame. Everything crashes without this
             yield return null;

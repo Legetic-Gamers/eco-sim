@@ -42,7 +42,7 @@ public class VisualAnimalDebugger: MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        debugHandler.Invoke();
+        debugHandler?.Invoke();
     }
 
     private void ShowNavMeshAgentPath()

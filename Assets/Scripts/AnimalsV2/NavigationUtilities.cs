@@ -43,9 +43,31 @@ namespace AnimalsV2
                 1 << NavMesh.GetAreaFromName("Walkable")))
             {
                 animal.agent.SetDestination(hit.position);
+                
             }
             //TODO Maybe handle this!
-           
+            
+            // NavMeshAgent agent = animal.agent;
+            //     
+            // if (Time.timeScale > 1.0f && agent.hasPath)
+            // {
+            //     agent.updatePosition = false;
+            //     
+            //     float maxAgentTravelDistance = Time.deltaTime * agent.speed;
+            //
+            //     //If at the end of path, stop agent.
+            //     if (
+            //         agent.SamplePathPosition(NavMesh.AllAreas, maxAgentTravelDistance, out hit) ||
+            //         agent.remainingDistance <= agent.stoppingDistance
+            //     ) {
+            //         //Stop agent
+            //     }
+            //     //Else, move the actor and manually update the agent pos
+            //     else {
+            //         animal.transform.position = hit.position;
+            //         agent.nextPosition = animal.transform.position;
+            //     }
+            // }
             
         }
         
@@ -56,20 +78,23 @@ namespace AnimalsV2
             {
                 Vector3 randomPoint = center + Random.insideUnitSphere * range;
                 NavMeshHit hit;
-                if (NavMesh.SamplePosition(randomPoint, out hit, maxDist, NavMesh.AllAreas))
+                if (NavMesh.SamplePosition(randomPoint, out hit, maxDist, 1 << NavMesh.GetAreaFromName("Walkable")))
                 {
                     result = hit.position;
                     return true;
                     
                     //Try opposite direction to avoid clinging to walls.
-                }else if (NavMesh.SamplePosition(new Vector3(-randomPoint.x, randomPoint.y, -randomPoint.z), out hit,
-                    maxDist, NavMesh.AllAreas))
+                }
+                else if (NavMesh.SamplePosition(new Vector3(-randomPoint.x, randomPoint.y, -randomPoint.z), out hit,
+                    maxDist, 1 << NavMesh.GetAreaFromName("Walkable")))
                 {
                     result = hit.position;
                     return true;
                 }
             }
-            result = Vector3.zero;
+            
+            
+            result = center;
             return false;
         }
         
@@ -88,7 +113,7 @@ namespace AnimalsV2
                 Vector3 perpVec = center + Vector3.Cross(front,up).normalized;
                 
                 NavMeshHit hit;
-                if (NavMesh.SamplePosition(perpVec, out hit, maxDist, NavMesh.AllAreas))
+                if (NavMesh.SamplePosition(perpVec, out hit, maxDist, 1 << NavMesh.GetAreaFromName("Walkable")))
                 {
                     result = hit.position;
                     return true;

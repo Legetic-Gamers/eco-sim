@@ -52,6 +52,10 @@ public abstract class AnimalController : MonoBehaviour
     //Constants
     private const float JoggingSpeed = 0.4f;
     private const float RunningSpeed = 1f;
+    
+    //Timescale stuff
+    private float baseAcceleration;
+    private float baseAngularSpeed;
 
     //Modifiers
     private float energyModifier;
@@ -97,7 +101,14 @@ public abstract class AnimalController : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         agent.autoBraking = false;
         animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
-        agent.speed = animalModel.currentSpeed;
+
+        //Can be used later.
+        baseAngularSpeed = agent.angularSpeed;
+        baseAcceleration = agent.acceleration;
+        
+        agent.speed = animalModel.currentSpeed * Time.timeScale;
+        agent.acceleration *= Time.timeScale;
+        agent.angularSpeed *= Time.timeScale;
 
 
         tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
@@ -195,7 +206,7 @@ public abstract class AnimalController : MonoBehaviour
         // }
 
         animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
-        agent.speed = animalModel.currentSpeed;
+        agent.speed = animalModel.currentSpeed * Time.timeScale;
     }
     
     
@@ -206,7 +217,7 @@ public abstract class AnimalController : MonoBehaviour
         reproductiveUrgeModifier = 0.2f;
         
         //Debug.Log("varying parameters
-        agent.speed = animalModel.currentSpeed;
+        agent.speed = animalModel.currentSpeed * Time.timeScale;
     }
     
 
@@ -227,15 +238,16 @@ public abstract class AnimalController : MonoBehaviour
         //https://www.uvm.edu/pdodds/research/papers/others/2017/hirt2017a.pdf
         //above link for actual empirical max speed.
 
+        //Debug.Log("Size: " + animalModel.traits.size + " Speed: " + animalModel.currentSpeed);
 
-        animalModel.currentEnergy -= (animalModel.traits.size * 1) +
-                                     (animalModel.traits.size * animalModel.currentSpeed) * energyModifier;
-        animalModel.currentHydration -= (animalModel.traits.size * 1) +
-                                        (animalModel.traits.size * animalModel.currentSpeed) * hydrationModifier;
-        animalModel.reproductiveUrge += 0.05f * reproductiveUrgeModifier;
+        animalModel.currentEnergy -= ((animalModel.traits.size * 1) +
+                                     (animalModel.traits.size * animalModel.currentSpeed) * energyModifier);
+        animalModel.currentHydration -= ((animalModel.traits.size * 1) +
+                                        (animalModel.traits.size * animalModel.currentSpeed) * hydrationModifier);
+        animalModel.reproductiveUrge += (0.02f * reproductiveUrgeModifier);
 
         //The age will increase 1 per 1 second.
-        animalModel.age += 1;
+        animalModel.age += (1);
     }
 
     protected void EventSubscribe()
@@ -419,6 +431,9 @@ public abstract class AnimalController : MonoBehaviour
     public void Interact(GameObject target)
     {
 
+        //Dont stop to interact if we are fleeing.
+        if (fsm.currentState is FleeingState) return;
+        
         //Debug.Log(gameObject.name);
         switch (target.tag)
         {
@@ -455,12 +470,12 @@ public abstract class AnimalController : MonoBehaviour
     
 
     
-    public void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Target"))
-        {
-            Interact(other.gameObject);
-        }
-    }
+    // public void OnTriggerEnter(Collider other)
+    // {
+    //     if (other.gameObject.layer == LayerMask.NameToLayer("Target"))
+    //     {
+    //         Interact(other.gameObject);
+    //     }
+    // }
     public abstract Vector3 getNormalizedScale();
 }

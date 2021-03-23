@@ -199,9 +199,6 @@ public class AnimalBrainAgent : Agent
         else if (discreteActions[0] == 1)
         {
             ChangeState(animalController.goToWaterState);
-            
-
-
             print("Look for Water.");
         }
         else if (discreteActions[0] == 2)
@@ -374,8 +371,8 @@ public class AnimalBrainAgent : Agent
     
     private void HandleMate(GameObject obj)
     {
-        AddReward(0.5f);
-        world.totalScore += 0.5f;
+        AddReward(1f);
+        world.totalScore += 1f;
         //Task achieved
         //EndEpisode();
     }
