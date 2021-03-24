@@ -111,6 +111,9 @@ private void Draw(List<int> list1, List<int> list2)
 {
     _list1 = list1;
     _list2 = list2;
+    //for(int i = 0; i< list1.Count; i++)
+    //    Debug.Log(list1[i]);
+    //Debug.Log("------");
     if (gameObjectList != null) DestroyGraph(gameObjectList);
     if (_isGraphOne && _isGraphTwo)
     {
