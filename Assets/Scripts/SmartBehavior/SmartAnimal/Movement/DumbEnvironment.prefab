@@ -89,7 +89,7 @@ Transform:
   m_GameObject: {fileID: 746747155131906677}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.8, y: 1, z: 0.8}
+  m_LocalScale: {x: 1.4, y: 1, z: 1.4}
   m_Children:
   - {fileID: 1724874837836368985}
   - {fileID: 3995745209512792748}
@@ -185,6 +185,11 @@ MonoBehaviour:
       type: 3}
     instances: []
     amountPerRound: 0
+  - tag: 0
+    prefab: {fileID: 8505818697369016331, guid: 1e7d4452968795d4f8f7171874c05578,
+      type: 3}
+    instances: []
+    amountPerRound: 2
   surface: {fileID: 919694260}
   totalScore: 0
   scoreText: {fileID: 0}
@@ -568,13 +573,38 @@ PrefabInstance:
     m_TransformParent: {fileID: 746747155131906682}
     m_Modifications:
     - target: {fileID: 1389232653, guid: 4600b0fca2fd6d84aaea170baeed0196, type: 3}
+      propertyPath: m_BehaviorType
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1389232653, guid: 4600b0fca2fd6d84aaea170baeed0196, type: 3}
       propertyPath: m_BrainParameters.VectorObservationSize
-      value: 4
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 1389232653, guid: 4600b0fca2fd6d84aaea170baeed0196, type: 3}
+      propertyPath: m_BrainParameters.VectorActionSize.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1389232653, guid: 4600b0fca2fd6d84aaea170baeed0196, type: 3}
+      propertyPath: m_BrainParameters.NumStackedVectorObservations
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1389232653, guid: 4600b0fca2fd6d84aaea170baeed0196, type: 3}
+      propertyPath: m_BrainParameters.m_ActionSpec.BranchSizes.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1389232653, guid: 4600b0fca2fd6d84aaea170baeed0196, type: 3}
+      propertyPath: m_BrainParameters.m_ActionSpec.m_NumContinuousActions
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8505818697369016331, guid: 4600b0fca2fd6d84aaea170baeed0196,
         type: 3}
       propertyPath: m_Name
       value: DumbVectorRabbit
+      objectReference: {fileID: 0}
+    - target: {fileID: 8505818697369016332, guid: 4600b0fca2fd6d84aaea170baeed0196,
+        type: 3}
+      propertyPath: m_AutoBraking
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8505818697369016337, guid: 4600b0fca2fd6d84aaea170baeed0196,
         type: 3}

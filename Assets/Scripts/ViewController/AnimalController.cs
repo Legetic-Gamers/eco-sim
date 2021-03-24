@@ -74,6 +74,9 @@ public abstract class AnimalController : MonoBehaviour
 
     public bool IsControllable { get; set; } = false;
 
+    //used for ml, so that it does not spawn a lot of children that might interfere with training
+    public bool isInfertile = false;
+
     public void Awake()
     {
         //Create the FSM.
@@ -129,7 +132,7 @@ public abstract class AnimalController : MonoBehaviour
     ///
     /// Important to unsubscribe from the event publisher on death, however!
     /// </summary>
-    private void ChangeModifiers(State state)
+    public virtual void ChangeModifiers(State state)
     {
         switch (state)
         {
@@ -149,11 +152,6 @@ public abstract class AnimalController : MonoBehaviour
                 }
                 else
                 {
-                    // if (this is WolfController)
-                    // {
-                    //     Debug.Log("goToFoodState: " + goToFood + " Closest food: " + goToFood.closestFood);
-                    // }
-
                     speedModifier = JoggingSpeed;
                 }
 
@@ -209,19 +207,7 @@ public abstract class AnimalController : MonoBehaviour
         agent.speed = animalModel.currentSpeed * Time.timeScale;
     }
     
-    
-    private void ChangeModifiersBasic(State state)
-    {
-        energyModifier = 0.1f;
-        hydrationModifier = 0.1f;
-        reproductiveUrgeModifier = 0.2f;
-        
-        //Debug.Log("varying parameters
-        agent.speed = animalModel.currentSpeed * Time.timeScale;
-    }
-    
-
-    private void VaryParameters()
+    public virtual void VaryParameters()
     {
         /*
          * - Size * (deltaTemp / tempResist) * Const
@@ -378,14 +364,12 @@ public abstract class AnimalController : MonoBehaviour
         // Generate the offspring traits
         AnimalModel childModel = animalModel.Mate(motherController.animalModel);
 
-        //Instantiate here
-        //  Object parentObject = EditorUtility.GetPrefabParent(gameObject); 
-        // // string path = AssetDatabase.GetAssetPath(parentObject);
-        // GameObject child = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Animals/Rabbit Brown.prefab");
-
         GameObject child = gameObject;
         child.GetComponent<AnimalController>().animalModel = childModel;
-        child = Instantiate(child, transform.position, transform.rotation);
+        
+        //Don't instantiate bebe if the animal is infertile. Let the check be here since onBirth.invoke is needed in ML-rabbits
+        if(!isInfertile)
+         child = Instantiate(child, transform.position, transform.rotation);
 
         //Set start values
         child.GetComponent<AnimalController>().animalModel.currentEnergy = newEnergy;

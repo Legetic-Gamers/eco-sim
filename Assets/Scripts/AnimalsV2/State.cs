@@ -32,7 +32,7 @@ namespace AnimalsV2
         /// <summary>
         /// Sates have an owner (Animal) and a stateMachine to control them. 
         /// </summary>
-        protected StateAnimation currentStateAnimation = StateAnimation.Idle;
+        public StateAnimation currentStateAnimation = StateAnimation.Idle;
 
         protected AnimalController animal;
         protected FiniteStateMachine finiteStateMachine;

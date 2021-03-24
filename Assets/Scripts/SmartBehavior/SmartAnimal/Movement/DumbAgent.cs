@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Linq;
+using System.Security.Authentication.ExtendedProtection;
 using AnimalsV2;
 using Model;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
+using Unity.MLAgents.Policies;
 using Unity.MLAgents.Sensors;
 using UnityEngine;
 using UnityEngine.AI;
@@ -18,8 +20,6 @@ public class DumbAgent : Agent, IAgent
     private AnimalModel animalModel;
     private TickEventPublisher eventPublisher;
     private FiniteStateMachine fsm;
-    private float turnSpeed = 3000f;
-    
     public Action<float> onEpisodeBegin { get; set; }
     public Action<float> onEpisodeEnd { get; set; }
 
@@ -30,7 +30,13 @@ public class DumbAgent : Agent, IAgent
         animalModel = animalController.animalModel;
         fsm = animalController.fsm;
         eventPublisher = FindObjectOfType<global::TickEventPublisher>();
-        
+        if (TryGetComponent(out BehaviorParameters bp))
+        {
+            //Set the animal as sterile if we want to train/try heuristic
+            Debug.Log("Agent is infertile!");
+            animalController.isInfertile =
+                bp.BehaviorType == BehaviorType.Default || bp.BehaviorType == BehaviorType.HeuristicOnly;
+        }
         
         //change to a state which does not navigate the agent. If no decisionmaker is present, it will stay at this state (if default state is also set).
         fsm.SetDefaultState(animalController.idleState);
@@ -50,19 +56,29 @@ public class DumbAgent : Agent, IAgent
     {
         //Position of the animal
         Vector3 thisPosition = transform.position;
-        //Get the absolute vector for nearest food
+        if(thisPosition == null || gameObject == null) Debug.Log("NULLL");
+        //Get the absolute vector for all targets
         Vector3 nearestFood = NavigationUtilities.GetNearestObject(animalController.visibleFoodTargets.Concat(animalController.heardPreyTargets).ToList(), thisPosition)?.transform.position ?? thisPosition;
+        Vector3 nearestWater = NavigationUtilities.GetNearestObject(animalController.visibleWaterTargets, thisPosition)?.transform.position ?? thisPosition;
+        //Get the absolute vector for a potential mate
+        Vector3 potentialMate = animalController.goToMate.GetFoundMate()?.transform.position ?? thisPosition;
         
         //Get Vector between animal and targets
         nearestFood = nearestFood - thisPosition;
+        nearestWater = nearestWater - thisPosition;
+        potentialMate = potentialMate - thisPosition;
 
         //Get the magnitude of nearestFood, nearestWater potentialMate. (Normalized)
-        float nearestFoodDistance = nearestFood.magnitude/animalController.animalModel.traits.viewRadius;
+        float maxPercievableDistance = animalController.animalModel.traits.viewRadius;
+        float nearestFoodDistance = nearestFood.magnitude / maxPercievableDistance;
+        float nearestWaterDistance = nearestWater.magnitude / maxPercievableDistance;
+        float potentialMateDistance = potentialMate.magnitude / maxPercievableDistance;
+        
         //Add observations
         sensor.AddObservation(transform.InverseTransformDirection(nearestFood));
-        //sensor.AddObservation(Vector3.SignedAngle(transform.forward, nearestFood, Vector3.up)/180f);
-        //Debug.Log(Vector3.SignedAngle(transform.forward, nearestFood, Vector3.up)/180f);
         sensor.AddObservation(nearestFoodDistance);
+        
+        //Add agents velocity (as a direction) to observations
         sensor.AddObservation(transform.InverseTransformDirection(animalController.agent.velocity));
 
     }
@@ -126,26 +142,6 @@ public class DumbAgent : Agent, IAgent
 
     }
     
-    //Listen to when parameters or senses were updated.
-    private void EventSubscribe()
-    {
-        //Request decision on every sense tick
-        eventPublisher.onSenseTickEvent += RequestDecision;
-        animalController.actionDeath += HandleDeath;
-        animalController.eatingState.onEatFood += HandleEat;
-        //animalController.drinkingState.onDrinkWater += HandleDrink;
-    }
-
-
-    public void EventUnsubscribe()
-    {
-        eventPublisher.onSenseTickEvent -= RequestDecision;
-        animalController.actionDeath -= HandleDeath;
-        animalController.eatingState.onEatFood -= HandleEat;
-        //animalController.drinkingState.onDrinkWater -= HandleDrink;
-
-    }
-    
     
     private void HandleDeath()
     {
@@ -200,7 +196,48 @@ public class DumbAgent : Agent, IAgent
         EndEpisode();
     }
     
+    private void HandleMate(GameObject obj)
+    {
+        
+        AddReward(1f);
+        //Task achieved
+        onEpisodeEnd.Invoke(100f);
+        EndEpisode();
+        
+    }
     
+    private void HandleBirth(object sender, AnimalController.OnBirthEventArgs e)
+    {
+        /*
+        AddReward(1f);
+        //Task achieved
+        onEpisodeEnd.Invoke(100f);
+        EndEpisode();
+        */
+     }
+    
+    //Listen to when parameters or senses were updated.
+    private void EventSubscribe()
+    {
+        //Request decision on every sense tick
+        eventPublisher.onSenseTickEvent += RequestDecision;
+        animalController.actionDeath += HandleDeath;
+        animalController.eatingState.onEatFood += HandleEat;
+        animalController.matingState.onMate += HandleMate;
+        animalController.drinkingState.onDrinkWater += HandleDrink;
+        animalController.onBirth += HandleBirth;
+    }
+
+
+    public void EventUnsubscribe()
+    {
+        eventPublisher.onSenseTickEvent -= RequestDecision;
+        animalController.actionDeath -= HandleDeath;
+        animalController.eatingState.onEatFood -= HandleEat;
+        animalController.matingState.onMate -= HandleMate;
+        animalController.drinkingState.onDrinkWater -= HandleDrink;
+        animalController.onBirth -= HandleBirth;
+    }
 
     private void OnDestroy()
     {

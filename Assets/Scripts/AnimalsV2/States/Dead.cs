@@ -9,6 +9,7 @@ namespace AnimalsV2.States
             public Dead(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal,
                 finiteStateMachine)
             {
+                currentStateAnimation = StateAnimation.Dead;
             }
 
             public override void Enter()
@@ -19,11 +20,7 @@ namespace AnimalsV2.States
                 {
                     animal.agent.isStopped = true;
                 }
-
-                currentStateAnimation = StateAnimation.Dead;
                 animal.DestroyGameObject(20f);
-
-
                 // Set state so that it can't change
                 finiteStateMachine.absorbingState = true;
             }

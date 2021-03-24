@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
+using ViewController;
 
 [RequireComponent(typeof(NavMeshAgent))]
 [RequireComponent(typeof(LineRenderer))]
@@ -74,13 +75,46 @@ public class VisualAnimalDebugger: MonoBehaviour
 
     private void ShowVisibleTargetLines()
     {
-        foreach (GameObject target in animalController.visibleFoodTargets.Concat(animalController.visibleWaterTargets.Concat(animalController.visibleHostileTargets.Concat(animalController.visibleFriendlyTargets))).ToList())
+        //Show line to food
+        foreach (GameObject food in animalController.visibleFoodTargets.Concat(animalController.heardPreyTargets))
         {
-            if (target)
+            if (food != null)
             {
-                Debug.DrawLine(gameObject.transform.position, target.transform.position, Color.green);
+                Debug.DrawLine(gameObject.transform.position, food.transform.position, Color.green);
             }
         }
+
+        //Show line to friendlies, potential mates have a magenta line
+        foreach (GameObject friendly in animalController.visibleFriendlyTargets.Concat(animalController.heardFriendlyTargets))
+        {
+            
+            if (friendly != null && friendly.TryGetComponent(out AnimalController otherAnimalController))
+            {
+                if (otherAnimalController.animalModel.WantingOffspring && animalController.animalModel.WantingOffspring)
+                {
+                    Debug.DrawLine(gameObject.transform.position, friendly.transform.position, Color.magenta);
+                }
+                else
+                {
+                    Debug.DrawLine(gameObject.transform.position, friendly.transform.position, Color.white);
+                }
+            }
+        }
+
+        //Show line to hostiles
+        foreach (GameObject hostile in animalController.heardHostileTargets.Concat(animalController.visibleHostileTargets))
+        {
+            if(hostile != null)
+                Debug.DrawLine(gameObject.transform.position, hostile.transform.position, Color.red);
+        }
+
+        //Show line to water sources
+        foreach (GameObject water in animalController.visibleWaterTargets)
+        {
+            if(water != null)
+                Debug.DrawLine(gameObject.transform.position, water.transform.position, Color.blue);
+        }
+        
     }
     
     

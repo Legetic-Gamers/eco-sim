@@ -163,7 +163,7 @@ namespace AnimalsV2
                     }
                 }
 
-                return nearbyObj;
+                return nearbyObj ?? null;
             }
 
             return null;

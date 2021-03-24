@@ -17,7 +17,7 @@ namespace AnimalsV2
      /// </summary>
      public class FiniteStateMachine
     {
-        public State currentState { get; private set; }
+        public State currentState { get; set; }
         
         private State defaultState { get; set; }
         
