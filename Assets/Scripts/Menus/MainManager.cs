@@ -16,5 +16,10 @@ namespace Menus
             Debug.Log("Quitting");
             Application.Quit();
         }
+
+        public void ChangeToSimulationScene()
+        {
+            SceneManager.LoadScene(1);
+        }
     }
 }
