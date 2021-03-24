@@ -5,7 +5,7 @@ using UnityEngine;
 [System.Serializable()]
 public class SimulationSettings : MonoBehaviour
 {
-    public TerrainGenerator terrainGenerator;
+    private TerrainGenerator terrainGenerator;
     public HeightMapSettings heightMapSettings;
     public MeshSettings meshSettings;
     public WaterSettings waterSettings;
@@ -14,11 +14,12 @@ public class SimulationSettings : MonoBehaviour
 
     public void StartSimulation()
     {
+        terrainGenerator = FindObjectOfType<TerrainGenerator>();
         terrainGenerator.StartSimulation(meshSettings, heightMapSettings, textureSettings, waterSettings, objectPlacementSettings);
     }
 
-    private void Start()
+    private void Awake()
     {
-        StartSimulation();
+        DontDestroyOnLoad(this);
     }
 }
