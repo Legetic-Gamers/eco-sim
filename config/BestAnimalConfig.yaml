@@ -30,11 +30,11 @@ behaviors:
         memory_size: 256
 
     # Trainer configurations common to all trainers
-    max_steps: 5.0e5
+    max_steps: 10000000
     time_horizon: 64
-    summary_freq: 2000
+    summary_freq: 4000
     keep_checkpoints: 5
-    checkpoint_interval: 10000
+    checkpoint_interval: 20000
     threaded: true
     init_path: null
 
@@ -105,7 +105,7 @@ engine_settings:
   width: 84
   height: 84
   quality_level: 5
-  time_scale: 2
+  time_scale: 5
   target_frame_rate: -1
   capture_frame_rate: 60
   no_graphics: false

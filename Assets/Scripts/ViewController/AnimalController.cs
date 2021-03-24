@@ -245,7 +245,7 @@ public abstract class AnimalController : MonoBehaviour
                                      (animalModel.traits.size * animalModel.currentSpeed) * energyModifier);
         animalModel.currentHydration -= ((animalModel.traits.size * 1) +
                                         (animalModel.traits.size * animalModel.currentSpeed) * hydrationModifier);
-        animalModel.reproductiveUrge += (0.03f * reproductiveUrgeModifier);
+        animalModel.reproductiveUrge += (0.01f * reproductiveUrgeModifier);
 
         //The age will increase 1 per 1 second.
         animalModel.age += (1);

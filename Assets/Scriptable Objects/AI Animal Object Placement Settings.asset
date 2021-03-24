@@ -60,10 +60,10 @@ MonoBehaviour:
     gameObjectSettings:
     - gameObject: {fileID: 5707813131339405077, guid: b7aede90df860184e82d1ea8292b5123,
         type: 3}
-      probability: 0.216
+      probability: 0
     previewColour: {r: 0, g: 0, b: 0, a: 0}
-    minimumDistance: 15
-    newPointCount: 10
+    minimumDistance: 4
+    newPointCount: 20
     scale: 1
     yOffset: 0
     minHeight: 0

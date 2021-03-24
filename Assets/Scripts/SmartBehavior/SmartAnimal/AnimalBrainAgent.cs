@@ -188,8 +188,8 @@ public class AnimalBrainAgent : Agent
             
             //Debug.Log(lifeReward);
             
-            AddReward(lifeReward);
-            if(world) world.totalScore += lifeReward;
+            // AddReward(lifeReward);
+            // if(world) world.totalScore += lifeReward;
         }
         
         // if (fsm.currentState is MatingState)
@@ -234,14 +234,16 @@ public class AnimalBrainAgent : Agent
                 print("Look for food.");
             }
 
+            
+            if (discreteActions[0] == 4)
+            {
+                ChangeState(animalController.fleeingState);
+            
+                print("Flee!");
+            }
         }
 
-        //Fleeing can bypass waiting and such.
-        if (discreteActions[0] == 4)
-        {
-            ChangeState(animalController.fleeingState);
-            print("Flee!");
-        }
+        
 
 
         
