@@ -75,15 +75,15 @@ public class World : MonoBehaviour
         numFood = (int )Mathf.Round(Academy.Instance.EnvironmentParameters.GetWithDefault("numFood", numFoodDefault));
         numRabbits = (int )Mathf.Round(Mathf.Round(Academy.Instance.EnvironmentParameters.GetWithDefault("numRabbits", numRabbitsDefault)));
         numWolves = (int )Mathf.Round(Mathf.Round(Academy.Instance.EnvironmentParameters.GetWithDefault("numWolves", numWolvesDefault)));
-        numWater = (int )Mathf.Round(Mathf.Round(Academy.Instance.EnvironmentParameters.GetWithDefault("numWater", numWolvesDefault)));
+        numWater = (int )Mathf.Round(Mathf.Round(Academy.Instance.EnvironmentParameters.GetWithDefault("numWater", numWaterDefault)));
         foodRespawnRate = (int )Mathf.Round(Mathf.Round(Academy.Instance.EnvironmentParameters.GetWithDefault("foodRespawnRate", foodRespawnRateDefault)));
         
         
         //Adjust parameters for environment size
         //maxscale should be set to same as in config file (max_value for z and x scale).
         int maxScale = 6;
-        numFood = (int) Mathf.Ceil((numFood * scaleX * scaleZ) / maxScale) + 15;//atleast 10 food.
-        numWater = (int) Mathf.Ceil((numWater* scaleX * scaleZ) / (maxScale)) + 2; 
+        numFood = (int) Mathf.Ceil((numFood * scaleX * scaleZ) / maxScale) + 30;//atleast 10 food.
+        numWater = (int) Mathf.Ceil((numWater* scaleX * scaleZ) / (maxScale)) + 2;
         numRabbits = (int) Mathf.Ceil((numRabbits * scaleX * scaleZ) / maxScale) +  1; //Atleast 2 rabbits. Divide by 4 to sort of normalize the scale factor with max scale.
         numWolves = (int) Mathf.Floor((numWolves * scaleX * scaleZ) / (2*maxScale)); // Should be a lot less wolves. Can be 0.
         

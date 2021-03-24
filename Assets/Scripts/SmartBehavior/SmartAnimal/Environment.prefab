@@ -114,10 +114,10 @@ MonoBehaviour:
   wolf: {fileID: 4362939137640418624, guid: 9a3fc11558a4b4a4c97a046dc0bd6872, type: 3}
   water: {fileID: 2493576781110911613, guid: 98b2e4f4f56370343b10b456a0c255a5, type: 3}
   numFoodDefault: 6
-  numRabbitsDefault: 1
-  numWolvesDefault: 2
-  numWaterDefault: 4
-  foodRespawnRateDefault: 100
+  numRabbitsDefault: 2
+  numWolvesDefault: 1
+  numWaterDefault: 6
+  foodRespawnRateDefault: 60
   rangeX: 0
   rangeZ: 0
   agents: []

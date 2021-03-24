@@ -87,6 +87,8 @@ public class AnimalBrainAgent : Agent
     {
         base.CollectObservations(sensor);
 
+        
+        if(animalModel == null) return;
         //parameters of the Animal = 4
         //Right now these are continous, might need to be discrete (using lowEnergy() ex.) to represent conditions.
         //Also normalize
@@ -171,19 +173,37 @@ public class AnimalBrainAgent : Agent
         //thirst is the fraction of missing hydration.
         float thirst = (animalModel.traits.maxHydration - animalModel.currentHydration) /
                        animalModel.traits.maxHydration;
-        float maxLifeReward = 0.05f;
+        float maxLifeReward = 0.003f;
 
         if (animalModel.IsAlive)
         {
             //Penalize the rabbit for being hungry and thirsty. This should make the agent try to stay satiated.
-            float uncomfortPenalty = (hunger + thirst)/2 * maxLifeReward;
+            float uncomfortPenalty = (hunger + thirst) * maxLifeReward;
+            //Alter this to alter the reward
+            
 
             //Final reward
-            //If completely satiated -> maxLifeReward. Completely drained -> 0.
-            float lifeReward = maxLifeReward - uncomfortPenalty;
+            //If completely satiated -> 0. Completely drained -> -maxLifeReward.
+            float lifeReward = - uncomfortPenalty;
+            
+            //Debug.Log(lifeReward);
+            
             AddReward(lifeReward);
             if(world) world.totalScore += lifeReward;
         }
+        
+        // if (fsm.currentState is MatingState)
+        // {
+        //     AddReward(1f);
+        //     world.totalScore += 1f;
+        // }
+        // else if (fsm.currentState is EatingState)
+        // {
+        //     
+        // }else if (fsm.currentState is DrinkingState)
+        // {
+        //     
+        // }
 
         //These states cannot be exited on the fly
         if (!(fsm.currentState is FleeingState || fsm.currentState is EatingState ||
@@ -222,6 +242,9 @@ public class AnimalBrainAgent : Agent
             ChangeState(animalController.fleeingState);
             print("Flee!");
         }
+
+
+        
     }
     
     //Used to mark an action as IMPOSIBLE.
@@ -358,10 +381,12 @@ public class AnimalBrainAgent : Agent
     
     private void HandleDeath()
     {
-        //Penalize for every year not lived.
-        AddReward(- (1 - (animalModel.age / animalModel.traits.ageLimit)));
-        if (world) world.totalScore += (int)(- (1 - (animalModel.age / animalModel.traits.ageLimit)));
-
+        //Penalize for every year not lived. (mating gives more than death)
+        AddReward(- (1 - (animalModel.age / animalModel.traits.ageLimit))/2);
+        if (world) world.totalScore += (int)(- (1 - (animalModel.age / animalModel.traits.ageLimit))/2);
+        // AddReward(-0.5f);
+        // world.totalScore += -0.5f;
+        
         ChangeState(animalController.deadState);
         EventUnsubscribe();
 
@@ -376,8 +401,8 @@ public class AnimalBrainAgent : Agent
     
     private void HandleMate(GameObject obj)
     {
-        AddReward(5f);
-        world.totalScore += 5f;
+        AddReward(1f);
+        if(world) world.totalScore += 1f;
         //Task achieved
         //EndEpisode();
     }
@@ -398,16 +423,16 @@ public class AnimalBrainAgent : Agent
     //Higher rewards for satiating thirst more. So if after the animal drank it is fully satiated
     private void HandleEating(GameObject obj, float previousEnergy)
     {
-        float oldHunger = ((animalModel.traits.maxEnergy - previousEnergy) / animalModel.traits.maxEnergy);
-        AddReward(0.1f * oldHunger);
-        if (world) world.totalScore += 0.1f * oldHunger;
+        // float oldHunger = ((animalModel.traits.maxEnergy - previousEnergy) / animalModel.traits.maxEnergy);
+        // AddReward(0.1f * oldHunger);
+        // if (world) world.totalScore += 0.1f * oldHunger;
     }
 
     private void HandleDrinking(GameObject obj, float previousHydration)
     {
-        float oldThirst = ((animalModel.traits.maxHydration - previousHydration) / animalModel.traits.maxHydration);
-        AddReward(0.1f * oldThirst);
-        if (world) world.totalScore += 0.1f * oldThirst;
+        // float oldThirst = ((animalModel.traits.maxHydration - previousHydration) / animalModel.traits.maxHydration);
+        // AddReward(0.1f * oldThirst);
+        // if (world) world.totalScore += 0.1f * oldThirst;
     }
 
     public void Update()

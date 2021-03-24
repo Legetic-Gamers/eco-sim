@@ -99,7 +99,7 @@ public abstract class AnimalController : MonoBehaviour
     {
         // Init the NavMesh agent
         agent = GetComponent<NavMeshAgent>();
-        agent.autoBraking = false;
+        //agent.autoBraking = false;
         animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
 
         //Can be used later.
@@ -111,6 +111,7 @@ public abstract class AnimalController : MonoBehaviour
         agent.angularSpeed *= Time.timeScale;
 
 
+        //Debug.Log(agent.autoBraking);
         tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
         EventSubscribe();
 
@@ -244,7 +245,7 @@ public abstract class AnimalController : MonoBehaviour
                                      (animalModel.traits.size * animalModel.currentSpeed) * energyModifier);
         animalModel.currentHydration -= ((animalModel.traits.size * 1) +
                                         (animalModel.traits.size * animalModel.currentSpeed) * hydrationModifier);
-        animalModel.reproductiveUrge += (0.02f * reproductiveUrgeModifier);
+        animalModel.reproductiveUrge += (0.03f * reproductiveUrgeModifier);
 
         //The age will increase 1 per 1 second.
         animalModel.age += (1);
@@ -284,7 +285,10 @@ public abstract class AnimalController : MonoBehaviour
         }
 
 
-        fsm.OnStateEnter -= ChangeModifiers;
+        if (fsm != null)
+        {
+            fsm.OnStateEnter -= ChangeModifiers;
+        }
 
         eatingState.onEatFood -= EatFood;
 
@@ -297,7 +301,11 @@ public abstract class AnimalController : MonoBehaviour
 
     private void Update()
     {
-        fsm.UpdateStatesLogic();
+        if (fsm != null)
+        {
+            fsm.UpdateStatesLogic();
+        }
+        
     }
 
     //Set animals size based on traits.
@@ -325,7 +333,7 @@ public abstract class AnimalController : MonoBehaviour
 
     public void DrinkWater(GameObject water, float currentHydration)
     {
-        if (water.gameObject.CompareTag("Water") && !animalModel.HydrationFull)
+        if (water != null && water.gameObject.CompareTag("Water") && !animalModel.HydrationFull)
         {
             animalModel.currentHydration = animalModel.traits.maxHydration;
         }
@@ -414,6 +422,7 @@ public abstract class AnimalController : MonoBehaviour
             
             //Stop animal from giving birth once dead.
             StopCoroutine("GiveBirth");
+            StopAllCoroutines();
 
             // unsubscribe all events because we want only want to invoke it once.
             //actionDeath = null;

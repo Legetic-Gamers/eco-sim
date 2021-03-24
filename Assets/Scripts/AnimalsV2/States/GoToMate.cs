@@ -39,10 +39,15 @@ namespace AnimalsV2.States
                     NavigationUtilities.NavigateToPoint(animal,pointToRunTo);
                     
                     
-                    if (Vector3.Distance(animal.transform.position, foundMate.transform.position) <= animal.agent.stoppingDistance + 0.2)
+                    if (Vector3.Distance(animal.transform.position, foundMate.transform.position) <= animal.agent.stoppingDistance + 0.3)
                     {
                         animal.matingState.SetTarget(foundMate);
-                        finiteStateMachine.ChangeState(animal.matingState);
+                        //Try to change state, else go to default state
+                        if (!finiteStateMachine.ChangeState(animal.matingState))
+                        {
+                            finiteStateMachine.GoToDefaultState();
+                        }
+                        
                     }    
                 }
                 
@@ -71,7 +76,7 @@ namespace AnimalsV2.States
             //Debug.Log("Nfriendly" + allNearbyFriendly.Count);
             foreach(GameObject potentialMate in allNearbyFriendly)
             {
-                if (potentialMate != null && potentialMate.TryGetComponent(out AnimalController potentialMateAnimalController) && !(potentialMateAnimalController.fsm.currentState is MatingState) && potentialMateAnimalController.animalModel.WantingOffspring && potentialMateAnimalController.animalModel.IsAlive)
+                if (potentialMate != null && potentialMate.TryGetComponent(out AnimalController potentialMateAnimalController) && potentialMateAnimalController.animalModel.IsAlive)
                 {
                     
                     return potentialMateAnimalController.gameObject;
