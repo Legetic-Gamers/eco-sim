@@ -30,11 +30,12 @@ public class TerrainGenerator : MonoBehaviour
 
     [Header("General")]
     public Material mapMaterial;
-    public MeshSettings meshSettings;
-    public HeightMapSettings heightMapSettings;
-    public TextureData textureSettings;
-    public WaterSettings waterSettings;
-    public ObjectPlacementSettings objectPlacementSettings;
+
+    private MeshSettings meshSettings;
+    private HeightMapSettings heightMapSettings;
+    private TextureSettings textureSettings;
+    private WaterSettings waterSettings;
+    private ObjectPlacementSettings objectPlacementSettings;
 
 
     private Vector2 viewerPosition;
@@ -49,10 +50,19 @@ public class TerrainGenerator : MonoBehaviour
     private List<TerrainChunk> fixedSizeChunks = new List<TerrainChunk>();
     private int loadedChunks = 0;
 
+    private bool hasStarted = false;
 
 
-    private void Start()
+
+    public void StartSimulation(MeshSettings meshSettings, HeightMapSettings heightMapSettings, TextureSettings textureSettings, WaterSettings waterSettings, ObjectPlacementSettings objectPlacementSettings)
     {
+
+        this.meshSettings = meshSettings;
+        this.heightMapSettings = heightMapSettings;
+        this.textureSettings = textureSettings;
+        this.waterSettings = waterSettings;
+        this.objectPlacementSettings = objectPlacementSettings;
+
         textureSettings.ApplyToMaterial(mapMaterial);
         textureSettings.UpdateMeshHeights(mapMaterial, heightMapSettings.minHeight, heightMapSettings.maxHeight);
 
@@ -71,6 +81,9 @@ public class TerrainGenerator : MonoBehaviour
 
     private void Update()
     {
+        if (!hasStarted)
+            return;
+
         if (terrainMode == TerrainMode.Endless)
         {
             viewerPosition = new Vector2(viewer.position.x, viewer.position.z);

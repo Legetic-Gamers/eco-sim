@@ -1,8 +1,8 @@
 ﻿
 using UnityEngine;
 
-[CreateAssetMenu()]
-public class MeshSettings : UpdatableData
+[System.Serializable()]
+public class MeshSettings
 {
     public const int numSuppoertedLODs = 5;
     public const int numSupportedChunkSizes = 9;

@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu()]
-public class TextureData : UpdatableData
+[System.Serializable()]
+public class TextureSettings
 {
 
     public Color[] baseColours = new Color[4];

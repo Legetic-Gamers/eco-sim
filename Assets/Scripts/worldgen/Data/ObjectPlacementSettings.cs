@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu()]
-public class ObjectPlacementSettings : UpdatableData
+[System.Serializable()]
+public class ObjectPlacementSettings
 {
 
     public ObjectType[] objectTypes;
@@ -11,7 +11,7 @@ public class ObjectPlacementSettings : UpdatableData
 }
 
 
-[System.Serializable]
+[System.Serializable()]
 public struct ObjectType
 {
     public string name;
@@ -21,7 +21,7 @@ public struct ObjectType
     public int newPointCount;
     public float scale;
     public float yOffset;
-    
+
     [Range(0, 1)]
     public float minHeight;
     [Range(0, 1)]

@@ -17,7 +17,7 @@ public class MapPreview : MonoBehaviour
 
     public MeshSettings meshSettings;
     public HeightMapSettings heightMapSettings;
-    public TextureData textureSettings;
+    public TextureSettings textureSettings;
     public WaterSettings waterSettings;
     public ObjectPlacementSettings objectPlacementSettings;
 
@@ -141,35 +141,35 @@ public class MapPreview : MonoBehaviour
 
     private void OnValidate()
     {
-        if (meshSettings != null)
-        {
-            meshSettings.OnValuesUpdated -= OnValuesUpdated;
-            meshSettings.OnValuesUpdated -= OnObjectPlacementUpdated;
-            meshSettings.OnValuesUpdated -= OnWaterUpdated;
-            meshSettings.OnValuesUpdated += OnValuesUpdated;
-            meshSettings.OnValuesUpdated += OnObjectPlacementUpdated;
-            meshSettings.OnValuesUpdated += OnWaterUpdated;
-        }
-        if (heightMapSettings != null)
-        {
-            heightMapSettings.OnValuesUpdated -= OnValuesUpdated;
-            heightMapSettings.OnValuesUpdated += OnValuesUpdated;
-        }
-        if (textureSettings != null)
-        {
-            textureSettings.OnValuesUpdated -= OnTextureValuesUpdated;
-            textureSettings.OnValuesUpdated += OnTextureValuesUpdated;
-        }
-        if (waterSettings != null)
-        {
-            waterSettings.OnValuesUpdated -= OnWaterUpdated;
-            waterSettings.OnValuesUpdated += OnWaterUpdated;
-        }
-        if (objectPlacementSettings != null)
-        {
-            objectPlacementSettings.OnValuesUpdated -= OnObjectPlacementUpdated;
-            objectPlacementSettings.OnValuesUpdated += OnObjectPlacementUpdated;
+        // if (meshSettings != null)
+        // {
+        //     meshSettings.OnValuesUpdated -= OnValuesUpdated;
+        //     meshSettings.OnValuesUpdated -= OnObjectPlacementUpdated;
+        //     meshSettings.OnValuesUpdated -= OnWaterUpdated;
+        //     meshSettings.OnValuesUpdated += OnValuesUpdated;
+        //     meshSettings.OnValuesUpdated += OnObjectPlacementUpdated;
+        //     meshSettings.OnValuesUpdated += OnWaterUpdated;
+        // }
+        // if (heightMapSettings != null)
+        // {
+        //     heightMapSettings.OnValuesUpdated -= OnValuesUpdated;
+        //     heightMapSettings.OnValuesUpdated += OnValuesUpdated;
+        // }
+        // if (textureSettings != null)
+        // {
+        //     textureSettings.OnValuesUpdated -= OnTextureValuesUpdated;
+        //     textureSettings.OnValuesUpdated += OnTextureValuesUpdated;
+        // }
+        // if (waterSettings != null)
+        // {
+        //     waterSettings.OnValuesUpdated -= OnWaterUpdated;
+        //     waterSettings.OnValuesUpdated += OnWaterUpdated;
+        // }
+        // if (objectPlacementSettings != null)
+        // {
+        //     objectPlacementSettings.OnValuesUpdated -= OnObjectPlacementUpdated;
+        //     objectPlacementSettings.OnValuesUpdated += OnObjectPlacementUpdated;
 
-        }
+        // }
     }
 }

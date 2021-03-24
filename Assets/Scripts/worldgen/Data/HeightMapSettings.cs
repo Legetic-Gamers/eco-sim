@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu()]
-public class HeightMapSettings : UpdatableData
+[System.Serializable()]
+public class HeightMapSettings
 {
     public NoiseSettings noiseSettings;
 
@@ -28,13 +28,4 @@ public class HeightMapSettings : UpdatableData
             return heightMultiplier * heightCurve.Evaluate(1);
         }
     }
-
-
-#if UNITY_EDITOR
-    protected override void OnValidate()
-    {
-        noiseSettings.ValidateValues();
-        base.OnValidate();
-    }
-#endif
 }

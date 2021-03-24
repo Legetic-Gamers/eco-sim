@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu()]
-public class WaterSettings : UpdatableData
+[System.Serializable()]
+public class WaterSettings
 {
     public bool generateWater = true;
     public bool stylizedWater = false;
