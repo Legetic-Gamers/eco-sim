@@ -23,11 +23,9 @@ public class WaterChunk : MonoBehaviour
         this.heightMapSettings = heightMapSettings;
         this.worldVerticies = worldVerticies;
 
-
         waterObject = new GameObject("Water Chunk");
         waterObject.transform.parent = parent;
 
-        waterObject.transform.position = new Vector3(position.x, 0, position.y);
         meshFilter = waterObject.AddComponent<MeshFilter>();
         meshRenderer = waterObject.AddComponent<MeshRenderer>();
         meshRenderer.material = waterSettings.material;
@@ -37,14 +35,14 @@ public class WaterChunk : MonoBehaviour
         //waterObject.GetComponent<WaterNoise>().settings = waterSettings;
         realWaterLevel = Mathf.Lerp(heightMapSettings.minHeight, heightMapSettings.maxHeight, waterSettings.waterLevel);
         waterObject.transform.localScale = new Vector3(scale.x, 1, scale.z);
-        waterObject.transform.position += new Vector3(0, realWaterLevel, 0);
+        waterObject.transform.position = new Vector3(position.x, realWaterLevel, position.y);
         collider = waterObject.AddComponent<BoxCollider>();
         collider.size = new Vector3(1, realWaterLevel, 1);
         collider.center -= new Vector3(0, 0.5f * realWaterLevel, 0);
 
         obstacle = waterObject.AddComponent<NavMeshObstacle>();
         obstacle.carving = true;
-        
+
 
         if (waterSettings.stylizedWater)
         {
@@ -67,7 +65,7 @@ public class WaterChunk : MonoBehaviour
             }
             var stylizedMeshRenderer = stylizedObject.GetComponent<MeshRenderer>();
 
-            stylizedObject.transform.position = new Vector3(0, realWaterLevel / 2, 0);
+            stylizedObject.transform.position = new Vector3(position.x, realWaterLevel / 2, position.y);
             stylizedMeshRenderer.material = waterSettings.stylizedMaterial;
         }
 

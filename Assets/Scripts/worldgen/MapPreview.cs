@@ -126,7 +126,7 @@ public class MapPreview : MonoBehaviour
                 DestroyImmediate(obj);
             }
         }
-        meshFilter.gameObject.AddComponent<ObjectPlacement>().PlaceObjects(objectPlacementSettings, meshSettings, heightMapSettings);
+        meshFilter.gameObject.AddComponent<ObjectPlacement>().PlaceObjects(new Vector2(meshFilter.gameObject.transform.position.x, meshFilter.gameObject.transform.position.z), objectPlacementSettings, meshSettings, heightMapSettings);
     }
 
     private void OnMeshUpdated()

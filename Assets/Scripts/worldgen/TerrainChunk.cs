@@ -223,6 +223,7 @@ public class TerrainChunk
 
     public void SetWater()
     {
+        //Debug.Log("Position: " + coordinate * meshSettings.meshWorldSize);
         waterChunk = meshObject.AddComponent<WaterChunk>();
         waterChunk.Setup(coordinate * meshSettings.meshWorldSize, waterSettings, heightMapSettings, meshRenderer.bounds.size, meshObject.transform, meshFilter.mesh.vertices);
     }
@@ -232,7 +233,7 @@ public class TerrainChunk
         if (hasSetCollider)
         {
             ObjectPlacement objectPlacement = meshObject.AddComponent<ObjectPlacement>();
-            objectPlacement.PlaceObjects(objectPlacementSettings, meshSettings, heightMapSettings);
+            objectPlacement.PlaceObjects(coordinate * meshSettings.meshWorldSize, objectPlacementSettings, meshSettings, heightMapSettings);
         }
 
     }

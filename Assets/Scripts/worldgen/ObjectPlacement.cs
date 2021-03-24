@@ -8,7 +8,7 @@ public class ObjectPlacement : MonoBehaviour
     public List<GameObject> groups;
 
 
-    public void PlaceObjects(ObjectPlacementSettings settings, MeshSettings meshSettings, HeightMapSettings heightMapSettings)
+    public void PlaceObjects(Vector2 positionOffset, ObjectPlacementSettings settings, MeshSettings meshSettings, HeightMapSettings heightMapSettings)
     {
         int size;
         Debug.Log("Is this called more than once");
@@ -54,7 +54,7 @@ public class ObjectPlacement : MonoBehaviour
                     }
                 }
 
-                GameObject gameObject = Instantiate(settings.objectTypes[i].gameObjectSettings[randomIndex].gameObject, new Vector3(point.x - size / 2, heightMapSettings.maxHeight + 10, point.y - size / 2), Quaternion.identity);
+                GameObject gameObject = Instantiate(settings.objectTypes[i].gameObjectSettings[randomIndex].gameObject, new Vector3(point.x - size / 2 + positionOffset.x, heightMapSettings.maxHeight + 10, point.y - size / 2 + positionOffset.y), Quaternion.identity);
 
                 //gameObject.transform.position = new Vector3(point.x - size / 2, heightMapSettings.maxHeight + 10, point.y - size / 2);
                 gameObject.transform.parent = groupObject.transform;
