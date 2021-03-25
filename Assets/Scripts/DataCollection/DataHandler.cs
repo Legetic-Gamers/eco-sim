@@ -17,7 +17,7 @@ namespace DataCollection
     /// </summary>
     public class DataHandler : MonoBehaviour
     {
-        public Action<List<int>, List<int>> Display;
+        public Action<List<float>, List<float>> Display;
         
         [SerializeField]
         private bool ShowFrameRate;
@@ -28,8 +28,8 @@ namespace DataCollection
         
         private TickEventPublisher tickEventPublisher;
         private Collector c;
-        private List<int> sendList1 = new List<int>();
-        private List<int> sendList2 = new List<int>();
+        private List<float> sendList1 = new List<float>();
+        private List<float> sendList2 = new List<float>();
         
         private static int _speciesNumber1 = 0;
         private static int _traitNumber1 = 0;
@@ -118,26 +118,26 @@ namespace DataCollection
 
         private void SetList(int a, int x, int y, int z)
         {
-            List<int> tmplist = new List<int>();
+            List<float> tmplist = new List<float>();
             
 
             switch (x)
             {
                 case 0:
-                    if (z == 0) tmplist = ConvertFloatListToIntList(c.rabbitStatsPerGenMean[y]);
-                    if (z == 1) tmplist = ConvertFloatListToIntList((c.rabbitStatsPerGenVar[y]));
+                    if (z == 0) tmplist = c.rabbitStatsPerGenMean[y];
+                    if (z == 1) tmplist = c.rabbitStatsPerGenVar[y];
                     break;
                 case 1:
-                    if (z == 0) tmplist = ConvertFloatListToIntList(c.wolfStatsPerGenMean[y]);
-                    if (z == 1) tmplist = ConvertFloatListToIntList((c.wolfStatsPerGenVar[y]));
+                    if (z == 0) tmplist = c.wolfStatsPerGenMean[y];
+                    if (z == 1) tmplist = c.wolfStatsPerGenVar[y];
                     break;      
                 case 2:         
-                    if (z == 0) tmplist = ConvertFloatListToIntList(c.deerStatsPerGenMean[y]);
-                    if (z == 1) tmplist = ConvertFloatListToIntList((c.deerStatsPerGenVar[y]));
+                    if (z == 0) tmplist = c.deerStatsPerGenMean[y];
+                    if (z == 1) tmplist = c.deerStatsPerGenVar[y];
                     break;      
                 case 3:         
-                    if (z == 0) tmplist = ConvertFloatListToIntList(c.bearStatsPerGenMean[y]);
-                    if (z == 1) tmplist = ConvertFloatListToIntList((c.bearStatsPerGenVar[y]));
+                    if (z == 0) tmplist = c.bearStatsPerGenMean[y];
+                    if (z == 1) tmplist = c.bearStatsPerGenVar[y];
                     break;
             }
 

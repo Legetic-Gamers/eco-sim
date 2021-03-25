@@ -16,9 +16,6 @@ using Random = UnityEngine.Random;
 
 public class Window_Graph : MonoBehaviour
 {
-    public Action<bool> SetGraphOne;
-    public Action<bool> SetGraphTwo;
-
     [SerializeField] private int dotSize = 5;
     [SerializeField] Color lineColor = new Color(1, 1, 1, .5f);
     [SerializeField] float lineWidth = 2f; // line connecting dots
@@ -30,8 +27,8 @@ public class Window_Graph : MonoBehaviour
     [SerializeField] private float graphContainerSizeX = 720;
     [SerializeField] private float graphContainerSizeY = 405;
 
-    private static List<int> _list1 = new List<int>() {0};
-    private static List<int> _list2 = new List<int>() {0};
+    private static List<float> _list1 = new List<float>() {0};
+    private static List<float> _list2 = new List<float>() {0};
     private static int _truncateFactor = 1;
     private static int _gridCountY = 12;
     private int firstX = 1;
@@ -63,13 +60,13 @@ public class Window_Graph : MonoBehaviour
         set => _gridCountY = value;
     }
     
-    public static List<int> List1 
+    public static List<float> List1 
     {
         get => _list1;
         set => _list1 = value;
     }
     
-    public static List<int> List2 
+    public static List<float> List2 
     {
         get => _list2;
         set => _list2 = value;
@@ -91,7 +88,7 @@ public class Window_Graph : MonoBehaviour
     private void Awake()
     {
         window_graph = GetComponent<RectTransform>();
-        graphContainer = transform.Find("graphContainer").GetComponent<RectTransform>();
+        graphContainer = window_graph.Find("graphContainer").GetComponent<RectTransform>();
         labelTemplateX = graphContainer.Find("labelTemplateX").GetComponent<RectTransform>();
         labelTemplateY = graphContainer.Find("labelTemplateY").GetComponent<RectTransform>();
         dashTemplateX = graphContainer.Find("dashTemplateX").GetComponent<RectTransform>();
@@ -107,13 +104,10 @@ public class Window_Graph : MonoBehaviour
         ButtonClick.OnButtonReDraw += ReDraw;
     }
 
-private void Draw(List<int> list1, List<int> list2)
+private void Draw(List<float> list1, List<float> list2)
 {
     _list1 = list1;
     _list2 = list2;
-    //for(int i = 0; i< list1.Count; i++)
-    //    Debug.Log(list1[i]);
-    //Debug.Log("------");
     if (gameObjectList != null) DestroyGraph(gameObjectList);
     if (_isGraphOne && _isGraphTwo)
     {
@@ -146,7 +140,7 @@ private void ReDraw(object sender, EventArgs e)
 
     
     // Draws entire graph.
-    private void ShowGraph(List<int> valueList, Color color)
+    private void ShowGraph(List<float> valueList, Color color)
     {
         if (valueList.Count == 0) return;
         var sizeDelta = graphContainer.sizeDelta;
@@ -215,7 +209,7 @@ private void ReDraw(object sender, EventArgs e)
 
 
     // Draws the grid and labels of the X-axis.
-    protected void AddGridX(List<int> valueList)
+    protected void AddGridX(List<float> valueList)
     {
         float graphWidth = graphContainer.sizeDelta.x;
         //int separatorCount = _gridCountX;
@@ -249,7 +243,7 @@ private void ReDraw(object sender, EventArgs e)
     }
 
     // Draws the grid of the Y-axis, as well as the labels of the Y-axis.
-    private void AddGridY(List<int> valueList)
+    private void AddGridY(List<float> valueList)
     {
         float graphHeight = graphContainer.sizeDelta.y;
         float yMax = valueList.Max() * yBufferTop;
@@ -276,7 +270,7 @@ private void ReDraw(object sender, EventArgs e)
     }
 
     // Draws the curve of the graph.
-    private void DrawCurve(List<int> valueList, Color color)
+    private void DrawCurve(List<float> valueList, Color color)
     {
         if (valueList.Count == 0) return;
 
@@ -297,7 +291,7 @@ private void ReDraw(object sender, EventArgs e)
 
         GameObject lastCircleGameObject = null;
 
-        foreach (int value in valueList)
+        foreach (float value in valueList)
         {
             float xPosition = (count-firstX) * xDelta;
             float yPosition = (value / yMax) * graphHeight;
