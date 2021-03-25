@@ -15,7 +15,7 @@ namespace Model
 
         public PlantModel()
         {
-            nutritionValue = 25f;
+            nutritionValue = 30f;
         }
        
         public float GetEaten()

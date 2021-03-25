@@ -60,6 +60,8 @@ namespace AnimalsV2.States
             {
                 animal.agent.isStopped = false;
             }
+            
+            animal.StopCoroutine(DrinkWater());
         }
 
         public void SetTarget(GameObject target)
@@ -69,13 +71,20 @@ namespace AnimalsV2.States
 
         public IEnumerator DrinkWater()
         {
-            onDrinkWater?.Invoke(target, animal.animalModel.currentHydration);
-            // Wait a while then change state and resume walking
+            
+            // Wait a while then drink, change state and resume walking
             yield return new WaitForSeconds(1);
-            finiteStateMachine.GoToDefaultState();
-            animal.agent.isStopped = false;
-            //Debug.Log("Succesfully drank.");
 
+            
+            onDrinkWater?.Invoke(target, animal.animalModel.currentHydration);
+            
+            if (animal.agent.isActiveAndEnabled && animal.agent.isOnNavMesh)
+            {
+                animal.agent.isStopped = false;
+            }
+            Debug.Log("Succesfully drank.");
+
+            finiteStateMachine.GoToDefaultState();
 
             // Very important, this tells Unity to move onto next frame. Everything crashes without this
             yield return null;

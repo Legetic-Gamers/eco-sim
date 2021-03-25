@@ -40,7 +40,7 @@ namespace AnimalsV2.States
                 animal.agent.isStopped = false;
             }
             
-            //animal.StopCoroutine(EatFood());
+            animal.StopCoroutine(EatFood());
         }
 
         public override void LogicUpdate()
@@ -56,20 +56,22 @@ namespace AnimalsV2.States
 
         private IEnumerator EatFood()
         {
+            
             //Eat the food
             //The reason to why I have curentEnergy as an in-parameter is because currentEnergy is updated through EatFood before reward gets computed in AnimalMovementBrain
             onEatFood?.Invoke(target, animal.animalModel.currentEnergy);
             
-            
             // Wait a while then change state and resume walking
             yield return new WaitForSeconds(1);
-            finiteStateMachine.GoToDefaultState();
+            
             
             if (animal.agent.isActiveAndEnabled && animal.agent.isOnNavMesh)
             {
                 animal.agent.isStopped = false;
             }
-            //Debug.Log("Succesfully ate.");
+            Debug.Log("Succesfully ate.");
+            
+            finiteStateMachine.GoToDefaultState();
 
             // Very important, this tells Unity to move onto next frame. Everything crashes without this
             yield return null;

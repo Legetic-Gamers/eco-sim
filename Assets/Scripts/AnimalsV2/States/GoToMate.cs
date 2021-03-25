@@ -35,14 +35,27 @@ namespace AnimalsV2.States
                 if (foundMate != null && animal.agent.isActiveAndEnabled)
                 {
                     Vector3 pointToRunTo = foundMate.transform.position;
+                    
+                    // if(foundMate.TryGetComponent(out AnimalController otherAnimalController))
+                    // {
+                    //     if (otherAnimalController.fsm.currentState is Wander)
+                    //     {
+                    //         otherAnimalController.fsm.ChangeState(otherAnimalController.waitingState);
+                    //     }
+                    // }
                     //Move the animal using the navmeshagent.
                     NavigationUtilities.NavigateToPoint(animal,pointToRunTo);
                     
                     
-                    if (Vector3.Distance(animal.transform.position, foundMate.transform.position) <= animal.agent.stoppingDistance + 0.2)
+                    if (Vector3.Distance(animal.transform.position, foundMate.transform.position) <= animal.agent.stoppingDistance + 0.3)
                     {
                         animal.matingState.SetTarget(foundMate);
-                        finiteStateMachine.ChangeState(animal.matingState);
+                        //Try to change state, else go to default state
+                        if (!finiteStateMachine.ChangeState(animal.matingState))
+                        {
+                            finiteStateMachine.GoToDefaultState();
+                        }
+                        
                     }    
                 }
                 
@@ -71,7 +84,7 @@ namespace AnimalsV2.States
             //Debug.Log("Nfriendly" + allNearbyFriendly.Count);
             foreach(GameObject potentialMate in allNearbyFriendly)
             {
-                if (potentialMate != null && potentialMate.TryGetComponent(out AnimalController potentialMateAnimalController) && !(potentialMateAnimalController.fsm.currentState is MatingState) && potentialMateAnimalController.animalModel.WantingOffspring && potentialMateAnimalController.animalModel.IsAlive)
+                if (potentialMate != null && potentialMate.TryGetComponent(out AnimalController potentialMateAnimalController) && potentialMateAnimalController.animalModel.IsAlive)
                 {
                     
                     return potentialMateAnimalController.gameObject;

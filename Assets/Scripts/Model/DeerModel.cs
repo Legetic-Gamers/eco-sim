@@ -4,7 +4,7 @@ public class DeerModel : AnimalModel, IEdible
 {
     public float nutritionValue { get; set; }
     
-    public DeerModel() : base(new Traits(3, 100, 100, 100, 6,10,10,10,10,10,180,10,10),0)
+    public DeerModel() : base(new Traits(3, 100, 100, 100, 2.2f,1,10,200,10,10,180,10,10),0)
     {
         // Set variables specific to deer
         nutritionValue = traits.maxEnergy;

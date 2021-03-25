@@ -104,6 +104,7 @@ public abstract class AnimalController : MonoBehaviour
         // Init the NavMesh agent
         agent = GetComponent<NavMeshAgent>();
         agent.autoBraking = true;
+
         animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
 
         //Can be used later.
@@ -115,6 +116,7 @@ public abstract class AnimalController : MonoBehaviour
         agent.angularSpeed *= Time.timeScale;
 
 
+        //Debug.Log(agent.autoBraking);
         tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
         EventSubscribe();
 
@@ -245,7 +247,7 @@ public abstract class AnimalController : MonoBehaviour
             tickEventPublisher.onParamTickEvent += VaryParameters;
             tickEventPublisher.onParamTickEvent += HandleDeathStatus;
             // every 0.5 sec
-            //tickEventPublisher.onSenseTickEvent += fsm.UpdateStatesLogic;    
+            tickEventPublisher.onSenseTickEvent += fsm.UpdateStatesLogic;    
         }
 
         fsm.OnStateEnter += ChangeModifiers;
@@ -267,11 +269,14 @@ public abstract class AnimalController : MonoBehaviour
             tickEventPublisher.onParamTickEvent -= VaryParameters;
             tickEventPublisher.onParamTickEvent -= HandleDeathStatus;
             // every 0.5 sec
-            //tickEventPublisher.onSenseTickEvent -= fsm.UpdateStatesLogic;    
+            tickEventPublisher.onSenseTickEvent -= fsm.UpdateStatesLogic;    
         }
 
 
-        fsm.OnStateEnter -= ChangeModifiers;
+        if (fsm != null)
+        {
+            fsm.OnStateEnter -= ChangeModifiers;
+        }
 
         eatingState.onEatFood -= EatFood;
 
@@ -282,10 +287,14 @@ public abstract class AnimalController : MonoBehaviour
         animationController.EventUnsubscribe();
     }
 
-    private void Update()
-    {
-        fsm.UpdateStatesLogic();
-    }
+    // private void FixedUpdate()
+    // {
+    //     if (fsm != null)
+    //     {
+    //         fsm.UpdateStatesLogic();
+    //     }
+    //     
+    // }
 
     //Set animals size based on traits.
     private void SetPhenotype()
@@ -296,14 +305,14 @@ public abstract class AnimalController : MonoBehaviour
     public void EatFood(GameObject food, float currentEnergy)
     {
 
-        if (food.GetComponent<AnimalController>()?.animalModel is IEdible edibleAnimal &&
+        if (food != null && food.GetComponent<AnimalController>()?.animalModel is IEdible edibleAnimal &&
             animalModel.CanEat(edibleAnimal))
         { 
             animalModel.currentEnergy += edibleAnimal.GetEaten();
             Destroy(food);
         }
 
-        if (food.GetComponent<PlantController>()?.plantModel is IEdible ediblePlant && animalModel.CanEat(ediblePlant))
+        if (food != null && food.GetComponent<PlantController>()?.plantModel is IEdible ediblePlant && animalModel.CanEat(ediblePlant))
         {
             animalModel.currentEnergy += ediblePlant.GetEaten();
             Destroy(food);
@@ -312,7 +321,7 @@ public abstract class AnimalController : MonoBehaviour
 
     public void DrinkWater(GameObject water, float currentHydration)
     {
-        if (water.gameObject.CompareTag("Water") && !animalModel.HydrationFull)
+        if (water != null && water.gameObject.CompareTag("Water") && !animalModel.HydrationFull)
         {
             animalModel.currentHydration = animalModel.traits.maxHydration;
         }
@@ -405,6 +414,7 @@ public abstract class AnimalController : MonoBehaviour
             
             //Stop animal from giving birth once dead.
             StopCoroutine("GiveBirth");
+            StopAllCoroutines();
 
             // unsubscribe all events because we want only want to invoke it once.
             //actionDeath = null;

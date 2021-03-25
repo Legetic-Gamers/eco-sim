@@ -52,8 +52,9 @@ namespace AnimalsV2.States
             */
             if (animal.agent.isActiveAndEnabled)
             {
-                if (Vector3.Distance(animal.transform.position, nextPosition) <= animal.agent.stoppingDistance + 0.2)
+                if (Vector3.Distance(animal.transform.position, nextPosition) <= animal.agent.stoppingDistance + 0.2 || animal.agent.velocity.magnitude <= 0.1f)
                 {
+                    //Debug.Log(animal.agent.velocity.magnitude);
                     //Vector3 position = new Vector3(Random.Range(-10.0f, 10.0f), 0, Random.Range(-10.0f, 10.0f)) + animal.transform.position;
                     //Debug.Log("Framme!");
                     //Move the animal using the navmeshagent.
@@ -61,12 +62,12 @@ namespace AnimalsV2.States
                     //TODO this maxDistance is what is causing rabbits to dance sometimes, if poisition cant be found.
                     // ALEXANDER H: https://docs.unity3d.com/ScriptReference/AI.NavMesh.SamplePosition.html recommends setting maxDistance as agents height * 2
 
-                    if(NavigationUtilities.RandomPoint(animal.transform.position, 10f,animal.agent.height*2, out nextPosition))
+                    if(NavigationUtilities.RandomPoint(animal.transform.position, 10f,10f, out nextPosition))
                     {
                         animal.agent.SetDestination(nextPosition);
                     }else
                     {
-                        //Debug.Log("Dist: " + Vector3.Distance(animal.transform.position, nextPosition)+ " Stopping: " + animal.agent.stoppingDistance);
+                        Debug.Log("Agent stuck, Dist: " + Vector3.Distance(animal.transform.position, nextPosition)+ " Stopping: " + animal.agent.stoppingDistance + 0.2);
                     }
                 }
                 

@@ -67,7 +67,7 @@ namespace AnimalsV2.States
                     
                     
                     if (Vector3.Distance(animal.transform.position, closestFood.transform.position) <=
-                    animal.agent.stoppingDistance + 0.2)
+                    animal.agent.stoppingDistance + 0.3)
                     {
                         animal.eatingState.SetTarget(closestFood);
                         finiteStateMachine.ChangeState(animal.eatingState);
