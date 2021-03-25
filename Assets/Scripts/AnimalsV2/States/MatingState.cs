@@ -12,8 +12,6 @@ namespace AnimalsV2.States
 {
     public class MatingState : State
     {
-        private AnimalController animalController;
-
         public Action<GameObject> onMate;
 
         private GameObject target;
@@ -98,7 +96,7 @@ namespace AnimalsV2.States
         {
             return target != null && target.TryGetComponent(out AnimalController potentialMateAnimalController) &&
                    potentialMateAnimalController.animalModel.WantingOffspring &&
-                   potentialMateAnimalController.animalModel.IsAlive && !(potentialMateAnimalController.fsm.currentState is MatingState);
+                   potentialMateAnimalController.animalModel.IsAlive && !(potentialMateAnimalController.fsm.currentState is MatingState)  && animal.animalModel.WantingOffspring;
         }
 
         

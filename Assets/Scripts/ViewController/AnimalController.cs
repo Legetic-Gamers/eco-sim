@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using AnimalsV2;
 using AnimalsV2.States;
 using AnimalsV2.States.AnimalsV2.States;
+using JetBrains.Annotations;
 using Model;
 using UnityEditor;
 using UnityEngine;
@@ -50,8 +51,8 @@ public abstract class AnimalController : MonoBehaviour
     public Waiting waitingState;
 
     //Constants
-    private const float JoggingSpeed = 0.4f;
-    private const float RunningSpeed = 1f;
+    public const float JoggingSpeed = 0.4f;
+    public const float RunningSpeed = 1f;
     
     //Timescale stuff
     private float baseAcceleration;
@@ -60,8 +61,8 @@ public abstract class AnimalController : MonoBehaviour
     //Modifiers
     private float energyModifier;
     private float hydrationModifier;
-    private float reproductiveUrgeModifier = 1f;
-    private float speedModifier = JoggingSpeed; //100% of maxSpeed in model
+    private float reproductiveUrgeModifier = 0.2f;
+    public float speedModifier = JoggingSpeed; //100% of maxSpeed in model
 
     public List<GameObject> visibleHostileTargets = new List<GameObject>();
     public List<GameObject> visibleFriendlyTargets = new List<GameObject>();
@@ -165,9 +166,9 @@ public abstract class AnimalController : MonoBehaviour
                 //Debug.Log("varying parameters depending on state: FleeingState");
                 break;
             case Idle _:
-                energyModifier = 0f;
+                energyModifier = 0.1f;
                 hydrationModifier = 0.05f;
-                reproductiveUrgeModifier = 1f;
+                reproductiveUrgeModifier = 0.2f;
                 //Debug.Log("varying parameters depending on state: Mating");
                 break;
             case Waiting _:
@@ -192,7 +193,7 @@ public abstract class AnimalController : MonoBehaviour
             default:
                 energyModifier = 0.1f;
                 hydrationModifier = 0.05f;
-                reproductiveUrgeModifier = 1f;
+                reproductiveUrgeModifier = 0.2f;
 
                 speedModifier = JoggingSpeed;
                 //Debug.Log("varying parameters depending on state: Wander");
@@ -340,15 +341,19 @@ public abstract class AnimalController : MonoBehaviour
                                    targetAnimalController.animalModel.currentHydration * 0.25f;
 
             //Expend energy and hydration
-            animalModel.currentEnergy = animalModel.currentEnergy * 0.75f;
-            targetAnimalController.animalModel.currentEnergy = targetAnimalController.animalModel.currentEnergy * 0.75f;
-            animalModel.currentHydration = animalModel.currentHydration * 0.75f;
-            targetAnimalController.animalModel.currentHydration =
-                targetAnimalController.animalModel.currentHydration * 0.75f;
+            if (!isInfertile)
+            {
+                animalModel.currentEnergy = animalModel.currentEnergy * 0.75f;
+                targetAnimalController.animalModel.currentEnergy = targetAnimalController.animalModel.currentEnergy * 0.75f;
+                animalModel.currentHydration = animalModel.currentHydration * 0.75f;
+                targetAnimalController.animalModel.currentHydration =
+                    targetAnimalController.animalModel.currentHydration * 0.75f;
 
-            //Reset both reproductive urges. 
-            animalModel.reproductiveUrge = 0f;
-            targetAnimalController.animalModel.reproductiveUrge = 0f;
+                //Reset both reproductive urges. 
+                animalModel.reproductiveUrge = 0f;
+                targetAnimalController.animalModel.reproductiveUrge = 0f;     
+            }
+            
 
             //TODO promote laborTime to model or something.
             //Go into labor
@@ -364,18 +369,20 @@ public abstract class AnimalController : MonoBehaviour
         // Generate the offspring traits
         AnimalModel childModel = animalModel.Mate(motherController.animalModel);
 
-        GameObject child = gameObject;
-        child.GetComponent<AnimalController>().animalModel = childModel;
-        
         //Don't instantiate bebe if the animal is infertile. Let the check be here since onBirth.invoke is needed in ML-rabbits
-        if(!isInfertile)
-         child = Instantiate(child, transform.position, transform.rotation);
-
-        //Set start values
-        child.GetComponent<AnimalController>().animalModel.currentEnergy = newEnergy;
-        child.GetComponent<AnimalController>().animalModel.currentHydration = newHydration;
-
-        onBirth?.Invoke(this, new OnBirthEventArgs {child = child});
+        if (!isInfertile)
+        {
+            GameObject child = Instantiate(gameObject, transform.position, transform.rotation);
+        
+            child.GetComponent<AnimalController>().animalModel = childModel;
+        
+            //Set start values
+            child.GetComponent<AnimalController>().animalModel.currentEnergy = newEnergy;
+            child.GetComponent<AnimalController>().animalModel.currentHydration = newHydration;   
+            
+            onBirth?.Invoke(this, new OnBirthEventArgs {child = child});
+        }
+        
     }
 
     public void DestroyGameObject(float delay)

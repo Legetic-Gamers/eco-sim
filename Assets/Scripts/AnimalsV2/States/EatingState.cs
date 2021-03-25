@@ -69,7 +69,7 @@ namespace AnimalsV2.States
             {
                 animal.agent.isStopped = false;
             }
-            Debug.Log("Succesfully ate.");
+            //Debug.Log("Succesfully ate.");
 
             // Very important, this tells Unity to move onto next frame. Everything crashes without this
             yield return null;

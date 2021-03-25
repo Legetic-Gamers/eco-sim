@@ -1602,6 +1602,7 @@ MonoBehaviour:
   visibleFriendlyTargets: []
   visibleFoodTargets: []
   visibleWaterTargets: []
+  isInfertile: 0
 --- !u!54 &1389232664
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1741,14 +1742,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BrainParameters:
-    VectorObservationSize: 4
-    NumStackedVectorObservations: 4
+    VectorObservationSize: 15
+    NumStackedVectorObservations: 2
     m_ActionSpec:
-      m_NumContinuousActions: 0
-      BranchSizes: 0200000003000000
-    VectorActionSize: 0200000003000000
+      m_NumContinuousActions: 1
+      BranchSizes: 02000000
+    VectorActionSize: 
     VectorActionDescriptions: []
-    VectorActionSpaceType: 0
+    VectorActionSpaceType: 1
     hasUpgradedBrainParametersWithActionSpec: 1
   m_Model: {fileID: 5022602860645237092, guid: 2444ca8ea9b3aa64b9874abf3243495b, type: 3}
   m_InferenceDevice: 2

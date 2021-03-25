@@ -74,7 +74,7 @@ namespace AnimalsV2.States
             yield return new WaitForSeconds(1);
             finiteStateMachine.GoToDefaultState();
             animal.agent.isStopped = false;
-            Debug.Log("Succesfully drank.");
+            //Debug.Log("Succesfully drank.");
 
 
             // Very important, this tells Unity to move onto next frame. Everything crashes without this

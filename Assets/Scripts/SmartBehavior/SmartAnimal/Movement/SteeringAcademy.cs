@@ -36,8 +36,8 @@ public class SteeringAcademy : MonoBehaviour
     public void Awake()
     {
         //Randomize environment size
-        float scaleX = Academy.Instance.EnvironmentParameters.GetWithDefault("envScaleX", 0.8f);
-        float scaleZ = Academy.Instance.EnvironmentParameters.GetWithDefault("envScaleZ", 0.8f);
+        float scaleX = Academy.Instance.EnvironmentParameters.GetWithDefault("envScaleX", gameObject.transform.localScale.x);
+        float scaleZ = Academy.Instance.EnvironmentParameters.GetWithDefault("envScaleZ", gameObject.transform.localScale.z);
         //Set size of environment
         transform.localScale = new Vector3(scaleX,1f,scaleZ);
         //Set spawn bounds
@@ -51,7 +51,9 @@ public class SteeringAcademy : MonoBehaviour
         agentBrain.onEpisodeBegin += PopulateEnvironment;
         agentBrain.onEpisodeEnd += ClearEnvironment;
         animalController = agent.GetComponent<AnimalController>();
+        
     }
+    
 
     public void Update()
     {
@@ -119,14 +121,16 @@ public class SteeringAcademy : MonoBehaviour
             agent.transform.localPosition = new Vector3(Random.Range(-rangeX, rangeX), 0,
                 Random.Range(-rangeZ, rangeZ));
             agent.transform.rotation = Quaternion.Euler(new Vector3(0f, Random.Range(0f, 360f), 90f));
-
-            animalModel.currentEnergy = animalModel.traits.maxEnergy;
+            
             animalModel.currentHealth = animalModel.traits.maxHealth;
-            animalModel.currentHydration = animalModel.traits.maxHydration;
+
+            animalModel.currentEnergy = 0.5f * animalModel.traits.maxEnergy;
+            animalModel.currentHydration = 0.5f * animalModel.traits.maxHydration;
+            animalModel.reproductiveUrge = 0.5f;
             animalModel.reproductiveUrge = 0.2f;
             animalModel.age = 0;
             animalController.fsm.absorbingState = false;
-            animalController.agent.ResetPath();
+            if(animalController.agent.isActiveAndEnabled && animalController.agent.isOnNavMesh) animalController.agent.ResetPath();
         }
     }
     

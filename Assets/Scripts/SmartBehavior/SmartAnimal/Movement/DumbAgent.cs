@@ -26,13 +26,15 @@ public class DumbAgent : Agent, IAgent
     
     public void Start()
     {
+        //init specific
         animalController = GetComponent<AnimalController>();
         animalModel = animalController.animalModel;
         fsm = animalController.fsm;
         eventPublisher = FindObjectOfType<global::TickEventPublisher>();
+        
+        //Set the animal as sterile if we want to train/heuristic
         if (TryGetComponent(out BehaviorParameters bp))
         {
-            //Set the animal as sterile if we want to train/try heuristic
             Debug.Log("Agent is infertile!");
             animalController.isInfertile =
                 bp.BehaviorType == BehaviorType.Default || bp.BehaviorType == BehaviorType.HeuristicOnly;
@@ -41,6 +43,7 @@ public class DumbAgent : Agent, IAgent
         //change to a state which does not navigate the agent. If no decisionmaker is present, it will stay at this state (if default state is also set).
         fsm.SetDefaultState(animalController.idleState);
         fsm.ChangeState(animalController.idleState);
+        
         EventSubscribe();
     }
     
@@ -56,7 +59,6 @@ public class DumbAgent : Agent, IAgent
     {
         //Position of the animal
         Vector3 thisPosition = transform.position;
-        if(thisPosition == null || gameObject == null) Debug.Log("NULLL");
         //Get the absolute vector for all targets
         Vector3 nearestFood = NavigationUtilities.GetNearestObject(animalController.visibleFoodTargets.Concat(animalController.heardPreyTargets).ToList(), thisPosition)?.transform.position ?? thisPosition;
         Vector3 nearestWater = NavigationUtilities.GetNearestObject(animalController.visibleWaterTargets, thisPosition)?.transform.position ?? thisPosition;
@@ -74,12 +76,34 @@ public class DumbAgent : Agent, IAgent
         float nearestWaterDistance = nearestWater.magnitude / maxPercievableDistance;
         float potentialMateDistance = potentialMate.magnitude / maxPercievableDistance;
         
-        //Add observations
-        sensor.AddObservation(transform.InverseTransformDirection(nearestFood));
+        //Convert to relative vector to animal
+        nearestFood = transform.InverseTransformDirection(nearestFood);
+        nearestWater = transform.InverseTransformDirection(nearestWater);
+        potentialMate = transform.InverseTransformDirection(potentialMate);
+        
+        //Add observations for food
         sensor.AddObservation(nearestFoodDistance);
+        sensor.AddObservation(nearestFood.x);
+        sensor.AddObservation(nearestFood.z);
+        sensor.AddObservation(animalModel.GetEnergyPercentage);
+        
+        //Add observations for water
+        sensor.AddObservation(nearestWaterDistance);
+        sensor.AddObservation(nearestWater.x);
+        sensor.AddObservation(nearestWater.z);
+        sensor.AddObservation(animalModel.GetHydrationPercentage);
+        
+        //Add observations for mate
+        sensor.AddObservation(potentialMateDistance);
+        sensor.AddObservation(potentialMate.x);
+        sensor.AddObservation(potentialMate.z);
+        sensor.AddObservation(animalModel.WantingOffspring);
+        
         
         //Add agents velocity (as a direction) to observations
-        sensor.AddObservation(transform.InverseTransformDirection(animalController.agent.velocity));
+        Vector3 velocity = transform.InverseTransformDirection(animalController.agent.velocity);
+        sensor.AddObservation(velocity.x);
+        sensor.AddObservation(velocity.z);
 
     }
 
@@ -89,19 +113,17 @@ public class DumbAgent : Agent, IAgent
     {
 
         AddReward(-0.0025f);
-        Vector3 dirToGo = Vector3.zero;
+        Vector3 dirToGo = transform.forward;
         
         //binary possiblity 1 or 0
-        int move = actions.DiscreteActions[0];
+        int run = actions.DiscreteActions[0];
+
+        //if run is 1, set running speed
+        animalController.speedModifier = run == 1 ? AnimalController.RunningSpeed : AnimalController.JoggingSpeed;
         
         //Continuous actions are preclamped by mlagents [-1, 1]
         float rotationAngle = actions.ContinuousActions[0] * 90;
         
-
-        if (move == 1)
-        {
-            dirToGo = transform.forward;
-        }
         
         dirToGo = Quaternion.AngleAxis(rotationAngle, Vector3.up) * dirToGo;
         
@@ -113,17 +135,7 @@ public class DumbAgent : Agent, IAgent
     public override void Heuristic(in ActionBuffers actionsOut)
     {
         
-        ActionSegment<int> discreteActions = actionsOut.DiscreteActions;
         ActionSegment<float> continuousActions = actionsOut.ContinuousActions;
-
-        if (Input.GetKey(KeyCode.UpArrow))
-        {
-            discreteActions[0] = 1;
-        }
-        else
-        {
-            discreteActions[0] = 0;
-        }
 
         if (Input.GetKey(KeyCode.LeftArrow))
         {
@@ -145,7 +157,6 @@ public class DumbAgent : Agent, IAgent
     
     private void HandleDeath()
     {
-        //Penalize for every year not lived.
         AddReward(-1);
         onEpisodeEnd.Invoke(100f);
         //Task failed
@@ -192,28 +203,19 @@ public class DumbAgent : Agent, IAgent
         }
 
         AddReward(1f);
-        onEpisodeEnd.Invoke(100f);
-        EndEpisode();
     }
     
     private void HandleMate(GameObject obj)
     {
-        
-        AddReward(1f);
+        AddReward(3f);
         //Task achieved
         onEpisodeEnd.Invoke(100f);
         EndEpisode();
-        
     }
     
     private void HandleBirth(object sender, AnimalController.OnBirthEventArgs e)
     {
-        /*
-        AddReward(1f);
-        //Task achieved
-        onEpisodeEnd.Invoke(100f);
-        EndEpisode();
-        */
+        
      }
     
     //Listen to when parameters or senses were updated.
@@ -250,11 +252,12 @@ public class DumbAgent : Agent, IAgent
         {
             animalController.Interact(other.gameObject);
         }
-
+/*
         if (other.gameObject.CompareTag("Wall"))
         {
             HandleDeath();
         }
+        */
     }
     
 }
