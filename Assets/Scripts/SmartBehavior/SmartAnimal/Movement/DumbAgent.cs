@@ -114,18 +114,27 @@ public class DumbAgent : Agent, IAgent
 
         AddReward(-0.0025f);
         Vector3 dirToGo = transform.forward;
-        
+        /*
         //binary possiblity 1 or 0
         int run = actions.DiscreteActions[0];
 
         //if run is 1, set running speed
-        animalController.speedModifier = run == 1 ? AnimalController.RunningSpeed : AnimalController.JoggingSpeed;
+        float speedModifier = run == 1 ? AnimalController.RunningSpeed : AnimalController.JoggingSpeed;
+        */
         
         //Continuous actions are preclamped by mlagents [-1, 1]
         float rotationAngle = actions.ContinuousActions[0] * 90;
         
         
         dirToGo = Quaternion.AngleAxis(rotationAngle, Vector3.up) * dirToGo;
+        dirToGo *= 3;
+
+        float speedModifier = actions.ContinuousActions[1];
+        speedModifier = 0.5f * speedModifier + 0.5f; //make sure that function of interval [-1,1] maps to [0,1]
+        
+        
+        animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
+        animalController.agent.speed = animalModel.currentSpeed * Time.timeScale;
         
         //transform.Rotate(rotateDir, Time.fixedDeltaTime * turnSpeed);
         NavigationUtilities.NavigateRelative(animalController, dirToGo, 1 << NavMesh.GetAreaFromName("Walkable"));
@@ -173,7 +182,7 @@ public class DumbAgent : Agent, IAgent
             // normalize reward as a percentage
             reward /= animalModel.traits.maxHydration;
         }
-        AddReward(reward);
+        //AddReward(reward);
     }
 
     //The reason to why I have curentEnergy as an in-parameter is because currentEnergy is updated through EatFood before reward gets computed in AnimalMovementBrain
@@ -202,7 +211,7 @@ public class DumbAgent : Agent, IAgent
             reward /= animalModel.traits.maxEnergy;
         }
 
-        AddReward(1f);
+        //AddReward(1f);
     }
     
     private void HandleMate(GameObject obj)

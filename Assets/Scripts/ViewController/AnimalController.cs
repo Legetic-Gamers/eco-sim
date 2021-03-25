@@ -61,7 +61,7 @@ public abstract class AnimalController : MonoBehaviour
     //Modifiers
     private float energyModifier;
     private float hydrationModifier;
-    private float reproductiveUrgeModifier = 0.2f;
+    private float reproductiveUrgeModifier = 0.3f;
     public float speedModifier = JoggingSpeed; //100% of maxSpeed in model
 
     public List<GameObject> visibleHostileTargets = new List<GameObject>();
@@ -168,7 +168,7 @@ public abstract class AnimalController : MonoBehaviour
             case Idle _:
                 energyModifier = 0.1f;
                 hydrationModifier = 0.05f;
-                reproductiveUrgeModifier = 0.2f;
+                reproductiveUrgeModifier = 0.35f;
                 //Debug.Log("varying parameters depending on state: Mating");
                 break;
             case Waiting _:
