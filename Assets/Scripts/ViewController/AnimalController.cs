@@ -47,7 +47,8 @@ public abstract class AnimalController : MonoBehaviour
     public GoToMate goToMate;
 
     //Constants
-    private const float JoggingSpeed = 0.4f;
+    private const float WalkingSpeed = 0.2f;
+    private const float JoggingSpeed = 0.5f;
     private const float RunningSpeed = 1f;
 
     //Modifiers
@@ -144,7 +145,7 @@ public abstract class AnimalController : MonoBehaviour
         energyModifier = 0.2f;
         hydrationModifier = 0.05f;
         reproductiveUrgeModifier = 1f;
-        speedModifier = JoggingSpeed;
+        speedModifier = WalkingSpeed;
     }
     private void UpdateParameters()
     {
@@ -153,11 +154,14 @@ public abstract class AnimalController : MonoBehaviour
         
         animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier;
         
-        animalModel.currentEnergy -= age + animalModel.traits.size *
-            (animalModel.traits.viewRadius + animalModel.traits.hearingRadius + 
-             energyModifier * currentSpeed);
-        animalModel.currentHydration -= (animalModel.traits.size * 1) + 
-                                        (animalModel.traits.size * currentSpeed) * hydrationModifier;
+        // energy
+        animalModel.currentEnergy -= age + 
+            (animalModel.traits.viewRadius / 10 + animalModel.traits.hearingRadius / 10 + 
+             currentSpeed) * animalModel.traits.size * energyModifier;
+        // hydration
+        animalModel.currentHydration -= animalModel.traits.size * 
+                                        (1 + currentSpeed * hydrationModifier);
+        // reproductive urge
         animalModel.reproductiveUrge += 0.1f * reproductiveUrgeModifier;
         
         //TODO, maybe move from here?
@@ -166,14 +170,14 @@ public abstract class AnimalController : MonoBehaviour
         // testing
         currentSpeed = animalModel.currentSpeed;
         maxSpeed = animalModel.traits.maxSpeed;
-        carrying = animalModel.Carrying;
+        isCarrying = animalModel.isCarrying;
         size = animalModel.traits.size;
         acceleration = animalModel.traits.acceleration;
         age = animalModel.age;
     }
 
     public float acceleration;
-    public bool carrying;
+    public bool isCarrying;
     public float currentSpeed;
     public float maxSpeed;
     public float size;
@@ -268,10 +272,11 @@ public abstract class AnimalController : MonoBehaviour
             targetAnimalController.animalModel.age + rnd > animalModel.age)
             wantsToMate = false; 
         
-        // make sure target has an AnimalController, that its animalModel is same species, and neither animal is already carrying
+        // make sure target has an AnimalController,
+        // that its animalModel is same species, and neither animal is already carrying
         if (wantsToMate && targetAnimalController && 
             targetAnimalController.animalModel.IsSameSpecies(animalModel) && 
-            !animalModel.Carrying && !targetAnimalController.animalModel.Carrying)
+            !animalModel.isCarrying && !targetAnimalController.animalModel.isCarrying)
         {
 
             //TODO promote laborTime to model or something.
@@ -286,8 +291,9 @@ public abstract class AnimalController : MonoBehaviour
             
             // Spawn child as a copy of this parent
             GameObject child = gameObject;
+            
             // Wait some time before giving birth
-            animalModel.Carrying = true;
+            animalModel.isCarrying = true;
             StartCoroutine(GiveBirth(child, childModel, childEnergy, 5));
 
             // Reset both reproductive urges. 
@@ -308,7 +314,9 @@ public abstract class AnimalController : MonoBehaviour
 
         // update the childs speed (in case of mutation).
         child.GetComponent<AnimalController>().animalModel.traits.maxSpeed = 1;
-        animalModel.Carrying = false;
+        
+        animalModel.isCarrying = false;
+        
         onBirth?.Invoke(this,new OnBirthEventArgs{child = child});
     }
 

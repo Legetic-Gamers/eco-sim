@@ -196,7 +196,7 @@ public abstract class AnimalModel
         }
     }
 
-    public bool Carrying;
+    public bool isCarrying;
 
     public bool IsAlive => (currentHealth > 0 && currentEnergy > 0 && age < traits.ageLimit && currentHydration > 0);
 

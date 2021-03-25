@@ -23,22 +23,10 @@ public class Traits
     public float maxHealth { get; set; }
 
     /// <summary>
-    /// based on the article for deciding the velocity of an animal:
-    /// more readable: https://www.biorxiv.org/content/10.1101/095018v1.full
-    /// alternate version: https://www.uvm.edu/pdodds/research/papers/others/2017/hirt2017a.pdf
-    /// some default weights of the animals:
-    /// bear avg mass = 180 kg
-    /// deer avg mass = 110 kg
-    /// wolf avg mass = 70 kg
-    /// rabbit avg mass = 5 kg
-    ///
-    /// default speeds of the animals:
-    /// bear avg speed = 56 km/h 
-    /// deer avg speed = 48 km/h
-    /// wolf avg speed = 55 km/h
-    /// rabbit avg speed = 68 km/h (64-72 km/h)
-    ///
-    ///
+    /// based on this article for deciding the velocity of an animal:
+    /// 1: https://www.biorxiv.org/content/10.1101/095018v1.full
+    /// 2: https://www.uvm.edu/pdodds/research/papers/others/2017/hirt2017a.pdf
+    /// 
     /// function:
     /// Vmax = aM^b * (1 - e^(-hM^i))
     /// 
@@ -48,20 +36,15 @@ public class Traits
     /// Therefore we will have to use some tweaked values to get the
     /// speeds that we want, relative to the sizes that we use.
     /// 
-    /// a = 26 (acceleration? can change this for each animal)
-    /// b = 0.24 (power-law in speed)
-    /// e = 2.72 
-    /// h = cf = 1?
-    /// i = d - 1 + g (i = 0.51-1.21 depending on d and g), choose i = 0.6
-    /// d = 0.75-0.94 (muscle force)
-    /// g = 0.76-1.27 (muscle mass)
-    /// c = 1? (otherwise unknown)
-    /// f = 1? (otherwise unknown)
-    /// M = mass of animal from above
-    ///
-    ///
-    /// Note that we are currently using size instead of mass, for simplicity.
     /// </summary>
+    /// <param name="a"> The acceleration of the animal. </param>
+    /// <param name="M"> Mass of animal, but we use size instead. </param>
+    /// <param name="b">Power-law in speed. According to article should be 0.24. </param>
+    /// <param name="e"> Euler's number. </param>
+    /// <param name="h = c * f"> Some constants. </param>
+    /// <param name="d"> 0.75-0.94, Muscle Force. </param>
+    /// <param name="g"> 0.76-1.27, Muscle Mass. </param>
+    /// <param name="i"> 0.51-1.21, i = d - 1 + g, according to article should be 0.6. </param>
 
     private float _acceleration;
     public float acceleration
@@ -125,7 +108,6 @@ public class Traits
         float viewRadius, 
         float hearingRadius)
     {
-
         this.size = size;
         this.maxEnergy = maxEnergy;
         this.maxHealth = maxHealth;
