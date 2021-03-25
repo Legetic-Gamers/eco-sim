@@ -74,7 +74,7 @@ namespace AnimalsV2
         //https://docs.unity3d.com/ScriptReference/AI.NavMesh.SamplePosition.html
         public static bool RandomPoint(Vector3 center, float range,float maxDist, out Vector3 result)
         {
-            for (int i = 0; i < 30; i++)
+            while (true)
             {
                 Vector3 randomPoint = center + Random.insideUnitSphere * range;
                 NavMeshHit hit;
@@ -82,16 +82,17 @@ namespace AnimalsV2
                 {
                     result = hit.position;
                     return true;
-                    
+
                     //Try opposite direction to avoid clinging to walls.
                 }
-                else if (NavMesh.SamplePosition(new Vector3(-randomPoint.x, randomPoint.y, -randomPoint.z), out hit,
-                    maxDist, 1 << NavMesh.GetAreaFromName("Walkable")))
-                {
-                    result = hit.position;
-                    return true;
-                }
             }
+            //     else if (NavMesh.SamplePosition(new Vector3(-randomPoint.x, randomPoint.y, -randomPoint.z), out hit,
+            //         maxDist, 1 << NavMesh.GetAreaFromName("Walkable")))
+            //     {
+            //         result = hit.position;
+            //         return true;
+            //     }
+            // }
             
             
             result = center;

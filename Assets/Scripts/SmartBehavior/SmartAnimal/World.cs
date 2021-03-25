@@ -61,8 +61,8 @@ public class World : MonoBehaviour
         //Academy.Instance.OnEnvironmentReset += ResetWorld;
         
         //Randomize environment size
-        float scaleX = Mathf.Round(Academy.Instance.EnvironmentParameters.GetWithDefault("envScaleX", 3.0f));
-        float scaleZ = Mathf.Round(Academy.Instance.EnvironmentParameters.GetWithDefault("envScaleZ", 3.0f));
+        float scaleX = Mathf.Round(Academy.Instance.EnvironmentParameters.GetWithDefault("envScaleX", transform.localScale.x));
+        float scaleZ = Mathf.Round(Academy.Instance.EnvironmentParameters.GetWithDefault("envScaleZ", transform.localScale.z));
         //Set size of environment
         transform.localScale = new Vector3(scaleX,1f,scaleZ);
         //Set spawn bounds

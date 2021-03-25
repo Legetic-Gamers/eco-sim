@@ -52,8 +52,9 @@ namespace AnimalsV2.States
             */
             if (animal.agent.isActiveAndEnabled)
             {
-                if (Vector3.Distance(animal.transform.position, nextPosition) <= animal.agent.stoppingDistance + 0.2)
+                if (Vector3.Distance(animal.transform.position, nextPosition) <= animal.agent.stoppingDistance + 0.2 || animal.agent.velocity.magnitude <= 0.1f)
                 {
+                    //Debug.Log(animal.agent.velocity.magnitude);
                     //Vector3 position = new Vector3(Random.Range(-10.0f, 10.0f), 0, Random.Range(-10.0f, 10.0f)) + animal.transform.position;
                     //Debug.Log("Framme!");
                     //Move the animal using the navmeshagent.

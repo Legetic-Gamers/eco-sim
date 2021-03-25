@@ -35,6 +35,14 @@ namespace AnimalsV2.States
                 if (foundMate != null && animal.agent.isActiveAndEnabled)
                 {
                     Vector3 pointToRunTo = foundMate.transform.position;
+                    
+                    // if(foundMate.TryGetComponent(out AnimalController otherAnimalController))
+                    // {
+                    //     if (otherAnimalController.fsm.currentState is Wander)
+                    //     {
+                    //         otherAnimalController.fsm.ChangeState(otherAnimalController.waitingState);
+                    //     }
+                    // }
                     //Move the animal using the navmeshagent.
                     NavigationUtilities.NavigateToPoint(animal,pointToRunTo);
                     

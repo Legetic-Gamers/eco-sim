@@ -115,7 +115,7 @@ MonoBehaviour:
   water: {fileID: 2493576781110911613, guid: 98b2e4f4f56370343b10b456a0c255a5, type: 3}
   numFoodDefault: 6
   numRabbitsDefault: 2
-  numWolvesDefault: 1
+  numWolvesDefault: 0
   numWaterDefault: 6
   foodRespawnRateDefault: 60
   rangeX: 0

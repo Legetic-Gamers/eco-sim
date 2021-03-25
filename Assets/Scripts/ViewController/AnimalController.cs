@@ -245,7 +245,7 @@ public abstract class AnimalController : MonoBehaviour
                                      (animalModel.traits.size * animalModel.currentSpeed) * energyModifier);
         animalModel.currentHydration -= ((animalModel.traits.size * 1) +
                                         (animalModel.traits.size * animalModel.currentSpeed) * hydrationModifier);
-        animalModel.reproductiveUrge += (0.01f * reproductiveUrgeModifier);
+        animalModel.reproductiveUrge += (0.02f * reproductiveUrgeModifier);
 
         //The age will increase 1 per 1 second.
         animalModel.age += (1);
@@ -259,7 +259,7 @@ public abstract class AnimalController : MonoBehaviour
             tickEventPublisher.onParamTickEvent += VaryParameters;
             tickEventPublisher.onParamTickEvent += HandleDeathStatus;
             // every 0.5 sec
-            //tickEventPublisher.onSenseTickEvent += fsm.UpdateStatesLogic;    
+            tickEventPublisher.onSenseTickEvent += fsm.UpdateStatesLogic;    
         }
 
         fsm.OnStateEnter += ChangeModifiers;
@@ -281,7 +281,7 @@ public abstract class AnimalController : MonoBehaviour
             tickEventPublisher.onParamTickEvent -= VaryParameters;
             tickEventPublisher.onParamTickEvent -= HandleDeathStatus;
             // every 0.5 sec
-            //tickEventPublisher.onSenseTickEvent -= fsm.UpdateStatesLogic;    
+            tickEventPublisher.onSenseTickEvent -= fsm.UpdateStatesLogic;    
         }
 
 
@@ -299,14 +299,14 @@ public abstract class AnimalController : MonoBehaviour
         animationController.EventUnsubscribe();
     }
 
-    private void Update()
-    {
-        if (fsm != null)
-        {
-            fsm.UpdateStatesLogic();
-        }
-        
-    }
+    // private void FixedUpdate()
+    // {
+    //     if (fsm != null)
+    //     {
+    //         fsm.UpdateStatesLogic();
+    //     }
+    //     
+    // }
 
     //Set animals size based on traits.
     private void SetPhenotype()
@@ -391,9 +391,9 @@ public abstract class AnimalController : MonoBehaviour
         // // string path = AssetDatabase.GetAssetPath(parentObject);
         // GameObject child = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Animals/Rabbit Brown.prefab");
 
-        GameObject child = gameObject;
+        GameObject child = Instantiate(gameObject,transform.position,transform.rotation);
         child.GetComponent<AnimalController>().animalModel = childModel;
-        child = Instantiate(child, transform.position, transform.rotation);
+        //child = Instantiate(child, transform.position, transform.rotation);
 
         //Set start values
         child.GetComponent<AnimalController>().animalModel.currentEnergy = newEnergy;
