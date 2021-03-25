@@ -251,20 +251,6 @@ public abstract class AnimalModel
         this.traits = traits;
     }
 
-    public void UpdateParameters(float energyModifier, float hydrationModifier, float reproductiveUrgeModifier,
-        float speedModifier)
-    {
-        //The age will increase 1 per 1 second.
-        age += Time.deltaTime;
-        
-        currentSpeed = traits.maxSpeed * speedModifier;
-        
-        //currentEnergy -= age + traits.size *
-        //    (traits.viewRadius + traits.hearingRadius + energyModifier * currentSpeed);
-        //currentHydration -= (traits.size * 1) + (traits.size * currentSpeed) * hydrationModifier;
-        reproductiveUrge += 0.1f * reproductiveUrgeModifier;
-    }
-    
     public abstract AnimalModel Mate(System.Random rng, AnimalModel otherParent);
     
     public abstract bool CanEat<T>(T obj);

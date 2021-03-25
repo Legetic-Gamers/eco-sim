@@ -9,7 +9,12 @@ public class Traits
     /*                                         Traits                                         */
     /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
 
-    public  float size { get; set; }
+    private float _size;
+    public float size
+    {
+        get => _size;
+        set => _size = Mathf.Clamp(value, 0.1f, 10); 
+    }
     
     public float maxEnergy { get; set; }
     
@@ -36,34 +41,34 @@ public class Traits
     ///
     /// function:
     /// Vmax = aM^b * (1 - e^(-hM^i))
+    /// 
+    /// Below are the suggested values from the article.
+    /// However, we are using size instead of mass, 
+    /// and the Vmax does not translate to the expected speed in Unity.
+    /// Therefore we will have to use some tweaked values to get the
+    /// speeds that we want, relative to the sizes that we use.
+    /// 
     /// a = 26 (acceleration? can change this for each animal)
     /// b = 0.24 (power-law in speed)
     /// e = 2.72 
-    /// h = cf = 1
+    /// h = cf = 1?
     /// i = d - 1 + g (i = 0.51-1.21 depending on d and g), choose i = 0.6
     /// d = 0.75-0.94 (muscle force)
     /// g = 0.76-1.27 (muscle mass)
-    /// c = 1 (otherwise unknown)
-    /// f = 1 (otherwise unknown)
+    /// c = 1? (otherwise unknown)
+    /// f = 1? (otherwise unknown)
     /// M = mass of animal from above
-    ///
-    /// here are some proposed values of 'a' and 'mass' if using mass instead of size:
-    /// bear = 17.5 at mass 180
-    /// deer = 20 at mass 110
-    /// wolf = 22 at mass 70
-    /// rabbit = 46 at mass 5
-    /// 
-    /// using the proposed values, would get (at default weight) approximately same speed:
-    /// bear = 60.9
-    /// deer = 61.8
-    /// wolf = 61
-    /// rabbit = 62.8
     ///
     ///
     /// Note that we are currently using size instead of mass, for simplicity.
     /// </summary>
 
-    public float acceleration { get; set; }
+    private float _acceleration;
+    public float acceleration
+    {
+        get => _acceleration;
+        set => _acceleration = Mathf.Clamp(value, 3.5f, 12);
+    }
 
     private float _maxSpeed;
     public float maxSpeed 
@@ -72,20 +77,20 @@ public class Traits
 
         set
         {
-            float bPow = 0.24f;
+            float bPow = 0.4f;
             float bodymassAccel = acceleration * Mathf.Pow(size, bPow);
             
-            float muscleForce = 0.8f;
-            float muscleMass = 0.8f;
+            float muscleForce = 0.94f;
+            float muscleMass = 1.4f;
             float i = muscleForce - 1 + muscleMass;
             float massI = Mathf.Pow(size, i);
             
-            float h = 1 * 1; // c * f
-            float ePow = 1 - Mathf.Pow(2.71828f, -h * massI);
+            float c = 1.5f; // h = c * f
+            float ePow = 1 - Mathf.Pow(2.71828f, -c * massI);
 
-            float limiter = Mathf.Pow(size, 1f);
-            float speed = bodymassAccel * ePow - limiter;
-            _maxSpeed = Mathf.Clamp(speed,0.5f,25);
+            float sizeLimiter = Mathf.Pow(size, i);
+            float speed = bodymassAccel * ePow - sizeLimiter;
+            _maxSpeed = Mathf.Clamp(speed,0.4f,25); // actual limit is ~15
         }
     }
     

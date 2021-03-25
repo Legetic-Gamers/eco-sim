@@ -148,20 +148,33 @@ public abstract class AnimalController : MonoBehaviour
     }
     private void UpdateParameters()
     {
-        animalModel.UpdateParameters(energyModifier, hydrationModifier, reproductiveUrgeModifier, speedModifier);
+        //The age will increase 1 per 1 second.
+        age += Time.deltaTime;
+        
+        animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier;
+        
+        animalModel.currentEnergy -= age + animalModel.traits.size *
+            (animalModel.traits.viewRadius + animalModel.traits.hearingRadius + 
+             energyModifier * currentSpeed);
+        animalModel.currentHydration -= (animalModel.traits.size * 1) + 
+                                        (animalModel.traits.size * currentSpeed) * hydrationModifier;
+        animalModel.reproductiveUrge += 0.1f * reproductiveUrgeModifier;
         
         //TODO, maybe move from here?
         agent.speed = animalModel.currentSpeed;
+        
         // testing
-        speed = animalModel.currentSpeed;
+        currentSpeed = animalModel.currentSpeed;
         maxSpeed = animalModel.traits.maxSpeed;
         carrying = animalModel.Carrying;
         size = animalModel.traits.size;
+        acceleration = animalModel.traits.acceleration;
         age = animalModel.age;
     }
 
+    public float acceleration;
     public bool carrying;
-    public float speed;
+    public float currentSpeed;
     public float maxSpeed;
     public float size;
     public float age;
