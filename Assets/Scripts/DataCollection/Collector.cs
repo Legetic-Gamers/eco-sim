@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using Model;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -16,30 +17,33 @@ namespace DataCollection
         private int cap = 13;
         
         // Index is generation
-        public List<int> totalAnimalsAlivePerGeneration;
+        public readonly List<int> totalAnimalsAlivePerGeneration;
         
-        public List<List<float>> birthRatePerMinute;
-        public List<float> newBirths;
-        private int loop;
+        public readonly List<List<float>> birthRatePerMinute;
+        public readonly List<float> newBirths;
+        
         private int timeIndexBirth;
+        private int timeIndexFood;
 
         // Each index contains the mean of that generation, starting from 0. 
-        public List<List<float>> rabbitStatsPerGenMean;
-        public List<List<float>> wolfStatsPerGenMean;
-        public List<List<float>> deerStatsPerGenMean;
-        public List<List<float>> bearStatsPerGenMean;
+        public readonly List<List<float>> rabbitStatsPerGenMean;
+        public readonly List<List<float>> wolfStatsPerGenMean;
+        public readonly List<List<float>> deerStatsPerGenMean;
+        public readonly List<List<float>> bearStatsPerGenMean;
         
-        public List<List<float>> rabbitStatsPerGenVar;
-        public List<List<float>> wolfStatsPerGenVar;
-        public List<List<float>> deerStatsPerGenVar;
-        public List<List<float>> bearStatsPerGenVar;
+        public readonly List<List<float>> rabbitStatsPerGenVar;
+        public readonly List<List<float>> wolfStatsPerGenVar;
+        public readonly List<List<float>> deerStatsPerGenVar;
+        public readonly List<List<float>> bearStatsPerGenVar;
         
-        public List<float> rabbitTotalAlivePerGen;
-        public List<float> wolfTotalAlivePerGen;
-        public List<float> deerTotalAlivePerGen;
-        public List<float> bearTotalAlivePerGen;
+        public readonly List<float> rabbitTotalAlivePerGen;
+        public readonly List<float> wolfTotalAlivePerGen;
+        public readonly List<float> deerTotalAlivePerGen;
+        public readonly List<float> bearTotalAlivePerGen;
         
-        public List<int> currentanimalsTotalAlivePerSpecies;
+        public readonly List<int> currentanimalsTotalAlivePerSpecies;
+        
+        public readonly List<int> foodActivePerMinute;
         
         //Special, index is the cause and the content is the total dead of that cause
         public Dictionary<AnimalController.CauseOfDeath, int> causeOfDeath = new Dictionary<AnimalController.CauseOfDeath, int>();
@@ -106,9 +110,11 @@ namespace DataCollection
 
             currentanimalsTotalAlivePerSpecies = new List<int>{0,0,0,0};
 
+            foodActivePerMinute = new List<int>{0};
+
             newBirths = new List<float>{0,0,0,0};
-            loop = 13;
             timeIndexBirth = 0;
+            timeIndexFood = 0;
         }
         
         /// <summary>
@@ -126,6 +132,8 @@ namespace DataCollection
                 newBirths[i] = 0;
             }
             timeIndexBirth++;
+            foodActivePerMinute.Add(foodActivePerMinute[timeIndexFood]);
+            timeIndexFood++;
         }
         
         /// <summary>
@@ -212,7 +220,7 @@ namespace DataCollection
                 
             animalMean[12][gen] = mean;
             animalVar[12][gen] = var;
-
+            /*
             switch (cause)
             {
                 case AnimalController.CauseOfDeath.Eaten:
@@ -222,6 +230,7 @@ namespace DataCollection
                 case AnimalController.CauseOfDeath.Hydration:
                     break;
             }
+            */
             switch (am)
             {
                 case RabbitModel _ :
@@ -303,7 +312,7 @@ namespace DataCollection
         }
         
         /// <summary>
-        /// Check the entire scene for all objects with the "Animal" tag and add at the end of the time series list. 
+        /// Not used, Check the entire scene for all objects with the "Animal" tag and add at the end of the time series list. 
         /// </summary>
         private void AddTotalAnimals()
         {
@@ -326,6 +335,16 @@ namespace DataCollection
             m += (valueToAdd - m) / populationSize;
             s += (valueToAdd - m) * (valueToAdd - oldM);
             return (populationSize > 1) ? (m, s / (populationSize - 1f)) : (m, 0);
+        }
+
+        public void CollectNewFood(PlantModel plantModel)
+        {
+            if (foodActivePerMinute.Count <= timeIndexFood) foodActivePerMinute.Add(1);
+            else foodActivePerMinute[timeIndexFood] += 1;
+        }
+        public void CollectDeadFood(PlantModel plantModel)
+        {
+            foodActivePerMinute[timeIndexFood] -= 1;
         }
     }
 }    

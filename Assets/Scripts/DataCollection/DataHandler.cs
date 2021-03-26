@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Model;
 using UnityEngine;
 using static DataCollection.Formatter;
 using Debug = UnityEngine.Debug;
@@ -96,9 +97,32 @@ namespace DataCollection
             c.CollectBirth(animalModel);
         }
         
+        /// <summary>
+        /// Called when an animal dies. 
+        /// </summary>
+        /// <param name="animalModel"> The model of the dead animal </param>
+        /// <param name="causeOfDeath"> The Cause that made the animal call on dead state </param>
         public void LogDeadAnimal(AnimalModel animalModel, AnimalController.CauseOfDeath causeOfDeath)
         {
             c.CollectDeath(animalModel, causeOfDeath);
+        }
+        
+        /// <summary>
+        /// Called when plants are activated
+        /// </summary>
+        /// <param name="plantModel"> The model of the plant </param>
+        public void LogNewPlant(PlantModel plantModel)
+        {
+            c.CollectNewFood(plantModel);
+        }
+        
+        /// <summary>
+        /// Called when a plant is eaten
+        /// </summary>
+        /// <param name="plantModel"> The model of the eaten plant </param>
+        public void LogDeadPlant(PlantModel plantModel)
+        {
+            c.CollectDeadFood(plantModel);
         }
         
         /// <summary>
