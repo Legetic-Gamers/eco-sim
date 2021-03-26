@@ -73,5 +73,18 @@ namespace Tests.EditModeTests
             Assert.AreEqual(1.3333333f, c.rabbitStatsPerGenMean[0][0], 0.0001f);
             Assert.AreEqual(2.5, c.rabbitStatsPerGenMean[0][1], 0.0001f);
         }
+        [Test]
+        public void BirthRateWorking()
+        {
+            Collector c = new Collector();
+            c.CollectBirth(am1);
+            c.CollectBirth(am2);
+            c.CollectBirth(am3);
+            c.Collect();
+            c.CollectBirth(am4);
+            c.CollectBirth(am5);
+            c.Collect();
+            Assert.AreEqual(0.6666667f, c.birthRatePerMinute[0][1], 0.0001f);
+        }
     }
 }
