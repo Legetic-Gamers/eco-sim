@@ -115,6 +115,12 @@ namespace DataCollection
             newBirths = new List<float>{0,0,0,0};
             timeIndexBirth = 0;
             timeIndexFood = 0;
+
+            causeOfDeath = new Dictionary<AnimalController.CauseOfDeath, int>();
+            causeOfDeath.Add(AnimalController.CauseOfDeath.Eaten, 0);
+            causeOfDeath.Add(AnimalController.CauseOfDeath.Hydration, 0);
+            causeOfDeath.Add(AnimalController.CauseOfDeath.Hunger, 0);
+            causeOfDeath.Add(AnimalController.CauseOfDeath.Health, 0);
         }
         
         /// <summary>
@@ -220,17 +226,9 @@ namespace DataCollection
                 
             animalMean[12][gen] = mean;
             animalVar[12][gen] = var;
-            /*
-            switch (cause)
-            {
-                case AnimalController.CauseOfDeath.Eaten:
-                    break;
-                case AnimalController.CauseOfDeath.Hunger:
-                    break;
-                case AnimalController.CauseOfDeath.Hydration:
-                    break;
-            }
-            */
+
+            causeOfDeath[cause] = causeOfDeath[cause] += 1;
+            
             switch (am)
             {
                 case RabbitModel _ :

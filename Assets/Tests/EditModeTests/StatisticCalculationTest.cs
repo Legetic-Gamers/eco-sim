@@ -109,5 +109,20 @@ namespace Tests.EditModeTests
             c.Collect();
             Assert.AreEqual(2f, c.foodActivePerMinute[1], 0.0001f);
         }
+        
+        [Test]
+        public void CauseOfDeathsWorking()
+        {
+            Collector c = new Collector();
+            c.CollectDeath(am1, AnimalController.CauseOfDeath.Eaten);
+            c.CollectDeath(am1, AnimalController.CauseOfDeath.Hydration);
+            c.CollectDeath(am1, AnimalController.CauseOfDeath.Eaten);
+            c.CollectDeath(am1, AnimalController.CauseOfDeath.Health);
+            c.CollectDeath(am1, AnimalController.CauseOfDeath.Hunger);
+            Assert.AreEqual(2, c.causeOfDeath[AnimalController.CauseOfDeath.Eaten]);
+            Assert.AreEqual(1, c.causeOfDeath[AnimalController.CauseOfDeath.Hydration]);
+            Assert.AreEqual(1, c.causeOfDeath[AnimalController.CauseOfDeath.Health]);
+            Assert.AreEqual(1, c.causeOfDeath[AnimalController.CauseOfDeath.Hunger]);
+        }
     }
 }
