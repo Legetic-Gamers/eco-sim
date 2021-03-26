@@ -130,6 +130,7 @@ public class SteeringAcademy : MonoBehaviour
             animalModel.reproductiveUrge = 0.2f;
             animalModel.age = 0;
             animalController.fsm.absorbingState = false;
+            animalController.fsm.GoToDefaultState();
             if(animalController.agent.isActiveAndEnabled && animalController.agent.isOnNavMesh) animalController.agent.ResetPath();
         }
     }
