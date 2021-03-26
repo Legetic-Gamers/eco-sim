@@ -17,7 +17,7 @@ namespace DataCollection
     /// </summary>
     public class DataHandler : MonoBehaviour
     {
-        public Action<List<int>> Display;
+        public Action<List<float>, List<float>> Display;
         
         [SerializeField]
         private bool ShowFrameRate;
@@ -28,6 +28,17 @@ namespace DataCollection
         
         private TickEventPublisher tickEventPublisher;
         private Collector c;
+        private List<float> sendList1 = new List<float>();
+        private List<float> sendList2 = new List<float>();
+        
+        private static int _speciesNumber1 = 0;
+        private static int _traitNumber1 = 0;
+        private static int _dataTypeNumber1 = 0;
+        private static int _speciesNumber2 = 0;
+        private static int _traitNumber2 = 0;
+        private static int _dataTypeNumber2 = 0;
+
+
         private List<string> traitNames = new List<string>
         {
             "size",
@@ -44,7 +55,7 @@ namespace DataCollection
             "hearingRadius",
             "age"
         };
-        
+
         /// <summary>
         /// Find the Tick Event Publisher and subscribe to collecting tick
         /// Create a new collector to handle data manipulation. 
@@ -54,15 +65,19 @@ namespace DataCollection
             tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
             // Subscribe to Tick Event publisher update data and graph 
             tickEventPublisher.onCollectorUpdate += UpdateDataAndGraph;
-            
+            ButtonClick bc = FindObjectOfType<ButtonClick>();
+            bc.GetListType += SetList;
             // Make a collector to handle data
             c = new Collector();
-            
             // Prepare for frame rate collection
             times = new List<float>(0);
             framerate = new List<float>(10);
             counter = 5;
         }
+
+        
+        
+
             
         /// <summary>
         /// Calculates the average frame rate over *granularity* frames and adds to the *framerate* list. 
@@ -86,7 +101,7 @@ namespace DataCollection
                 counter--;
             }
         }
-
+        
         /// <summary>
         /// Called by Animal Controller to log when a new animal is started in the scene.
         /// </summary>
@@ -96,9 +111,51 @@ namespace DataCollection
             c.CollectBirth(animalModel);
         }
         
-        public void LogDeadAnimal(AnimalModel animalModel)
+        public void LogDeadAnimal(AnimalModel animalModel, AnimalController.CauseOfDeath causeOfDeath)
         {
-            c.CollectDeath(animalModel);
+            c.CollectDeath(animalModel, causeOfDeath);
+        }
+
+        private void SetList(int a, int x, int y, int z)
+        {
+            List<float> tmplist = new List<float>();
+            
+
+            switch (x)
+            {
+                case 0:
+                    if (z == 0) tmplist = c.rabbitStatsPerGenMean[y];
+                    if (z == 1) tmplist = c.rabbitStatsPerGenVar[y];
+                    break;
+                case 1:
+                    if (z == 0) tmplist = c.wolfStatsPerGenMean[y];
+                    if (z == 1) tmplist = c.wolfStatsPerGenVar[y];
+                    break;      
+                case 2:         
+                    if (z == 0) tmplist = c.deerStatsPerGenMean[y];
+                    if (z == 1) tmplist = c.deerStatsPerGenVar[y];
+                    break;      
+                case 3:         
+                    if (z == 0) tmplist = c.bearStatsPerGenMean[y];
+                    if (z == 1) tmplist = c.bearStatsPerGenVar[y];
+                    break;
+            }
+
+            if (a == 0)
+            {
+                sendList1 = tmplist;
+                _speciesNumber1 = x;
+                _traitNumber1 = y;
+                _dataTypeNumber1 = z;
+            }
+
+            else
+            {
+                sendList2 = tmplist;
+                _speciesNumber2 = x;
+                _traitNumber2 = y;
+                _dataTypeNumber2 = z;
+            }
         }
         
         /// <summary>
@@ -118,8 +175,14 @@ namespace DataCollection
         private void UpdateDataAndGraph()
         {
             c.Collect();
-            //Display(ConvertFloatListToIntList(c.rabbitStatsPerGenMean[0]));
+
+            SetList(0,_speciesNumber1,_traitNumber1,_dataTypeNumber1);
+            SetList(1,_speciesNumber2,_traitNumber2,_dataTypeNumber2);
+            Display?.Invoke(sendList1, sendList2);
             //if (ShowFrameRate) Display(ConvertFloatListToIntList(framerate));
+            //for(int i = 0; i< sendList1.Count; i++)
+            //    Debug.Log(sendList1[i]);
+            //Debug.Log("------");
             //ExportDataToFile(0);
         }
         
@@ -131,7 +194,9 @@ namespace DataCollection
         private List<int> ConvertFloatListToIntList(List<float> list)
         {
             List<int> integerList = new List<int>();
-            foreach (float f in list.ToList())
+
+            foreach (float f in list.ToArray())
+                
             {
                 integerList.Add((int) f);
             }

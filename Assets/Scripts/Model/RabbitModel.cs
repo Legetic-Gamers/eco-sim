@@ -1,5 +1,6 @@
 ﻿using System;
 using Model;
+using UnityEngine;
 
 public class RabbitModel : AnimalModel,IEdible
 {
@@ -18,8 +19,7 @@ public class RabbitModel : AnimalModel,IEdible
     {
         Traits childTraits = traits.Crossover(otherParent.traits, age, otherParent.age);
         childTraits.Mutatation();
-        //TODO logic for determining generation
-        return new RabbitModel(childTraits, 0);
+        return new RabbitModel(childTraits, Mathf.Max(otherParent.generation, this.generation) + 1);
     }
 
     public float GetEaten()

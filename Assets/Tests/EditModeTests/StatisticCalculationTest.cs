@@ -15,9 +15,9 @@ namespace Tests.EditModeTests
         AnimalModel am3 = new RabbitModel(new Traits(2f, 50, 100, 100, 6,1,
             10,100,10,10,180,5,3),0);
         AnimalModel am4 = new RabbitModel(new Traits(2f, 50, 100, 100, 6,1,
-            10,100,10,10,180,5,3),0);
+            10,100,10,10,180,5,3),1);
         AnimalModel am5 = new RabbitModel(new Traits(3f, 50, 100, 100, 6,1,
-            10,100,10,10,180,5,3),0);
+            10,100,10,10,180,5,3),1);
         
         /// <summary>
         /// Checks mean calculations of rabbit sizes. 
@@ -31,7 +31,7 @@ namespace Tests.EditModeTests
             c.CollectBirth(am3);
             c.CollectBirth(am4);
             c.CollectBirth(am5);
-            Assert.AreEqual(1.8f, c.rabbitStatsPerGenMean[0][0], 0.00001f);
+            Assert.AreEqual(1.33333f, c.rabbitStatsPerGenMean[0][0], 0.00001f);
         }
         /// <summary>
         /// Checks variance calculation of rabbits. 
@@ -45,7 +45,7 @@ namespace Tests.EditModeTests
             c.CollectBirth(am3);
             c.CollectBirth(am4);
             c.CollectBirth(am5);
-            Assert.AreEqual(0.7f, c.rabbitStatsPerGenVar[0][0], 0.00001f);
+            Assert.AreEqual(0.333333f, c.rabbitStatsPerGenVar[0][0], 0.00001f);
         }
         /// <summary>
         /// Checks calculation of total rabbits.
@@ -59,7 +59,19 @@ namespace Tests.EditModeTests
             c.CollectBirth(am3);
             c.CollectBirth(am4);
             c.CollectBirth(am5);
-            Assert.AreEqual(5f, c.rabbitTotalAlivePerGen[0]);
+            Assert.AreEqual(3f, c.rabbitTotalAlivePerGen[0]);
+        }
+        [Test]
+        public void GenerationsWorking()
+        {
+            Collector c = new Collector();
+            c.CollectBirth(am1);
+            c.CollectBirth(am2);
+            c.CollectBirth(am3);
+            c.CollectBirth(am4);
+            c.CollectBirth(am5);
+            Assert.AreEqual(1.3333333f, c.rabbitStatsPerGenMean[0][0], 0.0001f);
+            Assert.AreEqual(2.5, c.rabbitStatsPerGenMean[0][1], 0.0001f);
         }
     }
 }
