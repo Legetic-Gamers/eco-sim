@@ -79,7 +79,6 @@ public class AnimalBrainAgent : Agent,IAgent
     private void ResetRabbit()
     {
         
-        
         //MAKE SURE YOU ARE USING LOCAL POSITION
         if (transform != null && world != null)
         {
@@ -197,7 +196,7 @@ public class AnimalBrainAgent : Agent,IAgent
         //////////////////////////////////////////MAX Count functionality
         if (StepCount >= 1500)
         {
-            EndEpisode();
+            //EndEpisode();
             //TODO REENABLE FOR TRAINING
             //Destroy(gameObject);
         }

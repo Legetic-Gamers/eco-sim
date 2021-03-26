@@ -34,6 +34,8 @@ public class FieldOfView : MonoBehaviour
         // add targets in list when they enter the sphere
         Collider[] targetsInRadius = Physics.OverlapSphere(transform.position, radius, targetMask);
 
+
+        
         // loop through targets within the entire circle to determine if they are in the view cone --> add to Targets list
         for (int i = 0; i < targetsInRadius.Length; i++)
         {
@@ -59,6 +61,7 @@ public class FieldOfView : MonoBehaviour
                     }
                     else if (target.gameObject.CompareTag("Animal"))
                     {
+                        Debug.Log("Animal Tag");
                         HandleAnimalTarget(target);
                     } 
                     else if (target.gameObject.CompareTag("Water"))
@@ -72,6 +75,7 @@ public class FieldOfView : MonoBehaviour
 
     private void HandleAnimalTarget(GameObject target)
     {
+        Debug.Log("Handle Animal");
         AnimalController targetAnimalController = target.GetComponent<AnimalController>();
 
         
@@ -94,6 +98,7 @@ public class FieldOfView : MonoBehaviour
         //if the target is of same species: add to visibleFriendlyTargets
         if (animalController.animalModel.IsSameSpecies(targetAnimalController.animalModel) && targetAnimalController.animalModel.IsAlive)
         {
+            Debug.Log("Same species and alive");
             animalController.visibleFriendlyTargets.Add(target);
         }
     }

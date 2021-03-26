@@ -7,7 +7,7 @@ using UnityEngine.AI;
 using ViewController;
 
 [RequireComponent(typeof(NavMeshAgent))]
-[RequireComponent(typeof(LineRenderer))]
+//[RequireComponent(typeof(LineRenderer))]
 [RequireComponent(typeof(AnimalController))]
 public class VisualAnimalDebugger: MonoBehaviour
 {
@@ -31,13 +31,24 @@ public class VisualAnimalDebugger: MonoBehaviour
     {
         animalController = GetComponent<AnimalController>();
         navmeshAgent = GetComponent<NavMeshAgent>();
-        lineRenderer = GetComponent<LineRenderer>();
-        lineRenderer.widthMultiplier = 0.05f;
+        if (TryGetComponent(out LineRenderer lr))
+        {
+            lineRenderer = lr;
+            lineRenderer.widthMultiplier = 0.05f;
+        }
+        
         camera = Camera.main;
 
-        if (showNavMeshAgentPath) debugHandler += ShowNavMeshAgentPath;
+        if (showNavMeshAgentPath && lineRenderer != null) debugHandler += ShowNavMeshAgentPath;
         if (allowNavigateWithClick) debugHandler += NavigateWithClick;
         if (showVisibleTargets) debugHandler += ShowVisibleTargetLines;
+    }
+
+    private void OnDestroy()
+    {
+        if (showNavMeshAgentPath && lineRenderer != null) debugHandler -= ShowNavMeshAgentPath;
+        if (allowNavigateWithClick) debugHandler -= NavigateWithClick;
+        if (showVisibleTargets) debugHandler -= ShowVisibleTargetLines;
     }
 
     // Update is called once per frame
