@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
@@ -13,7 +14,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using static AnimalsV2.Priorities;
 
-public class AnimalBrainAgent : Agent
+public class AnimalBrainAgent : Agent,IAgent
 {
     //ANIMAL RELATED THINGS
     private AnimalController animalController;
@@ -494,4 +495,7 @@ public class AnimalBrainAgent : Agent
     public void Update()
     {
     }
+
+    public Action<float> onEpisodeBegin { get; set; }
+    public Action<float> onEpisodeEnd { get; set; }
 }
