@@ -10,6 +10,6 @@ public class SwapCameras : MonoBehaviour
     public void Swap()
     {
         camera1.enabled = !camera1.enabled;
-        camera2.enabled = !camera2.enabled;
+        camera2.enabled = !camera1.enabled;
     }
 }
