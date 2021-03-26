@@ -95,11 +95,11 @@ behaviors:
         gamma: 0.99
 
       # curiosity module
-      curiosity:
-        gamma: 0.99
-        strength: 0.02
-        encoding_size: 256
-        learning_rate: 3.0e-4
+      #curiosity:
+        #gamma: 0.99
+        #strength: 0.02
+        #encoding_size: 256
+        #learning_rate: 3.0e-4
 
 engine_settings:
   width: 84
