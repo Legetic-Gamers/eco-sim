@@ -10,6 +10,7 @@ using Model;
 using UnityEngine;
 using UnityEngine.AI;
 using ViewController;
+using Debug = UnityEngine.Debug;
 
 public abstract class AnimalController : MonoBehaviour
 {
@@ -261,44 +262,44 @@ public abstract class AnimalController : MonoBehaviour
     }
 
     //TODO a rabbit should be able to have more than one offspring at a time
-    void Mate(GameObject target)
+    void Mate(GameObject otherParent)
     {
-        AnimalController targetAnimalController = target.GetComponent<AnimalController>();
+        
 
         // make sure target has an AnimalController and that its animalModel is same species
-        if (targetAnimalController != null && targetAnimalController.animalModel.IsSameSpecies(animalModel))
+        if (otherParent.TryGetComponent(out AnimalController otherParentAnimalController) && otherParentAnimalController.animalModel.IsSameSpecies(animalModel))
         {
-            // Spawn child as a copy of the father at the position of the mother
-            //GameObject child = Instantiate(gameObject, gameObject.transform.position, gameObject.transform.rotation); //NOTE CHANGE SO THAT PREFAB IS USED
-            GameObject child = gameObject;
-
-
-            // Generate the offspring traits
-            AnimalModel childModel = animalModel.Mate(targetAnimalController.animalModel);
-            child.GetComponent<AnimalController>().animalModel = childModel;
+            
+            
+            //Debug.Log(childModel.generation);
             //TODO promote laborTime to model or something.
             float childEnergy = animalModel.currentEnergy * 0.25f +
-                                targetAnimalController.animalModel.currentEnergy * 0.25f;
-            StartCoroutine(GiveBirth(child, childEnergy, 5));
+                                otherParentAnimalController.animalModel.currentEnergy * 0.25f;
+            StartCoroutine(GiveBirth(gameObject, otherParentAnimalController, childEnergy, 5));
 
             //Reset both reproductive urges. 
             animalModel.reproductiveUrge = 0f;
-            targetAnimalController.animalModel.reproductiveUrge = 0f;
+            otherParentAnimalController.animalModel.reproductiveUrge = 0f;
 
             //Expend energy
             animalModel.currentEnergy = animalModel.currentEnergy * 0.75f;
-            targetAnimalController.animalModel.currentEnergy = targetAnimalController.animalModel.currentEnergy * 0.75f;
+            otherParentAnimalController.animalModel.currentEnergy = otherParentAnimalController.animalModel.currentEnergy * 0.75f;
         }
     }
 
-    IEnumerator GiveBirth(GameObject child, float newEnergy, float laborTime)
+    IEnumerator GiveBirth(GameObject child, AnimalController otherParentAnimalController, float newEnergy, float laborTime)
     {
         yield return new WaitForSeconds(laborTime);
         //Instantiate here
         child = Instantiate(child, gameObject.transform.position,
             gameObject.transform.rotation); //NOTE CHANGE SO THAT PREFAB IS USED
+        
         child.GetComponent<AnimalController>().animalModel.currentEnergy = newEnergy;
         
+        // Generate the offspring traits
+        AnimalModel childModel = animalModel.Mate(otherParentAnimalController.animalModel);
+        child.GetComponent<AnimalController>().animalModel = childModel;
+        Debug.Log(child.GetComponent<AnimalController>().animalModel.generation);
         onBirth?.Invoke(this,new OnBirthEventArgs{child = child});
     }
 
@@ -341,10 +342,14 @@ public abstract class AnimalController : MonoBehaviour
 
         dh.LogNewAnimal(animalModel);
 
+        dh.LogNewAnimal(animalModel);
+
+
         tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
         EventSubscribe();
 
         SetPhenotype();
+        
     }
 
 

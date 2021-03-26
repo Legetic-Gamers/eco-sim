@@ -197,11 +197,11 @@ public abstract class AnimalModel
     }
 
 
-    public AnimalModel(Traits traits, int gen)
+    public AnimalModel(Traits traits, int generation)
     {
         // initializing parameters
         age = 0;
-        generation = gen;
+        this.generation = generation;
         currentHealth = traits.maxHealth;
         currentEnergy = traits.maxEnergy;
         currentHydration = traits.maxHydration;

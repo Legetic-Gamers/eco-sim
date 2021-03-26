@@ -2,13 +2,9 @@
  * Author: Johan A.
  */
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
 using Model;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace DataCollection
 {
@@ -49,20 +45,20 @@ namespace DataCollection
         public Dictionary<AnimalController.CauseOfDeath, int> causeOfDeath = new Dictionary<AnimalController.CauseOfDeath, int>();
 
         /*
-        These lists are contained in *animal*StatsPerGeneration*Mean/Var* in order:
-        Traits:
+        These lists are contained in allStatsPerGeneration in order:
         public List<float> sizePerGeneration;
         public List<int> maxEnergyPerGeneration;
-        public List<int> maxHelathPerGeneration;
+        public List<int> maxHealthPerGeneration;
         public List<int> maxHydrationPerGeneration;
         public List<float> maxSpeedPerGeneration;
-        public List<float> edurancePerGeneration;
+        public List<float> endurancePerGeneration;
         public List<int> ageLimitPerGeneration;
         public List<float> temperatureResistPerGeneration;
         public List<float> desirabilityResistPerGeneration;
         public List<float> viewAnglePerGeneration;
         public List<float> viewRadiusPerGeneration;
         public List<float> hearingRadiusPerGeneration;
+        Death:
         public List<int> agePerGeneration;
         */
 
