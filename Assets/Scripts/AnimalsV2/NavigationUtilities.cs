@@ -26,14 +26,9 @@ namespace AnimalsV2
         /// <returns></returns>
         public static Vector3 RunFromPoint(Transform animalTransform, Vector3 targetPoint)
         {
-            Vector3 pointToAnimalVector;
-
-
             // Set direction
-
-            pointToAnimalVector = animalTransform.position - targetPoint;
-
-            return animalTransform.position + Vector3.Normalize(pointToAnimalVector);
+            Vector3 pointToAnimalVector = animalTransform.position - targetPoint;
+            return animalTransform.position + Vector3.Normalize(pointToAnimalVector)*10;
         }
 
         public static void NavigateToPoint(AnimalController animal, Vector3 position)
@@ -43,10 +38,9 @@ namespace AnimalsV2
                 1 << NavMesh.GetAreaFromName("Walkable")))
             {
                 animal.agent.SetDestination(hit.position);
-                
             }
             //TODO Maybe handle this!
-            
+
             // NavMeshAgent agent = animal.agent;
             //     
             // if (Time.timeScale > 1.0f && agent.hasPath)
@@ -68,11 +62,10 @@ namespace AnimalsV2
             //         agent.nextPosition = animal.transform.position;
             //     }
             // }
-            
         }
-        
+
         //https://docs.unity3d.com/ScriptReference/AI.NavMesh.SamplePosition.html
-        public static bool RandomPoint(Vector3 center, float range,float maxDist, out Vector3 result)
+        public static bool RandomPoint(Vector3 center, float range, float maxDist, out Vector3 result)
         {
             while (true)
             {
@@ -93,12 +86,12 @@ namespace AnimalsV2
             //         return true;
             //     }
             // }
-            
-            
+
+
             result = center;
             return false;
         }
-        
+
         /// <summary>
         /// Creates a perpendicular vector to a sampled position if possible.
         /// </summary>
@@ -106,26 +99,29 @@ namespace AnimalsV2
         /// <param name="up"></param>
         /// <param name="result"></param>
         /// <returns></returns>
-        
-        public static bool PerpendicularPoint(Vector3 center,Vector3 front, Vector3 up,float maxDist, out Vector3 result)
+        public static bool PerpendicularPoint(Vector3 center, Vector3 front, Vector3 up, float maxDist,
+            out Vector3 result)
         {
             for (int i = 0; i < 30; i++)
             {
-                Vector3 perpVec = center + Vector3.Cross(front,up).normalized;
-                
+                Vector3 perpVec = center + Vector3.Cross(front, up).normalized;
+
                 NavMeshHit hit;
                 if (NavMesh.SamplePosition(perpVec, out hit, maxDist, 1 << NavMesh.GetAreaFromName("Walkable")))
                 {
                     result = hit.position;
                     return true;
-                    
+
                     //Otherwise try other direction
-                }else if (NavMesh.SamplePosition(new Vector3(-perpVec.x,perpVec.y,-perpVec.z), out hit, maxDist, NavMesh.AllAreas))
+                }
+                else if (NavMesh.SamplePosition(new Vector3(-perpVec.x, perpVec.y, -perpVec.z), out hit, maxDist,
+                    NavMesh.AllAreas))
                 {
                     result = hit.position;
                     return true;
                 }
             }
+
             result = Vector3.zero;
             return false;
         }
@@ -140,7 +136,7 @@ namespace AnimalsV2
         {
             //Return if not objects with tag found.
             if (allPercievedObjects == null || allPercievedObjects.Count == 0) return null;
-            
+
             // Find closest object of all objects with tag
             GameObject nearbyObj = allPercievedObjects[0];
             float closestDistance = Mathf.Infinity;
@@ -148,26 +144,24 @@ namespace AnimalsV2
             if (nearbyObj != null)
             {
                 closestDistance = Vector3.Distance(nearbyObj.transform.position, thisPosition);
-
-
-                //Get the closest game object
-                foreach (GameObject g in allPercievedObjects)
-                {
-                    if (g != null)
-                    {
-                        float dist = Vector3.Distance(g.transform.position, thisPosition);
-                        if (dist < closestDistance)
-                        {
-                            closestDistance = dist;
-                            nearbyObj = g;
-                        }
-                    }
-                }
-
-                return nearbyObj ?? null;
             }
 
-            return null;
+            //Get the closest game object
+            foreach (GameObject g in allPercievedObjects)
+            {
+                if (g != null)
+                {
+                    float dist = Vector3.Distance(g.transform.position, thisPosition);
+                    if (dist < closestDistance)
+                    {
+                        closestDistance = dist;
+                        nearbyObj = g;
+                    }
+                }
+            }
+
+            return nearbyObj ?? null;
+
         }
 
         /// <summary>
@@ -184,16 +178,18 @@ namespace AnimalsV2
 
             Vector3 averagePosition = new Vector3();
 
+            int numObjects = 0;
             //Calculate the average
             foreach (GameObject g in allPercievedObjects)
             {
                 if (g != null)
                 {
                     averagePosition += g.transform.position;
+                    numObjects++;
                 }
             }
 
-            averagePosition /= allPercievedObjects.Count;
+            averagePosition /= numObjects;
             return averagePosition;
         }
 
@@ -240,11 +236,11 @@ namespace AnimalsV2
             Vector3 destination = origin + relativeVector;
 
             NavMeshHit hit;
-            if (NavMesh.SamplePosition(destination, out hit, Vector3.Distance(origin, relativeVector), layerMask) && !animal.agent.isStopped)
+            if (NavMesh.SamplePosition(destination, out hit, Vector3.Distance(origin, relativeVector), layerMask) &&
+                !animal.agent.isStopped)
             {
                 animal.agent.SetDestination(destination);
             }
-
         }
     }
 }

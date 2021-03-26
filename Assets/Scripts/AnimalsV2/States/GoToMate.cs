@@ -75,7 +75,7 @@ namespace AnimalsV2.States
 
         public override bool MeetRequirements()
         {
-            return animal.heardFriendlyTargets.Concat(animal.visibleFriendlyTargets).ToList().Count > 0 && !(finiteStateMachine.currentState is MatingState) && animal.animalModel.WantingOffspring && GetFoundMate() != null;
+            return  !(finiteStateMachine.currentState is MatingState) && animal.animalModel.WantingOffspring && GetFoundMate() != null;
         }
 
         public GameObject GetFoundMate()

@@ -64,17 +64,17 @@ namespace AnimalsV2.States
             {
                 // Move the animal using the NavMeshAgent.
                 NavMeshHit hit;
-                if (NavMesh.SamplePosition(pointToRunTo, out hit, animal.agent.height*2, 1 << NavMesh.GetAreaFromName("Walkable")))
+                if (NavMesh.SamplePosition(pointToRunTo, out hit, animal.agent.height*4, 1 << NavMesh.GetAreaFromName("Walkable")))
                 {
                     animal.agent.SetDestination(hit.position);
                     
                 }//Try running perpendicular to front (Avoid walls).
-                else if (NavigationUtilities.PerpendicularPoint(animal.transform.position,animal.transform.forward,animal.transform.up,animal.agent.height*2,out pointToRunTo))
+                else if (NavigationUtilities.PerpendicularPoint(animal.transform.position,animal.transform.forward,animal.transform.up,animal.agent.height*2 + 2f,out pointToRunTo))
                 {
                     animal.agent.SetDestination(pointToRunTo);
                     
                 } //Try running randomly if no other way found.
-                else if(NavigationUtilities.RandomPoint(animal.transform.position, 10f,animal.agent.height*2, out pointToRunTo))
+                else if(NavigationUtilities.RandomPoint(animal.transform.position, 10f,10f, out pointToRunTo))
                 {
                     animal.agent.SetDestination(pointToRunTo);
                 }
