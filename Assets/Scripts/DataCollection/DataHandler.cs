@@ -66,8 +66,8 @@ namespace DataCollection
             tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
             // Subscribe to Tick Event publisher update data and graph 
             tickEventPublisher.onCollectorUpdate += UpdateDataAndGraph;
-            ButtonClick bc = FindObjectOfType<ButtonClick>();
-            bc.GetListType += SetList;
+            //ButtonClick bc = FindObjectOfType<ButtonClick>();
+            //bc.GetListType += SetList;
             // Make a collector to handle data
             c = new Collector();
             // Prepare for frame rate collection
@@ -192,7 +192,7 @@ namespace DataCollection
         /// </summary>
         private void UpdateDataAndGraph()
         {
-            c.Collect();
+            //c.Collect();
 
             SetList(0,_speciesNumber1,_traitNumber1,_dataTypeNumber1);
             SetList(1,_speciesNumber2,_traitNumber2,_dataTypeNumber2);

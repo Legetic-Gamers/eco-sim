@@ -342,9 +342,6 @@ public abstract class AnimalController : MonoBehaviour
 
         dh.LogNewAnimal(animalModel);
 
-        dh.LogNewAnimal(animalModel);
-
-
         tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
         EventSubscribe();
 
