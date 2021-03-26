@@ -2,42 +2,50 @@
  * Author: Johan A.
  */
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
+using Model;
 using UnityEngine;
 
 namespace DataCollection
 {
     public class Collector
     {
-        private int cap = 15;
+        private int cap = 13;
+        
         // Index is generation
-        public List<int> totalAnimalsAlivePerGeneration;
+        public readonly List<int> totalAnimalsAlivePerGeneration;
+        
+        public readonly List<List<float>> birthRatePerMinute;
+        public readonly List<float> newBirths;
+        
+        private int timeIndexBirth;
+        private int timeIndexFood;
 
         // Each index contains the mean of that generation, starting from 0. 
-        public List<List<float>> rabbitStatsPerGenMean;
-        public List<List<float>> wolfStatsPerGenMean;
-        public List<List<float>> deerStatsPerGenMean;
-        public List<List<float>> bearStatsPerGenMean;
+        public readonly List<List<float>> rabbitStatsPerGenMean;
+        public readonly List<List<float>> wolfStatsPerGenMean;
+        public readonly List<List<float>> deerStatsPerGenMean;
+        public readonly List<List<float>> bearStatsPerGenMean;
         
-        public List<List<float>> rabbitStatsPerGenVar;
-        public List<List<float>> wolfStatsPerGenVar;
-        public List<List<float>> deerStatsPerGenVar;
-        public List<List<float>> bearStatsPerGenVar;
+        public readonly List<List<float>> rabbitStatsPerGenVar;
+        public readonly List<List<float>> wolfStatsPerGenVar;
+        public readonly List<List<float>> deerStatsPerGenVar;
+        public readonly List<List<float>> bearStatsPerGenVar;
         
-        public List<float> rabbitTotalAlivePerGen;
-        public List<float> wolfTotalAlivePerGen;
-        public List<float> deerTotalAlivePerGen;
-        public List<float> bearTotalAlivePerGen;
+        public readonly List<float> rabbitTotalAlivePerGen;
+        public readonly List<float> wolfTotalAlivePerGen;
+        public readonly List<float> deerTotalAlivePerGen;
+        public readonly List<float> bearTotalAlivePerGen;
+        
+        public readonly List<int> currentanimalsTotalAlivePerSpecies;
+        
+        public readonly List<int> foodActivePerMinute;
         
         //Special, index is the cause and the content is the total dead of that cause
         public Dictionary<AnimalController.CauseOfDeath, int> causeOfDeath = new Dictionary<AnimalController.CauseOfDeath, int>();
 
         /*
-        These lists are contained in *animal*StatsPerGeneration*Mean/Var* in order:
-        Traits:
+        These lists are contained in allStatsPerGeneration in order:
         public List<float> sizePerGeneration;
         public List<int> maxEnergyPerGeneration;
         public List<int> maxHealthPerGeneration;
@@ -52,7 +60,6 @@ namespace DataCollection
         public List<float> hearingRadiusPerGeneration;
         Death:
         public List<int> agePerGeneration;
-        public List<int> birthRatePerGeneration;
         */
 
         /// <summary>
@@ -62,15 +69,15 @@ namespace DataCollection
         {
             
             // Initialize allStatsPerGeneration as list of lists, with the first (0 th) generation set to 0 for all traits. 
-            rabbitStatsPerGenMean = new List<List<float>>(cap);
-            wolfStatsPerGenMean = new List<List<float>>(cap);
-            deerStatsPerGenMean = new List<List<float>>(cap);
-            bearStatsPerGenMean = new List<List<float>>(cap);
+            rabbitStatsPerGenMean = new List<List<float>>();
+            wolfStatsPerGenMean = new List<List<float>>();
+            deerStatsPerGenMean = new List<List<float>>();
+            bearStatsPerGenMean = new List<List<float>>();
             
-            rabbitStatsPerGenVar = new List<List<float>>(cap);
-            wolfStatsPerGenVar = new List<List<float>>(cap);
-            deerStatsPerGenVar = new List<List<float>>(cap);
-            bearStatsPerGenVar = new List<List<float>>(cap);
+            rabbitStatsPerGenVar = new List<List<float>>();
+            wolfStatsPerGenVar = new List<List<float>>();
+            deerStatsPerGenVar = new List<List<float>>();
+            bearStatsPerGenVar = new List<List<float>>();
             
             for (int i = 0; i < cap; i++) rabbitStatsPerGenMean.Add(new List<float>{0});
             for (int i = 0; i < cap; i++) wolfStatsPerGenMean.Add(new List<float>{0});
@@ -83,6 +90,9 @@ namespace DataCollection
             for (int i = 0; i < cap; i++) bearStatsPerGenVar.Add(new List<float>{0});
 
             totalAnimalsAlivePerGeneration = new List<int> {GameObject.FindGameObjectsWithTag("Animal").Length};
+
+            birthRatePerMinute = new List<List<float>>(4);
+            for (int i = 0; i < 4; i++) birthRatePerMinute.Add(new List<float>{0});
             
             rabbitTotalAlivePerGen = new List<float>();
             wolfTotalAlivePerGen = new List<float>();
@@ -93,6 +103,20 @@ namespace DataCollection
             wolfTotalAlivePerGen.Add(0);
             deerTotalAlivePerGen.Add(0);
             bearTotalAlivePerGen.Add(0);
+
+            currentanimalsTotalAlivePerSpecies = new List<int>{0,0,0,0};
+
+            foodActivePerMinute = new List<int>{0};
+
+            newBirths = new List<float>{0,0,0,0};
+            timeIndexBirth = 0;
+            timeIndexFood = 0;
+
+            causeOfDeath = new Dictionary<AnimalController.CauseOfDeath, int>();
+            causeOfDeath.Add(AnimalController.CauseOfDeath.Eaten, 0);
+            causeOfDeath.Add(AnimalController.CauseOfDeath.Hydration, 0);
+            causeOfDeath.Add(AnimalController.CauseOfDeath.Hunger, 0);
+            causeOfDeath.Add(AnimalController.CauseOfDeath.Health, 0);
         }
         
         /// <summary>
@@ -100,7 +124,18 @@ namespace DataCollection
         /// </summary>
         public void Collect()
         {
-            AddTotalAnimals();
+            // Calculate birthRate
+            // Birth rate := new births during last minute divided by the already existing animals - the new animals 
+            for (int i = 0; i < 4; i++)
+            {
+                float birthRate = newBirths[i] / (currentanimalsTotalAlivePerSpecies[i] - newBirths[i]);
+                if(birthRatePerMinute[i].Count <= timeIndexBirth) birthRatePerMinute[i].Add(birthRate);
+                birthRatePerMinute[i][timeIndexBirth] = birthRate;
+                newBirths[i] = 0;
+            }
+            timeIndexBirth++;
+            foodActivePerMinute.Add(foodActivePerMinute[timeIndexFood]);
+            timeIndexFood++;
         }
         
         /// <summary>
@@ -110,6 +145,7 @@ namespace DataCollection
         public void CollectBirth(AnimalModel am)
         {
             int gen = am.generation;
+
             // Changes the referenced lists depending on the species of the animal. 
             (List<List<float>> animalMean, List<List<float>> animalVar, List<float> animalTotal) = GetAnimalList(am);
 
@@ -127,7 +163,6 @@ namespace DataCollection
                 if(animalMean[trait].Count <= gen) animalMean[trait].Add(0);
                 if(animalVar[trait].Count <= gen) animalVar[trait].Add(0);
                 (float mean, float var) =
-
                         GetNewMeanVariance(animalMean[trait][gen],animalVar[trait][gen], traitsInAnimal[indexTrait], animalTotal[gen]);
                 if(animalMean.Count <= gen) animalMean[trait].Add(mean);
                 else animalMean[trait][gen] = mean;
@@ -136,16 +171,39 @@ namespace DataCollection
                 indexTrait++;
             }
             
-            // Update the birth rate
-            /*(float meanBirthRate, float varBirthRate) =
-                GetNewMeanVariance(animalMean[cap - 1][gen],animalVar[cap - 1][gen], (animalTotal[gen+1] / animalTotal[gen]), animalTotal[gen]);
-            animalMean[cap - 1][gen] = meanBirthRate;
-            animalVar[cap - 1][gen] = varBirthRate;
-            */
+            // Update the number of births this minute
+            UpdateBirths(am);
+
             // Finally add to the total of animals
             if (totalAnimalsAlivePerGeneration.Count <= gen) totalAnimalsAlivePerGeneration.Add(1);
             else totalAnimalsAlivePerGeneration[gen] += 1;
+        }
 
+        /// <summary>
+        /// Match to the model of the animal and update each corresponding list of population
+        /// </summary>
+        /// <param name="am"> Animal model to change population statistics of </param>
+        private void UpdateBirths(AnimalModel am)
+        {
+            switch (am)
+            {
+                case RabbitModel _ :
+                    newBirths[0] += 1;
+                    currentanimalsTotalAlivePerSpecies[0] += 1;
+                    break;
+                case WolfModel _ :
+                    newBirths[1] += 1;
+                    currentanimalsTotalAlivePerSpecies[1] += 1;
+                    break;
+                case DeerModel _ :
+                    newBirths[2] += 1;
+                    currentanimalsTotalAlivePerSpecies[2] += 1;
+                    break;
+                case BearModel _ :
+                    newBirths[3] += 1;
+                    currentanimalsTotalAlivePerSpecies[3] += 1;
+                    break;
+            }
         }
 
         /// <summary>
@@ -153,7 +211,7 @@ namespace DataCollection
         /// </summary>
         /// <param name="am"> Animal Model of killed animal. </param>
         public void CollectDeath(AnimalModel am, AnimalController.CauseOfDeath cause)
-        {/*
+        {
             int gen = am.generation;
             
             // Changes the referenced lists depending on the species of the animal. 
@@ -165,17 +223,24 @@ namespace DataCollection
             animalMean[12][gen] = mean;
             animalVar[12][gen] = var;
 
-            switch (cause)
+            causeOfDeath[cause] = causeOfDeath[cause] += 1;
+            
+            switch (am)
             {
-                case AnimalController.CauseOfDeath.Eaten:
-                    
+                case RabbitModel _ :
+                    currentanimalsTotalAlivePerSpecies[0] -= 1;
                     break;
-                case AnimalController.CauseOfDeath.Hunger:
+                case WolfModel _ :
+                    currentanimalsTotalAlivePerSpecies[1] -= 1;
                     break;
-                case AnimalController.CauseOfDeath.Hydration:
+                case DeerModel _  :
+                    currentanimalsTotalAlivePerSpecies[2] -= 1;
+                    break;
+                case BearModel _  :
+                    currentanimalsTotalAlivePerSpecies[3] -= 1;
                     break;
             }
-            */
+            
         }
 
         /// <summary>
@@ -241,7 +306,7 @@ namespace DataCollection
         }
         
         /// <summary>
-        /// Check the entire scene for all objects with the "Animal" tag and add at the end of the time series list. 
+        /// Not used, Check the entire scene for all objects with the "Animal" tag and add at the end of the time series list. 
         /// </summary>
         private void AddTotalAnimals()
         {
@@ -264,6 +329,16 @@ namespace DataCollection
             m += (valueToAdd - m) / populationSize;
             s += (valueToAdd - m) * (valueToAdd - oldM);
             return (populationSize > 1) ? (m, s / (populationSize - 1f)) : (m, 0);
+        }
+
+        public void CollectNewFood(PlantModel plantModel)
+        {
+            if (foodActivePerMinute.Count <= timeIndexFood) foodActivePerMinute.Add(1);
+            else foodActivePerMinute[timeIndexFood] += 1;
+        }
+        public void CollectDeadFood(PlantModel plantModel)
+        {
+            foodActivePerMinute[timeIndexFood] -= 1;
         }
     }
 }    

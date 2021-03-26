@@ -340,6 +340,7 @@ public abstract class AnimalController : MonoBehaviour
         animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
         agent.speed = animalModel.currentSpeed;
 
+        dh.LogNewAnimal(animalModel);
 
         dh.LogNewAnimal(animalModel);
 

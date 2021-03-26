@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Model;
 using UnityEngine;
 using static DataCollection.Formatter;
 using Debug = UnityEngine.Debug;
@@ -74,10 +75,6 @@ namespace DataCollection
             framerate = new List<float>(10);
             counter = 5;
         }
-
-        
-        
-
             
         /// <summary>
         /// Calculates the average frame rate over *granularity* frames and adds to the *framerate* list. 
@@ -111,16 +108,37 @@ namespace DataCollection
             c.CollectBirth(animalModel);
         }
         
+        /// <summary>
+        /// Called when an animal dies. 
+        /// </summary>
+        /// <param name="animalModel"> The model of the dead animal </param>
+        /// <param name="causeOfDeath"> The Cause that made the animal call on dead state </param>
         public void LogDeadAnimal(AnimalModel animalModel, AnimalController.CauseOfDeath causeOfDeath)
         {
             c.CollectDeath(animalModel, causeOfDeath);
+        }
+        
+        /// <summary>
+        /// Called when plants are activated
+        /// </summary>
+        /// <param name="plantModel"> The model of the plant </param>
+        public void LogNewPlant(PlantModel plantModel)
+        {
+            c.CollectNewFood(plantModel);
+        }
+        
+        /// <summary>
+        /// Called when a plant is eaten
+        /// </summary>
+        /// <param name="plantModel"> The model of the eaten plant </param>
+        public void LogDeadPlant(PlantModel plantModel)
+        {
+            c.CollectDeadFood(plantModel);
         }
 
         private void SetList(int a, int x, int y, int z)
         {
             List<float> tmplist = new List<float>();
-            
-
             switch (x)
             {
                 case 0:
@@ -180,9 +198,6 @@ namespace DataCollection
             SetList(1,_speciesNumber2,_traitNumber2,_dataTypeNumber2);
             Display?.Invoke(sendList1, sendList2);
             //if (ShowFrameRate) Display(ConvertFloatListToIntList(framerate));
-            //for(int i = 0; i< sendList1.Count; i++)
-            //    Debug.Log(sendList1[i]);
-            //Debug.Log("------");
             //ExportDataToFile(0);
         }
         
@@ -195,12 +210,7 @@ namespace DataCollection
         {
             List<int> integerList = new List<int>();
 
-            foreach (float f in list.ToArray())
-                
-            {
-                integerList.Add((int) f);
-            }
-
+            foreach (float f in list.ToArray()) integerList.Add((int) f);
             return integerList;
         }
     }

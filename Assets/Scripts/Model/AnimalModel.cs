@@ -200,7 +200,6 @@ public abstract class AnimalModel
     public AnimalModel(Traits traits, int generation)
     {
         // initializing parameters
-        //Debug.Log("Animalmodel: " + generation);
         age = 0;
         this.generation = generation;
         currentHealth = traits.maxHealth;
