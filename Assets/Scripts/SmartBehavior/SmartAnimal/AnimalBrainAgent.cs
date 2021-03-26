@@ -13,6 +13,7 @@ using Unity.MLAgents.Sensors;
 using UnityEngine;
 using UnityEngine.AI;
 using static AnimalsV2.Priorities;
+using Random = UnityEngine.Random;
 
 public class AnimalBrainAgent : Agent,IAgent
 {
@@ -40,6 +41,7 @@ public class AnimalBrainAgent : Agent,IAgent
         animalController = GetComponent<AnimalController>();
         fsm = animalController.fsm;
         animalModel = animalController.animalModel;
+        animalController.isInfertile = true;
 
         eventPublisher = FindObjectOfType<global::TickEventPublisher>();
 
@@ -59,29 +61,50 @@ public class AnimalBrainAgent : Agent,IAgent
         // 
         //resetRabbit();
 
-        //ResetRabbit();
+        ResetRabbit();
+
+        if (fsm != null && fsm.currentState is Dead)
+        {
+            Destroy(gameObject);
+        }
+
+        if (world) world.ResetOnOnlyOneLeft();
+
+        // if (StepCount == MaxStep)
+        // {
+        //     Destroy(gameObject);
+        // }
     }
 
-    // private void ResetRabbit()
-    // {
-    //     //MAKE SURE YOU ARE USING LOCAL POSITION
-    //     transform.localPosition = new Vector3(Random.Range(-9.5f, 9.5f), 0, Random.Range(-9.5f, 9.5f));
-    //     transform.rotation = Quaternion.Euler(new Vector3(0f, Random.Range(0, 360)));
-    //     Debug.Log("reset!");
-    //     // Destroy(animalController);
-    //     // gameObject.AddComponent<RabbitController>();
-    //     
-    //     //this.animalModel = new RabbitModel();
-    //     
-    //     animalModel.currentEnergy = animalModel.traits.maxEnergy;
-    //     animalModel.currentSpeed = 0;
-    //     animalModel.currentHealth = animalModel.traits.maxHealth;
-    //     animalModel.currentHydration = animalModel.traits.maxHydration;
-    //     animalModel.reproductiveUrge = 0.2f;
-    //     animalModel.age = 0;
-    //     animalController.fsm.absorbingState = false;
-    //
-    // }
+    private void ResetRabbit()
+    {
+        
+        
+        //MAKE SURE YOU ARE USING LOCAL POSITION
+        if (transform != null && world != null)
+        {
+            transform.localPosition = world.transform.position + new Vector3(Random.Range(-world.rangeX, world.rangeX),
+                0, Random.Range(-world.rangeZ, world.rangeZ));
+            transform.rotation = Quaternion.Euler(new Vector3(0f, Random.Range(0, 360)));
+            Debug.Log("reset!");
+            
+            if (animalModel != null)
+            {
+                animalModel.currentEnergy = animalModel.traits.maxEnergy;
+                animalModel.currentHealth = animalModel.traits.maxHealth;
+                animalModel.currentHydration = animalModel.traits.maxHydration;
+                animalModel.reproductiveUrge = 0.0f;
+                animalModel.age = 0;
+                animalController.fsm.absorbingState = false;
+            }
+        }
+        // Destroy(animalController);
+        // gameObject.AddComponent<RabbitController>();
+        
+        //this.animalModel = new RabbitModel();
+        
+
+    }
 
 
     //Collecting observations that the ML agent should base its calculations on.
@@ -164,7 +187,7 @@ public class AnimalBrainAgent : Agent,IAgent
         //sensor.AddObservation(animalModel.currentSpeed / animalModel.traits.maxSpeed);
         sensor.AddObservation(animalModel.GetHydrationPercentage);
         //sensor.AddObservation(animalModel.currentHealth / animalModel.traits.maxHealth);
-        sensor.AddObservation(animalModel.WantingOffspring);
+        //sensor.AddObservation(animalModel.WantingOffspring); IS ALREADY IN GOTOMATE REQUIREMENTS
 
         sensor.AddObservation(animalController.goToFoodState.MeetRequirements());
         sensor.AddObservation(animalController.goToWaterState.MeetRequirements());
@@ -184,10 +207,10 @@ public class AnimalBrainAgent : Agent,IAgent
 
 
         //hunger is the fraction of missing energy.
-        // float hunger = (animalModel.traits.maxEnergy - animalModel.currentEnergy) / animalModel.traits.maxEnergy;
-        // //thirst is the fraction of missing hydration.
-        // float thirst = (animalModel.traits.maxHydration - animalModel.currentHydration) /
-        //                animalModel.traits.maxHydration;
+        float hunger = (animalModel.traits.maxEnergy - animalModel.currentEnergy) / animalModel.traits.maxEnergy;
+        //thirst is the fraction of missing hydration.
+        float thirst = (animalModel.traits.maxHydration - animalModel.currentHydration) /
+                       animalModel.traits.maxHydration;
         // float maxLifeReward = 0.003f;
         //
         // if (animalModel.IsAlive)
@@ -208,9 +231,8 @@ public class AnimalBrainAgent : Agent,IAgent
         //     // if(world) world.totalScore += lifeReward;
         // }
 
-        AddReward(-1f / animalController.animalModel.traits.ageLimit);
-        if (world) world.totalScore -= 1f / animalController.animalModel.traits.ageLimit;
-
+        //Debug.Log(StepCount);
+        
 
         
         //Switch state based on action produced by ML model.
@@ -242,10 +264,32 @@ public class AnimalBrainAgent : Agent,IAgent
             if (discreteActions[0] == 4)
             {
                 ChangeState(animalController.fleeingState);
-
+        
                 print("Flee!");
             }
+            else
+            {
+                AddReward(-5 / animalController.animalModel.traits.ageLimit);
+                if (world) world.totalScore -= 5 / animalController.animalModel.traits.ageLimit;
+            }
         }
+        
+        
+        if (StepCount >= 1500)
+        {
+            EndEpisode();
+            Destroy(gameObject);
+        }
+        
+        if (animalModel.IsAlive)
+        {
+            //Debug.Log((hunger + thirst));
+            //Lower penalty for less hunger and less thirst, but still penalty
+            AddReward(-(hunger + thirst) / animalController.animalModel.traits.ageLimit);
+            if (world) world.totalScore -= (hunger + thirst) / animalController.animalModel.traits.ageLimit;
+        }
+        
+        
 
         // bool foundHostile = false;
         // if (!(animalController is null))
@@ -315,10 +359,15 @@ public class AnimalBrainAgent : Agent,IAgent
     {
         
         //These states cannot be exited on the fly. They need to exit on their own.
-        if (fsm.currentState is FleeingState || fsm.currentState is EatingState ||
-              fsm.currentState is DrinkingState || fsm.currentState is MatingState || fsm.currentState is Waiting)
+        if (fsm.currentState is FleeingState || fsm.currentState is EatingState || 
+              fsm.currentState is DrinkingState|| fsm.currentState is MatingState|| fsm.currentState is Waiting)
         {
+            Debug.Log("true");
             actionMask.WriteMask(0, new int[] {0, 1, 2, 3});
+        }
+        else
+        {
+            Debug.Log("False");
         }
     }
 
@@ -452,7 +501,7 @@ public class AnimalBrainAgent : Agent,IAgent
         // world.SpawnNewRabbit();
 
         //Task failed
-        //EndEpisode();
+        EndEpisode();
     }
 
     private void HandleMate(GameObject obj)
@@ -460,7 +509,7 @@ public class AnimalBrainAgent : Agent,IAgent
         AddReward(2f);
         if (world) world.totalScore += 2f;
         //Task achieved
-        //EndEpisode();
+        EndEpisode();
         //Destroy(gameObject);
     }
 

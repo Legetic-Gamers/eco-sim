@@ -74,14 +74,17 @@ namespace AnimalsV2.States
 
 
                 // Wait a while then change state and resume walking
-                yield return new WaitForSeconds(matingTime);
+                yield return new WaitForSeconds(matingTime/Time.timeScale);
                 onMate?.Invoke(target);
                 Debug.Log("Succesfully mated.");
 
             }
 
             finiteStateMachine.GoToDefaultState();
-            animal.agent.isStopped = false;
+            if (animal.agent.isActiveAndEnabled && animal.agent.isOnNavMesh)
+            {
+                animal.agent.isStopped = false;
+            }
 
             // Very important, this tells Unity to move onto next frame. Everything crashes without this
             yield return null;

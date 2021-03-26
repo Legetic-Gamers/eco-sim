@@ -22,7 +22,7 @@ namespace AnimalsV2.States
 
         // own timer (note it's unit is number of LogicalUpdate ticks. This is the number of ticks in which the state will hold after MeetRequirements becomes false. We want the animal to run a little more than just outside of percieved predators space
         private float timer;
-        private const float startTimerValue = 1f;
+        private const float startTimerValue = 0.5f;
         
         public override void Enter()
         {

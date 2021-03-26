@@ -73,7 +73,7 @@ namespace AnimalsV2.States
         {
             
             // Wait a while then drink, change state and resume walking
-            yield return new WaitForSeconds(1);
+            yield return new WaitForSeconds(1/Time.timeScale);
 
             
             onDrinkWater?.Invoke(target, animal.animalModel.currentHydration);
