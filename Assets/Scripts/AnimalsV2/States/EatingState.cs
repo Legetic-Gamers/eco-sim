@@ -69,7 +69,7 @@ namespace AnimalsV2.States
             {
                 animal.agent.isStopped = false;
             }
-            Debug.Log("Succesfully ate.");
+            //Debug.Log("Succesfully ate.");
             
             finiteStateMachine.GoToDefaultState();
 

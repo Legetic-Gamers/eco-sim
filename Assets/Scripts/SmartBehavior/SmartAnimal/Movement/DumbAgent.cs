@@ -112,7 +112,7 @@ public class DumbAgent : Agent, IAgent
     public override void OnActionReceived(ActionBuffers actions)
     {
 
-        AddReward(-0.0025f);
+        AddReward(-0.0025f * 0.1f);
         Vector3 dirToGo = transform.forward;
         /*
         //binary possiblity 1 or 0
@@ -123,9 +123,12 @@ public class DumbAgent : Agent, IAgent
         */
         
         //Continuous actions are preclamped by mlagents [-1, 1]
-        float rotationAngle = actions.ContinuousActions[0] * 90;
+        float rotationAngle = actions.ContinuousActions[0] * 110; //90
         
+        //Give penalty based on how much rotation is made. 0 is no rotation and 1 (or -1) is max rotation.
+        AddReward(- Math.Abs(actions.ContinuousActions[0]) * 0.002f);
         
+        //Rotate vector based on rotation from the action
         dirToGo = Quaternion.AngleAxis(rotationAngle, Vector3.up) * dirToGo;
         dirToGo *= 3;
 
@@ -136,7 +139,6 @@ public class DumbAgent : Agent, IAgent
         animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
         animalController.agent.speed = animalModel.currentSpeed * Time.timeScale;
         
-        //transform.Rotate(rotateDir, Time.fixedDeltaTime * turnSpeed);
         NavigationUtilities.NavigateRelative(animalController, dirToGo, 1 << NavMesh.GetAreaFromName("Walkable"));
     }
 
@@ -159,6 +161,15 @@ public class DumbAgent : Agent, IAgent
         {
             continuousActions[0] = 0;
         }
+
+        if (Input.GetKey(KeyCode.UpArrow))
+        {
+            continuousActions[1] = 1;
+        }
+        else
+        {
+            continuousActions[1] = -1;
+        }
         
 
     }
@@ -167,7 +178,7 @@ public class DumbAgent : Agent, IAgent
     private void HandleDeath()
     {
         AddReward(-1);
-        onEpisodeEnd.Invoke(100f);
+        onEpisodeEnd?.Invoke(100f);
         //Task failed
         EndEpisode();
     }
@@ -182,7 +193,8 @@ public class DumbAgent : Agent, IAgent
             // normalize reward as a percentage
             reward /= animalModel.traits.maxHydration;
         }
-        AddReward(reward);
+        //AddReward(reward * 0.1f);
+        AddReward(reward * 0.1f);
     }
 
     //The reason to why I have curentEnergy as an in-parameter is because currentEnergy is updated through EatFood before reward gets computed in AnimalMovementBrain
@@ -211,12 +223,13 @@ public class DumbAgent : Agent, IAgent
             reward /= animalModel.traits.maxEnergy;
         }
 
-        AddReward(1f);
+        AddReward(0.1f);
     }
     
     private void HandleMate(GameObject obj)
     {
-        AddReward(3f);
+        //SetReward(1f);
+        AddReward(1f);
         //Task achieved
         onEpisodeEnd.Invoke(100f);
         EndEpisode();
