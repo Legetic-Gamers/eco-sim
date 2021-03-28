@@ -117,7 +117,6 @@ public abstract class AnimalModel
             else
             {
                 _currentHealth = Mathf.Clamp(value, 0, traits.maxHealth);
-                //Debug.Log("Current: " + _currentHealth + " max: " + traits.maxEnergy);
             }
         }
     }
@@ -175,9 +174,6 @@ public abstract class AnimalModel
             }
         }
     }
-
-    //No limit on reproductive urge.
-    //public float reproductiveUrge { get; set; }
     
     private float _reproductiveUrge;
     public float reproductiveUrge
@@ -196,7 +192,7 @@ public abstract class AnimalModel
         }
     }
 
-    public bool isCarrying;
+    public bool isPregnant;
 
     public bool IsAlive => (currentHealth > 0 && currentEnergy > 0 && age < traits.ageLimit && currentHydration > 0);
 

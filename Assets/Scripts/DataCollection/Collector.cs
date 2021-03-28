@@ -193,7 +193,6 @@ namespace DataCollection
                 classTraits.maxSpeed,
                 classTraits.endurance,
                 classTraits.ageLimit,
-                classTraits.temperatureResist,
                 classTraits.desirability,
                 classTraits.viewAngle,
                 classTraits.viewRadius,

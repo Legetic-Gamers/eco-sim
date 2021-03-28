@@ -3,7 +3,10 @@ using Model;
 
 public class DeerModel : AnimalModel, IEdible
 {
-    public DeerModel() : base(new Traits(3.25f, 100, 100, 100, 5.6f, 10,10,10,10,10,180,10,10),0)
+    public DeerModel() : base(new Traits(3.25f, 100, 100, 
+                                    100, 5.6f, 10, 
+                                    10, 10, 10, 
+                                    180, 10, 10), 0)
     {
         // Set variables specific to deer
     }

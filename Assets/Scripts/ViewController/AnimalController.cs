@@ -47,7 +47,7 @@ public abstract class AnimalController : MonoBehaviour
     public GoToMate goToMate;
 
     //Constants
-    private const float WalkingSpeed = 0.2f;
+    private const float WalkingSpeed = 0.3f;
     private const float JoggingSpeed = 0.5f;
     private const float RunningSpeed = 1f;
 
@@ -57,7 +57,7 @@ public abstract class AnimalController : MonoBehaviour
     [HideInInspector] public float reproductiveUrgeModifier;
     [HideInInspector] public float speedModifier = JoggingSpeed; //100% of maxSpeed in model
 
-    private bool wantsToMate;
+    private bool _wantsToMate;
 
     //target lists
     public List<GameObject> visibleHostileTargets = new List<GameObject>();
@@ -135,53 +135,42 @@ public abstract class AnimalController : MonoBehaviour
     }
     private void MediumEnergyState()
     {
-        energyModifier = 0.4f;
-        hydrationModifier = 0.1f;
+        energyModifier = 0.35f;
+        hydrationModifier = 0.5f;
         reproductiveUrgeModifier = 1f;
         speedModifier = JoggingSpeed;
     }
     private void LowEnergyState()
     {
-        energyModifier = 0.2f;
-        hydrationModifier = 0.05f;
+        energyModifier = 0.15f;
+        hydrationModifier = 0.25f;
         reproductiveUrgeModifier = 1f;
         speedModifier = WalkingSpeed;
     }
     private void UpdateParameters()
     {
         //The age will increase 1 per 1 second.
-        age += Time.deltaTime;
+        animalModel.age += Time.deltaTime;
         
+        // speed
         animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier;
-        
-        // energy
-        animalModel.currentEnergy -= age + 
-            (animalModel.traits.viewRadius / 10 + animalModel.traits.hearingRadius / 10 + 
-             currentSpeed) * animalModel.traits.size * energyModifier;
-        // hydration
-        animalModel.currentHydration -= animalModel.traits.size * 
-                                        (1 + currentSpeed * hydrationModifier);
-        // reproductive urge
-        animalModel.reproductiveUrge += 0.1f * reproductiveUrgeModifier;
-        
         //TODO, maybe move from here?
         agent.speed = animalModel.currentSpeed;
+        /*
+        // energy
+        animalModel.currentEnergy -= (animalModel.age + animalModel.currentSpeed + 
+            animalModel.traits.viewRadius / 10 + animalModel.traits.hearingRadius / 10)
+                                     * animalModel.traits.size * energyModifier;
         
-        // testing
-        currentSpeed = animalModel.currentSpeed;
-        maxSpeed = animalModel.traits.maxSpeed;
-        isCarrying = animalModel.isCarrying;
-        size = animalModel.traits.size;
-        acceleration = animalModel.traits.acceleration;
-        age = animalModel.age;
+        // hydration
+        animalModel.currentHydration -= animalModel.traits.size * 
+                                        (1 + 
+                                         animalModel.currentSpeed / animalModel.traits.endurance * 
+                                         hydrationModifier);
+        */
+        // reproductive urge
+        animalModel.reproductiveUrge += 0.2f * reproductiveUrgeModifier;
     }
-
-    public float acceleration;
-    public bool isCarrying;
-    public float currentSpeed;
-    public float maxSpeed;
-    public float size;
-    public float age;
 
     protected void EventSubscribe()
     {
@@ -257,49 +246,62 @@ public abstract class AnimalController : MonoBehaviour
         }
     }
 
-    //TODO a rabbit should be able to have more than one offspring at a time
     void Mate(GameObject target)
     {
-        wantsToMate = true;
-        
-        AnimalController targetAnimalController = target.GetComponent<AnimalController>();
+        _wantsToMate = true;
 
+        AnimalController targetAnimalController = target.GetComponent<AnimalController>();
+        
         System.Random rng = new System.Random();
         // random offset in case both animals have the same age
         float rnd = (float) rng.NextDouble() * 0.00001f;
         // prevent both parties from becoming pregnant by favoring the older animal as carrier.
-        if (targetAnimalController.wantsToMate && 
-            targetAnimalController.animalModel.age + rnd > animalModel.age)
-            wantsToMate = false; 
+        if (targetAnimalController._wantsToMate && 
+            targetAnimalController.animalModel.age > animalModel.age + rnd)
+            _wantsToMate = false; 
         
         // make sure target has an AnimalController,
         // that its animalModel is same species, and neither animal is already carrying
-        if (wantsToMate && targetAnimalController && 
+        if (_wantsToMate && targetAnimalController && 
             targetAnimalController.animalModel.IsSameSpecies(animalModel) && 
-            !animalModel.isCarrying && !targetAnimalController.animalModel.isCarrying)
+            !animalModel.isPregnant && !targetAnimalController.animalModel.isPregnant)
         {
-
-            //TODO promote laborTime to model or something.
-            float childEnergy = animalModel.currentEnergy * 0.25f +
-                                targetAnimalController.animalModel.currentEnergy * 0.25f;
-            // Expend energy
-            animalModel.currentEnergy *= 0.75f;
-            targetAnimalController.animalModel.currentEnergy *= 0.75f;
+            animalModel.reproductiveUrge *= 0.1f;
+            targetAnimalController.animalModel.reproductiveUrge *= 0.1f;
             
-            // Generate the offspring's traits
-            AnimalModel childModel = animalModel.Mate(rng, targetAnimalController.animalModel);
+            // higher max urge gives greater potential for more offspring. (1-8 offspring)
+            int offspringCount = Math.Max(1, rng.Next((int) animalModel.traits.maxReproductiveUrge / 5 + 1));
             
-            // Spawn child as a copy of this parent
-            GameObject child = gameObject;
+            // higher max urge => lower gestation time.
+            float gestationTime = Mathf.Max(1, 100 / animalModel.traits.maxReproductiveUrge);
             
-            // Wait some time before giving birth
-            animalModel.isCarrying = true;
-            StartCoroutine(GiveBirth(child, childModel, childEnergy, 5));
-
-            // Reset both reproductive urges. 
-            animalModel.reproductiveUrge = 0f;
-            targetAnimalController.animalModel.reproductiveUrge = 0f;
+            // Expend energy and give it to child(ren)
+            animalModel.currentEnergy *= 0.7f;
+            targetAnimalController.animalModel.currentEnergy *= 0.7f;
+            float childEnergy = animalModel.currentEnergy * 0.3f +
+                                targetAnimalController.animalModel.currentEnergy * 0.3f;
+            childEnergy /= offspringCount;
+            
+            for (int i = 1; i <= offspringCount; i++) 
+                CreateChild(rng, targetAnimalController, gestationTime, childEnergy);
         }
+    }
+
+    void CreateChild(System.Random rng, AnimalController targetAnimalController, float gestationTime, float childEnergy)
+    {
+        // Generate the offspring's traits
+        AnimalModel childModel = animalModel.Mate(rng, targetAnimalController.animalModel);
+            
+        // Spawn child as a copy of this parent
+        GameObject child = gameObject;
+            
+        // Wait some time before giving birth
+        animalModel.isPregnant = true;
+        StartCoroutine(GiveBirth(child, childModel, childEnergy, gestationTime));
+
+        // Reset both reproductive urges. 
+        animalModel.reproductiveUrge = 0f;
+        targetAnimalController.animalModel.reproductiveUrge = 0f;
     }
 
     IEnumerator GiveBirth(GameObject child, AnimalModel childModel, float newEnergy, float laborTime)
@@ -315,7 +317,7 @@ public abstract class AnimalController : MonoBehaviour
         // update the childs speed (in case of mutation).
         child.GetComponent<AnimalController>().animalModel.traits.maxSpeed = 1;
         
-        animalModel.isCarrying = false;
+        animalModel.isPregnant = false;
         
         onBirth?.Invoke(this,new OnBirthEventArgs{child = child});
     }

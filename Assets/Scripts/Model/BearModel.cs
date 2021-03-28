@@ -1,7 +1,10 @@
 ﻿using System;
 public class BearModel : AnimalModel
 {
-    public BearModel() : base(new Traits(5f, 100, 100, 100, 6f, 10,10,10,10,10,180,10,10),0)
+    public BearModel() : base(new Traits(5f, 100, 100, 
+                                100, 6f, 10, 
+                                10, 10, 10, 
+                                180, 10, 10), 0)
     {
         // Set variables specific to bear
     }

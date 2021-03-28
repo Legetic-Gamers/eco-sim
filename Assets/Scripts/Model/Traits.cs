@@ -13,7 +13,7 @@ public class Traits
     public float size
     {
         get => _size;
-        set => _size = Mathf.Clamp(value, 0.1f, 10); 
+        set => _size = Mathf.Clamp(value, 0.1f, 20); 
     }
     
     public float maxEnergy { get; set; }
@@ -50,7 +50,7 @@ public class Traits
     public float acceleration
     {
         get => _acceleration;
-        set => _acceleration = Mathf.Clamp(value, 3.5f, 12);
+        set => _acceleration = Mathf.Clamp(value, 3.5f, 15);
     }
 
     private float _maxSpeed;
@@ -76,21 +76,40 @@ public class Traits
             _maxSpeed = Mathf.Clamp(speed,0.4f,25); // actual limit is ~15
         }
     }
-    
-    public float maxReproductiveUrge { get; set; }
+
+    private float _maxReproductiveUrge;
+    public float maxReproductiveUrge
+    {
+        get => _maxReproductiveUrge; 
+        set => _maxReproductiveUrge = Mathf.Clamp(value, 1,40);
+    }
     
     public float endurance { get; set; }
+
+    private float _ageLimit;
+    public float ageLimit
+    {
+        get => _ageLimit; 
+        set => _ageLimit = Mathf.Clamp(value, 1, 2000);
+    }
     
-    public float ageLimit { get; set; }
-    
-    public float temperatureResist { get; set; }
     public float desirability { get; set; }
     public Color furColor = new Color(0.5f, 0.2f, 0.2f, 1.0f); // example
 
     [Range(0, 360)] public float viewAngle; // affects width of FoV
-    public float viewRadius { get; set; } // distance
-    
-    public float hearingRadius { get; set; }
+    private float _viewRadius; // distance
+    public float viewRadius
+    {
+        get => _viewRadius; 
+        set => _viewRadius = Mathf.Clamp(value, 0, 200);
+    }
+
+    private float _hearingRadius;
+    public float hearingRadius
+    {
+        get => _hearingRadius; 
+        set => _hearingRadius = Mathf.Clamp(value, 0, 200);
+    }
     
 
     public Traits(
@@ -102,7 +121,6 @@ public class Traits
         float maxReproductiveUrge,
         float endurance, 
         float ageLimit, 
-        float temperatureResist, 
         float desirability, 
         float viewAngle, 
         float viewRadius, 
@@ -117,7 +135,6 @@ public class Traits
         this.maxReproductiveUrge = maxReproductiveUrge;
         this.endurance = endurance;
         this.ageLimit = ageLimit;
-        this.temperatureResist = temperatureResist;
         this.desirability = desirability;
         this.viewAngle = viewAngle;
         this.viewRadius = viewRadius;
@@ -129,7 +146,7 @@ public class Traits
     {
         // create a copy of parent one's genes
         Traits childTraits = new Traits(size, maxEnergy, maxHealth, maxHydration, acceleration, maxReproductiveUrge, endurance, ageLimit,
-            temperatureResist, desirability, viewAngle, viewRadius, hearingRadius);
+             desirability, viewAngle, viewRadius, hearingRadius);
         
         try
         {
@@ -172,7 +189,7 @@ public class Traits
         try
         {
             // probability of mutating a trait
-            const float mutationRate = 0.05f;
+            const float mutationRate = 0.95f;
             
             // factor to determine what max value (depending on currentValue) is allowed.
             const float mutationFactor = 2f;
