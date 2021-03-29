@@ -17,7 +17,7 @@ public class BearModel : AnimalModel
     public override AnimalModel Mate(Random rng, AnimalModel otherParent)
     {
         Traits childTraits = traits.Crossover(rng, otherParent.traits, age, otherParent.age);
-        childTraits.Mutatation(rng);
+        childTraits.Mutation(rng);
         //TODO logic to determine generation
         return new BearModel(childTraits, 0);
     }

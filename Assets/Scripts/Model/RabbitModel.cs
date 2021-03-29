@@ -20,7 +20,7 @@ public class RabbitModel : AnimalModel,IEdible
     public override AnimalModel Mate(Random rng, AnimalModel otherParent)
     {
         Traits childTraits = traits.Crossover(rng, otherParent.traits, age, otherParent.age);
-        childTraits.Mutatation(rng);
+        childTraits.Mutation(rng);
         //TODO logic for determining generation
         return new RabbitModel(childTraits, 0);
     }

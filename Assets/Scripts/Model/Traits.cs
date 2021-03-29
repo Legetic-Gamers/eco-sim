@@ -184,7 +184,7 @@ public class Traits
         return childTraits;
     }
 
-    public void Mutatation(System.Random rng)
+    public void Mutation(System.Random rng)
     {
         try
         {

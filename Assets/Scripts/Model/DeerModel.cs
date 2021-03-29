@@ -19,7 +19,7 @@ public class DeerModel : AnimalModel, IEdible
     public override AnimalModel Mate(Random rng, AnimalModel otherParent)
     {
         Traits childTraits = traits.Crossover(rng, otherParent.traits, age, otherParent.age);
-        childTraits.Mutatation(rng);
+        childTraits.Mutation(rng);
         //TODO logic for determining generation
         return new DeerModel(childTraits, 0);
     }

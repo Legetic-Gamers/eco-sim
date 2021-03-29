@@ -149,8 +149,8 @@ public abstract class AnimalController : MonoBehaviour
     }
     private void UpdateParameters()
     {
-        //The age will increase 1 per 1 second.
-        animalModel.age += Time.deltaTime;
+        //The age will increase 2 per 2 seconds.
+        animalModel.age += 2;
         
         // speed
         animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier;
