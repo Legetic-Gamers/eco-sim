@@ -299,7 +299,7 @@ public abstract class AnimalController : MonoBehaviour
         // Generate the offspring traits
         AnimalModel childModel = animalModel.Mate(otherParentAnimalController.animalModel);
         child.GetComponent<AnimalController>().animalModel = childModel;
-        Debug.Log(child.GetComponent<AnimalController>().animalModel.generation);
+        
         onBirth?.Invoke(this,new OnBirthEventArgs{child = child});
     }
 
