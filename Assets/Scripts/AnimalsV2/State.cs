@@ -47,7 +47,7 @@ namespace AnimalsV2
         //ENTER
         public virtual void Enter()
         {
-            
+            //LogicUpdate();
         }
 
         //DURING UPDATE()

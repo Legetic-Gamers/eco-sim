@@ -30,6 +30,9 @@ namespace AnimalsV2.States
             timer = startTimerValue;
             
             currentStateAnimation = Running;
+            
+            //Make an update instantly
+            LogicUpdate();
         }
 
         public override void Exit()
@@ -47,7 +50,7 @@ namespace AnimalsV2.States
             
             //Run run away from the position.
             //Default to just running forward.
-            Vector3 pointToRunTo = animal.transform.position + animal.transform.forward * 3f;
+            Vector3 pointToRunTo = animal.transform.position + animal.transform.forward * 5f;
             
             //If we found a hostile averagePosition we set new vector and reset timer
             if (averagePosition != animal.transform.position)

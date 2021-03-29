@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using AnimalsV2;
 using AnimalsV2.States;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 using ViewController;
@@ -20,6 +21,8 @@ public class VisualAnimalDebugger: MonoBehaviour
     [SerializeField] private bool showVisibleTargets;
 
     [SerializeField] private bool showFleeingVector;
+    
+    [SerializeField] private bool showPerceptionRange;
 
 
     private AnimalController animalController;
@@ -47,6 +50,7 @@ public class VisualAnimalDebugger: MonoBehaviour
         if (allowNavigateWithClick) debugHandler += NavigateWithClick;
         if (showVisibleTargets) debugHandler += ShowVisibleTargetLines;
         if (showFleeingVector) debugHandler += ShowFleeingVector;
+        // if (showPerceptionRange) debugHandler += ShowPerceptionRange;
     }
 
     
@@ -57,6 +61,7 @@ public class VisualAnimalDebugger: MonoBehaviour
         if (allowNavigateWithClick) debugHandler -= NavigateWithClick;
         if (showVisibleTargets) debugHandler -= ShowVisibleTargetLines;
         if (showFleeingVector) debugHandler -= ShowFleeingVector;
+        // if (showPerceptionRange) debugHandler -= ShowPerceptionRange;
     }
 
     // Update is called once per frame
@@ -79,6 +84,39 @@ public class VisualAnimalDebugger: MonoBehaviour
             Debug.DrawLine(pos, pathEnd, Color.yellow);
         }
     }
+    
+    private void ShowPerceptionRange()
+    {
+        
+    }
+
+    
+
+    void OnDrawGizmosSelected()
+    {
+        if (showPerceptionRange && animalController != null)
+        {
+            //Hearing
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(transform.position, animalController.animalModel.traits.hearingRadius);   
+        
+            //Sight
+            //https://answers.unity.com/questions/21176/gizmo-question-how-do-i-create-a-field-of-view-usi.html
+            float totalFOV = animalController.animalModel.traits.viewAngle;
+            float rayRange = animalController.animalModel.traits.viewRadius;
+            float halfFOV = totalFOV / 2.0f;
+            Quaternion leftRayRotation = Quaternion.AngleAxis( -halfFOV, Vector3.up );
+            Quaternion rightRayRotation = Quaternion.AngleAxis( halfFOV, Vector3.up );
+            Vector3 leftRayDirection = leftRayRotation * transform.forward;
+            Vector3 rightRayDirection = rightRayRotation * transform.forward;
+            Gizmos.DrawRay( transform.position, leftRayDirection * rayRange );
+            Gizmos.DrawRay( transform.position, rightRayDirection * rayRange );
+        
+
+            Debug.Log("Perception");
+        }
+    }
+
     private void ShowNavMeshAgentPath()
     {
         if (navmeshAgent.hasPath)

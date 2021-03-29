@@ -28,7 +28,7 @@ namespace AnimalsV2
         {
             // Set direction
             Vector3 pointToAnimalVector = animalTransform.position - targetPoint;
-            return animalTransform.position + Vector3.Normalize(pointToAnimalVector)*3f;
+            return animalTransform.position + Vector3.Normalize(pointToAnimalVector)*5f;
         }
 
         public static void NavigateToPoint(AnimalController animal, Vector3 position)

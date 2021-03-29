@@ -34,10 +34,21 @@ namespace AnimalsV2.States
             {
                 //If we are going to eat an animal
                 currentStateAnimation = StateAnimation.Running;
-                
+                //Dont slow down when chasing.
+                animal.agent.autoBraking = false;
+
             }
+            
+            //Make an update instantly
+            LogicUpdate();
         }
 
+        public override void Exit()
+        {
+            base.Exit();
+            //Set autobraking back on.
+            animal.agent.autoBraking = true;
+        }
         public override void HandleInput()
         {
             base.HandleInput();
@@ -84,6 +95,8 @@ namespace AnimalsV2.States
                 finiteStateMachine.GoToDefaultState();
             }
         }
+
+        
 
 
         public override string ToString()

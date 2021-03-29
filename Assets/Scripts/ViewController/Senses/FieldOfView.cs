@@ -61,7 +61,7 @@ public class FieldOfView : MonoBehaviour
                     }
                     else if (target.gameObject.CompareTag("Animal"))
                     {
-                        Debug.Log("Animal Tag");
+                        //Debug.Log("Animal Tag");
                         HandleAnimalTarget(target);
                     } 
                     else if (target.gameObject.CompareTag("Water"))
@@ -75,7 +75,7 @@ public class FieldOfView : MonoBehaviour
 
     private void HandleAnimalTarget(GameObject target)
     {
-        Debug.Log("Handle Animal");
+        //Debug.Log("Handle Animal");
         AnimalController targetAnimalController = target.GetComponent<AnimalController>();
 
         
@@ -98,7 +98,7 @@ public class FieldOfView : MonoBehaviour
         //if the target is of same species: add to visibleFriendlyTargets
         if (animalController.animalModel.IsSameSpecies(targetAnimalController.animalModel) && targetAnimalController.animalModel.IsAlive)
         {
-            Debug.Log("Same species and alive");
+            //Debug.Log("Same species and alive");
             animalController.visibleFriendlyTargets.Add(target);
         }
     }
