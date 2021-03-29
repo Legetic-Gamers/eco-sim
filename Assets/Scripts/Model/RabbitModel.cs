@@ -5,7 +5,10 @@ using UnityEngine;
 public class RabbitModel : AnimalModel,IEdible
 {
 
-    public RabbitModel() : base(new Traits(1f, 20, 100, 30, 3,1,10,40,10,10,120,10,3),0)
+    public RabbitModel() : base(new Traits(1f, 20, 100, 
+                                    30, 6.65f, 10, 
+                                    10,40, 10, 
+                                    120, 10, 3), 0)
     {
         // Rabbit specific initialization 
     }
@@ -15,11 +18,12 @@ public class RabbitModel : AnimalModel,IEdible
         
     }
 
-    public override AnimalModel Mate(AnimalModel otherParent)
+    public override AnimalModel Mate(Random rng, AnimalModel otherParent)
     {
-        Traits childTraits = traits.Crossover(otherParent.traits, age, otherParent.age);
-        childTraits.Mutatation();
-        return new RabbitModel(childTraits, Mathf.Max(otherParent.generation, this.generation) + 1);
+        Traits childTraits = traits.Crossover(rng, otherParent.traits, age, otherParent.age);
+        childTraits.Mutation(rng);
+        //TODO logic for determining generation
+        return new RabbitModel(childTraits, 0);
     }
 
     public float GetEaten()

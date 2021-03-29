@@ -107,7 +107,7 @@ public abstract class AnimalModel
 
     public float currentHealth
     {
-        get { return _currentHealth; }
+        get => _currentHealth;
         set
         {
             if (traits == null)
@@ -117,7 +117,6 @@ public abstract class AnimalModel
             else
             {
                 _currentHealth = Mathf.Clamp(value, 0, traits.maxHealth);
-                //Debug.Log("Current: " + _currentHealth + " max: " + traits.maxEnergy);
             }
         }
     }
@@ -126,7 +125,7 @@ public abstract class AnimalModel
 
     public float currentEnergy
     {
-        get { return _currentEnergy; }
+        get => _currentEnergy;
         set
         {
             if (traits == null)
@@ -144,7 +143,7 @@ public abstract class AnimalModel
 
     public float currentHydration
     {
-        get { return _currentHydration; }
+        get => _currentHydration;
         set
         {
             if (traits == null)
@@ -162,7 +161,7 @@ public abstract class AnimalModel
 
     public float currentSpeed
     {
-        get { return _currentSpeed; }
+        get => _currentSpeed;
         set
         {
             if (traits == null)
@@ -175,14 +174,11 @@ public abstract class AnimalModel
             }
         }
     }
-
-    //No limit on reproductive urge.
-    //public float reproductiveUrge { get; set; }
     
     private float _reproductiveUrge;
     public float reproductiveUrge
     {
-        get { return _reproductiveUrge; }
+        get => _reproductiveUrge;
         set
         {
             if (traits == null)
@@ -196,23 +192,9 @@ public abstract class AnimalModel
         }
     }
 
-
-    public AnimalModel(Traits traits, int generation)
-    {
-        // initializing parameters
-        age = 0;
-        this.generation = generation;
-        currentHealth = traits.maxHealth;
-        currentEnergy = traits.maxEnergy;
-        currentHydration = traits.maxHydration;
-        reproductiveUrge = 0.2f;
-        this.traits = traits;
-    }
+    public bool isPregnant;
 
     public bool IsAlive => (currentHealth > 0 && currentEnergy > 0 && age < traits.ageLimit && currentHydration > 0);
-
-
-    public abstract AnimalModel Mate(AnimalModel otherParent);
 
     public float GetHealthPercentage => currentHealth / traits.maxEnergy;
 
@@ -253,7 +235,20 @@ public abstract class AnimalModel
 
     public bool LowHealth => currentHealth < 30;
 
+    public AnimalModel(Traits traits, int generation)
+    {
+        // initializing parameters
+        this.generation = generation;
+        age = 0;
+        currentHealth = traits.maxHealth;
+        currentEnergy = traits.maxEnergy;
+        currentHydration = traits.maxHydration;
+        reproductiveUrge = 0.2f;
+        this.traits = traits;
+    }
 
+    public abstract AnimalModel Mate(System.Random rng, AnimalModel otherParent);
+    
     public abstract bool CanEat<T>(T obj);
 
     public abstract bool IsSameSpecies<T>(T obj);
