@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class HearingAbility : MonoBehaviour
 {
@@ -16,8 +17,6 @@ public class HearingAbility : MonoBehaviour
 
     [HideInInspector]
     public AnimalController animalController;
-
-    private TickEventPublisher tickEventPublisher;
 
     /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
 
@@ -71,24 +70,22 @@ public class HearingAbility : MonoBehaviour
     
     private void Start()
     {
-        tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
-        
         animalController = GetComponent<AnimalController>();
         // set animals hearing distance
         radius = animalController.animalModel.traits.hearingRadius;
-        if (tickEventPublisher)
+        StartCoroutine(onSenseTickEvent());
+    }
+    
+    private IEnumerator onSenseTickEvent()
+    {
+        while(true)
         {
-            // subscribe to Ticks
-            tickEventPublisher.onSenseTickEvent += FindHeardTargets;   
+            FindHeardTargets();
+            yield return new WaitForSeconds(Random.Range(0.5f, 1f));
         }
     }
 
     private void OnDestroy()
     {
-        if (tickEventPublisher)
-        {
-            // unsubscribe from Ticks
-            tickEventPublisher.onSenseTickEvent -= FindHeardTargets;   
-        }
     }
 }

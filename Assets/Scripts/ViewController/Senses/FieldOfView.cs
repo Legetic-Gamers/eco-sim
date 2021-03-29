@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using ViewController;
 
 public class FieldOfView : MonoBehaviour
@@ -19,8 +20,6 @@ public class FieldOfView : MonoBehaviour
     [HideInInspector]
     public AnimalController animalController;
 
-    private TickEventPublisher tickEventPublisher;
-    
     /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
 
     private void FindVisibleTargets()
@@ -113,22 +112,26 @@ public class FieldOfView : MonoBehaviour
 
     private void Start()
     {
-        tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
-        
         animalController = GetComponent<AnimalController>();
         
         angle = animalController.animalModel.traits.viewAngle;
         radius = animalController.animalModel.traits.viewRadius;
 
-        tickEventPublisher.onSenseTickEvent += FindVisibleTargets;
+        StartCoroutine(onSenseTickEvent());
+    }
+    
+    private IEnumerator onSenseTickEvent()
+    {
+        while(true)
+        {
+            FindVisibleTargets();
+            yield return new WaitForSeconds(Random.Range(0.5f, 1f));
+        }
     }
 
     private void OnDestroy()
     {
-        if (tickEventPublisher)
-        {
-            tickEventPublisher.onSenseTickEvent -= FindVisibleTargets;   
-        }
+
     }
     
 }

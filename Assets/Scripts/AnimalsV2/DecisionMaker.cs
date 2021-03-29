@@ -172,7 +172,6 @@ namespace AnimalsV2
 
         private void HandleDeath()
         {
-            Debug.Log("You dead!");
             ChangeState(animalController.deadState);
         }
     }
