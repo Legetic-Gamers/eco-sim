@@ -36,6 +36,8 @@ public abstract class AnimalController : MonoBehaviour
 
     public FiniteStateMachine fsm;
     private AnimationController animationController;
+    private FieldOfView fieldOfView;
+    private HearingAbility hearing;
     
     // Add a data handler
     private DataHandler dh;
@@ -187,7 +189,9 @@ public abstract class AnimalController : MonoBehaviour
             tickEventPublisher.onParamTickEvent += VaryParameters;
             tickEventPublisher.onParamTickEvent += HandleDeathStatus;
             // every 0.5 sec
-            tickEventPublisher.onSenseTickEvent += fsm.UpdateStatesLogic;    
+            tickEventPublisher.onSenseTickEvent += fsm.UpdateStatesLogic;
+            tickEventPublisher.onSenseTickEvent += fieldOfView.FindVisibleTargets;
+            tickEventPublisher.onSenseTickEvent += hearing.FindHeardTargets;
         }
         
         fsm.OnStateEnter += ChangeModifiers;
@@ -209,7 +213,9 @@ public abstract class AnimalController : MonoBehaviour
             tickEventPublisher.onParamTickEvent -= VaryParameters;
             tickEventPublisher.onParamTickEvent -= HandleDeathStatus;
             // every 0.5 sec
-            tickEventPublisher.onSenseTickEvent -= fsm.UpdateStatesLogic;    
+            tickEventPublisher.onSenseTickEvent -= fsm.UpdateStatesLogic; 
+            tickEventPublisher.onSenseTickEvent -= fieldOfView.FindVisibleTargets;
+            tickEventPublisher.onSenseTickEvent -= hearing.FindHeardTargets;
         }
         
         
@@ -320,6 +326,9 @@ public abstract class AnimalController : MonoBehaviour
         fsm.Initialize(wanderState);
 
         animationController = new AnimationController(this);
+
+        fieldOfView = GetComponent<FieldOfView>();
+        hearing = GetComponent<HearingAbility>();
 
         dh = FindObjectOfType<DataHandler>();
     }

@@ -22,7 +22,7 @@ public class FieldOfView : MonoBehaviour
 
     /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
 
-    private void FindVisibleTargets()
+    public void FindVisibleTargets()
     {
         // prevent adding duplicates
         animalController.visibleHostileTargets.Clear();
@@ -99,11 +99,9 @@ public class FieldOfView : MonoBehaviour
 
     private void HandlePlantTarget(GameObject target)
     {
-        //Debug.Log("HERE1");
         PlantController targetPlantController = target.GetComponent<PlantController>();
         if (animalController.animalModel.CanEat(targetPlantController.plantModel))
         {
-            //Debug.Log("HERE2");
             animalController.visibleFoodTargets.Add(target);
         }
     }
@@ -116,17 +114,6 @@ public class FieldOfView : MonoBehaviour
         
         angle = animalController.animalModel.traits.viewAngle;
         radius = animalController.animalModel.traits.viewRadius;
-
-        StartCoroutine(onSenseTickEvent());
-    }
-    
-    private IEnumerator onSenseTickEvent()
-    {
-        while(true)
-        {
-            FindVisibleTargets();
-            yield return new WaitForSeconds(Random.Range(0.5f, 1f));
-        }
     }
 
     private void OnDestroy()

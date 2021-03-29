@@ -20,7 +20,7 @@ public class HearingAbility : MonoBehaviour
 
     /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
 
-    private void FindHeardTargets()
+    public void FindHeardTargets()
     {
         // prevent adding duplicates
         //animalController.heardTargets.Clear(); // obsolete
@@ -73,7 +73,7 @@ public class HearingAbility : MonoBehaviour
         animalController = GetComponent<AnimalController>();
         // set animals hearing distance
         radius = animalController.animalModel.traits.hearingRadius;
-        StartCoroutine(onSenseTickEvent());
+        
     }
     
     private IEnumerator onSenseTickEvent()
