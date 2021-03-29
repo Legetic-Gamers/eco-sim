@@ -104,7 +104,7 @@ namespace AnimalsV2
         {
             for (int i = 0; i < 30; i++)
             {
-                Vector3 perpVec = center + Vector3.Cross(front, up).normalized;
+                Vector3 perpVec = center + Vector3.Cross(front, up).normalized * 5f;
 
                 NavMeshHit hit;
                 if (NavMesh.SamplePosition(perpVec, out hit, maxDist, 1 << NavMesh.GetAreaFromName("Walkable")))
