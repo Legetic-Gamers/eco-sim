@@ -33,6 +33,9 @@ namespace AnimalsV2.States
             base.Enter();
 
             nextPosition = animal.transform.position;
+            
+            //Make an update instantly
+            LogicUpdate();
         }
 
         public override void HandleInput()
@@ -50,7 +53,7 @@ namespace AnimalsV2.States
             water = NavigationUtilities.GetNearestObjectPosition(animal.visibleWaterTargets, position1);
             mate = NavigationUtilities.GetNearestObjectPosition(animal.visibleFriendlyTargets, position1);
             */
-            if (animal.agent.isActiveAndEnabled)
+            if (animal.agent != null && animal.agent.isActiveAndEnabled)
             {
                 if (Vector3.Distance(animal.transform.position, nextPosition) <= animal.agent.stoppingDistance + 0.2 || animal.agent.velocity.magnitude <= 0.1f)
                 {

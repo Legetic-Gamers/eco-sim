@@ -30,7 +30,7 @@ namespace AnimalsV2.States
         {
 
             // Wait a while then change state and resume walking
-            yield return new WaitForSeconds(waitTime);
+            yield return new WaitForSeconds(waitTime/Time.timeScale);
             finiteStateMachine.GoToDefaultState();
             if (animal.agent.isActiveAndEnabled && animal.agent.isOnNavMesh)
             {

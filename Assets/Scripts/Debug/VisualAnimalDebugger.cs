@@ -2,12 +2,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using AnimalsV2;
+using AnimalsV2.States;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 using ViewController;
 
 [RequireComponent(typeof(NavMeshAgent))]
-[RequireComponent(typeof(LineRenderer))]
+//[RequireComponent(typeof(LineRenderer))]
 [RequireComponent(typeof(AnimalController))]
 public class VisualAnimalDebugger: MonoBehaviour
 {
@@ -16,6 +19,10 @@ public class VisualAnimalDebugger: MonoBehaviour
     [SerializeField] private bool allowNavigateWithClick;
 
     [SerializeField] private bool showVisibleTargets;
+
+    [SerializeField] private bool showFleeingVector;
+    
+    [SerializeField] private bool showPerceptionRange;
 
 
     private AnimalController animalController;
@@ -31,19 +38,83 @@ public class VisualAnimalDebugger: MonoBehaviour
     {
         animalController = GetComponent<AnimalController>();
         navmeshAgent = GetComponent<NavMeshAgent>();
-        lineRenderer = GetComponent<LineRenderer>();
-        lineRenderer.widthMultiplier = 0.05f;
+        if (TryGetComponent(out LineRenderer lr))
+        {
+            lineRenderer = lr;
+            lineRenderer.widthMultiplier = 0.05f;
+        }
+        
         camera = Camera.main;
 
-        if (showNavMeshAgentPath) debugHandler += ShowNavMeshAgentPath;
+        if (showNavMeshAgentPath && lineRenderer != null) debugHandler += ShowNavMeshAgentPath;
         if (allowNavigateWithClick) debugHandler += NavigateWithClick;
         if (showVisibleTargets) debugHandler += ShowVisibleTargetLines;
+        if (showFleeingVector) debugHandler += ShowFleeingVector;
+        // if (showPerceptionRange) debugHandler += ShowPerceptionRange;
+    }
+
+    
+
+    private void OnDestroy()
+    {
+        if (showNavMeshAgentPath && lineRenderer != null) debugHandler -= ShowNavMeshAgentPath;
+        if (allowNavigateWithClick) debugHandler -= NavigateWithClick;
+        if (showVisibleTargets) debugHandler -= ShowVisibleTargetLines;
+        if (showFleeingVector) debugHandler -= ShowFleeingVector;
+        // if (showPerceptionRange) debugHandler -= ShowPerceptionRange;
     }
 
     // Update is called once per frame
     void Update()
     {
         debugHandler?.Invoke();
+    }
+
+    private void ShowFleeingVector()
+    {
+        var pos = animalController.transform.position;
+        List<GameObject> allHostileTargets = animalController.heardHostileTargets.Concat(animalController.visibleHostileTargets).ToList();
+        Vector3 pointToAnimalVector = NavigationUtilities.GetNearObjectsAveragePosition(allHostileTargets, pos);
+        Vector3 pointToRunTo = NavigationUtilities.RunFromPoint(animalController.transform,pointToAnimalVector);
+
+        if (animalController.fsm.currentState is FleeingState)
+        {
+            Vector3 pathEnd = navmeshAgent.path.corners[navmeshAgent.path.corners.Length -1];
+
+            Debug.DrawLine(pos, pathEnd, Color.yellow);
+        }
+    }
+    
+    private void ShowPerceptionRange()
+    {
+        
+    }
+
+    
+
+    void OnDrawGizmosSelected()
+    {
+        if (showPerceptionRange && animalController != null)
+        {
+            //Hearing
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(transform.position, animalController.animalModel.traits.hearingRadius);   
+        
+            //Sight
+            //https://answers.unity.com/questions/21176/gizmo-question-how-do-i-create-a-field-of-view-usi.html
+            float totalFOV = animalController.animalModel.traits.viewAngle;
+            float rayRange = animalController.animalModel.traits.viewRadius;
+            float halfFOV = totalFOV / 2.0f;
+            Quaternion leftRayRotation = Quaternion.AngleAxis( -halfFOV, Vector3.up );
+            Quaternion rightRayRotation = Quaternion.AngleAxis( halfFOV, Vector3.up );
+            Vector3 leftRayDirection = leftRayRotation * transform.forward;
+            Vector3 rightRayDirection = rightRayRotation * transform.forward;
+            Gizmos.DrawRay( transform.position, leftRayDirection * rayRange );
+            Gizmos.DrawRay( transform.position, rightRayDirection * rayRange );
+        
+
+            Debug.Log("Perception");
+        }
     }
 
     private void ShowNavMeshAgentPath()
@@ -59,6 +130,8 @@ public class VisualAnimalDebugger: MonoBehaviour
             lineRenderer.enabled = false;
         }
     }
+    
+    
 
     private void NavigateWithClick()
     {

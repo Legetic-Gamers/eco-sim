@@ -41,8 +41,8 @@ public class World : MonoBehaviour
     [SerializeField] private float foodRespawnRateDefault;
     
     //Specific to the environment size, used for spawning
-    [SerializeField] private float rangeX;
-    [SerializeField] private float rangeZ;
+    [SerializeField] public float rangeX;
+    [SerializeField] public float rangeZ;
 
     
 
@@ -117,9 +117,7 @@ public class World : MonoBehaviour
         for (int i = 0; i < num; i++)
         {
             //Instantiate
-            GameObject newObject = Instantiate(type, new Vector3(Random.Range(-rangeX, rangeX), 0,
-                    Random.Range(-rangeZ, rangeZ)) + transform.position,
-                Quaternion.Euler(new Vector3(0f, Random.Range(0f, 360f), 90f)));
+            GameObject newObject = SpawnNew(type);
 
             //Add agents to lists
             Agent agent = newObject.GetComponent<Agent>();
@@ -138,6 +136,7 @@ public class World : MonoBehaviour
             if (wolf)
             {
                 wolves.Add(wolf);
+                
             }
 
             //Add Water to list.
@@ -162,6 +161,13 @@ public class World : MonoBehaviour
                 
             }
         }
+    }
+
+    public virtual GameObject SpawnNew(GameObject type)
+    {
+        return Instantiate(type, new Vector3(Random.Range(-rangeX, rangeX), 0,
+                Random.Range(-rangeZ, rangeZ)) + transform.position,
+            Quaternion.Euler(new Vector3(0f, Random.Range(0f, 360f), 0f)));
     }
 
     private void OnDestroy()
@@ -284,6 +290,15 @@ public class World : MonoBehaviour
     {
         //Reset if all agents are dead.
         if (agents.All(agent => IsDead(agent) ))
+        {
+            //Debug.Log("Extinction");
+            ResetWorld();
+        }
+    }
+
+    public void ResetOnOnlyOneLeft()
+    {
+        if (agents.Where(agent => !IsDead(agent)).Count() == 1)
         {
             //Debug.Log("Extinction");
             ResetWorld();

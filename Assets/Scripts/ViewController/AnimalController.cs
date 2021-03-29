@@ -69,9 +69,10 @@ public abstract class AnimalController : MonoBehaviour
     public List<GameObject> visibleFoodTargets = new List<GameObject>();
     public List<GameObject> visibleWaterTargets = new List<GameObject>();
 
-    public readonly List<GameObject> heardHostileTargets = new List<GameObject>();
-    public readonly List<GameObject> heardFriendlyTargets = new List<GameObject>();
-    public readonly List<GameObject> heardPreyTargets = new List<GameObject>();
+    
+    public  List<GameObject> heardHostileTargets = new List<GameObject>();
+    public  List<GameObject> heardFriendlyTargets = new List<GameObject>();
+    public  List<GameObject> heardPreyTargets = new List<GameObject>();
 
     public bool IsControllable { get; set; } = false;
 

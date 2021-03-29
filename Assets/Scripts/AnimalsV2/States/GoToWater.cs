@@ -17,6 +17,9 @@ using UnityEngine;
         {
             base.Enter();
             currentStateAnimation = StateAnimation.Walking;
+            
+            //Make an update instantly
+            LogicUpdate();
         }
 
         public override void HandleInput()

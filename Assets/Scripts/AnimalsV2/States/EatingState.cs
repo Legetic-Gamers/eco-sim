@@ -62,7 +62,7 @@ namespace AnimalsV2.States
             onEatFood?.Invoke(target, animal.animalModel.currentEnergy);
             
             // Wait a while then change state and resume walking
-            yield return new WaitForSeconds(1);
+            yield return new WaitForSeconds(1/Time.timeScale);
             
             
             if (animal.agent.isActiveAndEnabled && animal.agent.isOnNavMesh)
