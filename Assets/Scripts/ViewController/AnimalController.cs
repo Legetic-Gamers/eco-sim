@@ -11,9 +11,12 @@ using UnityEngine;
 using UnityEngine.AI;
 using ViewController;
 using Debug = UnityEngine.Debug;
+using Random = System.Random;
 
 public abstract class AnimalController : MonoBehaviour
 {
+    public static Random random = new Random();
+    
     public AnimalModel animalModel;
 
     public TickEventPublisher tickEventPublisher;
@@ -164,7 +167,7 @@ public abstract class AnimalController : MonoBehaviour
     private void UpdateParameters()
     {
         //The age will increase 2 per 2 seconds.
-        animalModel.age += 2;
+        animalModel.age += 1;
         
         // speed
         animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier;
@@ -297,44 +300,40 @@ public abstract class AnimalController : MonoBehaviour
             childEnergy /= offspringCount;
             
             for (int i = 1; i <= offspringCount; i++) 
-                CreateChild(rng, targetAnimalController, gestationTime, childEnergy);
+                CreateChild(targetAnimalController, gestationTime, childEnergy);
         }
     }
 
-    void CreateChild(System.Random rng, AnimalController targetAnimalController, float gestationTime, float childEnergy)
+    void CreateChild(AnimalController targetAnimalController, float gestationTime, float childEnergy)
     {
-        // Generate the offspring's traits
-        AnimalModel childModel = animalModel.Mate(rng, targetAnimalController.animalModel);
+
         
             
         // Wait some time before giving birth
         animalModel.isPregnant = true;
-        StartCoroutine(GiveBirth(child, childModel, childEnergy, gestationTime));
+        StartCoroutine(GiveBirth(childEnergy, gestationTime, targetAnimalController));
 
         // Reset both reproductive urges. 
         animalModel.reproductiveUrge = 0f;
         targetAnimalController.animalModel.reproductiveUrge = 0f;
     }
 
-    IEnumerator GiveBirth(AnimalModel childModel, float newEnergy, float laborTime)
+    IEnumerator GiveBirth(float newEnergy, float laborTime, AnimalController otherParentAnimalController)
     {
         yield return new WaitForSeconds(laborTime);
         //Instantiate here
-        child = Instantiate(gameObject, transform.position,
+        GameObject child = Instantiate(gameObject, transform.position,
             transform.rotation); //NOTE CHANGE SO THAT PREFAB IS USED
-        
-        child.GetComponent<AnimalController>().animalModel = childModel;
-        child.GetComponent<AnimalController>().animalModel.currentEnergy = newEnergy;
-
-        // update the childs speed (in case of mutation).
-        child.GetComponent<AnimalController>().animalModel.traits.maxSpeed = 1;
-        
-        animalModel.isPregnant = false;
         
         // Generate the offspring traits
         AnimalModel childModel = animalModel.Mate(otherParentAnimalController.animalModel);
         child.GetComponent<AnimalController>().animalModel = childModel;
-        Debug.Log(child.GetComponent<AnimalController>().animalModel.generation);
+        child.GetComponent<AnimalController>().animalModel.currentEnergy = newEnergy;
+        // update the childs speed (in case of mutation).
+        child.GetComponent<AnimalController>().animalModel.traits.maxSpeed = 1;
+        
+        animalModel.isPregnant = false;
+        //Debug.Log(child.GetComponent<AnimalController>().animalModel.generation);
         onBirth?.Invoke(this,new OnBirthEventArgs{child = child});
     }
 

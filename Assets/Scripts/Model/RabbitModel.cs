@@ -1,11 +1,12 @@
 ﻿using System;
 using Model;
 using UnityEngine;
+using Random = System.Random;
 
 public class RabbitModel : AnimalModel,IEdible
 {
 
-    public RabbitModel() : base(new Traits(1f, 20, 100, 
+    public RabbitModel() : base(new Traits(1f, 100, 100, 
                                     30, 6.65f, 10, 
                                     10,40, 10, 
                                     120, 10, 3), 0)
@@ -18,10 +19,10 @@ public class RabbitModel : AnimalModel,IEdible
         
     }
 
-    public override AnimalModel Mate(Random rng, AnimalModel otherParent)
+    public override AnimalModel Mate(AnimalModel otherParent)
     {
-        Traits childTraits = traits.Crossover(rng, otherParent.traits, age, otherParent.age);
-        childTraits.Mutation(rng);
+        Traits childTraits = traits.Crossover(otherParent.traits, age, otherParent.age);
+        childTraits.Mutation();
         //TODO logic for determining generation
         return new RabbitModel(childTraits, 0);
     }

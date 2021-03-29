@@ -19,9 +19,8 @@ namespace Tests
             parent1.age = 80;
             parent2.age = 20;
 
-            System.Random rng = new System.Random();
             // Mate
-            AnimalModel child = parent1.Mate(rng, parent2);
+            AnimalModel child = parent1.Mate(parent2);
             
             // We make sure that parent1 is much likely to pass down the gense in comparison to parent2
             Debug.Log("Click on me to see traits after crossover"+ "\n" + 

@@ -14,10 +14,10 @@ public class BearModel : AnimalModel
         
     }
 
-    public override AnimalModel Mate(Random rng, AnimalModel otherParent)
+    public override AnimalModel Mate(AnimalModel otherParent)
     {
-        Traits childTraits = traits.Crossover(rng, otherParent.traits, age, otherParent.age);
-        childTraits.Mutation(rng);
+        Traits childTraits = traits.Crossover(otherParent.traits, age, otherParent.age);
+        childTraits.Mutation();
         //TODO logic to determine generation
         return new BearModel(childTraits, 0);
     }

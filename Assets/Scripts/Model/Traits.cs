@@ -2,6 +2,7 @@
 using System.Reflection;
 using UnityEngine;
 using Color = UnityEngine.Color;
+using Random = System.Random;
 
 public class Traits
 {
@@ -142,8 +143,10 @@ public class Traits
     }
     
     
-    public Traits Crossover(System.Random rng, Traits otherParentTraits, float firstParentAge, float secondParentAge)
+    public Traits Crossover( Traits otherParentTraits, float firstParentAge, float secondParentAge)
     {
+        Random rng = new Random();
+        
         // create a copy of parent one's genes
         Traits childTraits = new Traits(size, maxEnergy, maxHealth, maxHydration, acceleration, maxReproductiveUrge, endurance, ageLimit,
              desirability, viewAngle, viewRadius, hearingRadius);
@@ -184,10 +187,11 @@ public class Traits
         return childTraits;
     }
 
-    public void Mutation(System.Random rng)
+    public void Mutation()
     {
         try
         {
+            Random rng = new Random();
             // probability of mutating a trait
             const float mutationRate = 0.95f;
             

@@ -247,7 +247,7 @@ public abstract class AnimalModel
         this.traits = traits;
     }
 
-    public abstract AnimalModel Mate(System.Random rng, AnimalModel otherParent);
+    public abstract AnimalModel Mate(AnimalModel otherParent);
     
     public abstract bool CanEat<T>(T obj);
 
