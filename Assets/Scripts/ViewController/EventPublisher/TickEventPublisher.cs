@@ -27,12 +27,20 @@ public class TickEventPublisher : MonoBehaviour
             onParamTickEvent?.Invoke();
         }
     }
+    private IEnumerator SenseTickEvent()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(.5f);
+            onSenseTickEvent?.Invoke();
+        }
+    }
 
     private IEnumerator CollectorTickEvent()
     {
         while (true)
         {
-            yield return new WaitForSeconds(60f);
+            yield return new WaitForSeconds(5f);
             onCollectorUpdate?.Invoke();
         }
     }
@@ -41,6 +49,7 @@ public class TickEventPublisher : MonoBehaviour
     private void Awake()
     {
         StartCoroutine(ParamTickEvent());
+        StartCoroutine(SenseTickEvent());
         StartCoroutine(CollectorTickEvent());
     }
 }
