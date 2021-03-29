@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using AnimalsV2;
+using AnimalsV2.States;
 using UnityEngine;
 using UnityEngine.AI;
 using ViewController;
@@ -16,6 +18,8 @@ public class VisualAnimalDebugger: MonoBehaviour
     [SerializeField] private bool allowNavigateWithClick;
 
     [SerializeField] private bool showVisibleTargets;
+
+    [SerializeField] private bool showFleeingVector;
 
 
     private AnimalController animalController;
@@ -42,13 +46,17 @@ public class VisualAnimalDebugger: MonoBehaviour
         if (showNavMeshAgentPath && lineRenderer != null) debugHandler += ShowNavMeshAgentPath;
         if (allowNavigateWithClick) debugHandler += NavigateWithClick;
         if (showVisibleTargets) debugHandler += ShowVisibleTargetLines;
+        if (showFleeingVector) debugHandler += ShowFleeingVector;
     }
+
+    
 
     private void OnDestroy()
     {
         if (showNavMeshAgentPath && lineRenderer != null) debugHandler -= ShowNavMeshAgentPath;
         if (allowNavigateWithClick) debugHandler -= NavigateWithClick;
         if (showVisibleTargets) debugHandler -= ShowVisibleTargetLines;
+        if (showFleeingVector) debugHandler -= ShowFleeingVector;
     }
 
     // Update is called once per frame
@@ -57,6 +65,20 @@ public class VisualAnimalDebugger: MonoBehaviour
         debugHandler?.Invoke();
     }
 
+    private void ShowFleeingVector()
+    {
+        var pos = animalController.transform.position;
+        List<GameObject> allHostileTargets = animalController.heardHostileTargets.Concat(animalController.visibleHostileTargets).ToList();
+        Vector3 pointToAnimalVector = NavigationUtilities.GetNearObjectsAveragePosition(allHostileTargets, pos);
+        Vector3 pointToRunTo = NavigationUtilities.RunFromPoint(animalController.transform,pointToAnimalVector);
+
+        if (animalController.fsm.currentState is FleeingState)
+        {
+            Vector3 pathEnd = navmeshAgent.path.corners[navmeshAgent.path.corners.Length -1];
+
+            Debug.DrawLine(pos, pathEnd, Color.yellow);
+        }
+    }
     private void ShowNavMeshAgentPath()
     {
         if (navmeshAgent.hasPath)
@@ -70,6 +92,8 @@ public class VisualAnimalDebugger: MonoBehaviour
             lineRenderer.enabled = false;
         }
     }
+    
+    
 
     private void NavigateWithClick()
     {

@@ -1700,6 +1700,7 @@ MonoBehaviour:
   showNavMeshAgentPath: 0
   allowNavigateWithClick: 0
   showVisibleTargets: 1
+  showFleeingVector: 1
 --- !u!1 &8505818697383472513
 GameObject:
   m_ObjectHideFlags: 0
