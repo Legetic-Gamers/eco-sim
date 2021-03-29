@@ -55,7 +55,11 @@ public class AnimalParticleManager : MonoBehaviour
     }
     private void EventUnsubscribe()
     {
-        animalController.fsm.OnStateEnter -= ShowStateParticles;
+        if (fsm != null)
+        {
+            animalController.fsm.OnStateEnter -= ShowStateParticles;
+        }
+
         animalController.actionDeath -= ShowDeathParticles;
     }
 

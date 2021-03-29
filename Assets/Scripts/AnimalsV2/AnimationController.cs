@@ -11,7 +11,7 @@ namespace AnimalsV2
         private AnimalController animal;
         private Animator animator;
 
-        private float transitionSpeed = 0.2f;
+        private float transitionSpeed = 0.1f;
 
 
         public AnimationController(AnimalController animal)

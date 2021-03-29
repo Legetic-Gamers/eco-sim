@@ -2,7 +2,7 @@
 
 public class WolfController : AnimalController
 {
-    void Awake()
+    new void Awake()
     {
         base.Awake();
         animalModel = new WolfModel();

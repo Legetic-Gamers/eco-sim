@@ -2,7 +2,7 @@
 
 public class RabbitController : AnimalController
 {
-    void Awake()
+    new void Awake()
     {
         base.Awake();
         animalModel = new RabbitModel();

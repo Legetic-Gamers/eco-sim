@@ -170,7 +170,7 @@ public abstract class AnimalModel
             }
             else
             {
-                _currentSpeed = Mathf.Clamp(value, 0, traits.maxSpeed);
+                _currentSpeed = Mathf.Clamp(value, 0, traits.maxSpeed * traits.size);
             }
         }
     }
@@ -210,7 +210,7 @@ public abstract class AnimalModel
 
     public bool HighEnergy => currentEnergy / traits.maxEnergy > 0.9f;
 
-    public bool LowEnergy => currentEnergy / traits.maxEnergy < 0.6f;
+    public bool LowEnergy => currentEnergy / traits.maxEnergy < 0.5f;
 
     public bool HydrationFull => currentHydration == traits.maxHydration;
 
@@ -218,7 +218,7 @@ public abstract class AnimalModel
 
     public bool LowHydration => currentHydration / traits.maxHydration < 0.5f;
 
-    public bool WantingOffspring => reproductiveUrge / traits.maxReproductiveUrge > (traits.maxEnergy - currentEnergy) / traits.maxEnergy && reproductiveUrge / traits.maxReproductiveUrge > (traits.maxHydration - currentHydration) / traits.maxHydration;
+    public bool WantingOffspring => (reproductiveUrge / traits.maxReproductiveUrge > (traits.maxEnergy - currentEnergy) / traits.maxEnergy && reproductiveUrge / traits.maxReproductiveUrge > (traits.maxHydration - currentHydration) / traits.maxHydration) && !isPregnant;
     //reproductive urge greater than average of energy and hydration.
     //reproductiveUrge > (currentEnergy + currentHydration) / (traits.maxEnergy + traits.maxHydration);
     // public bool WantingOffspring()
@@ -252,4 +252,7 @@ public abstract class AnimalModel
     public abstract bool CanEat<T>(T obj);
 
     public abstract bool IsSameSpecies<T>(T obj);
+
+    public float ThirstPercentage => (traits.maxHydration - currentHydration) / traits.maxHydration;
+    public float HungerPercentage => (traits.maxEnergy - currentEnergy)/traits.maxEnergy;
 }

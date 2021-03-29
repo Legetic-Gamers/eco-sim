@@ -2048,14 +2048,18 @@ GameObject:
   m_Component:
   - component: {fileID: 4361534952109805472}
   - component: {fileID: 4457803670360242542}
-  - component: {fileID: 4428337574903490928}
   - component: {fileID: 4444345772074391106}
   - component: {fileID: 4485064336348978684}
+  - component: {fileID: 4362939137640418631}
+  - component: {fileID: 4362939137640418630}
   - component: {fileID: 4362939137640418625}
   - component: {fileID: 1491304840260045172}
   - component: {fileID: -4900136795615843081}
   - component: {fileID: 3547626217965808460}
-  - component: {fileID: -4155204608893068278}
+  - component: {fileID: -3072218237354650290}
+  - component: {fileID: 3140382265690856846}
+  - component: {fileID: 9052424143155263327}
+  - component: {fileID: -2455205438160608710}
   m_Layer: 8
   m_Name: Wolf Grey
   m_TagString: Animal
@@ -2099,24 +2103,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!143 &4428337574903490928
-CharacterController:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4362939137640418624}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Height: 1.14
-  m_Radius: 0.5
-  m_SlopeLimit: 45
-  m_StepOffset: 0.3
-  m_SkinWidth: 0.08
-  m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0.66, z: 0}
 --- !u!82 &4444345772074391106
 AudioSource:
   m_ObjectHideFlags: 0
@@ -2224,17 +2210,55 @@ NavMeshAgent:
   m_AgentTypeID: 0
   m_Radius: 0.5
   m_Speed: 3.5
-  m_Acceleration: 8
+  m_Acceleration: 10
   avoidancePriority: 50
-  m_AngularSpeed: 700
-  m_StoppingDistance: 0
+  m_AngularSpeed: 400
+  m_StoppingDistance: 0.8
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 0
+  m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &4362939137640418631
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4362939137640418624}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a761c182f2694a439b75faed2a0edc6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  radius: 0
+  targetMask:
+    serializedVersion: 2
+    m_Bits: 256
+  animalController: {fileID: 0}
+--- !u!114 &4362939137640418630
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4362939137640418624}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 204dc7aed427ccc42a01c25c1813e09c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  angle: 0
+  radius: 0
+  targetMask:
+    serializedVersion: 2
+    m_Bits: 256
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 1024
+  animalController: {fileID: 0}
 --- !u!114 &4362939137640418625
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2249,6 +2273,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tickEventPublisher: {fileID: 0}
   agent: {fileID: 0}
+  speedModifier: 0.4
   visibleHostileTargets: []
   visibleFriendlyTargets: []
   visibleFoodTargets: []
@@ -2256,6 +2281,7 @@ MonoBehaviour:
   heardHostileTargets: []
   heardFriendlyTargets: []
   heardPreyTargets: []
+  isInfertile: 0
 --- !u!114 &1491304840260045172
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2301,7 +2327,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c71b720863ec4e7a8484c019f6979fe3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &-4155204608893068278
+--- !u!114 &-3072218237354650290
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2310,15 +2336,62 @@ MonoBehaviour:
   m_GameObject: {fileID: 4362939137640418624}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 07422175caeb4ae7abedf1488c86805e, type: 3}
+  m_Script: {fileID: 11500000, guid: d0ca804d6b18f6d4db4ebe14203336f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetMask:
-    serializedVersion: 2
-    m_Bits: 256
-  obstacleMask:
-    serializedVersion: 2
-    m_Bits: 2048
+  animalSound: {fileID: 8300000, guid: e4aa6f48a36014dcc9d111bf13e6c85f, type: 3}
+  walking: {fileID: 0}
+  eating: {fileID: 0}
+  running: {fileID: 0}
+  attacking: {fileID: 0}
+  death: {fileID: 0}
+  sleeping: {fileID: 0}
+--- !u!54 &3140382265690856846
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4362939137640418624}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!65 &9052424143155263327
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4362939137640418624}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.82, y: 1.46, z: 1.73}
+  m_Center: {x: 0, y: 0.82, z: 0}
+--- !u!114 &-2455205438160608710
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4362939137640418624}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ff8f5fbbd2169f4eadc8c040957c156, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  showNavMeshAgentPath: 0
+  allowNavigateWithClick: 0
+  showVisibleTargets: 1
+  showFleeingVector: 0
+  showPerceptionRange: 1
 --- !u!1 &4362942483931802740
 GameObject:
   m_ObjectHideFlags: 0

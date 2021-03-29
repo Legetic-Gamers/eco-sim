@@ -3,6 +3,7 @@
  */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -11,79 +12,100 @@ namespace AnimalsV2.States
 {
     public class MatingState : State
     {
-        private AnimalController animalController;
-
         public Action<GameObject> onMate;
-        
-        private float timeLeft = 3.0f;
+
+        private GameObject target;
+
+        public float matingTime = 3.0f;
 
         public MatingState(AnimalController animalController, FiniteStateMachine finiteStateMachine) : base(
             animalController, finiteStateMachine)
         {
-            currentStateAnimation = StateAnimation.Mating;
+            
         }
 
         public override void Enter()
         {
             base.Enter();
+
+            currentStateAnimation = StateAnimation.Attack;
+
+            if (animal.agent.isActiveAndEnabled && animal.agent.isOnNavMesh)
+            {
+                animal.agent.isStopped = true;
+            }
+
+            animal.StartCoroutine(Mate());
         }
 
         public override void HandleInput()
         {
             base.HandleInput();
-            
+        }
+
+        public override void Exit()
+        {
+            base.Exit();
+            if (animal.agent.isActiveAndEnabled && animal.agent.isOnNavMesh)
+            {
+                animal.agent.isStopped = false;
+            }
+            animal.StopCoroutine(Mate());
         }
 
         public override void LogicUpdate()
         {
             base.LogicUpdate();
-            if (MeetRequirements())
-            {
-                Mate(GetFoundMate());
-            }
-            else
-            {
-                finiteStateMachine.GoToDefaultState();
-            }
         }
 
-        public void Mate(GameObject target)
+        public void SetTarget(GameObject target)
         {
-            onMate?.Invoke(target);
-            finiteStateMachine.ChangeState(animal.wanderState);
+            this.target = target;
         }
-        
+
+        public IEnumerator Mate()
+        {
+
+            if (target.TryGetComponent(out AnimalController targetAnimalController))
+            {
+                //Stop target
+                targetAnimalController.waitingState.SetWaitTime(targetAnimalController.matingState.matingTime);
+                targetAnimalController.fsm.ChangeState(targetAnimalController.waitingState);
+
+
+                // Wait a while then change state and resume walking
+                yield return new WaitForSeconds(matingTime/Time.timeScale);
+                onMate?.Invoke(target);
+                Debug.Log("Succesfully mated.");
+
+            }
+
+            finiteStateMachine.GoToDefaultState();
+            if (animal.agent.isActiveAndEnabled && animal.agent.isOnNavMesh)
+            {
+                animal.agent.isStopped = false;
+            }
+
+            // Very important, this tells Unity to move onto next frame. Everything crashes without this
+            yield return null;
+        }
+
         public override string ToString()
         {
             return "Mating";
         }
-
+        
         public override bool MeetRequirements()
         {
-            return GetFoundMate() != null && FoundMateIsClose();
+            if (!animal.animalModel.WantingOffspring || !animal.animalModel.IsAlive) return false;
+            
+            return target != null  && target.TryGetComponent(out AnimalController potentialMateAnimalController) &&
+                   potentialMateAnimalController.animalModel.WantingOffspring &&
+                   potentialMateAnimalController.animalModel.IsAlive && !(potentialMateAnimalController.fsm.currentState is MatingState) && !(potentialMateAnimalController.fsm.currentState is Waiting);
         }
+
         
-        private GameObject GetFoundMate()
-        {
-            List<GameObject> allNearbyFriendly = animal.heardFriendlyTargets.Concat(animal.visibleFriendlyTargets).ToList();
-
-            foreach(GameObject potentialMate in allNearbyFriendly)
-            {
-                if (potentialMate.TryGetComponent(out AnimalController potentialMateAnimalController))
-                {
-                    // if (potentialMateAnimalController.animalModel.WantingOffspring)
-                    // {
-                        return potentialMateAnimalController.gameObject;
-                    // }
-                }
-            }
-
-            return null;
-        }
-
-        private bool FoundMateIsClose()
-        {
-            return Vector3.Distance(GetFoundMate().transform.position, animal.transform.position) <= 2f;
-        }
+        
+        
     }
 }

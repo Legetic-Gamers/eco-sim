@@ -7,15 +7,18 @@ public class WolfModel : AnimalModel, IEdible
                                 100, 5.55f, 10, 
                                 10, 100, 10, 
                                 180, 10, 5), 0)
+
     {
-        // Wolf specific initialization 
+        nutritionValue = traits.maxEnergy;
     }
 
 
     public WolfModel(Traits traits, int generation) : base(traits, generation)
     {
-        
+        nutritionValue = traits.maxEnergy;
     }
+    public float nutritionValue { get; set; }
+
 
 
     public override AnimalModel Mate(AnimalModel otherParent)
@@ -29,6 +32,7 @@ public class WolfModel : AnimalModel, IEdible
     
     public override bool CanEat<T>(T obj)
     {
+        //Debug.Log(obj.GetType().Name);
         return obj is RabbitModel || obj is DeerModel;
     }
     
@@ -37,8 +41,9 @@ public class WolfModel : AnimalModel, IEdible
         return obj is WolfModel;
     }
 
+
     public float GetEaten()
     {
-        return traits.maxEnergy;
+        return nutritionValue;
     }
 }

@@ -5,18 +5,23 @@ using Random = System.Random;
 
 public class RabbitModel : AnimalModel,IEdible
 {
+    public float nutritionValue { get; set; }
 
     public RabbitModel() : base(new Traits(1f, 100, 100, 
-                                    30, 6.65f, 10, 
+                                    30, 6.65f, 1f, 
                                     10,40, 10, 
                                     120, 10, 3), 0)
+
     {
         // Rabbit specific initialization 
+        
+        //nutrionValue is same as maxEnergy in this case
+        nutritionValue = traits.maxEnergy;
     }
     
     public RabbitModel(Traits traits, int generation) : base(traits, generation)
     {
-        
+        nutritionValue = traits.maxEnergy;
     }
 
     public override AnimalModel Mate(AnimalModel otherParent)
@@ -29,7 +34,7 @@ public class RabbitModel : AnimalModel,IEdible
 
     public float GetEaten()
     {
-        return traits.maxEnergy;
+        return nutritionValue;
     }
 
     public override bool CanEat<T>(T obj)

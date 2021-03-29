@@ -32,7 +32,7 @@ namespace AnimalsV2
         /// <summary>
         /// Sates have an owner (Animal) and a stateMachine to control them. 
         /// </summary>
-        protected StateAnimation currentStateAnimation = StateAnimation.Idle;
+        public StateAnimation currentStateAnimation = StateAnimation.Idle;
 
         protected AnimalController animal;
         protected FiniteStateMachine finiteStateMachine;
@@ -47,7 +47,7 @@ namespace AnimalsV2
         //ENTER
         public virtual void Enter()
         {
-            
+            //LogicUpdate();
         }
 
         //DURING UPDATE()
@@ -76,7 +76,7 @@ namespace AnimalsV2
         }
 
         // used to display state in the UI
-        public abstract string ToString();
+        public abstract override string ToString();
 
         public abstract bool MeetRequirements();
         
