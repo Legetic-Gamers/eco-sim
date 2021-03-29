@@ -156,7 +156,7 @@ public abstract class AnimalController : MonoBehaviour
         animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier;
         //TODO, maybe move from here?
         agent.speed = animalModel.currentSpeed;
-        /*
+        
         // energy
         animalModel.currentEnergy -= (animalModel.age + animalModel.currentSpeed + 
             animalModel.traits.viewRadius / 10 + animalModel.traits.hearingRadius / 10)
@@ -167,7 +167,7 @@ public abstract class AnimalController : MonoBehaviour
                                         (1 + 
                                          animalModel.currentSpeed / animalModel.traits.endurance * 
                                          hydrationModifier);
-        */
+        
         // reproductive urge
         animalModel.reproductiveUrge += 0.2f * reproductiveUrgeModifier;
     }
