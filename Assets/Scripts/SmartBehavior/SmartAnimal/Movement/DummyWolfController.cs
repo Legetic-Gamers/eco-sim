@@ -20,9 +20,9 @@ public class DummyWolfController : AnimalController
         //Do nothing
     }
 
-    public override void VaryParameters()
+    public override void UpdateParameters()
     {
-        //Do nothing
+       //do nothing
     }
 
     public override Vector3 getNormalizedScale()

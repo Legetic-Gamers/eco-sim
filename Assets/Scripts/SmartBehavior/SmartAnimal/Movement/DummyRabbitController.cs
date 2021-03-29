@@ -18,11 +18,11 @@ public class DummyAnimalController : AnimalController
         //Do nothing
     }
 
-    public override void VaryParameters()
+    public override void UpdateParameters()
     {
-        //Do nothing
+        //do nothing
     }
-
+    
     public override Vector3 getNormalizedScale()
     {
         return new Vector3(1f, 1f, 1f);

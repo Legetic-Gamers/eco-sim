@@ -3691,8 +3691,6 @@ GameObject:
   - component: {fileID: 2357768625458792421}
   - component: {fileID: 2362219565024913609}
   - component: {fileID: 2547648170101564279}
-  - component: {fileID: 2443608263682274252}
-  - component: {fileID: 2443608263682274253}
   - component: {fileID: 2443608263682274250}
   - component: {fileID: 709065267682752511}
   - component: {fileID: 2781537131275113084}
@@ -3702,6 +3700,7 @@ GameObject:
   - component: {fileID: 4650086921498598577}
   - component: {fileID: 2443608263682274248}
   - component: {fileID: 2443608263682274249}
+  - component: {fileID: 4629021839577290185}
   m_Layer: 8
   m_Name: SmartWolf
   m_TagString: Animal
@@ -3863,44 +3862,6 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &2443608263682274252
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2443608263682274251}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1a761c182f2694a439b75faed2a0edc6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  radius: 0
-  targetMask:
-    serializedVersion: 2
-    m_Bits: 256
-  animalController: {fileID: 0}
---- !u!114 &2443608263682274253
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2443608263682274251}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 204dc7aed427ccc42a01c25c1813e09c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  angle: 0
-  radius: 0
-  targetMask:
-    serializedVersion: 2
-    m_Bits: 256
-  obstacleMask:
-    serializedVersion: 2
-    m_Bits: 1024
-  animalController: {fileID: 0}
 --- !u!114 &2443608263682274250
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3915,6 +3876,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tickEventPublisher: {fileID: 0}
   agent: {fileID: 0}
+  energyModifier: 0
+  hydrationModifier: 0
+  reproductiveUrgeModifier: 0.3
   speedModifier: 0.4
   visibleHostileTargets: []
   visibleFriendlyTargets: []
@@ -4069,6 +4033,24 @@ MonoBehaviour:
   m_UseChildSensors: 1
   m_UseChildActuators: 1
   m_ObservableAttributeHandling: 0
+--- !u!114 &4629021839577290185
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2443608263682274251}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07422175caeb4ae7abedf1488c86805e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetMask:
+    serializedVersion: 2
+    m_Bits: 256
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 2048
 --- !u!1 &2443612275744426233
 GameObject:
   m_ObjectHideFlags: 0
@@ -4485,6 +4467,7 @@ SkinnedMeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:

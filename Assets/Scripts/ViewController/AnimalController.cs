@@ -132,7 +132,7 @@ public abstract class AnimalController : MonoBehaviour
         agent.acceleration *= Time.timeScale;
         agent.angularSpeed *= Time.timeScale;
 
-        dh.LogNewAnimal(animalModel);
+        //dh.LogNewAnimal(animalModel);
         
         //Debug.Log(agent.autoBraking);
         tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
@@ -434,7 +434,7 @@ public abstract class AnimalController : MonoBehaviour
             if (animalModel.currentHealth == 0) cause = CauseOfDeath.Health;
             if (animalModel.currentHydration == 0) cause = CauseOfDeath.Hydration;
             else cause = CauseOfDeath.Eaten;
-            dh.LogDeadAnimal(animalModel, cause);
+            //dh.LogDeadAnimal(animalModel, cause);
 
             // invoke death state with method HandleDeath() in decisionmaker
             actionDeath?.Invoke();

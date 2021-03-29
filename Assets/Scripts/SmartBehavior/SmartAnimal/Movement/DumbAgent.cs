@@ -249,7 +249,6 @@ public class DumbAgent : Agent, IAgent
         animalController.eatingState.onEatFood += HandleEat;
         animalController.matingState.onMate += HandleMate;
         animalController.drinkingState.onDrinkWater += HandleDrink;
-        animalController.onBirth += HandleBirth;
     }
 
 
@@ -260,7 +259,6 @@ public class DumbAgent : Agent, IAgent
         animalController.eatingState.onEatFood -= HandleEat;
         animalController.matingState.onMate -= HandleMate;
         animalController.drinkingState.onDrinkWater -= HandleDrink;
-        animalController.onBirth -= HandleBirth;
     }
 
     private void OnDestroy()

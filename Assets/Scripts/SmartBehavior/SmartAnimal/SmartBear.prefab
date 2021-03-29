@@ -694,13 +694,12 @@ GameObject:
   - component: {fileID: 603009529724042912}
   - component: {fileID: 798509833490562152}
   - component: {fileID: 4767187421335686531}
-  - component: {fileID: 7306876474107025913}
-  - component: {fileID: 230333244789083129}
   - component: {fileID: 2440184669175625378}
   - component: {fileID: 1253790802716916579}
   - component: {fileID: 2461046322859002549}
   - component: {fileID: 9144438191025629527}
   - component: {fileID: 6621926375851499006}
+  - component: {fileID: 5613410280132212379}
   m_Layer: 8
   m_Name: SmartBear
   m_TagString: Animal
@@ -778,48 +777,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tickEventPublisher: {fileID: 0}
   agent: {fileID: 0}
+  energyModifier: 0
+  hydrationModifier: 0
+  reproductiveUrgeModifier: 0.3
+  speedModifier: 0.5
   visibleHostileTargets: []
   visibleFriendlyTargets: []
   visibleFoodTargets: []
   visibleWaterTargets: []
---- !u!114 &7306876474107025913
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 695402115701391966}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 204dc7aed427ccc42a01c25c1813e09c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  angle: 0
-  radius: 0
-  targetMask:
-    serializedVersion: 2
-    m_Bits: 256
-  obstacleMask:
-    serializedVersion: 2
-    m_Bits: 4
-  animalController: {fileID: 0}
---- !u!114 &230333244789083129
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 695402115701391966}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1a761c182f2694a439b75faed2a0edc6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  radius: 0
-  targetMask:
-    serializedVersion: 2
-    m_Bits: 256
-  animalController: {fileID: 0}
+  heardHostileTargets: []
+  heardFriendlyTargets: []
+  heardPreyTargets: []
+  isInfertile: 0
 --- !u!95 &2440184669175625378
 Animator:
   serializedVersion: 3
@@ -919,6 +888,24 @@ MonoBehaviour:
   hasUpgradedFromAgentParameters: 1
   MaxStep: 0
   world: {fileID: 0}
+--- !u!114 &5613410280132212379
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 695402115701391966}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07422175caeb4ae7abedf1488c86805e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetMask:
+    serializedVersion: 2
+    m_Bits: 256
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 2048
 --- !u!1 &695417585406367660
 GameObject:
   m_ObjectHideFlags: 0
@@ -1368,6 +1355,7 @@ SkinnedMeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
