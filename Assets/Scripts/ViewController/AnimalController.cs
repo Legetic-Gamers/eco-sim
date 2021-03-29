@@ -40,14 +40,6 @@ public abstract class AnimalController : MonoBehaviour
     // Add a data handler
     private DataHandler dh;
 
-    public enum CauseOfDeath
-    {
-        Hydration,
-        Eaten,
-        Health,
-        Hunger,
-    };
-    
     //States
     public FleeingState fleeingState;
     public GoToFood goToFoodState;
@@ -339,7 +331,7 @@ public abstract class AnimalController : MonoBehaviour
         agent.autoBraking = false;
         animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
         agent.speed = animalModel.currentSpeed;
-
+        
         dh.LogNewAnimal(animalModel);
 
         tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
@@ -355,11 +347,11 @@ public abstract class AnimalController : MonoBehaviour
     {
         if (!animalModel.IsAlive)
         {
-            CauseOfDeath cause;
-            if (animalModel.currentEnergy == 0) cause = CauseOfDeath.Hunger;
-            if (animalModel.currentHealth == 0) cause = CauseOfDeath.Health;
-            if (animalModel.currentHydration == 0) cause = CauseOfDeath.Hydration;
-            else cause = CauseOfDeath.Eaten;
+            AnimalModel.CauseOfDeath cause;
+            if (animalModel.currentEnergy == 0) cause = AnimalModel.CauseOfDeath.Hunger;
+            if (animalModel.currentHealth == 0) cause = AnimalModel.CauseOfDeath.Health;
+            if (animalModel.currentHydration == 0) cause = AnimalModel.CauseOfDeath.Hydration;
+            else cause = AnimalModel.CauseOfDeath.Eaten;
             dh.LogDeadAnimal(animalModel, cause);
 
             // invoke death state with method HandleDeath() in decisionmaker

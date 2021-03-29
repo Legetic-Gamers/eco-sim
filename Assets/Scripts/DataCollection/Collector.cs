@@ -42,7 +42,7 @@ namespace DataCollection
         public readonly List<int> foodActivePerMinute;
         
         //Special, index is the cause and the content is the total dead of that cause
-        public Dictionary<AnimalController.CauseOfDeath, int> causeOfDeath = new Dictionary<AnimalController.CauseOfDeath, int>();
+        public Dictionary<AnimalModel.CauseOfDeath, int> causeOfDeath;
 
         /*
         These lists are contained in allStatsPerGeneration in order:
@@ -112,11 +112,11 @@ namespace DataCollection
             timeIndexBirth = 0;
             timeIndexFood = 0;
 
-            causeOfDeath = new Dictionary<AnimalController.CauseOfDeath, int>();
-            causeOfDeath.Add(AnimalController.CauseOfDeath.Eaten, 0);
-            causeOfDeath.Add(AnimalController.CauseOfDeath.Hydration, 0);
-            causeOfDeath.Add(AnimalController.CauseOfDeath.Hunger, 0);
-            causeOfDeath.Add(AnimalController.CauseOfDeath.Health, 0);
+            causeOfDeath = new Dictionary<AnimalModel.CauseOfDeath, int>();
+            causeOfDeath.Add(AnimalModel.CauseOfDeath.Eaten, 0);
+            causeOfDeath.Add(AnimalModel.CauseOfDeath.Hydration, 0);
+            causeOfDeath.Add(AnimalModel.CauseOfDeath.Hunger, 0);
+            causeOfDeath.Add(AnimalModel.CauseOfDeath.Health, 0);
         }
         
         /// <summary>
@@ -210,7 +210,7 @@ namespace DataCollection
         /// Update the age statistics when animals die. 
         /// </summary>
         /// <param name="am"> Animal Model of killed animal. </param>
-        public void CollectDeath(AnimalModel am, AnimalController.CauseOfDeath cause)
+        public void CollectDeath(AnimalModel am, AnimalModel.CauseOfDeath cause)
         {
             int gen = am.generation;
             

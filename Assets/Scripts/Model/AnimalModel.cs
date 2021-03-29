@@ -195,7 +195,14 @@ public abstract class AnimalModel
             }
         }
     }
-
+    
+    public enum CauseOfDeath
+    {
+        Hydration,
+        Eaten,
+        Health,
+        Hunger,
+    };
 
     public AnimalModel(Traits traits, int generation)
     {
