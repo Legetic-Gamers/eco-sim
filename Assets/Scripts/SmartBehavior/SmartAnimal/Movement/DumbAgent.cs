@@ -126,7 +126,7 @@ public class DumbAgent : Agent, IAgent
         float rotationAngle = actions.ContinuousActions[0] * 110; //90
         
         //Give penalty based on how much rotation is made. 0 is no rotation and 1 (or -1) is max rotation.
-        AddReward(- Math.Abs(actions.ContinuousActions[0]) * 0.002f);
+        AddReward(- Math.Abs(actions.ContinuousActions[0]) * 0.0050f);
         
         //Rotate vector based on rotation from the action
         dirToGo = Quaternion.AngleAxis(rotationAngle, Vector3.up) * dirToGo;
@@ -231,7 +231,7 @@ public class DumbAgent : Agent, IAgent
         //SetReward(1f);
         AddReward(1f);
         //Task achieved
-        onEpisodeEnd.Invoke(100f);
+        onEpisodeEnd?.Invoke(100f);
         EndEpisode();
     }
     
