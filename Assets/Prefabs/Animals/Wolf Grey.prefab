@@ -2059,6 +2059,7 @@ GameObject:
   - component: {fileID: -3072218237354650290}
   - component: {fileID: 3140382265690856846}
   - component: {fileID: 9052424143155263327}
+  - component: {fileID: -2455205438160608710}
   m_Layer: 8
   m_Name: Wolf Grey
   m_TagString: Animal
@@ -2212,7 +2213,7 @@ NavMeshAgent:
   m_Acceleration: 10
   avoidancePriority: 50
   m_AngularSpeed: 400
-  m_StoppingDistance: 0.7
+  m_StoppingDistance: 0.8
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
@@ -2374,6 +2375,23 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.82, y: 1.46, z: 1.73}
   m_Center: {x: 0, y: 0.82, z: 0}
+--- !u!114 &-2455205438160608710
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4362939137640418624}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ff8f5fbbd2169f4eadc8c040957c156, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  showNavMeshAgentPath: 0
+  allowNavigateWithClick: 0
+  showVisibleTargets: 1
+  showFleeingVector: 0
+  showPerceptionRange: 1
 --- !u!1 &4362942483931802740
 GameObject:
   m_ObjectHideFlags: 0

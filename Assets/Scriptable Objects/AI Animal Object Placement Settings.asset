@@ -60,7 +60,7 @@ MonoBehaviour:
     gameObjectSettings:
     - gameObject: {fileID: 5707813131339405077, guid: b7aede90df860184e82d1ea8292b5123,
         type: 3}
-      probability: 0
+      probability: 0.129
     previewColour: {r: 0, g: 0, b: 0, a: 0}
     minimumDistance: 4
     newPointCount: 20

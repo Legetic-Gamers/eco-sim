@@ -211,13 +211,13 @@ public class AnimalBrainAgent : Agent,IAgent
         if (fsm.currentState is FleeingState || fsm.currentState is EatingState || 
               fsm.currentState is DrinkingState|| fsm.currentState is MatingState|| fsm.currentState is Waiting)
         {
-            Debug.Log("true");
+            
             actionMask.WriteMask(0, new int[] {0, 1, 2, 3});
         }
-        else
-        {
-            Debug.Log("False");
-        }
+        // else
+        // {
+        //     Debug.Log("False");
+        // }
     }
 
     //Used for testing, gives us control over the output from the ML algortihm.

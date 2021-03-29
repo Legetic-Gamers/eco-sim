@@ -85,10 +85,6 @@ public class VisualAnimalDebugger: MonoBehaviour
         }
     }
     
-    private void ShowPerceptionRange()
-    {
-        
-    }
 
     
 
@@ -97,7 +93,7 @@ public class VisualAnimalDebugger: MonoBehaviour
         if (showPerceptionRange && animalController != null)
         {
             //Hearing
-            Gizmos.color = Color.yellow;
+            Gizmos.color = Color.black;
             Gizmos.DrawWireSphere(transform.position, animalController.animalModel.traits.hearingRadius);   
         
             //Sight
