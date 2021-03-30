@@ -28,12 +28,12 @@ public class WaterChunk : MonoBehaviour
 
         meshFilter = waterObject.AddComponent<MeshFilter>();
         meshRenderer = waterObject.AddComponent<MeshRenderer>();
-        meshRenderer.material = waterSettings.material;
+        meshRenderer.material = waterSettings.Material;
 
         meshFilter.mesh = GenerateMesh();
         //waterObject.AddComponent<WaterNoise>();
         //waterObject.GetComponent<WaterNoise>().settings = waterSettings;
-        realWaterLevel = Mathf.Lerp(heightMapSettings.MinHeight, heightMapSettings.MaxHeight, waterSettings.waterLevel);
+        realWaterLevel = Mathf.Lerp(heightMapSettings.MinHeight, heightMapSettings.MaxHeight, waterSettings.WaterLevel);
         waterObject.transform.localScale = new Vector3(scale.x, 1, scale.z);
         waterObject.transform.position = new Vector3(position.x, realWaterLevel, position.y);
         collider = waterObject.AddComponent<BoxCollider>();
@@ -44,7 +44,7 @@ public class WaterChunk : MonoBehaviour
         obstacle.carving = true;
 
 
-        if (waterSettings.stylizedWater)
+        if (waterSettings.StylizedWater)
         {
             var stylizedObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
             stylizedObject.name = "Water Stylized";
@@ -66,7 +66,7 @@ public class WaterChunk : MonoBehaviour
             var stylizedMeshRenderer = stylizedObject.GetComponent<MeshRenderer>();
 
             stylizedObject.transform.position = new Vector3(position.x, realWaterLevel / 2, position.y);
-            stylizedMeshRenderer.material = waterSettings.stylizedMaterial;
+            stylizedMeshRenderer.material = waterSettings.StylizedMaterial;
         }
 
 
@@ -88,19 +88,19 @@ public class WaterChunk : MonoBehaviour
         var normals = new List<Vector3>();
         var uvs = new List<Vector2>();
 
-        for (int x = 0; x < waterSettings.gridSize + 1; x++)
+        for (int x = 0; x < waterSettings.GridSize + 1; x++)
         {
-            for (int y = 0; y < waterSettings.gridSize + 1; y++)
+            for (int y = 0; y < waterSettings.GridSize + 1; y++)
             {
-                verticies.Add(new Vector3(-waterSettings.size * 0.5f + waterSettings.size * (x / ((float)waterSettings.gridSize)), 0, -waterSettings.size * 0.5f + waterSettings.size * (y / ((float)waterSettings.gridSize))));
+                verticies.Add(new Vector3(-waterSettings.Size * 0.5f + waterSettings.Size * (x / ((float)waterSettings.GridSize)), 0, -waterSettings.Size * 0.5f + waterSettings.Size * (y / ((float)waterSettings.GridSize))));
                 normals.Add(Vector3.up);
-                uvs.Add(new Vector2(x / (float)waterSettings.gridSize, y / (float)waterSettings.gridSize));
+                uvs.Add(new Vector2(x / (float)waterSettings.GridSize, y / (float)waterSettings.GridSize));
             }
 
         }
 
         var triangles = new List<int>();
-        var vertCount = waterSettings.gridSize + 1;
+        var vertCount = waterSettings.GridSize + 1;
 
         for (int i = 0; i < vertCount * vertCount - vertCount; i++)
         {
@@ -126,7 +126,7 @@ public class WaterChunk : MonoBehaviour
     {
         foreach (var vert in worldVerticies)
         {
-            if (Mathf.Abs(vert.y - realWaterLevel) <= waterSettings.waterVertexDiff)
+            if (Mathf.Abs(vert.y - realWaterLevel) <= waterSettings.WaterVertexDiff)
             {
                 PlaceWaterSource(vert);
             }

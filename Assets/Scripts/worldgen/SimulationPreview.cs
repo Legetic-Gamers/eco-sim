@@ -15,7 +15,9 @@ public class SimulationPreview : MonoBehaviour
     void Start()
     {
         DisplaySimulationPreview();
-        simulationSettings.OnValuesChanged += OnValuesUpdated;
+        simulationSettings.OnHeightMapChanged += OnTerrainChanged;
+        simulationSettings.OnMeshChanged += OnTerrainChanged;
+        simulationSettings.OnWaterChanged += OnWaterUpdated;
     }
 
     public void DisplaySimulationPreview(){
@@ -32,8 +34,25 @@ public class SimulationPreview : MonoBehaviour
         return HeightMapGenerator.GenerateHeightMap(simulationSettings.MeshSettings.NumVertsPerLine, simulationSettings.MeshSettings.NumVertsPerLine, simulationSettings.HeightMapSettings, Vector2.zero);
     }
 
-    private void OnValuesUpdated(){
-        DisplaySimulationPreview();
-        meshFilter.gameObject.GetComponent<MeshCollider>().sharedMesh = meshFilter.sharedMesh;
+    private void OnTerrainChanged(){
+        if(autoUpdate){
+            DisplaySimulationPreview();
+            meshFilter.gameObject.GetComponent<MeshCollider>().sharedMesh = meshFilter.sharedMesh;
+        }
+    }
+
+    private void OnWaterUpdated()
+    {
+        if (meshFilter.gameObject.GetComponent<WaterChunk>() != null)
+        {
+            var waterChunks = meshFilter.gameObject.GetComponents<WaterChunk>();
+            foreach (var waterChunk in waterChunks)
+            {
+                DestroyImmediate(waterChunk.waterObject);
+                DestroyImmediate(waterChunk);
+            }
+        }
+        if (simulationSettings.WaterSettings.GenerateWater)
+            meshFilter.gameObject.AddComponent<WaterChunk>().Setup(Vector2.zero, simulationSettings.WaterSettings, simulationSettings.HeightMapSettings, meshRenderer.bounds.size, meshFilter.gameObject.transform, meshFilter.sharedMesh.vertices);
     }
 }

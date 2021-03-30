@@ -75,7 +75,7 @@ public class TerrainChunk
             terrainMesh = new TerrainMesh();
             terrainMesh.updateCallback += UpdateTerrainChunk;
             terrainMesh.updateCallback += SetCollisionMesh;
-            if (waterSettings.generateWater) terrainMesh.updateCallback += SetWater;
+            if (waterSettings.GenerateWater) terrainMesh.updateCallback += SetWater;
             if (OnChunkLoaded != null)
                 terrainMesh.updateCallback += OnChunkLoaded;
             terrainMesh.updateCallback += PlaceObjects;

@@ -22,7 +22,11 @@ public class SimulationSettings : MonoBehaviour
     [SerializeField]
     private ObjectPlacementSettings objectPlacementSettings;
 
-    public event System.Action OnValuesChanged;
+    public event System.Action OnHeightMapChanged;
+    public event System.Action OnMeshChanged;
+    public event System.Action OnWaterChanged;
+    public event System.Action OnTextureChanged;
+    public event System.Action OnObjectPlacementChanged;
 
     public int xFixedSize;
     public int yFixedSize;
@@ -32,7 +36,7 @@ public class SimulationSettings : MonoBehaviour
         get{ return heightMapSettings; }
         set {
             heightMapSettings = value;
-            OnValuesChanged?.Invoke();
+            OnHeightMapChanged?.Invoke();
         }
     }   
 
@@ -41,7 +45,7 @@ public class SimulationSettings : MonoBehaviour
         get { return meshSettings; }
         set { 
             meshSettings = value; 
-            OnValuesChanged?.Invoke();
+            OnMeshChanged?.Invoke();
         }
     }
 
@@ -50,7 +54,7 @@ public class SimulationSettings : MonoBehaviour
         get { return waterSettings; }
         set { 
             waterSettings = value; 
-            OnValuesChanged?.Invoke();            
+            OnWaterChanged?.Invoke();            
         }
     }
     
@@ -59,7 +63,7 @@ public class SimulationSettings : MonoBehaviour
         get { return textureSettings; }
         set { 
             textureSettings = value; 
-            OnValuesChanged?.Invoke();        
+            OnTextureChanged?.Invoke();        
         }
     }
 
@@ -68,7 +72,7 @@ public class SimulationSettings : MonoBehaviour
         get { return objectPlacementSettings; }
         set { 
             objectPlacementSettings = value;
-            OnValuesChanged?.Invoke(); 
+            OnObjectPlacementChanged?.Invoke(); 
         }
     }
     

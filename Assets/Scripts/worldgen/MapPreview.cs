@@ -108,7 +108,7 @@ public class MapPreview : MonoBehaviour
                 DestroyImmediate(waterChunk);
             }
         }
-        if (waterSettings.generateWater)
+        if (waterSettings.GenerateWater)
             meshFilter.gameObject.AddComponent<WaterChunk>().Setup(Vector2.zero, waterSettings, heightMapSettings, meshRenderer.bounds.size, meshFilter.gameObject.transform, meshFilter.sharedMesh.vertices);
     }
 
