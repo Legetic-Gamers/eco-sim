@@ -108,7 +108,7 @@ public abstract class AnimalController : MonoBehaviour
         eatingState = new EatingState(this, fsm);
         goToMate = new GoToMate(this, fsm);
         waitingState = new Waiting(this, fsm);
-        senses = FindObjectOfType<Senses>();
+        senses = GetComponent<Senses>();
         fsm.Initialize(wanderState);
 
         animationController = new AnimationController(this);
