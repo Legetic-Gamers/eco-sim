@@ -12,7 +12,6 @@ using UnityEngine.AI;
 using ViewController;
 using ViewController.Senses;
 using Random = System.Random;
-using RandomUnity = UnityEngine.Random;
 
 
 public abstract class AnimalController : MonoBehaviour
@@ -108,7 +107,7 @@ public abstract class AnimalController : MonoBehaviour
         goToMate = new GoToMate(this, fsm);
         waitingState = new Waiting(this, fsm);
         fsm.Initialize(wanderState);
-
+        
         animationController = new AnimationController(this);
     }
 
@@ -127,8 +126,8 @@ public abstract class AnimalController : MonoBehaviour
         agent.speed = animalModel.currentSpeed * Time.timeScale;
         agent.acceleration *= Time.timeScale;
         agent.angularSpeed *= Time.timeScale;
-
-        //dh.LogNewAnimal(animalModel);
+        dh = FindObjectOfType<DataHandler>();
+        dh.LogNewAnimal(animalModel);
         //Debug.Log(agent.autoBraking);
         tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
         EventSubscribe();
