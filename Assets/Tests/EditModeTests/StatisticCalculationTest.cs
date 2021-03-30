@@ -115,15 +115,15 @@ namespace Tests.EditModeTests
         public void CauseOfDeathsWorking()
         {
             Collector c = new Collector();
-            c.CollectDeath(am1, AnimalController.CauseOfDeath.Eaten);
-            c.CollectDeath(am1, AnimalController.CauseOfDeath.Hydration);
-            c.CollectDeath(am1, AnimalController.CauseOfDeath.Eaten);
-            c.CollectDeath(am1, AnimalController.CauseOfDeath.Health);
-            c.CollectDeath(am1, AnimalController.CauseOfDeath.Hunger);
-            Assert.AreEqual(2, c.causeOfDeath[AnimalController.CauseOfDeath.Eaten]);
-            Assert.AreEqual(1, c.causeOfDeath[AnimalController.CauseOfDeath.Hydration]);
-            Assert.AreEqual(1, c.causeOfDeath[AnimalController.CauseOfDeath.Health]);
-            Assert.AreEqual(1, c.causeOfDeath[AnimalController.CauseOfDeath.Hunger]);
+            c.CollectDeath(am1, AnimalModel.CauseOfDeath.Eaten);
+            c.CollectDeath(am1, AnimalModel.CauseOfDeath.Hydration);
+            c.CollectDeath(am1, AnimalModel.CauseOfDeath.Eaten);
+            c.CollectDeath(am1, AnimalModel.CauseOfDeath.Health);
+            c.CollectDeath(am1, AnimalModel.CauseOfDeath.Hunger);
+            Assert.AreEqual(2, c.causeOfDeath[AnimalModel.CauseOfDeath.Eaten]);
+            Assert.AreEqual(1, c.causeOfDeath[AnimalModel.CauseOfDeath.Hydration]);
+            Assert.AreEqual(1, c.causeOfDeath[AnimalModel.CauseOfDeath.Health]);
+            Assert.AreEqual(1, c.causeOfDeath[AnimalModel.CauseOfDeath.Hunger]);
         }
     }
 }
