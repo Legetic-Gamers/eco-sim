@@ -17,26 +17,32 @@ public class HeightMapTab : SettingsManager
     protected override void Start()
     {
         base.Start();
-        HeightMapSettings heightMapSettings = simulationSettings.heightMapSettings;
-        noiseScale.text = heightMapSettings.noiseSettings.scale.ToString();
-        octaves.text = heightMapSettings.noiseSettings.octaves.ToString();
-        lacunarity.text = heightMapSettings.noiseSettings.lacunarity.ToString();
-        seed.text = heightMapSettings.noiseSettings.seed.ToString();
-        heightMultiplier.text = simulationSettings.heightMapSettings.heightMultiplier.ToString();
-        persistance.value = heightMapSettings.noiseSettings.persistance;
+        HeightMapSettings heightMapSettings = simulationSettings.HeightMapSettings;
+        noiseScale.text = heightMapSettings.NoiseSettings.Scale.ToString();
+        octaves.text = heightMapSettings.NoiseSettings.Octaves.ToString();
+        lacunarity.text = heightMapSettings.NoiseSettings.Lacunarity.ToString();
+        seed.text = heightMapSettings.NoiseSettings.Seed.ToString();
+        heightMultiplier.text = simulationSettings.HeightMapSettings.HeightMultiplier.ToString();
+        persistance.value = heightMapSettings.NoiseSettings.Persistance;
     }
 
 
     public void SetSettings()
     {
-        HeightMapSettings heightMapSettings = simulationSettings.heightMapSettings;
-        heightMapSettings.noiseSettings.scale = float.Parse(noiseScale.text);
-        heightMapSettings.noiseSettings.octaves = int.Parse(octaves.text);
-        heightMapSettings.noiseSettings.lacunarity = float.Parse(lacunarity.text);
-        heightMapSettings.noiseSettings.seed = int.Parse(seed.text);
-        simulationSettings.heightMapSettings.heightMultiplier = float.Parse(heightMultiplier.text);
-        Debug.Log("Persistance Value: " + persistance.value);
-        heightMapSettings.noiseSettings.persistance = persistance.value;
+        simulationSettings.HeightMapSettings = new HeightMapSettings(
+            new NoiseSettings(
+                simulationSettings.HeightMapSettings.NoiseSettings.NormalizeMode,
+                float.Parse(noiseScale.text),
+                int.Parse(octaves.text),
+                persistance.value,
+                float.Parse(lacunarity.text),
+                int.Parse(seed.text),
+                simulationSettings.HeightMapSettings.NoiseSettings.Offset
+            ),
+            simulationSettings.HeightMapSettings.UseFalloff,
+            float.Parse(heightMultiplier.text),
+            simulationSettings.HeightMapSettings.HeightCurve
+        );
     }
 
 }

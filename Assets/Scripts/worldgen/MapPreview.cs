@@ -32,7 +32,7 @@ public class MapPreview : MonoBehaviour
     public void DrawMapInEditor()
     {
         textureSettings.ApplyToMaterial(terrainMaterial);
-        textureSettings.UpdateMeshHeights(terrainMaterial, heightMapSettings.minHeight, heightMapSettings.maxHeight);
+        textureSettings.UpdateMeshHeights(terrainMaterial, heightMapSettings.MinHeight, heightMapSettings.MaxHeight);
         HeightMap heightMap = genHeightMap();
         if (drawMode == DrawMode.NoiseMap)
         {
@@ -45,20 +45,20 @@ public class MapPreview : MonoBehaviour
         }
         else if (drawMode == DrawMode.Falloff)
         {
-            DrawTexture(TextureGenerator.TextureFromHeightMap(new HeightMap(FalloffGenerator.GenerateFalloffMap(meshSettings.numVertsPerLine), 0, 1)));
+            DrawTexture(TextureGenerator.TextureFromHeightMap(new HeightMap(FalloffGenerator.GenerateFalloffMap(meshSettings.NumVertsPerLine), 0, 1)));
         }
         else if (drawMode == DrawMode.ObjectPlacementMap)
         {
             int size;
-            if (meshSettings.useFlatShading)
+            if (meshSettings.UseFlatShading)
             {
-                size = MeshSettings.supportedChunkSizes[meshSettings.flatShadedChunkSizeIndex];
+                size = MeshSettings.supportedChunkSizes[meshSettings.FlatShadedChunkSizeIndex];
             }
             else
             {
-                size = MeshSettings.supportedChunkSizes[meshSettings.chunkSizeIndex];
+                size = MeshSettings.supportedChunkSizes[meshSettings.ChunkSizeIndex];
             }
-            var list = ObjectPlacement.GeneratePlacementPoints(objectPlacementSettings, meshSettings.meshScale, 0, size).ToArray();
+            var list = ObjectPlacement.GeneratePlacementPoints(objectPlacementSettings, meshSettings.MeshScale, 0, size).ToArray();
             DrawTexture(TextureGenerator.TextureFromVector2List(list, 200, 200));
         }
     }
@@ -80,7 +80,7 @@ public class MapPreview : MonoBehaviour
 
     private HeightMap genHeightMap()
     {
-        return HeightMapGenerator.GenerateHeightMap(meshSettings.numVertsPerLine, meshSettings.numVertsPerLine, heightMapSettings, Vector2.zero);
+        return HeightMapGenerator.GenerateHeightMap(meshSettings.NumVertsPerLine, meshSettings.NumVertsPerLine, heightMapSettings, Vector2.zero);
     }
 
     private void OnValuesUpdated()

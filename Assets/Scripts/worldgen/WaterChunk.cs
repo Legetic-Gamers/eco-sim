@@ -33,7 +33,7 @@ public class WaterChunk : MonoBehaviour
         meshFilter.mesh = GenerateMesh();
         //waterObject.AddComponent<WaterNoise>();
         //waterObject.GetComponent<WaterNoise>().settings = waterSettings;
-        realWaterLevel = Mathf.Lerp(heightMapSettings.minHeight, heightMapSettings.maxHeight, waterSettings.waterLevel);
+        realWaterLevel = Mathf.Lerp(heightMapSettings.MinHeight, heightMapSettings.MaxHeight, waterSettings.waterLevel);
         waterObject.transform.localScale = new Vector3(scale.x, 1, scale.z);
         waterObject.transform.position = new Vector3(position.x, realWaterLevel, position.y);
         collider = waterObject.AddComponent<BoxCollider>();

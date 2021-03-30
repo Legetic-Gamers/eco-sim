@@ -6,17 +6,72 @@ using UnityEngine;
 public class SimulationSettings : MonoBehaviour
 {
     private TerrainGenerator terrainGenerator;
-    public HeightMapSettings heightMapSettings;
-    public MeshSettings meshSettings;
-    public WaterSettings waterSettings;
-    public TextureSettings textureSettings;
-    public ObjectPlacementSettings objectPlacementSettings;
+    
+    [SerializeField]
+    private HeightMapSettings heightMapSettings;
+    
+    [SerializeField]
+    private MeshSettings meshSettings;
+    
+    [SerializeField]
+    private WaterSettings waterSettings;
+    
+    [SerializeField]
+    private TextureSettings textureSettings;
+    
+    [SerializeField]
+    private ObjectPlacementSettings objectPlacementSettings;
 
-    public void StartSimulation()
+    public event System.Action OnValuesChanged;
+
+    public int xFixedSize;
+    public int yFixedSize;
+
+
+    public HeightMapSettings HeightMapSettings{
+        get{ return heightMapSettings; }
+        set {
+            heightMapSettings = value;
+            OnValuesChanged?.Invoke();
+        }
+    }   
+
+    public MeshSettings MeshSettings
     {
-        terrainGenerator = FindObjectOfType<TerrainGenerator>();
-        terrainGenerator.StartSimulation(meshSettings, heightMapSettings, textureSettings, waterSettings, objectPlacementSettings);
+        get { return meshSettings; }
+        set { 
+            meshSettings = value; 
+            OnValuesChanged?.Invoke();
+        }
     }
+
+    public WaterSettings WaterSettings
+    {
+        get { return waterSettings; }
+        set { 
+            waterSettings = value; 
+            OnValuesChanged?.Invoke();            
+        }
+    }
+    
+    public TextureSettings TextureSettings
+    {
+        get { return textureSettings; }
+        set { 
+            textureSettings = value; 
+            OnValuesChanged?.Invoke();        
+        }
+    }
+
+    public ObjectPlacementSettings ObjectPlacementSettings
+    {
+        get { return objectPlacementSettings; }
+        set { 
+            objectPlacementSettings = value;
+            OnValuesChanged?.Invoke(); 
+        }
+    }
+    
 
     private void Awake()
     {

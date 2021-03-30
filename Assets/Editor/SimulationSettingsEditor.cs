@@ -12,7 +12,7 @@ public class SimulationSettingsEditor : Editor
 
         if (GUILayout.Button("Start"))
         {
-            data.StartSimulation();
+            //data.StartSimulation();
             EditorUtility.SetDirty(target);
         }
     }

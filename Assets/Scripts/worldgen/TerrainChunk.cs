@@ -54,9 +54,9 @@ public class TerrainChunk
         this.waterSettings = waterSettings;
         this.objectPlacementSettings = objectPlacementSettings;
 
-        sampleCentre = coordinate * meshSettings.meshWorldSize / meshSettings.meshScale;
-        Vector2 position = coordinate * meshSettings.meshWorldSize;
-        bounds = new Bounds(position, Vector2.one * meshSettings.meshWorldSize);
+        sampleCentre = coordinate * meshSettings.MeshWorldSize / meshSettings.MeshScale;
+        Vector2 position = coordinate * meshSettings.MeshWorldSize; 
+        bounds = new Bounds(position, Vector2.one * meshSettings.MeshWorldSize);
 
         meshObject = new GameObject("Terrain Chunk");
         meshRenderer = meshObject.AddComponent<MeshRenderer>();
@@ -103,7 +103,7 @@ public class TerrainChunk
 
     public void Load()
     {
-        ThreadedDataRequester.RequestData(() => HeightMapGenerator.GenerateHeightMap(meshSettings.numVertsPerLine, meshSettings.numVertsPerLine, heightMapSettings, sampleCentre), OnHeightMapReceived);
+        ThreadedDataRequester.RequestData(() => HeightMapGenerator.GenerateHeightMap(meshSettings.NumVertsPerLine, meshSettings.NumVertsPerLine, heightMapSettings, sampleCentre), OnHeightMapReceived);
     }
 
     private void OnHeightMapReceived(object heightMapObject)
@@ -225,7 +225,7 @@ public class TerrainChunk
     {
         //Debug.Log("Position: " + coordinate * meshSettings.meshWorldSize);
         waterChunk = meshObject.AddComponent<WaterChunk>();
-        waterChunk.Setup(coordinate * meshSettings.meshWorldSize, waterSettings, heightMapSettings, meshRenderer.bounds.size, meshObject.transform, meshFilter.mesh.vertices);
+        waterChunk.Setup(coordinate * meshSettings.MeshWorldSize, waterSettings, heightMapSettings, meshRenderer.bounds.size, meshObject.transform, meshFilter.mesh.vertices);
     }
 
     public void PlaceObjects()
@@ -233,7 +233,7 @@ public class TerrainChunk
         if (hasSetCollider)
         {
             ObjectPlacement objectPlacement = meshObject.AddComponent<ObjectPlacement>();
-            objectPlacement.PlaceObjects(coordinate * meshSettings.meshWorldSize, objectPlacementSettings, meshSettings, heightMapSettings);
+            objectPlacement.PlaceObjects(coordinate * meshSettings.MeshWorldSize, objectPlacementSettings, meshSettings, heightMapSettings);
         }
 
     }

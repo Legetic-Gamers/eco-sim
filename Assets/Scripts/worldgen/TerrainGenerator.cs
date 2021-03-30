@@ -23,9 +23,7 @@ public class TerrainGenerator : MonoBehaviour
     public LODInfo[] detailLevels;
     public Transform viewer;
 
-    [Header("Fixed terrain settings")]
-    public int fixedSizeX;
-    public int fixedSizeY;
+
     public NavMeshSurface navMeshSurface;
 
     [Header("General")]
@@ -52,9 +50,11 @@ public class TerrainGenerator : MonoBehaviour
 
     private bool hasStarted = false;
 
+    private int fixedSizeX;
+    private int fixedSizeY;
 
 
-    public void StartSimulation(MeshSettings meshSettings, HeightMapSettings heightMapSettings, TextureSettings textureSettings, WaterSettings waterSettings, ObjectPlacementSettings objectPlacementSettings)
+    public void StartSimulation(MeshSettings meshSettings, HeightMapSettings heightMapSettings, TextureSettings textureSettings, WaterSettings waterSettings, ObjectPlacementSettings objectPlacementSettings, int fixedSizeX, int fixedSizeY)
     {
 
         this.meshSettings = meshSettings;
@@ -62,14 +62,16 @@ public class TerrainGenerator : MonoBehaviour
         this.textureSettings = textureSettings;
         this.waterSettings = waterSettings;
         this.objectPlacementSettings = objectPlacementSettings;
+        this.fixedSizeX = fixedSizeX;
+        this.fixedSizeY = fixedSizeY;
 
         textureSettings.ApplyToMaterial(mapMaterial);
-        textureSettings.UpdateMeshHeights(mapMaterial, heightMapSettings.minHeight, heightMapSettings.maxHeight);
+        textureSettings.UpdateMeshHeights(mapMaterial, heightMapSettings.MinHeight, heightMapSettings.MaxHeight);
 
         if (terrainMode == TerrainMode.Endless)
         {
             float maxViewDistance = detailLevels[detailLevels.Length - 1].visibleDistanceThreshold;
-            meshWorldSize = meshSettings.meshWorldSize;
+            meshWorldSize = meshSettings.MeshWorldSize;
             chunksVisibleInViewDistance = Mathf.RoundToInt(maxViewDistance / meshWorldSize);
             UpdateVisibleChunks();
         }

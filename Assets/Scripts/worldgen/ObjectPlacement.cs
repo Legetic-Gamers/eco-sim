@@ -14,23 +14,23 @@ public class ObjectPlacement : MonoBehaviour
         Debug.Log("Is this called more than once");
         groups = new List<GameObject>();
 
-        if (meshSettings.useFlatShading)
+        if (meshSettings.UseFlatShading)
         {
-            size = MeshSettings.supportedChunkSizes[meshSettings.flatShadedChunkSizeIndex];
+            size = MeshSettings.supportedChunkSizes[meshSettings.FlatShadedChunkSizeIndex];
         }
         else
         {
-            size = MeshSettings.supportedChunkSizes[meshSettings.chunkSizeIndex];
+            size = MeshSettings.supportedChunkSizes[meshSettings.ChunkSizeIndex];
         }
 
-        size = Mathf.RoundToInt(size * meshSettings.meshScale);
+        size = Mathf.RoundToInt(size * meshSettings.MeshScale);
 
         for (int i = 0; i < settings.objectTypes.Length; i++)
         {
             GameObject groupObject = new GameObject(settings.objectTypes[i].name + " Group");
             groups.Add(groupObject);
             groupObject.transform.parent = this.transform;
-            List<Vector2> points = GeneratePlacementPoints(settings, meshSettings.meshScale, i, size);
+            List<Vector2> points = GeneratePlacementPoints(settings, meshSettings.MeshScale, i, size);
             foreach (var point in points)
             {
                 // GameObject gameObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -54,7 +54,7 @@ public class ObjectPlacement : MonoBehaviour
                     }
                 }
 
-                GameObject gameObject = Instantiate(settings.objectTypes[i].gameObjectSettings[randomIndex].gameObject, new Vector3(point.x - size / 2 + positionOffset.x, heightMapSettings.maxHeight + 10, point.y - size / 2 + positionOffset.y), Quaternion.identity);
+                GameObject gameObject = Instantiate(settings.objectTypes[i].gameObjectSettings[randomIndex].gameObject, new Vector3(point.x - size / 2 + positionOffset.x, heightMapSettings.MaxHeight + 10, point.y - size / 2 + positionOffset.y), Quaternion.identity);
 
                 //gameObject.transform.position = new Vector3(point.x - size / 2, heightMapSettings.maxHeight + 10, point.y - size / 2);
                 gameObject.transform.parent = groupObject.transform;
@@ -66,8 +66,8 @@ public class ObjectPlacement : MonoBehaviour
                 {
                     if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Ground"))
                     {
-                        bool withinSpan = hit.point.y <= (heightMapSettings.maxHeight - heightMapSettings.minHeight) * settings.objectTypes[i].maxHeight
-                        && hit.point.y >= (heightMapSettings.maxHeight - heightMapSettings.minHeight) * settings.objectTypes[i].minHeight;
+                        bool withinSpan = hit.point.y <= (heightMapSettings.MaxHeight - heightMapSettings.MinHeight) * settings.objectTypes[i].maxHeight
+                        && hit.point.y >= (heightMapSettings.MaxHeight - heightMapSettings.MinHeight) * settings.objectTypes[i].minHeight;
 
                         if (withinSpan)
                         {

@@ -21,7 +21,6 @@ public class TabGroup : MonoBehaviour
     public void OnTabChanged(Button button)
     {
         selectedTab = buttons.IndexOf(button);
-        Debug.Log("bUTTON pressed: " + selectedTab);
         ResetTabs();
         button.image.color = selected;
         ShowTab(selectedTab);

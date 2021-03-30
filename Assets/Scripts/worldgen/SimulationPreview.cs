@@ -12,22 +12,28 @@ public class SimulationPreview : MonoBehaviour
     public Material terrainMaterial;
 
     public bool autoUpdate;
-
-
-    public void DrawMapInEditor()
-    {
-        //DrawMesh(MeshGenerator.GenerateTerrainMesh(heightMap.values, meshSettings, editorPreviewLevelOfDetail));
-    }
-
-    // Start is called before the first frame update
     void Start()
     {
-
+        DisplaySimulationPreview();
+        simulationSettings.OnValuesChanged += OnValuesUpdated;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
+    public void DisplaySimulationPreview(){
+        HeightMap heightMap = GenHeightMap();
+        DrawMesh(MeshGenerator.GenerateTerrainMesh(heightMap.values, simulationSettings.MeshSettings, 0));
+    }
 
+    public void DrawMesh(MeshData meshData)
+    {
+        meshFilter.sharedMesh = meshData.CreateMesh();
+    }
+    private HeightMap GenHeightMap()
+    {
+        return HeightMapGenerator.GenerateHeightMap(simulationSettings.MeshSettings.NumVertsPerLine, simulationSettings.MeshSettings.NumVertsPerLine, simulationSettings.HeightMapSettings, Vector2.zero);
+    }
+
+    private void OnValuesUpdated(){
+        DisplaySimulationPreview();
+        meshFilter.gameObject.GetComponent<MeshCollider>().sharedMesh = meshFilter.sharedMesh;
     }
 }

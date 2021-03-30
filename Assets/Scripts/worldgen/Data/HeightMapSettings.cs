@@ -5,15 +5,26 @@ using UnityEngine;
 [System.Serializable()]
 public class HeightMapSettings
 {
-    public NoiseSettings noiseSettings;
+    [SerializeField]
+    private NoiseSettings noiseSettings;
 
-    public bool useFalloff;
+    [SerializeField]
+    private bool useFalloff;
 
-    public float heightMultiplier;
-    public AnimationCurve heightCurve;
+    [SerializeField]
+    private float heightMultiplier;
+    
+    [SerializeField]
+    private AnimationCurve heightCurve;
 
+    public HeightMapSettings(NoiseSettings noiseSettings, bool useFalloff, float heightMultiplier, AnimationCurve heightCurve){
+        this.noiseSettings = noiseSettings;
+        this.useFalloff = useFalloff;
+        this.heightMultiplier = heightMultiplier;
+        this.heightCurve = heightCurve;
+    }
 
-    public float minHeight
+    public float MinHeight
     {
         get
         {
@@ -21,11 +32,37 @@ public class HeightMapSettings
         }
     }
 
-    public float maxHeight
+    public float MaxHeight
     {
         get
         {
             return heightMultiplier * heightCurve.Evaluate(1);
         }
     }
+
+    public float HeightMultiplier{
+        get {
+            return heightMultiplier;
+        }
+    }
+
+    public NoiseSettings NoiseSettings 
+    {
+        get {
+            return noiseSettings;
+        }
+    }
+
+    public bool UseFalloff {
+        get {
+            return useFalloff;
+        }
+    }
+
+    public AnimationCurve HeightCurve{
+        get {
+            return heightCurve;
+        }
+    }
+
 }
