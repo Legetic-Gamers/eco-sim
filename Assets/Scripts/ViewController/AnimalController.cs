@@ -6,10 +6,14 @@ using AnimalsV2.States;
 using AnimalsV2.States.AnimalsV2.States;
 using DataCollection;
 using Model;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 using ViewController;
+using ViewController.Senses;
 using Random = System.Random;
+using RandomUnity = UnityEngine.Random;
+
 
 public abstract class AnimalController : MonoBehaviour
 {
@@ -37,6 +41,7 @@ public abstract class AnimalController : MonoBehaviour
 
     public FiniteStateMachine fsm;
     private AnimationController animationController;
+    private Senses senses;
     
     // Add a data handler
     private DataHandler dh;
@@ -111,6 +116,7 @@ public abstract class AnimalController : MonoBehaviour
         eatingState = new EatingState(this, fsm);
         goToMate = new GoToMate(this, fsm);
         waitingState = new Waiting(this, fsm);
+        senses = FindObjectOfType<Senses>();
         fsm.Initialize(wanderState);
 
         animationController = new AnimationController(this);
@@ -139,7 +145,20 @@ public abstract class AnimalController : MonoBehaviour
         EventSubscribe();
 
         SetPhenotype();
+
+        StartCoroutine(SensesLoop());
     }
+    
+    private IEnumerator SensesLoop()
+    {
+        while (true)
+        {
+            senses.FindTargets();
+            yield return new WaitForSeconds(RandomUnity.Range(0.5f, 1f)/Time.timeScale);
+            
+        }
+    }
+    
 
     /* /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\ */
     /*                                   Parameter handlers                                   */
@@ -290,7 +309,7 @@ public abstract class AnimalController : MonoBehaviour
             tickEventPublisher.onParamTickEvent -= UpdateParameters;
             tickEventPublisher.onParamTickEvent -= HandleDeathStatus;
             // every 0.5 sec
-            tickEventPublisher.onSenseTickEvent -= fsm.UpdateStatesLogic;    
+            tickEventPublisher.onSenseTickEvent -= fsm.UpdateStatesLogic; 
         }
         
 
