@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 namespace ViewController.Senses
@@ -35,7 +36,6 @@ namespace ViewController.Senses
 
         public void FindTargets()
         {
-            Debug.Log("Sensing");
             // prevent adding duplicates
             ClearLists();
 
@@ -157,8 +157,18 @@ namespace ViewController.Senses
             radius = Mathf.Max(hearingRadius,viewRadius);
             
             angle = animalController.animalModel.traits.viewAngle;
+
+            StartCoroutine(SensesLoop());
+        }
+        
+        private IEnumerator SensesLoop()
+        {
+            while (true)
+            {
+                FindTargets();
+                yield return new WaitForSeconds(Random.Range(0.5f, 1f)/Time.timeScale);
             
-            
+            }
         }
 
         private void OnDestroy()

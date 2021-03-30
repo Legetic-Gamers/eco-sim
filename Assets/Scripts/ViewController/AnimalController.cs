@@ -41,7 +41,6 @@ public abstract class AnimalController : MonoBehaviour
 
     public FiniteStateMachine fsm;
     private AnimationController animationController;
-    private Senses senses;
     
     // Add a data handler
     private DataHandler dh;
@@ -108,7 +107,6 @@ public abstract class AnimalController : MonoBehaviour
         eatingState = new EatingState(this, fsm);
         goToMate = new GoToMate(this, fsm);
         waitingState = new Waiting(this, fsm);
-        senses = GetComponent<Senses>();
         fsm.Initialize(wanderState);
 
         animationController = new AnimationController(this);
@@ -131,25 +129,13 @@ public abstract class AnimalController : MonoBehaviour
         agent.angularSpeed *= Time.timeScale;
 
         //dh.LogNewAnimal(animalModel);
-        
         //Debug.Log(agent.autoBraking);
         tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
         EventSubscribe();
 
         SetPhenotype();
-
-        StartCoroutine(SensesLoop());
     }
     
-    private IEnumerator SensesLoop()
-    {
-        while (true)
-        {
-            senses.FindTargets();
-            yield return new WaitForSeconds(RandomUnity.Range(0.5f, 1f)/Time.timeScale);
-            
-        }
-    }
     
 
     /* /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\ */
