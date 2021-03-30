@@ -71,7 +71,7 @@ public class HearingAbility : MonoBehaviour
     
     private void Start()
     {
-        tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
+        //tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
         
         animalController = GetComponent<AnimalController>();
         // set animals hearing distance
@@ -79,7 +79,7 @@ public class HearingAbility : MonoBehaviour
         if (tickEventPublisher)
         {
             // subscribe to Ticks
-            tickEventPublisher.onSenseTickEvent += FindHeardTargets;   
+            //tickEventPublisher.onSenseTickEvent += FindHeardTargets;   
         }
     }
 

@@ -35,6 +35,7 @@ namespace ViewController.Senses
 
         public void FindTargets()
         {
+            Debug.Log("Sensing");
             // prevent adding duplicates
             ClearLists();
 
