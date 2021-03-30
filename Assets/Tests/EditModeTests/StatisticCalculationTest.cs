@@ -8,23 +8,24 @@ namespace Tests.EditModeTests
 {
     public class StatisticCalculationTest
     {
-        
-        AnimalModel am1 = new RabbitModel(new Traits(1f, 50, 100, 100, 6,1,
-            10,100,10,10,180,5,3),0);
-        AnimalModel am2 = new RabbitModel(new Traits(1f, 50, 100, 100, 6,1,
-            10,100,10,10,180,5,3),0);
-        AnimalModel am3 = new RabbitModel(new Traits(2f, 50, 100, 100, 6,1,
-            10,100,10,10,180,5,3),0);
-        AnimalModel am4 = new RabbitModel(new Traits(2f, 50, 100, 100, 6,1,
-            10,100,10,10,180,5,3),1);
-        AnimalModel am5 = new RabbitModel(new Traits(3f, 50, 100, 100, 6,1,
-            10,100,10,10,180,5,3),1);
 
         private PlantModel pl1 = new PlantModel();
         private PlantModel pl2 = new PlantModel();
         private PlantModel pl3 = new PlantModel();
         private PlantModel pl4 = new PlantModel();
         private PlantModel pl5 = new PlantModel();
+
+        AnimalModel am1 = new RabbitModel(new Traits(1f, 50, 100, 100, 6.6f, 1,
+            10,100,10,180,5,3),0);
+        AnimalModel am2 = new RabbitModel(new Traits(1f, 50, 100, 100, 6.6f, 1,
+            10,100,10,180,5,3),0);
+        AnimalModel am3 = new RabbitModel(new Traits(2f, 50, 100, 100, 6.6f, 1,
+            10,100,10,180,5,3),0);
+        AnimalModel am4 = new RabbitModel(new Traits(2f, 50, 100, 100, 6.6f, 1,
+            10,100,10,180,5,3),0);
+        AnimalModel am5 = new RabbitModel(new Traits(3f, 50, 100, 100, 6.6f, 1,
+            10,100,10,180,5,3),0);
+        
         /// <summary>
         /// Checks mean calculations of rabbit sizes. 
         /// </summary>

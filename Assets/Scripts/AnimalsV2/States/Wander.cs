@@ -21,6 +21,8 @@ namespace AnimalsV2.States
         private GameObject water;
         private GameObject mate;
 
+        private Vector3 nextPosition;
+
         public Wander(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine)
         {
             currentStateAnimation = StateAnimation.Walking;
@@ -29,6 +31,11 @@ namespace AnimalsV2.States
         public override void Enter()
         {
             base.Enter();
+
+            nextPosition = animal.transform.position;
+            
+            //Make an update instantly
+            LogicUpdate();
         }
 
         public override void HandleInput()
@@ -46,69 +53,30 @@ namespace AnimalsV2.States
             water = NavigationUtilities.GetNearestObjectPosition(animal.visibleWaterTargets, position1);
             mate = NavigationUtilities.GetNearestObjectPosition(animal.visibleFriendlyTargets, position1);
             */
-            if (animal.agent.isActiveAndEnabled)
+            if (animal.agent != null && animal.agent.isActiveAndEnabled)
             {
-                if (animal.agent.remainingDistance < 1.0f)
+                if (Vector3.Distance(animal.transform.position, nextPosition) <= animal.agent.stoppingDistance + 0.2 || animal.agent.velocity.magnitude <= 0.1f)
                 {
-                    Vector3 position = RandomNavSphere(animal.transform.position, 10,
-                        1 << NavMesh.GetAreaFromName("Walkable"));
-                    
+                    //Debug.Log(animal.agent.velocity.magnitude);
                     //Vector3 position = new Vector3(Random.Range(-10.0f, 10.0f), 0, Random.Range(-10.0f, 10.0f)) + animal.transform.position;
-                   
+                    //Debug.Log("Framme!");
                     //Move the animal using the navmeshagent.
                     NavMeshHit hit;
                     //TODO this maxDistance is what is causing rabbits to dance sometimes, if poisition cant be found.
                     // ALEXANDER H: https://docs.unity3d.com/ScriptReference/AI.NavMesh.SamplePosition.html recommends setting maxDistance as agents height * 2
-                    if (NavMesh.SamplePosition(position, out hit, animal.agent.height * 2, 1 << NavMesh.GetAreaFromName("Walkable")))
+
+                    if(NavigationUtilities.RandomPoint(animal.transform.position, 10f,10f, out nextPosition))
                     {
-                        animal.agent.SetDestination(hit.position);
+                        animal.agent.SetDestination(nextPosition);
+                    }else
+                    {
+                        Debug.Log("Agent stuck, Dist: " + Vector3.Distance(animal.transform.position, nextPosition)+ " Stopping: " + animal.agent.stoppingDistance + 0.2);
                     }
-                    
-
                 }
-
+                
             }
         }
-
-        public static Vector3 RandomNavSphere(Vector3 origin, float dist, int layermask)
-        {
-            Vector3 randDirection = Random.insideUnitSphere * dist;
-
-            randDirection += origin;
-
-            NavMeshHit navHit;
-
-            NavMesh.SamplePosition(randDirection, out navHit, dist, layermask);
-
-            return navHit.position;
-        }
-/*
-        public Tuple<GameObject, Priorities> FoundObject()
-        {
-            foreach (var priority in priorities)
-            {
-                switch (priority)
-                {
-                    case Food:
-                        if (food != null) return Tuple.Create(food, Food);
-                        break;
-                    case Water:
-                        if (water != null) return Tuple.Create(water, Water);
-                        break;
-                    case Mate:
-                        if (mate != null) return Tuple.Create(mate, Mate);
-                        break;
-                }
-            }
-
-            return null;
-        }
-
-        public void SetPriorities(List<Priorities> priorities)
-        {
-            this.priorities = priorities;
-        }
-        */
+        
         public override string ToString()
         {
             return "Wandering";

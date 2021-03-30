@@ -1,0 +1,488 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!181963792 &2655988077585873504
+Preset:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: ObjectPlacementSettings
+  m_TargetType:
+    m_NativeTypeID: 114
+    m_ManagedTypePPtr: {fileID: 11500000, guid: 713ccc87d08e5054cbaf4b1c0662ae86,
+      type: 3}
+    m_ManagedTypeFallback: 
+  m_Properties:
+  - target: {fileID: 0}
+    propertyPath: m_Enabled
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorHideFlags
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorClassIdentifier
+    value: 
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: autoUpdate
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.size
+    value: 7
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[0].name
+    value: Trees
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[0].gameObjectSettings.Array.size
+    value: 4
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[0].gameObjectSettings.Array.data[0].gameObject
+    value: 
+    objectReference: {fileID: 1069101916615702, guid: fff1095f568a7964c8c455e72f096fe7,
+      type: 3}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[0].gameObjectSettings.Array.data[0].probability
+    value: 0.022
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[0].gameObjectSettings.Array.data[1].gameObject
+    value: 
+    objectReference: {fileID: 1130959867764666, guid: 97d04c1a128285640bea9a6421aeec54,
+      type: 3}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[0].gameObjectSettings.Array.data[1].probability
+    value: 0.437
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[0].gameObjectSettings.Array.data[2].gameObject
+    value: 
+    objectReference: {fileID: 2222111361404534124, guid: 94f989ef58ad00643a4052dd699c6f2b,
+      type: 3}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[0].gameObjectSettings.Array.data[2].probability
+    value: 0.227
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[0].gameObjectSettings.Array.data[3].gameObject
+    value: 
+    objectReference: {fileID: 1017128449598608, guid: c799440440b06ca43878d1572b6e33e7,
+      type: 3}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[0].gameObjectSettings.Array.data[3].probability
+    value: 0.029
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[0].previewColour.r
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[0].previewColour.g
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[0].previewColour.b
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[0].previewColour.a
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[0].minimumDistance
+    value: 15
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[0].newPointCount
+    value: 10
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[0].scale
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[0].yOffset
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[0].minHeight
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[0].maxHeight
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[1].name
+    value: Rocks
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[1].gameObjectSettings.Array.size
+    value: 4
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[1].gameObjectSettings.Array.data[0].gameObject
+    value: 
+    objectReference: {fileID: 7405846476849542632, guid: 8c2b434b350c21945aa7e5d7868a523c,
+      type: 3}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[1].gameObjectSettings.Array.data[0].probability
+    value: 0.216
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[1].gameObjectSettings.Array.data[1].gameObject
+    value: 
+    objectReference: {fileID: 5202732821079448320, guid: bf3d0e1321e7b0f49bacb6bce0698d2f,
+      type: 3}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[1].gameObjectSettings.Array.data[1].probability
+    value: 0.222
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[1].gameObjectSettings.Array.data[2].gameObject
+    value: 
+    objectReference: {fileID: 4680757731160225450, guid: 8e761cdcbbcbd96439e187fa8ea6d938,
+      type: 3}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[1].gameObjectSettings.Array.data[2].probability
+    value: 0.227
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[1].gameObjectSettings.Array.data[3].gameObject
+    value: 
+    objectReference: {fileID: 8783306491908617939, guid: c9bcfa149c882d44a8157a75caeecea7,
+      type: 3}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[1].gameObjectSettings.Array.data[3].probability
+    value: 0.24
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[1].previewColour.r
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[1].previewColour.g
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[1].previewColour.b
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[1].previewColour.a
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[1].minimumDistance
+    value: 15
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[1].newPointCount
+    value: 10
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[1].scale
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[1].yOffset
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[1].minHeight
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[1].maxHeight
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[2].name
+    value: Food
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[2].gameObjectSettings.Array.size
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[2].gameObjectSettings.Array.data[0].gameObject
+    value: 
+    objectReference: {fileID: 5707813131339405077, guid: b7aede90df860184e82d1ea8292b5123,
+      type: 3}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[2].gameObjectSettings.Array.data[0].probability
+    value: 0.216
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[2].previewColour.r
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[2].previewColour.g
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[2].previewColour.b
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[2].previewColour.a
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[2].minimumDistance
+    value: 15
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[2].newPointCount
+    value: 10
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[2].scale
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[2].yOffset
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[2].minHeight
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[2].maxHeight
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[3].name
+    value: Rabbits
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[3].gameObjectSettings.Array.size
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[3].gameObjectSettings.Array.data[0].gameObject
+    value: 
+    objectReference: {fileID: 5945667779142240406, guid: 20038c4620a64ee45aaed9ddd2e5f10e,
+      type: 3}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[3].gameObjectSettings.Array.data[0].probability
+    value: 0.216
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[3].previewColour.r
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[3].previewColour.g
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[3].previewColour.b
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[3].previewColour.a
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[3].minimumDistance
+    value: 8
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[3].newPointCount
+    value: 16
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[3].scale
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[3].yOffset
+    value: 0.1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[3].minHeight
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[3].maxHeight
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[4].name
+    value: Wolfs
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[4].gameObjectSettings.Array.size
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[4].gameObjectSettings.Array.data[0].gameObject
+    value: 
+    objectReference: {fileID: 4362939137640418624, guid: 9a3fc11558a4b4a4c97a046dc0bd6872,
+      type: 3}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[4].gameObjectSettings.Array.data[0].probability
+    value: 0.216
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[4].previewColour.r
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[4].previewColour.g
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[4].previewColour.b
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[4].previewColour.a
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[4].minimumDistance
+    value: 80
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[4].newPointCount
+    value: 10
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[4].scale
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[4].yOffset
+    value: 0.1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[4].minHeight
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[4].maxHeight
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[5].name
+    value: Bears
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[5].gameObjectSettings.Array.size
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[5].gameObjectSettings.Array.data[0].gameObject
+    value: 
+    objectReference: {fileID: 8012323441774472881, guid: 51e551f1cef16d9488952707d8521940,
+      type: 3}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[5].gameObjectSettings.Array.data[0].probability
+    value: 0.216
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[5].previewColour.r
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[5].previewColour.g
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[5].previewColour.b
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[5].previewColour.a
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[5].minimumDistance
+    value: 60
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[5].newPointCount
+    value: 10
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[5].scale
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[5].yOffset
+    value: 0.1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[5].minHeight
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[5].maxHeight
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[6].name
+    value: Deers
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[6].gameObjectSettings.Array.size
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[6].gameObjectSettings.Array.data[0].gameObject
+    value: 
+    objectReference: {fileID: 1567582185033856, guid: 70e110c1886e4174e8c3ed315798a2f1,
+      type: 3}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[6].gameObjectSettings.Array.data[0].probability
+    value: 0.216
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[6].previewColour.r
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[6].previewColour.g
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[6].previewColour.b
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[6].previewColour.a
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[6].minimumDistance
+    value: 20
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[6].newPointCount
+    value: 10
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[6].scale
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[6].yOffset
+    value: 0.1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[6].minHeight
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: objectTypes.Array.data[6].maxHeight
+    value: 1
+    objectReference: {fileID: 0}

@@ -5,10 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - Animal
-  - Predator
-  - Food
   - Water
   - Plant
+  - Wall
   layers:
   - Default
   - TransparentFX
