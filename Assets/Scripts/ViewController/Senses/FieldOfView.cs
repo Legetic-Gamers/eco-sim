@@ -123,14 +123,14 @@ public class FieldOfView : MonoBehaviour
 
     private void Start()
     {
-        tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
+        //tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
         
         animalController = GetComponent<AnimalController>();
         
         angle = animalController.animalModel.traits.viewAngle;
         radius = animalController.animalModel.traits.viewRadius;
 
-        tickEventPublisher.onSenseTickEvent += FindVisibleTargets;
+        //tickEventPublisher.onSenseTickEvent += FindVisibleTargets;
     }
 
     private void OnDestroy()

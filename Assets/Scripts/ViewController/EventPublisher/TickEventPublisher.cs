@@ -25,7 +25,6 @@ public class TickEventPublisher : MonoBehaviour
         {
             onParamTickEvent?.Invoke();
             yield return new WaitForSeconds(2.0f / Time.timeScale);
-            
         }
     }
     private IEnumerator SenseTickEvent()
@@ -33,11 +32,7 @@ public class TickEventPublisher : MonoBehaviour
         while (true)
         {
             onSenseTickEvent?.Invoke();
-            //Debug.Log(Time.timeScale);
-            
-            //Senses update should scale with timescale.
             yield return new WaitForSeconds(.5f / Time.timeScale);
-            
         }
     }
 
@@ -46,7 +41,6 @@ public class TickEventPublisher : MonoBehaviour
         while (true)
         {
             yield return new WaitForSeconds(60f);
-
             onCollectorUpdate?.Invoke();
         }
     }
@@ -54,8 +48,8 @@ public class TickEventPublisher : MonoBehaviour
 
     private void Awake()
     {
-        StartCoroutine("ParamTickEvent");
-        StartCoroutine("SenseTickEvent");
-        StartCoroutine("CollectorTickEvent");
+        StartCoroutine(ParamTickEvent());
+        StartCoroutine(SenseTickEvent());
+        StartCoroutine(CollectorTickEvent());
     }
 }

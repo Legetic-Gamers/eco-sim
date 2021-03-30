@@ -246,6 +246,14 @@ public abstract class AnimalModel
         reproductiveUrge = 0.2f;
         this.traits = traits;
     }
+    
+    public enum CauseOfDeath
+    {
+        Hydration,
+        Eaten,
+        Health,
+        Hunger,
+    };
 
     public abstract AnimalModel Mate(AnimalModel otherParent);
     

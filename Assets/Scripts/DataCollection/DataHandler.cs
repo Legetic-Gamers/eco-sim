@@ -113,7 +113,7 @@ namespace DataCollection
         /// </summary>
         /// <param name="animalModel"> The model of the dead animal </param>
         /// <param name="causeOfDeath"> The Cause that made the animal call on dead state </param>
-        public void LogDeadAnimal(AnimalModel animalModel, AnimalController.CauseOfDeath causeOfDeath)
+        public void LogDeadAnimal(AnimalModel animalModel, AnimalModel.CauseOfDeath causeOfDeath)
         {
             c.CollectDeath(animalModel, causeOfDeath);
         }

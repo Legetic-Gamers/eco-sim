@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 namespace ViewController.Senses
@@ -18,8 +19,6 @@ namespace ViewController.Senses
     
         private AnimalController animalController;
 
-        private TickEventPublisher tickEventPublisher;
-
         /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
 
         // reduce clutter in FindTargets()
@@ -35,7 +34,7 @@ namespace ViewController.Senses
             animalController.heardPreyTargets.Clear();
         }
 
-        private void FindTargets()
+        public void FindTargets()
         {
             // prevent adding duplicates
             ClearLists();
@@ -138,11 +137,9 @@ namespace ViewController.Senses
 
         private void HandlePlantTarget(GameObject target)
         {
-            //Debug.Log("HERE1");
             PlantController targetPlantController = target.GetComponent<PlantController>();
             if (animalController.animalModel.CanEat(targetPlantController.plantModel))
             {
-                //Debug.Log("HERE2");
                 animalController.visibleFoodTargets.Add(target);
             }
         }
@@ -150,8 +147,7 @@ namespace ViewController.Senses
         /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
         private void Start()
         {
-            tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
-        
+
             animalController = GetComponent<AnimalController>();
             
             hearingRadius = animalController.animalModel.traits.hearingRadius; 
@@ -161,24 +157,23 @@ namespace ViewController.Senses
             radius = Mathf.Max(hearingRadius,viewRadius);
             
             angle = animalController.animalModel.traits.viewAngle;
-            
-            
-            if (tickEventPublisher)
+
+            StartCoroutine(SensesLoop());
+        }
+        
+        private IEnumerator SensesLoop()
+        {
+            while (true)
             {
-                // subscribe to Ticks
-                tickEventPublisher.onSenseTickEvent += FindTargets;
+                FindTargets();
+                yield return new WaitForSeconds(Random.Range(0.5f, 1f)/Time.timeScale);
+            
             }
         }
 
         private void OnDestroy()
         {
-            if (tickEventPublisher)
-            {
-                // unsubscribe from Ticks
-                tickEventPublisher.onSenseTickEvent -= FindTargets;
-            }
+            
         }
-        
-
     }
 }
