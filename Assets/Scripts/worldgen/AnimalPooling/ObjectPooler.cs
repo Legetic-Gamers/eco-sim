@@ -68,7 +68,11 @@ public class ObjectPooler : MonoBehaviour
                 poolDictionary["Bear"].Enqueue(animalObj);
                 break;
         }
-        
+    }
+    
+    private void HandleBirthAnimal(AnimalController obj)
+    {
+        throw new NotImplementedException();
     }
 
     public GameObject SpawnFromPool(string tag, Vector3 position, Quaternion rotation)
@@ -102,6 +106,7 @@ public class ObjectPooler : MonoBehaviour
                 if (objectToSpawn.CompareTag("Animal"))
                 {
                     objectToSpawn.GetComponent<AnimalController>().Dead += HandleDeadAnimal;
+                    objectToSpawn.GetComponent<AnimalController>().SpawnNew += HandleBirthAnimal;
                 }
 
                 return objectToSpawn;

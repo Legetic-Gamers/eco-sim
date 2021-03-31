@@ -30,7 +30,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     public Action<GameObject> actionPerceivedHostile;
     public Action actionDeath;
     public Action<AnimalController> Dead;
-    public Action SpawnNew;
+    public Action<AnimalController> SpawnNew;
 
     //Subscribed to by animalBrainAgent.
     public event EventHandler<OnBirthEventArgs> onBirth;
@@ -438,7 +438,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         AnimalModel childModel = animalModel.Mate(otherParentAnimalController.animalModel);
         child.GetComponent<AnimalController>().animalModel = childModel;
         child.GetComponent<AnimalController>().animalModel.currentEnergy = childEnergy;
-        child.GetComponent<AnimalController>().animalModel.currentHydration = childHydration;   
+        child.GetComponent<AnimalController>().animalModel.currentHydration = childHydration;
 
         // update the childs speed (in case of mutation).
         child.GetComponent<AnimalController>().animalModel.traits.maxSpeed = 1;
