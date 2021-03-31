@@ -17,7 +17,7 @@ public class AnimalSpawner : MonoBehaviour
     {
         while(true)
         {
-            Vector3 position = Random.insideUnitCircle * 10;
+            Vector3 position = new Vector3(Random.Range(0f, 10f), 0, Random.Range(0f, 10f));
             pooler.SpawnFromPool("Rabbit", position, Quaternion.identity);
             Debug.Log(position);
             yield return new WaitForSeconds(5f);

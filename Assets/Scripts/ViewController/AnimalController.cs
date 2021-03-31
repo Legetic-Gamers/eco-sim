@@ -108,14 +108,13 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         eatingState = new EatingState(this, fsm);
         goToMate = new GoToMate(this, fsm);
         waitingState = new Waiting(this, fsm);
-        fsm.Initialize(wanderState);
-        
+
         animationController = new AnimationController(this);
     }
 
     protected void Start()
     {
-        
+        /*
         // Init the NavMesh agent
         agent = GetComponent<NavMeshAgent>();
         agent.autoBraking = true;
@@ -136,7 +135,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         EventSubscribe();
 
         SetPhenotype();
-        
+        */
     }
     
     
@@ -434,7 +433,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
             if (animalModel.currentHealth == 0) cause = AnimalModel.CauseOfDeath.Health;
             if (animalModel.currentHydration == 0) cause = AnimalModel.CauseOfDeath.Hydration;
             else cause = AnimalModel.CauseOfDeath.Eaten;
-            //dh.LogDeadAnimal(animalModel, cause);
+            dh.LogDeadAnimal(animalModel, cause);
 
             // invoke death state with method HandleDeath() in decisionmaker
             actionDeath?.Invoke();
@@ -506,7 +505,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         agent.autoBraking = true;
 
         animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
-
+        fsm.Initialize(wanderState);
         //Can be used later.
         baseAngularSpeed = agent.angularSpeed;
         baseAcceleration = agent.acceleration;
