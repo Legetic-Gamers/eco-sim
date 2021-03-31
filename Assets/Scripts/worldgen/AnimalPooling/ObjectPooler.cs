@@ -50,16 +50,25 @@ public class ObjectPooler : MonoBehaviour
 
     private void HandleDeadAnimal(AnimalController animalController)
     {
+        GameObject animalObj;
+        (animalObj = animalController.gameObject).SetActive(false);
+        
         switch (animalController.animalModel)
         {
             case RabbitModel _:
-                GameObject rabbitObj;
-                (rabbitObj = animalController.gameObject).SetActive(false);
-                poolDictionary["Rabbit"].Enqueue(rabbitObj);
-                Debug.Log("Died");
-                Debug.Log(poolDictionary["Rabbit"].Count);
+                poolDictionary["Rabbit"].Enqueue(animalObj);
+                break;
+            case WolfModel _:
+                poolDictionary["Wolf"].Enqueue(animalObj);
+                break;
+            case DeerModel _:
+                poolDictionary["Deer"].Enqueue(animalObj);
+                break;
+            case BearModel _:
+                poolDictionary["Bear"].Enqueue(animalObj);
                 break;
         }
+        
     }
 
     public GameObject SpawnFromPool(string tag, Vector3 position, Quaternion rotation)
