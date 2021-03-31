@@ -6,6 +6,7 @@ using AnimalsV2;
 using AnimalsV2.States;
 using AnimalsV2.States.AnimalsV2.States;
 using DataCollection;
+using DefaultNamespace;
 using Model;
 using UnityEditor;
 using UnityEngine;
@@ -15,7 +16,7 @@ using ViewController.Senses;
 using Random = System.Random;
 
 
-public abstract class AnimalController : MonoBehaviour
+public abstract class AnimalController : MonoBehaviour, IPooledObject
 {
     public static Random random = new Random();
     
@@ -114,6 +115,7 @@ public abstract class AnimalController : MonoBehaviour
 
     protected void Start()
     {
+        
         // Init the NavMesh agent
         agent = GetComponent<NavMeshAgent>();
         agent.autoBraking = true;
@@ -134,6 +136,7 @@ public abstract class AnimalController : MonoBehaviour
         EventSubscribe();
 
         SetPhenotype();
+        
     }
     
     
@@ -495,4 +498,28 @@ public abstract class AnimalController : MonoBehaviour
     }
 
     public abstract Vector3 getNormalizedScale();
+    
+    public void onObjectSpawn()
+    {
+        // Init the NavMesh agent
+        agent = GetComponent<NavMeshAgent>();
+        agent.autoBraking = true;
+
+        animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
+
+        //Can be used later.
+        baseAngularSpeed = agent.angularSpeed;
+        baseAcceleration = agent.acceleration;
+        
+        agent.speed = animalModel.currentSpeed * Time.timeScale;
+        agent.acceleration *= Time.timeScale;
+        agent.angularSpeed *= Time.timeScale;
+        dh = FindObjectOfType<DataHandler>();
+        dh.LogNewAnimal(animalModel);
+        //Debug.Log(agent.autoBraking);
+        tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
+        EventSubscribe();
+
+        SetPhenotype();
+    }
 }

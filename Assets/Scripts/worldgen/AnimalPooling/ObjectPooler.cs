@@ -48,10 +48,11 @@ public class ObjectPooler : MonoBehaviour
         if (poolDictionary != null && poolDictionary.ContainsKey(tag))
         {
             GameObject objectToSpawn = poolDictionary[tag].Dequeue();
-            objectToSpawn.SetActive(true);
             objectToSpawn.transform.position = position;
             objectToSpawn.transform.rotation = rotation;
+            objectToSpawn.SetActive(true);
             
+            //TODO Maintain list of all components for more performance
             objectToSpawn.GetComponent<IPooledObject>()?.onObjectSpawn();
 
             poolDictionary[tag].Enqueue(objectToSpawn);

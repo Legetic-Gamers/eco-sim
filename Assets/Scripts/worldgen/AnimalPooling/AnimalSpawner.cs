@@ -15,11 +15,12 @@ public class AnimalSpawner : MonoBehaviour
 
     private IEnumerator SpawnRabbit()
     {
-        int i = 1;
         while(true)
         {
-            pooler.SpawnFromPool("Rabbit", Random.insideUnitCircle * 10, Quaternion.identity);
-            yield return new WaitForSeconds(0.1f);
+            Vector3 position = Random.insideUnitCircle * 10;
+            pooler.SpawnFromPool("Rabbit", position, Quaternion.identity);
+            Debug.Log(position);
+            yield return new WaitForSeconds(5f);
         }
     }
 }
