@@ -29,6 +29,8 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     // decisionMaker subscribes to these actions
     public Action<GameObject> actionPerceivedHostile;
     public Action actionDeath;
+    public Action<AnimalController> Dead;
+    public Action SpawnNew;
 
     //Subscribed to by animalBrainAgent.
     public event EventHandler<OnBirthEventArgs> onBirth;

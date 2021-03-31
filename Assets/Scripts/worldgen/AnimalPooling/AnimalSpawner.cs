@@ -10,7 +10,14 @@ public class AnimalSpawner : MonoBehaviour
     public void Start()
     {
         pooler = ObjectPooler.instance;
-        StartCoroutine(SpawnRabbit());
+        //StartCoroutine(SpawnRabbit());
+        Vector3 p1 = new Vector3(Random.Range(0f, 10f), 0, Random.Range(0f, 10f));
+        pooler.SpawnFromPool("Rabbit", p1, Quaternion.identity);
+        Vector3 p2 = new Vector3(Random.Range(0f, 10f), 0, Random.Range(0f, 10f));
+        pooler.SpawnFromPool("Rabbit", p2, Quaternion.identity);
+        Vector3 p3 = new Vector3(Random.Range(0f, 10f), 0, Random.Range(0f, 10f));
+        pooler.SpawnFromPool("Rabbit", p3, Quaternion.identity);
+        
     }
 
     private IEnumerator SpawnRabbit()
@@ -19,7 +26,6 @@ public class AnimalSpawner : MonoBehaviour
         {
             Vector3 position = new Vector3(Random.Range(0f, 10f), 0, Random.Range(0f, 10f));
             pooler.SpawnFromPool("Rabbit", position, Quaternion.identity);
-            Debug.Log(position);
             yield return new WaitForSeconds(1f);
         }
     }
