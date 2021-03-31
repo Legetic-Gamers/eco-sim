@@ -11,8 +11,10 @@ using Model;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UIElements;
 using ViewController;
 using ViewController.Senses;
+using Debug = UnityEngine.Debug;
 using Random = System.Random;
 
 
@@ -30,7 +32,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     public Action<GameObject> actionPerceivedHostile;
     public Action actionDeath;
     public Action<AnimalController> Dead;
-    public Action<AnimalController> SpawnNew;
+    public Action<AnimalModel, Vector3, float, float> SpawnNew;
 
     //Subscribed to by animalBrainAgent.
     public event EventHandler<OnBirthEventArgs> onBirth;
@@ -429,13 +431,16 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     IEnumerator GiveBirth(float childEnergy, float childHydration, float laborTime, AnimalController otherParentAnimalController)
     {
         yield return new WaitForSeconds(laborTime);
+        AnimalModel childModel = animalModel.Mate(otherParentAnimalController.animalModel);
+        SpawnNew?.Invoke(childModel, transform.position, childEnergy, childHydration);
+        animalModel.isPregnant = false;
         //Instantiate here
-        
-        GameObject child = Instantiate(gameObject, transform.position,
-            transform.rotation); //NOTE CHANGE SO THAT PREFAB IS USED
+        /*
+        GameObject child = Instantiate(gameObject, transform.position, transform.rotation); //NOTE CHANGE SO THAT PREFAB IS USED
         
         // Generate the offspring traits
         AnimalModel childModel = animalModel.Mate(otherParentAnimalController.animalModel);
+        
         child.GetComponent<AnimalController>().animalModel = childModel;
         child.GetComponent<AnimalController>().animalModel.currentEnergy = childEnergy;
         child.GetComponent<AnimalController>().animalModel.currentHydration = childHydration;
@@ -443,10 +448,11 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         // update the childs speed (in case of mutation).
         child.GetComponent<AnimalController>().animalModel.traits.maxSpeed = 1;
         
-        animalModel.isPregnant = false;
+        
         //Debug.Log(child.GetComponent<AnimalController>().animalModel.generation);
         onBirth?.Invoke(this,new OnBirthEventArgs{child = child});
-
+        */
+        
     }
 
     /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */

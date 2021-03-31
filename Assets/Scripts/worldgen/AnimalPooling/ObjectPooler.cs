@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DefaultNamespace;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class ObjectPooler : MonoBehaviour
 {
@@ -45,7 +46,7 @@ public class ObjectPooler : MonoBehaviour
 
             poolDictionary.Add(pool.tag, objectPool);
         }
-        Debug.Log(poolDictionary["Rabbit"].Count);
+        
     }
 
     private void HandleDeadAnimal(AnimalController animalController)
@@ -70,9 +71,19 @@ public class ObjectPooler : MonoBehaviour
         }
     }
     
-    private void HandleBirthAnimal(AnimalController obj)
+    private void HandleBirthAnimal(AnimalModel childModel, Vector3 pos, float energy, float hydration)
     {
-        throw new NotImplementedException();
+        GameObject child = SpawnFromPool("Rabbit", pos, Quaternion.identity);
+        
+        AnimalController childController = child.GetComponent<AnimalController>();
+        childController.animalModel = childModel;
+        childController.animalModel.currentEnergy = energy;
+        childController.animalModel.currentHydration = hydration;
+
+        // update the childs speed (in case of mutation).
+        child.GetComponent<AnimalController>().animalModel.traits.maxSpeed = 1;
+        
+        Debug.Log(childController.animalModel.generation);
     }
 
     public GameObject SpawnFromPool(string tag, Vector3 position, Quaternion rotation)
