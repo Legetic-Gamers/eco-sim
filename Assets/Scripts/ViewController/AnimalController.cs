@@ -96,7 +96,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     {
         //Create the FSM.
         fsm = new FiniteStateMachine();
-
+        
         goToFoodState = new GoToFood(this, fsm);
         fleeingState = new FleeingState(this, fsm);
         wanderState = new Wander(this, fsm);
@@ -108,7 +108,9 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         eatingState = new EatingState(this, fsm);
         goToMate = new GoToMate(this, fsm);
         waitingState = new Waiting(this, fsm);
-
+        
+        fsm.Initialize(wanderState);
+        
         animationController = new AnimationController(this);
     }
 
@@ -137,8 +139,36 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         SetPhenotype();
         */
     }
-    
-    
+    /// <summary>
+    /// "Start()" when using animal pooling, called when the animal is set to be active. 
+    /// </summary>
+    public void onObjectSpawn()
+    {
+        // Init the NavMesh agent
+        agent = GetComponent<NavMeshAgent>();
+        agent.autoBraking = true;
+
+        animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
+        
+        //Can be used later.
+        baseAngularSpeed = agent.angularSpeed;
+        baseAcceleration = agent.acceleration;
+        
+        agent.speed = animalModel.currentSpeed * Time.timeScale;
+        agent.acceleration *= Time.timeScale;
+        agent.angularSpeed *= Time.timeScale;
+        
+        dh = FindObjectOfType<DataHandler>();
+        
+        dh.LogNewAnimal(animalModel);
+        //Debug.Log(agent.autoBraking);
+        tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
+        
+        EventSubscribe();
+
+        SetPhenotype();
+        
+    }
 
     /* /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\ */
     /*                                   Parameter handlers                                   */
@@ -257,6 +287,8 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         animalModel.reproductiveUrge += 0.2f * reproductiveUrgeModifier;
         animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
         agent.speed = animalModel.currentSpeed * Time.timeScale;
+        agent.acceleration = baseAcceleration * Time.timeScale;
+        agent.angularSpeed = baseAngularSpeed * Time.timeScale;
     }
 
 
@@ -498,27 +530,4 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
 
     public abstract Vector3 getNormalizedScale();
     
-    public void onObjectSpawn()
-    {
-        // Init the NavMesh agent
-        agent = GetComponent<NavMeshAgent>();
-        agent.autoBraking = true;
-
-        animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
-        fsm.Initialize(wanderState);
-        //Can be used later.
-        baseAngularSpeed = agent.angularSpeed;
-        baseAcceleration = agent.acceleration;
-        
-        agent.speed = animalModel.currentSpeed * Time.timeScale;
-        agent.acceleration *= Time.timeScale;
-        agent.angularSpeed *= Time.timeScale;
-        dh = FindObjectOfType<DataHandler>();
-        dh.LogNewAnimal(animalModel);
-        //Debug.Log(agent.autoBraking);
-        tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
-        EventSubscribe();
-
-        SetPhenotype();
-    }
 }
