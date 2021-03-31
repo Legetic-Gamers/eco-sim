@@ -28,8 +28,8 @@ public class RabbitModel : AnimalModel,IEdible
     {
         Traits childTraits = traits.Crossover(otherParent.traits, age, otherParent.age);
         childTraits.Mutation();
-        //TODO logic for determining generation
-        return new RabbitModel(childTraits, 0);
+        
+        return new RabbitModel(childTraits, (int) Math.Max(age, otherParent.age) + 1);
     }
 
     public float GetEaten()
