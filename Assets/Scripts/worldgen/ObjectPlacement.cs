@@ -11,7 +11,7 @@ public class ObjectPlacement : MonoBehaviour
     public void PlaceObjects(ObjectPlacementSettings settings, MeshSettings meshSettings, HeightMapSettings heightMapSettings)
     {
         int size;
-        Debug.Log("Is this called more than once");
+        //Debug.Log("Is this called more than once");
         groups = new List<GameObject>();
 
         if (meshSettings.useFlatShading)
