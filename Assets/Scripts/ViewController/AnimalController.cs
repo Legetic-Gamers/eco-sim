@@ -1,15 +1,19 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using AnimalsV2;
 using AnimalsV2.States;
 using AnimalsV2.States.AnimalsV2.States;
 using DataCollection;
 using Model;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 using ViewController;
+using ViewController.Senses;
 using Random = System.Random;
+
 
 public abstract class AnimalController : MonoBehaviour
 {
@@ -41,14 +45,6 @@ public abstract class AnimalController : MonoBehaviour
     // Add a data handler
     private DataHandler dh;
 
-    public enum CauseOfDeath
-    {
-        Hydration,
-        Eaten,
-        Health,
-        Hunger,
-    };
-    
     //States
     public FleeingState fleeingState;
     public GoToFood goToFoodState;
@@ -112,7 +108,7 @@ public abstract class AnimalController : MonoBehaviour
         goToMate = new GoToMate(this, fsm);
         waitingState = new Waiting(this, fsm);
         fsm.Initialize(wanderState);
-
+        
         animationController = new AnimationController(this);
     }
 
@@ -131,15 +127,16 @@ public abstract class AnimalController : MonoBehaviour
         agent.speed = animalModel.currentSpeed * Time.timeScale;
         agent.acceleration *= Time.timeScale;
         agent.angularSpeed *= Time.timeScale;
-
-        //dh.LogNewAnimal(animalModel);
-        
+        dh = FindObjectOfType<DataHandler>();
+        dh.LogNewAnimal(animalModel);
         //Debug.Log(agent.autoBraking);
         tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
         EventSubscribe();
 
         SetPhenotype();
     }
+    
+    
 
     /* /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\ */
     /*                                   Parameter handlers                                   */
@@ -290,7 +287,7 @@ public abstract class AnimalController : MonoBehaviour
             tickEventPublisher.onParamTickEvent -= UpdateParameters;
             tickEventPublisher.onParamTickEvent -= HandleDeathStatus;
             // every 0.5 sec
-            tickEventPublisher.onSenseTickEvent -= fsm.UpdateStatesLogic;    
+            tickEventPublisher.onSenseTickEvent -= fsm.UpdateStatesLogic; 
         }
         
 
@@ -431,11 +428,11 @@ public abstract class AnimalController : MonoBehaviour
     {
         if (!animalModel.IsAlive)
         {
-            CauseOfDeath cause;
-            if (animalModel.currentEnergy == 0) cause = CauseOfDeath.Hunger;
-            if (animalModel.currentHealth == 0) cause = CauseOfDeath.Health;
-            if (animalModel.currentHydration == 0) cause = CauseOfDeath.Hydration;
-            else cause = CauseOfDeath.Eaten;
+            AnimalModel.CauseOfDeath cause;
+            if (animalModel.currentEnergy == 0) cause = AnimalModel.CauseOfDeath.Hunger;
+            if (animalModel.currentHealth == 0) cause = AnimalModel.CauseOfDeath.Health;
+            if (animalModel.currentHydration == 0) cause = AnimalModel.CauseOfDeath.Hydration;
+            else cause = AnimalModel.CauseOfDeath.Eaten;
             //dh.LogDeadAnimal(animalModel, cause);
 
             // invoke death state with method HandleDeath() in decisionmaker
