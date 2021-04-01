@@ -25,7 +25,7 @@ public class SmallWorld : World
             if (agent is AnimalBrainAgent animalBrainAgent)
             {
                 g.transform.position = transform.position + new Vector3(Random.Range(-rangeX, rangeX), 0,
-                    Random.Range(0, rangeZ));
+                    Random.Range(-rangeZ/2, rangeZ));
             }
                 
             
