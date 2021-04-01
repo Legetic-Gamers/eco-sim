@@ -3,7 +3,7 @@ public class BearModel : AnimalModel
 {
 
     public BearModel() : base(new Traits(5f, 500, 100, 
-                                400, 5f, 3, 
+                                400, 5f, 15, 
                                 10, 400, 10, 
                                 180, 12, 10), 0)
 

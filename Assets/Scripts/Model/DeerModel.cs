@@ -5,7 +5,7 @@ public class DeerModel : AnimalModel, IEdible
 {
 
     public DeerModel() : base(new Traits(3.25f, 200, 100, 
-                                    300, 4.3f, 1, 
+                                    300, 4.3f, 10, 
                                     10, 150, 10, 
                                     180, 17, 10), 0)
 
