@@ -3983,9 +3983,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   showNavMeshAgentPath: 0
   allowNavigateWithClick: 0
-  showVisibleTargets: 1
+  showVisibleTargets: 0
   showFleeingVector: 0
-  showPerceptionRange: 1
+  showPerceptionRange: 0
 --- !u!114 &2443608263682274248
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4025,7 +4025,7 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 0
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 5022602860645237092, guid: 78efa98780364fa4c86782c2a886efad, type: 3}
+  m_Model: {fileID: 5022602860645237092, guid: 95b9dd35900f1924c8a488a1314a15ee, type: 3}
   m_InferenceDevice: 0
   m_BehaviorType: 2
   m_BehaviorName: RabbitBehavior

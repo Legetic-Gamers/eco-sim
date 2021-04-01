@@ -1,7 +1,7 @@
 ﻿using AnimalsV2;
 using UnityEngine;
 
-public class DummyAnimalController : AnimalController
+public class DummyRabbitController : AnimalController
 {
     
     new void Awake()

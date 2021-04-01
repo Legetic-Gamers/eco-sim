@@ -116,3 +116,15 @@ MonoBehaviour:
     yOffset: 0.1
     minHeight: 0
     maxHeight: 1
+  - name: Grass
+    gameObjectSettings:
+    - gameObject: {fileID: 732994906445490384, guid: 871212abd04aa4649b348431b4ba4c22,
+        type: 3}
+      probability: 0.955
+    previewColour: {r: 0, g: 0, b: 0, a: 0}
+    minimumDistance: 1
+    newPointCount: 10
+    scale: 1
+    yOffset: 0
+    minHeight: 0
+    maxHeight: 1

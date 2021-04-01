@@ -691,7 +691,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 698762260143877432}
-  - component: {fileID: 603009529724042912}
   - component: {fileID: 798509833490562152}
   - component: {fileID: 4767187421335686531}
   - component: {fileID: 2440184669175625378}
@@ -700,6 +699,9 @@ GameObject:
   - component: {fileID: 9144438191025629527}
   - component: {fileID: 6621926375851499006}
   - component: {fileID: 5613410280132212379}
+  - component: {fileID: 7508483688985795530}
+  - component: {fileID: 6109018377343955261}
+  - component: {fileID: 6324888326859366307}
   m_Layer: 8
   m_Name: SmartBear
   m_TagString: Animal
@@ -723,24 +725,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!143 &603009529724042912
-CharacterController:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 695402115701391966}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Height: 2
-  m_Radius: 1.06
-  m_SlopeLimit: 45
-  m_StepOffset: 0.3
-  m_SkinWidth: 0.08
-  m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 1.06, z: 0}
 --- !u!195 &798509833490562152
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -755,14 +739,14 @@ NavMeshAgent:
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
-  m_StoppingDistance: 0.8
+  m_StoppingDistance: 1.2
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 1
 --- !u!114 &4767187421335686531
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -863,9 +847,9 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 0
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 0}
+  m_Model: {fileID: 5022602860645237092, guid: 95b9dd35900f1924c8a488a1314a15ee, type: 3}
   m_InferenceDevice: 2
-  m_BehaviorType: 0
+  m_BehaviorType: 2
   m_BehaviorName: BearBehavior
   TeamId: 0
   m_UseChildSensors: 1
@@ -906,6 +890,52 @@ MonoBehaviour:
   obstacleMask:
     serializedVersion: 2
     m_Bits: 2048
+--- !u!65 &7508483688985795530
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 695402115701391966}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.44, y: 1.38, z: 2.6}
+  m_Center: {x: 0, y: 0.89, z: 0}
+--- !u!54 &6109018377343955261
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 695402115701391966}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!114 &6324888326859366307
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 695402115701391966}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ff8f5fbbd2169f4eadc8c040957c156, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  showNavMeshAgentPath: 0
+  allowNavigateWithClick: 0
+  showVisibleTargets: 0
+  showFleeingVector: 0
+  showPerceptionRange: 0
 --- !u!1 &695417585406367660
 GameObject:
   m_ObjectHideFlags: 0

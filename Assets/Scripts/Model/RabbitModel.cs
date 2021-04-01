@@ -8,9 +8,9 @@ public class RabbitModel : AnimalModel,IEdible
     public float nutritionValue { get; set; }
 
     public RabbitModel() : base(new Traits(1f, 100, 100, 
-                                    30, 6.65f, 1f, 
+                                    50, 6.65f, 5f, 
                                     10,40, 10, 
-                                    120, 10, 3), 0)
+                                    160, 13, 10), 0)
 
     {
         // Rabbit specific initialization 

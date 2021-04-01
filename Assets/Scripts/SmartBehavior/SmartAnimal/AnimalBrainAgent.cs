@@ -26,14 +26,7 @@ public class AnimalBrainAgent : Agent,IAgent
 
     public World world;
 
-
-    //We could have multiple brains, EX:
-    // Brain to use when no wall is present
-    //public NNModel noWallBrain;
-    // Brain to use when a jumpable wall is present
-    //public NNModel smallWallBrain;
-    // Brain to use when a wall requiring a block to jump over is present
-    //public NNModel bigWallBrain;
+    
     public void Start()
     {
         //Debug.Log("Brain Awake");
@@ -44,8 +37,7 @@ public class AnimalBrainAgent : Agent,IAgent
         
 
         eventPublisher = FindObjectOfType<global::TickEventPublisher>();
-
-        //
+        
 
         EventSubscribe();
     }
@@ -53,14 +45,9 @@ public class AnimalBrainAgent : Agent,IAgent
     public override void OnEpisodeBegin()
     {
         base.OnEpisodeBegin();
-
-        //Reset stuff 
-
+        
 
         //Reset animal position and rotation.
-        // 
-        //resetRabbit();
-
         ResetRabbit();
 
         if (fsm != null && fsm.currentState is Dead)
@@ -70,10 +57,7 @@ public class AnimalBrainAgent : Agent,IAgent
 
         if (world) world.ResetOnOnlyOneLeft();
 
-        // if (StepCount == MaxStep)
-        // {
-        //     Destroy(gameObject);
-        // }
+        
     }
 
     private void ResetRabbit()
@@ -89,9 +73,12 @@ public class AnimalBrainAgent : Agent,IAgent
             
             if (animalModel != null && animalController !=null)
             {
-                animalModel.currentEnergy = animalModel.traits.maxEnergy;
+                float beginEnergy = Random.Range(0.3f, 1f);
+                float beginHydration = Random.Range(0.3f, 1f);
+
+                animalModel.currentEnergy = animalModel.traits.maxEnergy * beginEnergy;
                 animalModel.currentHealth = animalModel.traits.maxHealth;
-                animalModel.currentHydration = animalModel.traits.maxHydration;
+                animalModel.currentHydration = animalModel.traits.maxHydration * beginHydration;
                 animalModel.reproductiveUrge = 0.0f;
                 animalModel.age = 0;
                 animalController.fsm.absorbingState = false;
@@ -173,8 +160,8 @@ public class AnimalBrainAgent : Agent,IAgent
             }
             else
             {
-                AddReward(-5 / animalController.animalModel.traits.ageLimit);
-                if (world) world.totalScore -= 5 / animalController.animalModel.traits.ageLimit;
+                AddReward(-1);
+                if (world) world.totalScore -= 1;
             }
         }
         
@@ -196,9 +183,10 @@ public class AnimalBrainAgent : Agent,IAgent
         //////////////////////////////////////////MAX Count functionality
         if (StepCount >= 1500)
         {
-            //EndEpisode();
+            
             //TODO REENABLE FOR TRAINING
-            //Destroy(gameObject);
+            //EndEpisode();
+            
         }
         
     }
@@ -214,10 +202,7 @@ public class AnimalBrainAgent : Agent,IAgent
             
             actionMask.WriteMask(0, new int[] {0, 1, 2, 3});
         }
-        // else
-        // {
-        //     Debug.Log("False");
-        // }
+        
     }
 
     //Used for testing, gives us control over the output from the ML algortihm.
@@ -363,7 +348,6 @@ public class AnimalBrainAgent : Agent,IAgent
         
         
         
-        //Destroy(gameObject);
     }
 
    

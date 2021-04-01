@@ -1503,7 +1503,7 @@ Animator:
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 63b5250ea377b104a8c56fd4f3aa55bc, type: 3}
   m_Controller: {fileID: 9100000, guid: 8f90dc31d23f89b4fbcc3a81f0a72bed, type: 2}
-  m_CullingMode: 0
+  m_CullingMode: 2
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
@@ -1581,9 +1581,9 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 0
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 5022602860645237092, guid: 78efa98780364fa4c86782c2a886efad, type: 3}
+  m_Model: {fileID: 5022602860645237092, guid: 95b9dd35900f1924c8a488a1314a15ee, type: 3}
   m_InferenceDevice: 0
-  m_BehaviorType: 2
+  m_BehaviorType: 0
   m_BehaviorName: RabbitBehavior
   TeamId: 0
   m_UseChildSensors: 1
