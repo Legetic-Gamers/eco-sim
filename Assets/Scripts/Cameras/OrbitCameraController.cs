@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 // https://www.youtube.com/watch?v=rnqF6S7PfFA
 public class OrbitCameraController : MonoBehaviour
@@ -9,6 +10,11 @@ public class OrbitCameraController : MonoBehaviour
     public static OrbitCameraController instance;
 
     public Transform followTransform;
+    
+    public MeshRenderer boundsOfWorld;
+    public bool restrictToBounds;
+
+    public bool cameraMovmentEnable;
 
     public float normalSpeed;
     public float fastSpeed;
@@ -43,14 +49,17 @@ public class OrbitCameraController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (followTransform != null)
-        {
-            transform.position = followTransform.position;
-        }
-        else
-        {
-            HandleMouseInput();
-            HandleMovementInput();
+        if(cameraMovmentEnable && !EventSystem.current.IsPointerOverGameObject()){
+
+            if (followTransform != null)
+            {
+                transform.position = followTransform.position;
+            }
+            else
+            {
+                HandleMouseInput();
+                HandleMovementInput();
+            }
         }
 
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -73,6 +82,7 @@ public class OrbitCameraController : MonoBehaviour
             Plane plane = new Plane(Vector3.up, Vector3.zero);
 
             Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+            Debug.DrawRay(ray.origin, ray.direction * 10, Color.yellow);
 
             float entry;
 
@@ -155,6 +165,21 @@ public class OrbitCameraController : MonoBehaviour
         }
 
         transform.position = Vector3.Lerp(transform.position, newPosition, Time.deltaTime * movementTime);
+        if(restrictToBounds){
+            if(transform.position.x <  -boundsOfWorld.bounds.size.x / 2.0f){
+                transform.position = new Vector3(-boundsOfWorld.bounds.size.x / 2.0f , transform.position.y, transform.position.z);
+            }
+            if(transform.position.x > boundsOfWorld.bounds.size.x / 2.0f){
+                transform.position = new Vector3(boundsOfWorld.bounds.size.x / 2.0f , transform.position.y, transform.position.z);
+            }
+            if(transform.position.z < -boundsOfWorld.bounds.size.z / 2.0f){
+                transform.position = new Vector3(transform.position.x, transform.position.y, -boundsOfWorld.bounds.size.z / 2.0f);
+            }
+            if(transform.position.z > boundsOfWorld.bounds.size.z / 2.0f){
+                transform.position = new Vector3(transform.position.x, transform.position.y, boundsOfWorld.bounds.size.z / 2.0f);
+            }
+        }
+        
         transform.rotation = Quaternion.Lerp(transform.rotation, newRotation, Time.deltaTime * movementTime);
         mainCamera.transform.localPosition = Vector3.Lerp(mainCamera.transform.localPosition, newZoom, Time.deltaTime * movementTime);
     }
