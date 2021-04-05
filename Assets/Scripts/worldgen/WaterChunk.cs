@@ -17,7 +17,7 @@ public class WaterChunk : MonoBehaviour
     float realWaterLevel;
 
 
-    public void Setup(Vector2 position, WaterSettings waterSettings, HeightMapSettings heightMapSettings, Vector3 scale, Transform parent, Vector3[] worldVerticies)
+    public void Setup(Vector2 position, WaterSettings waterSettings, HeightMapSettings heightMapSettings, Vector3 scale, Transform parent, Vector3[] worldVerticies, bool placeWaterSources)
     {
         this.waterSettings = waterSettings;
         this.heightMapSettings = heightMapSettings;
@@ -69,8 +69,10 @@ public class WaterChunk : MonoBehaviour
             stylizedMeshRenderer.material = waterSettings.StylizedMaterial;
         }
 
-
-        PlaceWaterSources();
+        if (placeWaterSources)
+        {
+            PlaceWaterSources();
+        }
 
     }
 

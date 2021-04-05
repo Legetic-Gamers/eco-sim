@@ -1,5 +1,8 @@
-using UnityEngine.UI;
+using System.ComponentModel;
+using System.Linq;
 using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
 
 public class TextureTab : SettingsManager
 {
@@ -8,17 +11,25 @@ public class TextureTab : SettingsManager
     public Slider grassHeight;
     public Slider rockHeight;
 
+    public TextureApplication textureApplication;
+
     protected override void Start()
     {
         base.Start();
-        waterHeight.value = simulationSettings.TextureSettings.baseStartHeights[0];
-        sandHeight.value  = simulationSettings.TextureSettings.baseStartHeights[1];
-        grassHeight.value = simulationSettings.TextureSettings.baseStartHeights[2];
-        rockHeight.value  = simulationSettings.TextureSettings.baseStartHeights[3];
+        float[] startHeight = simulationSettings.TextureSettings.BaseStartHeights.ToArray();
+        waterHeight.value = startHeight[0];
+        sandHeight.value = startHeight[1];
+        grassHeight.value = startHeight[2];
+        rockHeight.value = startHeight[3];
     }
 
     public void SetSettings()
     {
-        simulationSettings.TextureSettings = new TextureSettings();
+        textureApplication.UpdateTextureSettings(
+            simulationSettings.TextureSettings.BaseColours.ToArray(),
+            new float[] { waterHeight.value, sandHeight.value, grassHeight.value, rockHeight.value },
+            simulationSettings.HeightMapSettings.MinHeight,
+            simulationSettings.HeightMapSettings.MaxHeight
+        );
     }
 }

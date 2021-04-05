@@ -8,6 +8,7 @@ public class SimulationPreview : MonoBehaviour
     public MeshRenderer meshRenderer;
 
     public SimulationSettings simulationSettings;
+    public TextureApplication textureApplication;
 
     public Material terrainMaterial;
 
@@ -16,11 +17,20 @@ public class SimulationPreview : MonoBehaviour
     {
         DisplaySimulationPreview();
         simulationSettings.OnHeightMapChanged += OnTerrainChanged;
+        simulationSettings.OnHeightMapChanged += OnTextureValuesUpdated;
         simulationSettings.OnMeshChanged += OnTerrainChanged;
+        simulationSettings.OnMeshChanged += OnWaterUpdated;
+        simulationSettings.OnMeshChanged += OnTextureValuesUpdated;
         simulationSettings.OnWaterChanged += OnWaterUpdated;
+        simulationSettings.OnTextureChanged += OnTextureValuesUpdated;
+
+        OnWaterUpdated();
+        OnTextureValuesUpdated();
     }
 
-    public void DisplaySimulationPreview(){
+    public void DisplaySimulationPreview()
+    {
+
         HeightMap heightMap = GenHeightMap();
         DrawMesh(MeshGenerator.GenerateTerrainMesh(heightMap.values, simulationSettings.MeshSettings, 0));
     }
@@ -29,13 +39,16 @@ public class SimulationPreview : MonoBehaviour
     {
         meshFilter.sharedMesh = meshData.CreateMesh();
     }
+
     private HeightMap GenHeightMap()
     {
         return HeightMapGenerator.GenerateHeightMap(simulationSettings.MeshSettings.NumVertsPerLine, simulationSettings.MeshSettings.NumVertsPerLine, simulationSettings.HeightMapSettings, Vector2.zero);
     }
 
-    private void OnTerrainChanged(){
-        if(autoUpdate){
+    private void OnTerrainChanged()
+    {
+        if (autoUpdate)
+        {
             DisplaySimulationPreview();
             meshFilter.gameObject.GetComponent<MeshCollider>().sharedMesh = meshFilter.sharedMesh;
         }
@@ -53,6 +66,11 @@ public class SimulationPreview : MonoBehaviour
             }
         }
         if (simulationSettings.WaterSettings.GenerateWater)
-            meshFilter.gameObject.AddComponent<WaterChunk>().Setup(Vector2.zero, simulationSettings.WaterSettings, simulationSettings.HeightMapSettings, meshRenderer.bounds.size, meshFilter.gameObject.transform, meshFilter.sharedMesh.vertices);
+            meshFilter.gameObject.AddComponent<WaterChunk>().Setup(Vector2.zero, simulationSettings.WaterSettings, simulationSettings.HeightMapSettings, meshRenderer.bounds.size, meshFilter.gameObject.transform, meshFilter.sharedMesh.vertices, false);
+    }
+
+    private void OnTextureValuesUpdated()
+    {
+        textureApplication.ApplyToMaterial(terrainMaterial);
     }
 }

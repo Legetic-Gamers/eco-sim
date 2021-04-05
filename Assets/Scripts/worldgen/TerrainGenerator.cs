@@ -35,6 +35,7 @@ public class TerrainGenerator : MonoBehaviour
     private WaterSettings waterSettings;
     private ObjectPlacementSettings objectPlacementSettings;
 
+    private TextureApplication textureApplication;
 
     private Vector2 viewerPosition;
     private Vector2 viewerPositionOld;
@@ -54,7 +55,7 @@ public class TerrainGenerator : MonoBehaviour
     private int fixedSizeY;
 
 
-    public void StartSimulation(MeshSettings meshSettings, HeightMapSettings heightMapSettings, TextureSettings textureSettings, WaterSettings waterSettings, ObjectPlacementSettings objectPlacementSettings, int fixedSizeX, int fixedSizeY)
+    public void StartSimulation(MeshSettings meshSettings, HeightMapSettings heightMapSettings, TextureSettings textureSettings, WaterSettings waterSettings, ObjectPlacementSettings objectPlacementSettings, TextureApplication textureApplication, int fixedSizeX, int fixedSizeY)
     {
 
         this.meshSettings = meshSettings;
@@ -64,9 +65,10 @@ public class TerrainGenerator : MonoBehaviour
         this.objectPlacementSettings = objectPlacementSettings;
         this.fixedSizeX = fixedSizeX;
         this.fixedSizeY = fixedSizeY;
+        this.textureApplication = textureApplication;
 
-        textureSettings.ApplyToMaterial(mapMaterial);
-        textureSettings.UpdateMeshHeights(mapMaterial, heightMapSettings.MinHeight, heightMapSettings.MaxHeight);
+        textureApplication.ApplyToMaterial(mapMaterial);
+        textureApplication.UpdateMeshHeights(mapMaterial, heightMapSettings.MinHeight, heightMapSettings.MaxHeight);
 
         if (terrainMode == TerrainMode.Endless)
         {

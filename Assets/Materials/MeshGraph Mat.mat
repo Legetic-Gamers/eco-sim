@@ -106,11 +106,11 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 1
     - grassHighHeight: 1
-    - grassLowHeight: 0.432
+    - grassLowHeight: 0.4133101
     - maxHeight: 10.85
     - minHeight: 0
-    - sandHeight: 0.24
-    - waterHeight: 0.047
+    - sandHeight: 0.14032112
+    - waterHeight: 0.040770028
     m_Colors:
     - Color_375F3FFA: {r: 0.504717, g: 0.8103465, b: 1, a: 0}
     - Color_3BC10489: {r: 0.3207547, g: 0, b: 0, a: 0}
@@ -122,7 +122,7 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
-    - grassHighColor: {r: 0.4433962, g: 0.37744698, b: 0.2990833, a: 1}
+    - grassHighColor: {r: 0.4528302, g: 0.4528302, b: 0.4528302, a: 1}
     - grassLowColor: {r: 0.14994213, g: 0.4339623, b: 0.034798868, a: 1}
     - sandColor: {r: 0.32484868, g: 0.6886792, b: 0.31510323, a: 1}
     - waterColor: {r: 1, g: 0.996498, b: 0.7688679, a: 1}

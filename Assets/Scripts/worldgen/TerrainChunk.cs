@@ -55,7 +55,7 @@ public class TerrainChunk
         this.objectPlacementSettings = objectPlacementSettings;
 
         sampleCentre = coordinate * meshSettings.MeshWorldSize / meshSettings.MeshScale;
-        Vector2 position = coordinate * meshSettings.MeshWorldSize; 
+        Vector2 position = coordinate * meshSettings.MeshWorldSize;
         bounds = new Bounds(position, Vector2.one * meshSettings.MeshWorldSize);
 
         meshObject = new GameObject("Terrain Chunk");
@@ -225,7 +225,7 @@ public class TerrainChunk
     {
         //Debug.Log("Position: " + coordinate * meshSettings.meshWorldSize);
         waterChunk = meshObject.AddComponent<WaterChunk>();
-        waterChunk.Setup(coordinate * meshSettings.MeshWorldSize, waterSettings, heightMapSettings, meshRenderer.bounds.size, meshObject.transform, meshFilter.mesh.vertices);
+        waterChunk.Setup(coordinate * meshSettings.MeshWorldSize, waterSettings, heightMapSettings, meshRenderer.bounds.size, meshObject.transform, meshFilter.mesh.vertices, true);
     }
 
     public void PlaceObjects()

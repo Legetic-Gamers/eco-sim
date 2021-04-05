@@ -106,12 +106,12 @@ public class NoiseSettings
 
     [SerializeField]
     private int octaves = 6;
-    
+
     [SerializeField]
     [Range(0, 1)]
     private float persistance = .6f;
-    
-    [SerializeField]    
+
+    [SerializeField]
     private float lacunarity = 2;
 
     [SerializeField]
@@ -120,60 +120,75 @@ public class NoiseSettings
     [SerializeField]
     private Vector2 offset;
 
-    public NoiseSettings(Noise.NormalizeMode normalizeMode, float scale, int octaves, float persistance, float lacunarity, int seed, Vector2 offset){
+    public NoiseSettings(Noise.NormalizeMode normalizeMode, float scale, int octaves, float persistance, float lacunarity, int seed, Vector2 offset)
+    {
         this.normalizeMode = normalizeMode;
         this.scale = scale;
         this.octaves = octaves;
         this.persistance = persistance;
         this.lacunarity = lacunarity;
         this.seed = seed;
-        this.offset = offset;        
+        this.offset = offset;
     }
 
-    
-#region Getters    
-    public Noise.NormalizeMode NormalizeMode { 
-        get {
+
+    #region Getters    
+    public Noise.NormalizeMode NormalizeMode
+    {
+        get
+        {
             return normalizeMode;
-        } 
-    } 
+        }
+    }
 
-    public float Scale { 
-        get {
+    public float Scale
+    {
+        get
+        {
             return scale;
-        } 
-    } 
+        }
+    }
 
-    public int Octaves { 
-        get {
+    public int Octaves
+    {
+        get
+        {
             return octaves;
-        } 
-    } 
+        }
+    }
 
-    public float Persistance { 
-        get {
+    public float Persistance
+    {
+        get
+        {
             return persistance;
-        } 
-    } 
+        }
+    }
 
-    public float Lacunarity { 
-        get {
+    public float Lacunarity
+    {
+        get
+        {
             return lacunarity;
-        } 
-    } 
+        }
+    }
 
-    public int Seed { 
-        get {
+    public int Seed
+    {
+        get
+        {
             return seed;
-        } 
-    } 
+        }
+    }
 
-    public Vector2 Offset { 
-        get {
+    public Vector2 Offset
+    {
+        get
+        {
             return offset;
-        } 
-    } 
-#endregion
+        }
+    }
+    #endregion
 
     public void ValidateValues()
     {
