@@ -39,24 +39,15 @@ public class ObjectPooler : MonoBehaviour
         //objPl.poolEvent.AddListener(HandleAnimalInstantiated);
         objPl.onObjectPlaced += HandleAnimalInstantiated;
         objPl.isDone += HandleFinishedSpawning;
-        
-        //var rabbits = FindObjectsOfType<RabbitController>();
-        //var wolves = FindObjectsOfType<WolfController>();
-        //var bears = FindObjectsOfType<BearController>();
-        //var deer = FindObjectsOfType<DeerController>();
+        //AnimalSpawner animalSpawner = FindObjectOfType<AnimalSpawner>();
+        //animalSpawner.onAnimalInstantiated += HandleAnimalInstantiated;
+        //animalSpawner.isDone += HandleFinishedSpawning;
 
         foreach (Pool pool in pools)
         {
             Queue<GameObject> objectPool = new Queue<GameObject>();
             poolDictionary.Add(pool.tag, objectPool);
         }
-
-        //foreach (var r in rabbits) HandleAnimalInstantiated(r.gameObject, "Rabbits");
-        //foreach (var w in wolves) HandleAnimalInstantiated(w.gameObject, "Wolves");
-        //foreach (var b in bears) HandleAnimalInstantiated(b.gameObject, "Bears");
-        //foreach (var d in deer) HandleAnimalInstantiated(d.gameObject, "Deer");
-
-        Debug.Log("Finishes Start");
     }
 
     private void HandleFinishedSpawning()
@@ -84,10 +75,9 @@ public class ObjectPooler : MonoBehaviour
         Debug.Log("Handling");
         if (poolDictionary != null && poolDictionary.ContainsKey(tag))
         {
-            Debug.Log("Handling");
-            objectToSpawn.SetActive(true);
             objectToSpawn.GetComponent<IPooledObject>()?.onObjectSpawn();
-
+            objectToSpawn.SetActive(true);
+            
             if (objectToSpawn.CompareTag("Animal"))
             {
                 objectToSpawn.GetComponent<AnimalController>().Dead += HandleDeadAnimal;
@@ -105,31 +95,49 @@ public class ObjectPooler : MonoBehaviour
         switch (animalController.animalModel)
         {
             case RabbitModel _:
-                poolDictionary["Rabbit"].Enqueue(animalObj);
+                poolDictionary["Rabbits"].Enqueue(animalObj);
                 break;
             case WolfModel _:
-                poolDictionary["Wolf"].Enqueue(animalObj);
+                poolDictionary["Wolfs"].Enqueue(animalObj);
                 break;
             case DeerModel _:
-                poolDictionary["Deer"].Enqueue(animalObj);
+                poolDictionary["Deers"].Enqueue(animalObj);
                 break;
             case BearModel _:
-                poolDictionary["Bear"].Enqueue(animalObj);
+                poolDictionary["Bears"].Enqueue(animalObj);
                 break;
         }
     }
-    
+
     private void HandleBirthAnimal(AnimalModel childModel, Vector3 pos, float energy, float hydration)
     {
-        GameObject child = SpawnFromPool("Rabbit", pos, Quaternion.identity);
-        
-        AnimalController childController = child.GetComponent<AnimalController>();
-        childController.animalModel = childModel;
-        childController.animalModel.currentEnergy = energy;
-        childController.animalModel.currentHydration = hydration;
+        GameObject child = null;
+        switch (childModel)
+        {
+            case RabbitModel _:
+                child = SpawnFromPool("Rabbits", pos, Quaternion.identity);
+                break;
+            case WolfModel _:
+                child = SpawnFromPool("Wolfs", pos, Quaternion.identity);
+                break;
+            case DeerModel _:
+                child = SpawnFromPool("Bears", pos, Quaternion.identity);
+                break;
+            case BearModel _:
+                child = SpawnFromPool("Deers", pos, Quaternion.identity);
+                break;
+        }
 
-        // update the childs speed (in case of mutation).
-        childController.animalModel.traits.maxSpeed = 1;
+        if (child != null)
+        {
+            AnimalController childController = child.GetComponent<AnimalController>();
+            childController.animalModel = childModel;
+            childController.animalModel.currentEnergy = energy;
+            childController.animalModel.currentHydration = hydration;
+
+            // update the childs speed (in case of mutation).
+            childController.animalModel.traits.maxSpeed = 1;
+        }
     }
 
     public GameObject SpawnFromPool(string tag, Vector3 position, Quaternion rotation)
