@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using DefaultNamespace;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Events;
 using Random = UnityEngine.Random;
 
 // http://devmag.org.za/2009/05/03/poisson-disk-sampling/
@@ -11,9 +13,12 @@ public class ObjectPlacement : MonoBehaviour
     public List<GameObject> groups;
     public Action<GameObject, String> onObjectPlaced;
     public Action isDone;
+    //public UnityEvent<GameObject, String> onObjectPlaced;
     private List<string> pooledObjects = new List<string> { "Rabbit", "Wolf", "Deer", "Bear" };
+    //public PoolEvent poolEvent = new PoolEvent(); 
     public void PlaceObjects(ObjectPlacementSettings settings, MeshSettings meshSettings, HeightMapSettings heightMapSettings)
     {
+        
         int size;
         //Debug.Log("Is this called more than once");
         groups = new List<GameObject>();
@@ -59,9 +64,6 @@ public class ObjectPlacement : MonoBehaviour
                 }
 
                 GameObject gameObject = Instantiate(settings.objectTypes[i].gameObjectSettings[randomIndex].gameObject, new Vector3(point.x - size / 2, heightMapSettings.maxHeight + 10, point.y - size / 2), Quaternion.identity);
-                
-                var animal = settings.objectTypes[i].name;
-                if(pooledObjects.IndexOf(animal) != -1) onObjectPlaced?.Invoke(gameObject, animal);
 
                 //gameObject.transform.position = new Vector3(point.x - size / 2, heightMapSettings.maxHeight + 10, point.y - size / 2);
                 gameObject.transform.parent = groupObject.transform;
@@ -91,7 +93,15 @@ public class ObjectPlacement : MonoBehaviour
                             continue;
                         }
                     }
-
+                    
+                    var animalName = settings.objectTypes[i].name;
+                    if (pooledObjects.IndexOf(animalName) != -1)
+                    {
+                        //gameObject.SetActive(false);
+                        Debug.Log(animalName);
+                        //onObjectPlaced?.Invoke(gameObject, animalName);
+                    }
+                    
                 }
                 if (Application.isEditor)
                 {
@@ -103,7 +113,9 @@ public class ObjectPlacement : MonoBehaviour
                 }
             }
         }
-        isDone?.Invoke();
+        Debug.Log("Done");
+        
+        //isDone?.Invoke();
     }
 
     public static List<Vector2> GeneratePlacementPoints(ObjectPlacementSettings settings, float meshScale, int objectIndex, int size)

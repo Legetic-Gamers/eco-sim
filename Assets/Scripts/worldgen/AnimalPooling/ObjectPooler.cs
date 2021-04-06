@@ -5,6 +5,7 @@ using System.Linq;
 using DefaultNamespace;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Object = UnityEngine.Object;
 
 public class ObjectPooler : MonoBehaviour
 {
@@ -24,6 +25,7 @@ public class ObjectPooler : MonoBehaviour
 
     public List<Pool> pools;
     public Dictionary<string, Queue<GameObject>> poolDictionary;
+    private List<string> pooledObjects = new List<string> { "Rabbit", "Wolf", "Deer", "Bear" };
     private bool allSpawnedAtStart = false;
 
     private void Awake()
@@ -34,14 +36,27 @@ public class ObjectPooler : MonoBehaviour
     void Start()
     {
         ObjectPlacement objPl = FindObjectOfType<ObjectPlacement>();
+        //objPl.poolEvent.AddListener(HandleAnimalInstantiated);
         objPl.onObjectPlaced += HandleAnimalInstantiated;
         objPl.isDone += HandleFinishedSpawning;
         
+        //var rabbits = FindObjectsOfType<RabbitController>();
+        //var wolves = FindObjectsOfType<WolfController>();
+        //var bears = FindObjectsOfType<BearController>();
+        //var deer = FindObjectsOfType<DeerController>();
+
         foreach (Pool pool in pools)
         {
             Queue<GameObject> objectPool = new Queue<GameObject>();
             poolDictionary.Add(pool.tag, objectPool);
         }
+
+        //foreach (var r in rabbits) HandleAnimalInstantiated(r.gameObject, "Rabbits");
+        //foreach (var w in wolves) HandleAnimalInstantiated(w.gameObject, "Wolves");
+        //foreach (var b in bears) HandleAnimalInstantiated(b.gameObject, "Bears");
+        //foreach (var d in deer) HandleAnimalInstantiated(d.gameObject, "Deer");
+
+        Debug.Log("Finishes Start");
     }
 
     private void HandleFinishedSpawning()
@@ -60,14 +75,17 @@ public class ObjectPooler : MonoBehaviour
                     poolDictionary[objTag].Enqueue(obj);
                 }
             }
-            
+            Debug.Log("Finished HandleFinishedSpawning");
         }
     }
 
     private void HandleAnimalInstantiated(GameObject objectToSpawn, string tag)
     {
+        Debug.Log("Handling");
         if (poolDictionary != null && poolDictionary.ContainsKey(tag))
         {
+            Debug.Log("Handling");
+            objectToSpawn.SetActive(true);
             objectToSpawn.GetComponent<IPooledObject>()?.onObjectSpawn();
 
             if (objectToSpawn.CompareTag("Animal"))
@@ -76,8 +94,6 @@ public class ObjectPooler : MonoBehaviour
                 objectToSpawn.GetComponent<AnimalController>().SpawnNew += HandleBirthAnimal;
             }
             poolDictionary[tag].Enqueue(objectToSpawn);
-
-            objectToSpawn.SetActive(true);
         }
     }
 
