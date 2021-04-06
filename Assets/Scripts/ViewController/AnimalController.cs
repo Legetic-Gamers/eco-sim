@@ -29,6 +29,10 @@ public abstract class AnimalController : MonoBehaviour
     public Action<GameObject> actionPerceivedHostile;
     public Action actionDeath;
 
+    // AnimalParticleManager is subscribed to these
+    public event Action<bool> actionPregnant;
+    public event Action actionBirth;
+
     //Subscribed to by animalBrainAgent.
     public event EventHandler<OnBirthEventArgs> onBirth;
 
@@ -73,7 +77,6 @@ public abstract class AnimalController : MonoBehaviour
     private float baseAcceleration;
     private float baseAngularSpeed;
 
-
     //target lists
     public List<GameObject> visibleHostileTargets = new List<GameObject>();
     public List<GameObject> visibleFriendlyTargets = new List<GameObject>();
@@ -85,8 +88,6 @@ public abstract class AnimalController : MonoBehaviour
     public  List<GameObject> heardFriendlyTargets = new List<GameObject>();
     public  List<GameObject> heardPreyTargets = new List<GameObject>();
 
-
-    public bool IsControllable { get; set; } = false;
 
     //used for ml, so that it does not spawn a lot of children that might interfere with training
     public bool isInfertile = false;
@@ -239,7 +240,7 @@ public abstract class AnimalController : MonoBehaviour
         animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier;
         //TODO, maybe move from here?
         agent.speed = animalModel.currentSpeed;
-        
+        /*
         // energy
         animalModel.currentEnergy -= (animalModel.age + animalModel.currentSpeed + 
             animalModel.traits.viewRadius / 10 + animalModel.traits.hearingRadius / 10)
@@ -250,7 +251,7 @@ public abstract class AnimalController : MonoBehaviour
                                         (1 + 
                                          animalModel.currentSpeed / animalModel.traits.endurance * 
                                          hydrationModifier);
-        
+        */
         // reproductive urge
         animalModel.reproductiveUrge += 0.01f * reproductiveUrgeModifier;
         animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
@@ -350,7 +351,7 @@ public abstract class AnimalController : MonoBehaviour
         
         if(targetAnimalController.isInfertile) return;
         
-        Random rng = new System.Random();
+        Random rng = new Random();
         
         // make sure target has an AnimalController,
         // that its animalModel is same species, and neither animal is already carrying
@@ -384,10 +385,11 @@ public abstract class AnimalController : MonoBehaviour
 
 
             animalModel.isPregnant = true;
+            actionPregnant?.Invoke(true);
             for (int i = 1; i <= offspringCount; i++)
                 // Wait some time before giving birth
                 StartCoroutine(GiveBirth(childEnergy, childHydration, gestationTime, targetAnimalController));
-        
+            actionPregnant?.Invoke(false);
         }
     }
     
@@ -402,12 +404,16 @@ public abstract class AnimalController : MonoBehaviour
         
         // Generate the offspring traits
         AnimalModel childModel = animalModel.Mate(otherParentAnimalController.animalModel);
-        child.GetComponent<AnimalController>().animalModel = childModel;
-        child.GetComponent<AnimalController>().animalModel.currentEnergy = childEnergy;
-        child.GetComponent<AnimalController>().animalModel.currentHydration = childHydration;   
+        AnimalController childController = child.GetComponent<AnimalController>();
+        childController.animalModel = childModel;
+        childController.animalModel.currentEnergy = childEnergy;
+        childController.animalModel.currentHydration = childHydration;   
 
-        // update the childs speed (in case of mutation).
-        child.GetComponent<AnimalController>().animalModel.traits.maxSpeed = 1;
+        // update the child's speed (in case of mutation).
+        childController.animalModel.traits.maxSpeed = 1;
+        
+        // trigger birth particle effect
+        childController.actionBirth?.Invoke();
         
         animalModel.isPregnant = false;
         //Debug.Log(child.GetComponent<AnimalController>().animalModel.generation);

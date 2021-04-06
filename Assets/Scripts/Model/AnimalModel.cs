@@ -93,7 +93,6 @@ public abstract class AnimalModel
 
     public int generation { get; set; }
 
-
     public Traits traits { get; set; }
 
     /* /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\ */
@@ -256,6 +255,8 @@ public abstract class AnimalModel
     };
 
     public abstract AnimalModel Mate(AnimalModel otherParent);
+
+    public Action actionKilled;
     
     public abstract bool CanEat<T>(T obj);
 
