@@ -1,13 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using Random = UnityEngine.Random;
 
 // http://devmag.org.za/2009/05/03/poisson-disk-sampling/
 public class ObjectPlacement : MonoBehaviour
 {
     public List<GameObject> groups;
-
-
+    public Action<> onObjectPlaced();
     public void PlaceObjects(ObjectPlacementSettings settings, MeshSettings meshSettings, HeightMapSettings heightMapSettings)
     {
         int size;
@@ -55,7 +56,14 @@ public class ObjectPlacement : MonoBehaviour
                 }
 
                 GameObject gameObject = Instantiate(settings.objectTypes[i].gameObjectSettings[randomIndex].gameObject, new Vector3(point.x - size / 2, heightMapSettings.maxHeight + 10, point.y - size / 2), Quaternion.identity);
-
+                /*
+                switch (settings.objectTypes[i].gameObjectSettings[0])
+                {
+                    case :
+                        
+                        break;
+                }
+                */
                 //gameObject.transform.position = new Vector3(point.x - size / 2, heightMapSettings.maxHeight + 10, point.y - size / 2);
                 gameObject.transform.parent = groupObject.transform;
                 //gameObject.transform.localScale = Vector3.one * settings.objectTypes[i].scale * meshSettings.meshScale;

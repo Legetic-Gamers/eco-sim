@@ -22,17 +22,17 @@ public class ObjectPooler : MonoBehaviour
 
     #endregion
 
+    public List<Pool> pools;
+    public Dictionary<string, Queue<GameObject>> poolDictionary;
+    
     private void Awake()
     {
         instance = this;
+        poolDictionary = new Dictionary<string, Queue<GameObject>>();
     }
-
-    public List<Pool> pools;
-    public Dictionary<string, Queue<GameObject>> poolDictionary;
-
     void Start()
     {
-        poolDictionary = new Dictionary<string, Queue<GameObject>>();
+        FindObjectOfType<AnimalSpawner>().onAnimalInstantiated += HandleAnimalInstantiated;
         foreach (Pool pool in pools)
         {
             Queue<GameObject> objectPool = new Queue<GameObject>();
@@ -46,7 +46,23 @@ public class ObjectPooler : MonoBehaviour
 
             poolDictionary.Add(pool.tag, objectPool);
         }
-        
+    }
+
+    private void HandleAnimalInstantiated(String tag)
+    {
+        if (poolDictionary != null && poolDictionary.ContainsKey(tag))
+        {
+            GameObject objectToSpawn = poolDictionary[tag].Dequeue();
+
+            //TODO Maintain list of all components for more performance
+            objectToSpawn.GetComponent<IPooledObject>()?.onObjectSpawn();
+            Debug.Log("Handling");
+            if (objectToSpawn.CompareTag("Animal"))
+            {
+                objectToSpawn.GetComponent<AnimalController>().Dead += HandleDeadAnimal;
+                objectToSpawn.GetComponent<AnimalController>().SpawnNew += HandleBirthAnimal;
+            }
+        }
     }
 
     private void HandleDeadAnimal(AnimalController animalController)
@@ -81,9 +97,9 @@ public class ObjectPooler : MonoBehaviour
         childController.animalModel.currentHydration = hydration;
 
         // update the childs speed (in case of mutation).
-        child.GetComponent<AnimalController>().animalModel.traits.maxSpeed = 1;
+        childController.animalModel.traits.maxSpeed = 1;
         
-        Debug.Log(childController.animalModel.generation);
+        //Debug.Log(childController.animalModel.generation);
     }
 
     public GameObject SpawnFromPool(string tag, Vector3 position, Quaternion rotation)
