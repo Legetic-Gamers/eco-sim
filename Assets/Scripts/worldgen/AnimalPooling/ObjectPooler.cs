@@ -33,9 +33,10 @@ public class ObjectPooler : MonoBehaviour
     }
     void Start()
     {
-        //TODO change actions to world gen
-        FindObjectOfType<AnimalSpawner>().onAnimalInstantiated += HandleAnimalInstantiated;
-        FindObjectOfType<AnimalSpawner>().isDone += HandleFinishedSpawning;
+        ObjectPlacement objPl = FindObjectOfType<ObjectPlacement>();
+        objPl.onObjectPlaced += HandleAnimalInstantiated;
+        objPl.isDone += HandleFinishedSpawning;
+        
         foreach (Pool pool in pools)
         {
             Queue<GameObject> objectPool = new Queue<GameObject>();

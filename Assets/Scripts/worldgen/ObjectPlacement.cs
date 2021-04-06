@@ -10,6 +10,7 @@ public class ObjectPlacement : MonoBehaviour
 {
     public List<GameObject> groups;
     public Action<GameObject, String> onObjectPlaced;
+    public Action isDone;
     private List<string> pooledObjects = new List<string> { "Rabbit", "Wolf", "Deer", "Bear" };
     public void PlaceObjects(ObjectPlacementSettings settings, MeshSettings meshSettings, HeightMapSettings heightMapSettings)
     {
@@ -102,6 +103,7 @@ public class ObjectPlacement : MonoBehaviour
                 }
             }
         }
+        isDone?.Invoke();
     }
 
     public static List<Vector2> GeneratePlacementPoints(ObjectPlacementSettings settings, float meshScale, int objectIndex, int size)
