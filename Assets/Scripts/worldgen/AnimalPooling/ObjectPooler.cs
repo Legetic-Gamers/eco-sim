@@ -24,6 +24,7 @@ public class ObjectPooler : MonoBehaviour
 
     public List<Pool> pools;
     public Dictionary<string, Queue<GameObject>> poolDictionary;
+    private bool allSpawnedAtStart = false;
 
     private void Awake()
     {
@@ -32,20 +33,33 @@ public class ObjectPooler : MonoBehaviour
     }
     void Start()
     {
+        //TODO change actions to world gen
         FindObjectOfType<AnimalSpawner>().onAnimalInstantiated += HandleAnimalInstantiated;
-        
+        FindObjectOfType<AnimalSpawner>().isDone += HandleFinishedSpawning;
         foreach (Pool pool in pools)
         {
             Queue<GameObject> objectPool = new Queue<GameObject>();
-
-            for (int i = 0; i < pool.size; i++)
-            {
-                GameObject obj = Instantiate(pool.prefab);
-                obj.SetActive(false);
-                objectPool.Enqueue(obj);
-            }
-
             poolDictionary.Add(pool.tag, objectPool);
+        }
+    }
+
+    private void HandleFinishedSpawning()
+    {
+        if (!allSpawnedAtStart)
+        {
+            allSpawnedAtStart = true;
+            
+            foreach (Pool pool in pools)
+            {
+                string objTag = pool.tag;
+                for (int i = poolDictionary[objTag].Count; i < pool.size; i++)
+                {
+                    GameObject obj = Instantiate(pool.prefab);
+                    obj.SetActive(false);
+                    poolDictionary[objTag].Enqueue(obj);
+                }
+            }
+            
         }
     }
 
@@ -53,18 +67,15 @@ public class ObjectPooler : MonoBehaviour
     {
         if (poolDictionary != null && poolDictionary.ContainsKey(tag))
         {
-            poolDictionary[tag].Dequeue();
-            
             objectToSpawn.GetComponent<IPooledObject>()?.onObjectSpawn();
-            
-            Debug.Log("Handling");
-            
+
             if (objectToSpawn.CompareTag("Animal"))
             {
                 objectToSpawn.GetComponent<AnimalController>().Dead += HandleDeadAnimal;
                 objectToSpawn.GetComponent<AnimalController>().SpawnNew += HandleBirthAnimal;
             }
-            
+            poolDictionary[tag].Enqueue(objectToSpawn);
+
             objectToSpawn.SetActive(true);
         }
     }
@@ -102,8 +113,6 @@ public class ObjectPooler : MonoBehaviour
 
         // update the childs speed (in case of mutation).
         childController.animalModel.traits.maxSpeed = 1;
-        
-        //Debug.Log(childController.animalModel.generation);
     }
 
     public GameObject SpawnFromPool(string tag, Vector3 position, Quaternion rotation)

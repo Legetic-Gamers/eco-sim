@@ -9,7 +9,7 @@ using Random = UnityEngine.Random;
 public class ObjectPlacement : MonoBehaviour
 {
     public List<GameObject> groups;
-    public Action<String> onObjectPlaced;
+    public Action<GameObject, String> onObjectPlaced;
     private List<string> pooledObjects = new List<string> { "Rabbit", "Wolf", "Deer", "Bear" };
     public void PlaceObjects(ObjectPlacementSettings settings, MeshSettings meshSettings, HeightMapSettings heightMapSettings)
     {
@@ -60,7 +60,7 @@ public class ObjectPlacement : MonoBehaviour
                 GameObject gameObject = Instantiate(settings.objectTypes[i].gameObjectSettings[randomIndex].gameObject, new Vector3(point.x - size / 2, heightMapSettings.maxHeight + 10, point.y - size / 2), Quaternion.identity);
                 
                 var animal = settings.objectTypes[i].name;
-                //if(pooledObjects.IndexOf(animal) != -1) onObjectPlaced?.Invoke(animal);
+                if(pooledObjects.IndexOf(animal) != -1) onObjectPlaced?.Invoke(gameObject, animal);
 
                 //gameObject.transform.position = new Vector3(point.x - size / 2, heightMapSettings.maxHeight + 10, point.y - size / 2);
                 gameObject.transform.parent = groupObject.transform;

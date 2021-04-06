@@ -9,6 +9,7 @@ public class AnimalSpawner : MonoBehaviour
 {
     private ObjectPooler pooler;
     public Action<GameObject, string> onAnimalInstantiated;
+    public Action isDone;
     public void Start()
     {
         pooler = ObjectPooler.instance;
@@ -21,6 +22,7 @@ public class AnimalSpawner : MonoBehaviour
             obj.SetActive(false);
             onAnimalInstantiated?.Invoke(obj, "Rabbit");
         }
+        isDone?.Invoke();
     }
 
     private IEnumerator SpawnRabbit()
