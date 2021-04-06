@@ -60,8 +60,8 @@ public class ObjectPlacement : MonoBehaviour
 
                 GameObject gameObject = Instantiate(settings.objectTypes[i].gameObjectSettings[randomIndex].gameObject, new Vector3(point.x - size / 2, heightMapSettings.maxHeight + 10, point.y - size / 2), Quaternion.identity);
                 
-                var animal = settings.objectTypes[i].name;
-                if(pooledObjects.IndexOf(animal) != -1) onObjectPlaced?.Invoke(gameObject, animal);
+                //var animal = settings.objectTypes[i].name;
+                //if(pooledObjects.IndexOf(animal) != -1) onObjectPlaced?.Invoke(gameObject, animal);
 
                 //gameObject.transform.position = new Vector3(point.x - size / 2, heightMapSettings.maxHeight + 10, point.y - size / 2);
                 gameObject.transform.parent = groupObject.transform;
@@ -103,7 +103,7 @@ public class ObjectPlacement : MonoBehaviour
                 }
             }
         }
-        isDone?.Invoke();
+        //isDone?.Invoke();
     }
 
     public static List<Vector2> GeneratePlacementPoints(ObjectPlacementSettings settings, float meshScale, int objectIndex, int size)
