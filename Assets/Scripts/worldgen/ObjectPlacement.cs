@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 using Random = UnityEngine.Random;
@@ -8,7 +9,8 @@ using Random = UnityEngine.Random;
 public class ObjectPlacement : MonoBehaviour
 {
     public List<GameObject> groups;
-    public Action<> onObjectPlaced();
+    public Action<String> onObjectPlaced;
+    private List<string> pooledObjects = new List<string> { "Rabbit", "Wolf", "Deer", "Bear" };
     public void PlaceObjects(ObjectPlacementSettings settings, MeshSettings meshSettings, HeightMapSettings heightMapSettings)
     {
         int size;
@@ -56,14 +58,10 @@ public class ObjectPlacement : MonoBehaviour
                 }
 
                 GameObject gameObject = Instantiate(settings.objectTypes[i].gameObjectSettings[randomIndex].gameObject, new Vector3(point.x - size / 2, heightMapSettings.maxHeight + 10, point.y - size / 2), Quaternion.identity);
-                /*
-                switch (settings.objectTypes[i].gameObjectSettings[0])
-                {
-                    case :
-                        
-                        break;
-                }
-                */
+                
+                var animal = settings.objectTypes[i].name;
+                //if(pooledObjects.IndexOf(animal) != -1) onObjectPlaced?.Invoke(animal);
+
                 //gameObject.transform.position = new Vector3(point.x - size / 2, heightMapSettings.maxHeight + 10, point.y - size / 2);
                 gameObject.transform.parent = groupObject.transform;
                 //gameObject.transform.localScale = Vector3.one * settings.objectTypes[i].scale * meshSettings.meshScale;

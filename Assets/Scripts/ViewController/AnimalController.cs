@@ -116,6 +116,20 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         fsm.Initialize(wanderState);
         
         animationController = new AnimationController(this);
+        
+        // Init the NavMesh agent
+        agent = GetComponent<NavMeshAgent>();
+        agent.autoBraking = true;
+        
+        //Can be used later.
+        baseAngularSpeed = agent.angularSpeed;
+        baseAcceleration = agent.acceleration;
+        
+        dh = FindObjectOfType<DataHandler>();
+        
+        tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
+        
+        EventSubscribe();
     }
 
     protected void Start()
@@ -148,30 +162,16 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     /// </summary>
     public void onObjectSpawn()
     {
-        // Init the NavMesh agent
-        agent = GetComponent<NavMeshAgent>();
-        agent.autoBraking = true;
-
-        animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
         
-        //Can be used later.
-        baseAngularSpeed = agent.angularSpeed;
-        baseAcceleration = agent.acceleration;
+        animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
         
         agent.speed = animalModel.currentSpeed * Time.timeScale;
         agent.acceleration *= Time.timeScale;
         agent.angularSpeed *= Time.timeScale;
         
-        dh = FindObjectOfType<DataHandler>();
-        
         dh.LogNewAnimal(animalModel);
-        //Debug.Log(agent.autoBraking);
-        tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
-        
-        EventSubscribe();
 
         SetPhenotype();
-        
     }
 
     /* /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\ */

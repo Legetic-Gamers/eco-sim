@@ -24,7 +24,7 @@ public class ObjectPooler : MonoBehaviour
 
     public List<Pool> pools;
     public Dictionary<string, Queue<GameObject>> poolDictionary;
-    
+
     private void Awake()
     {
         instance = this;
@@ -33,6 +33,7 @@ public class ObjectPooler : MonoBehaviour
     void Start()
     {
         FindObjectOfType<AnimalSpawner>().onAnimalInstantiated += HandleAnimalInstantiated;
+        
         foreach (Pool pool in pools)
         {
             Queue<GameObject> objectPool = new Queue<GameObject>();
@@ -48,20 +49,23 @@ public class ObjectPooler : MonoBehaviour
         }
     }
 
-    private void HandleAnimalInstantiated(String tag)
+    private void HandleAnimalInstantiated(GameObject objectToSpawn, string tag)
     {
         if (poolDictionary != null && poolDictionary.ContainsKey(tag))
         {
-            GameObject objectToSpawn = poolDictionary[tag].Dequeue();
-
-            //TODO Maintain list of all components for more performance
+            poolDictionary[tag].Dequeue();
+            
             objectToSpawn.GetComponent<IPooledObject>()?.onObjectSpawn();
+            
             Debug.Log("Handling");
+            
             if (objectToSpawn.CompareTag("Animal"))
             {
                 objectToSpawn.GetComponent<AnimalController>().Dead += HandleDeadAnimal;
                 objectToSpawn.GetComponent<AnimalController>().SpawnNew += HandleBirthAnimal;
             }
+            
+            objectToSpawn.SetActive(true);
         }
     }
 
@@ -111,7 +115,7 @@ public class ObjectPooler : MonoBehaviour
             {
                 if (pool.tag.Equals(tag))
                 {
-                    pool.size++;
+                    pool.size += 20;
                     GameObject obj = Instantiate(pool.prefab);
                     obj.SetActive(false);
                     poolDictionary[tag].Enqueue(obj);
