@@ -19,7 +19,7 @@ public class ObjectPooler : MonoBehaviour
 
     #region Singleton
 
-    public static ObjectPooler instance;
+    private static ObjectPooler instance;
 
     #endregion
 
@@ -28,9 +28,19 @@ public class ObjectPooler : MonoBehaviour
     private List<string> pooledObjects = new List<string> { "Rabbit", "Wolf", "Deer", "Bear" };
     private bool allSpawnedAtStart = false;
 
+    public static ObjectPooler GetInstance()
+    {
+        if (instance == null)
+        {
+            instance = new ObjectPooler();
+        }
+
+        return instance;
+    }
+
     private void Awake()
     {
-        instance = this;
+        ObjectPooler.GetInstance();
         poolDictionary = new Dictionary<string, Queue<GameObject>>();
     }
     void Start()

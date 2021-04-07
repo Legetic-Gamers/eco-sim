@@ -20,7 +20,6 @@ public class ObjectPlacement : MonoBehaviour
     //public PoolEvent poolEvent = new PoolEvent(); 
     public void PlaceObjects(ObjectPlacementSettings settings, MeshSettings meshSettings, HeightMapSettings heightMapSettings)
     {
-        var pooler = ObjectPooler.instance;
         int size;
         //Debug.Log("Is this called more than once");
         groups = new List<GameObject>();
@@ -71,7 +70,7 @@ public class ObjectPlacement : MonoBehaviour
                 if (pooledObjects.IndexOf(animalName) != -1)
                 {
                     //gameObject.SetActive(false);
-                    ObjectPooler.instance.HandleAnimalInstantiated(gameObject, animalName);
+                    ObjectPooler.GetInstance().HandleAnimalInstantiated(gameObject, animalName);
                 }
 
                 //gameObject.transform.position = new Vector3(point.x - size / 2, heightMapSettings.maxHeight + 10, point.y - size / 2);
@@ -116,7 +115,7 @@ public class ObjectPlacement : MonoBehaviour
         }
         Debug.Log("Done");
         
-        ObjectPooler.instance.HandleFinishedSpawning();
+        ObjectPooler.GetInstance().HandleFinishedSpawning();
     }
 
     public static List<Vector2> GeneratePlacementPoints(ObjectPlacementSettings settings, float meshScale, int objectIndex, int size)

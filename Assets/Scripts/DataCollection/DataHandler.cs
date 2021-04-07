@@ -28,7 +28,7 @@ namespace DataCollection
         private int counter;
         
         private TickEventPublisher tickEventPublisher;
-        private Collector c;
+        public Collector c;
         private List<float> sendList1 = new List<float>();
         private List<float> sendList2 = new List<float>();
         

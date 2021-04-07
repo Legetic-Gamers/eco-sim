@@ -1,14 +1,18 @@
 /*
  * Author Johan A.
  */
+
+using System;
+using DataCollection;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace Menus
 {
-    public class PauseMenuManager : MonoBehaviour
+    public class GameMenuManager : MonoBehaviour
     {
         public static bool isPaused;
+        public static bool isEnded;
         public GameObject pauseMenu;
         private float lastGameSpeed = 1f;
 
@@ -41,6 +45,22 @@ namespace Menus
             Time.timeScale = 1f;
             //SceneManager.LoadScene("Menu");
             Debug.Log("Load menu");
+        }
+
+        public void End()
+        {
+            Debug.Log("GAME IS ENDED");
+            Pause();
+        }
+
+        public void Start()
+        {
+            DataHandler dh = FindObjectOfType<DataHandler>();
+            if (dh)
+            {
+                //Bind End to action that triggers when all animals are dead
+                dh.c.onAllExtinct += End;
+            }
         }
     }
 }
