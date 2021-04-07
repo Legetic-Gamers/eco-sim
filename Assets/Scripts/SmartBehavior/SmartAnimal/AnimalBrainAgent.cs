@@ -299,7 +299,7 @@ public class AnimalBrainAgent : Agent,IAgent
         animalController.drinkingState.onDrinkWater += HandleDrinking;
         
         //For fast action on spotting hostile
-        // animalController.actionPerceivedHostile += HandleHostileTarget;
+        animalController.actionPerceivedHostile += HandleHostileTarget;
     }
 
 
@@ -313,14 +313,14 @@ public class AnimalBrainAgent : Agent,IAgent
         animalController.drinkingState.onDrinkWater -= HandleDrinking;
         
         //For fast action on spotting hostile
-        // animalController.actionPerceivedHostile -= HandleHostileTarget;
+        animalController.actionPerceivedHostile -= HandleHostileTarget;
     }
 
     //Called when the animal sees a hostile animal. This allows for quicker reaction times to this urgent event.
-    // private void HandleHostileTarget(GameObject obj)
-    // {
-    //     RequestDecision();
-    // }
+    private void HandleHostileTarget(GameObject obj)
+    {
+        RequestDecision();
+    }
 
 
     private void HandleDeath()
