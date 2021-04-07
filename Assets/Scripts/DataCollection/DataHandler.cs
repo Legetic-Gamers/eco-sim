@@ -70,7 +70,10 @@ namespace DataCollection
             // Subscribe to Tick Event publisher update data and graph 
             tickEventPublisher.onCollectorUpdate += UpdateDataAndGraph;
             ButtonClick bc = FindObjectOfType<ButtonClick>();
-            bc.GetListType += SetTrait;
+            bc.GetListTrait += SetTrait;
+            bc.GetListPopulation += SetPopulation;
+            bc.GetListBirthRate += SetBirthRate;
+            bc.GetListFoodAvailable += SetFoodAvailable;
             // Make a collector to handle data
             c = new Collector();
             // Prepare for frame rate collection
