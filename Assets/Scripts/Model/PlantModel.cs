@@ -8,14 +8,14 @@ namespace Model
     {
 
         public bool isEaten = false;
-        
+        public float nutritionValue { get; set; }
         public float plantAge;
 
         public const float plantMaxAge = 60;
         public const float plantMaxsize = 30;
 
 
-        public float nutritionValue { get; set; }
+        
 
         public float GetEaten()
         {

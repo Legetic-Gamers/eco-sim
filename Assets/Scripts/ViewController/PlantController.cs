@@ -15,7 +15,6 @@ namespace ViewController
         
         private DataHandler dh;
         
-<<<<<<< HEAD
         public Transform centerTransform;
 
         public void Awake()
@@ -27,10 +26,6 @@ namespace ViewController
             }
         }
 
-=======
-        
-        
->>>>>>> dynamic-food
         public void Start()
         {
             tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
@@ -69,24 +64,24 @@ namespace ViewController
         private void SetPhenotype()
         {
             float normalizedValue = 1f / PlantModel.plantMaxsize;
-            gameObject.transform.localScale = new Vector3(normalizedValue, normalizedValue,normalizedValue) * plantModel.plantSize;
+            gameObject.transform.localScale = new Vector3(normalizedValue, normalizedValue,normalizedValue) * plantModel.nutritionValue;
         }
         
         private void Grow()
         {
             //TODO make not stupid increment value
             plantModel.plantAge += 2;
-            if (plantModel.plantSize > PlantModel.plantMaxsize)
+            if (plantModel.nutritionValue > PlantModel.plantMaxsize)
             {
-                plantModel.plantSize = PlantModel.plantMaxsize;
+                plantModel.nutritionValue = PlantModel.plantMaxsize;
                 SetPhenotype();
             }
-            else plantModel.plantSize += 2;
+            else plantModel.nutritionValue += 2;
             
 
             
             // plant has regrown after being eaten
-            if (plantModel.isEaten && plantModel.plantSize > 15)
+            if (plantModel.isEaten && plantModel.nutritionValue > 15)
             {
                 gameObject.SetActive(true);
                 SetPhenotype();
@@ -96,7 +91,7 @@ namespace ViewController
             float rx = Random.Range(-5f, 5f);
             float rz = Random.Range(-5f, 5f);
             // 5% chance of reproducing every 2 seconds if age and size restrictions are met.
-            if (plantModel.plantAge > 30 && plantModel.plantSize > 15 && !plantModel.isEaten && r > 0.95) 
+            if (plantModel.plantAge > 30 && plantModel.nutritionValue > 15 && !plantModel.isEaten && r > 0.95) 
             {
                 float height = 0;
                 bool isHit = false;
