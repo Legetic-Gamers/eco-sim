@@ -80,11 +80,9 @@ public class ObjectPooler : MonoBehaviour
             objectToSpawn.SetActive(true);
             objectToSpawn.GetComponent<IPooledObject>()?.onObjectSpawn();
             
-            if (objectToSpawn.CompareTag("Animal"))
-            {
-                objectToSpawn.GetComponent<AnimalController>().Dead += HandleDeadAnimal;
-                objectToSpawn.GetComponent<AnimalController>().SpawnNew += HandleBirthAnimal;
-            }
+            objectToSpawn.GetComponent<AnimalController>().Dead += HandleDeadAnimal;
+            objectToSpawn.GetComponent<AnimalController>().SpawnNew += HandleBirthAnimal;
+            
             poolDictionary[tag].Enqueue(objectToSpawn);
         }
     }
@@ -182,22 +180,19 @@ public class ObjectPooler : MonoBehaviour
 
         if (poolDictionary != null && poolDictionary.ContainsKey(tag))
         {
-                GameObject objectToSpawn = poolDictionary[tag].Dequeue();
+            GameObject objectToSpawn = poolDictionary[tag].Dequeue();
 
-                objectToSpawn.transform.position = position;
-                objectToSpawn.transform.rotation = rotation;
-                objectToSpawn.SetActive(true);
+            objectToSpawn.transform.position = position;
+            objectToSpawn.transform.rotation = rotation;
+            objectToSpawn.SetActive(true);
 
-                //TODO Maintain list of all components for more performance
-                objectToSpawn.GetComponent<IPooledObject>()?.onObjectSpawn();
+            //TODO Maintain list of all components for more performance
+            objectToSpawn.GetComponent<IPooledObject>()?.onObjectSpawn();
+            
+            objectToSpawn.GetComponent<AnimalController>().Dead += HandleDeadAnimal;
+            objectToSpawn.GetComponent<AnimalController>().SpawnNew += HandleBirthAnimal;
 
-                if (objectToSpawn.CompareTag("Animal"))
-                {
-                    objectToSpawn.GetComponent<AnimalController>().Dead += HandleDeadAnimal;
-                    objectToSpawn.GetComponent<AnimalController>().SpawnNew += HandleBirthAnimal;
-                }
-
-                return objectToSpawn;
+            return objectToSpawn;
         }
 
         return null;
