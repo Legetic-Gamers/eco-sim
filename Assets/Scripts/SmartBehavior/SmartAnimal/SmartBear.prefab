@@ -699,10 +699,10 @@ GameObject:
   - component: {fileID: 2461046322859002549}
   - component: {fileID: 9144438191025629527}
   - component: {fileID: 6621926375851499006}
-  - component: {fileID: 5613410280132212379}
   - component: {fileID: 7508483688985795530}
   - component: {fileID: 6109018377343955261}
-  - component: {fileID: 6324888326859366307}
+  - component: {fileID: 6908089436294373953}
+  - component: {fileID: 8878223289598604227}
   m_Layer: 8
   m_Name: SmartBear
   m_TagString: Animal
@@ -875,24 +875,6 @@ MonoBehaviour:
   hasUpgradedFromAgentParameters: 1
   MaxStep: 0
   world: {fileID: 0}
---- !u!114 &5613410280132212379
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 695402115701391966}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 07422175caeb4ae7abedf1488c86805e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  targetMask:
-    serializedVersion: 2
-    m_Bits: 256
-  obstacleMask:
-    serializedVersion: 2
-    m_Bits: 2048
 --- !u!65 &7508483688985795530
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -922,7 +904,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &6324888326859366307
+--- !u!114 &6908089436294373953
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -931,14 +913,32 @@ MonoBehaviour:
   m_GameObject: {fileID: 695402115701391966}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1ff8f5fbbd2169f4eadc8c040957c156, type: 3}
+  m_Script: {fileID: 11500000, guid: bb8c3b788da21de4bb762fff73b53444, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetMask:
+    serializedVersion: 2
+    m_Bits: 256
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 2048
+--- !u!114 &8878223289598604227
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 695402115701391966}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0795e2e31cde64428dc997f642c4648, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   showNavMeshAgentPath: 0
   allowNavigateWithClick: 0
-  showVisibleTargets: 0
-  showFleeingVector: 0
-  showPerceptionRange: 0
+  showVisibleTargets: 1
+  showFleeingVector: 1
+  showPerceptionRange: 1
 --- !u!1 &695417585406367660
 GameObject:
   m_ObjectHideFlags: 0

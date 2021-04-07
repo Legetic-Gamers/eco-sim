@@ -1527,8 +1527,8 @@ GameObject:
   - component: {fileID: -7438119251835923377}
   - component: {fileID: 293866762}
   - component: {fileID: 293866761}
-  - component: {fileID: 1202826928027554482}
-  - component: {fileID: -5960347608891732270}
+  - component: {fileID: 3941532510480265602}
+  - component: {fileID: 1968797970220886526}
   m_Layer: 8
   m_Name: SmartRabbit
   m_TagString: Animal
@@ -1718,7 +1718,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.24, y: 0.33, z: 0.7}
   m_Center: {x: 0, y: 0.12, z: 0}
---- !u!114 &1202826928027554482
+--- !u!114 &3941532510480265602
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1727,24 +1727,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8505818697369016331}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1ff8f5fbbd2169f4eadc8c040957c156, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  showNavMeshAgentPath: 0
-  allowNavigateWithClick: 0
-  showVisibleTargets: 1
-  showFleeingVector: 1
-  showPerceptionRange: 1
---- !u!114 &-5960347608891732270
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8505818697369016331}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 07422175caeb4ae7abedf1488c86805e, type: 3}
+  m_Script: {fileID: 11500000, guid: bb8c3b788da21de4bb762fff73b53444, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   targetMask:
@@ -1753,6 +1736,23 @@ MonoBehaviour:
   obstacleMask:
     serializedVersion: 2
     m_Bits: 2048
+--- !u!114 &1968797970220886526
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8505818697369016331}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0795e2e31cde64428dc997f642c4648, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  showNavMeshAgentPath: 0
+  allowNavigateWithClick: 0
+  showVisibleTargets: 1
+  showFleeingVector: 1
+  showPerceptionRange: 1
 --- !u!1 &8505818697383472513
 GameObject:
   m_ObjectHideFlags: 0

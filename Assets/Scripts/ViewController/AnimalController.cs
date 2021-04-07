@@ -264,8 +264,8 @@ public abstract class AnimalController : MonoBehaviour
         animalModel.age += 1;
 
         // speed
-        // animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier;
-        // agent.speed = animalModel.currentSpeed * Time.timeScale;
+        animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier;
+        agent.speed = animalModel.currentSpeed * Time.timeScale;
 
         // energy
         animalModel.currentEnergy -= (animalModel.age + animalModel.currentSpeed +

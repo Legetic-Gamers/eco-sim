@@ -3728,10 +3728,10 @@ GameObject:
   - component: {fileID: 5204049046673992645}
   - component: {fileID: 3959182815391245061}
   - component: {fileID: 6973152258384529876}
-  - component: {fileID: 4650086921498598577}
   - component: {fileID: 2443608263682274248}
   - component: {fileID: 2443608263682274249}
-  - component: {fileID: 4629021839577290185}
+  - component: {fileID: 6088091415592786661}
+  - component: {fileID: 6526752046021234922}
   m_Layer: 8
   m_Name: SmartWolf
   m_TagString: Animal
@@ -4002,23 +4002,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.82, y: 1.46, z: 1.73}
   m_Center: {x: 0, y: 0.82, z: 0}
---- !u!114 &4650086921498598577
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2443608263682274251}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1ff8f5fbbd2169f4eadc8c040957c156, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  showNavMeshAgentPath: 0
-  allowNavigateWithClick: 0
-  showVisibleTargets: 0
-  showFleeingVector: 0
-  showPerceptionRange: 0
 --- !u!114 &2443608263682274248
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4066,7 +4049,7 @@ MonoBehaviour:
   m_UseChildSensors: 1
   m_UseChildActuators: 1
   m_ObservableAttributeHandling: 0
---- !u!114 &4629021839577290185
+--- !u!114 &6088091415592786661
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4075,7 +4058,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2443608263682274251}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 07422175caeb4ae7abedf1488c86805e, type: 3}
+  m_Script: {fileID: 11500000, guid: bb8c3b788da21de4bb762fff73b53444, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   targetMask:
@@ -4084,6 +4067,23 @@ MonoBehaviour:
   obstacleMask:
     serializedVersion: 2
     m_Bits: 2048
+--- !u!114 &6526752046021234922
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2443608263682274251}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0795e2e31cde64428dc997f642c4648, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  showNavMeshAgentPath: 0
+  allowNavigateWithClick: 0
+  showVisibleTargets: 1
+  showFleeingVector: 1
+  showPerceptionRange: 1
 --- !u!1 &2443612275744426233
 GameObject:
   m_ObjectHideFlags: 0
