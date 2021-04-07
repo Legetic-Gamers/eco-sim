@@ -13,6 +13,17 @@ namespace ViewController
 
         private DataHandler dh;
         
+        public Transform centerTransform;
+
+        public void Awake()
+        {
+            if (centerTransform == null)
+            {
+                Debug.LogWarning("Center not assigned, defaulting to transform");
+                centerTransform = transform;
+            }
+        }
+
         public void Start()
         {
             plantModel = new PlantModel();
