@@ -14,8 +14,7 @@ namespace ViewController
         public PlantModel plantModel;
         
         private DataHandler dh;
-
-        public int counter = 0;
+        
         
         
         public void Start()
@@ -40,8 +39,6 @@ namespace ViewController
                 tickEventPublisher.onParamTickEvent += HandleDeathStatus;
                 tickEventPublisher.onParamTickEvent += HandleEaten; //TODO HandleEaten should be called somewhere else.
                 tickEventPublisher.onParamTickEvent += Grow;
-                Debug.Log(counter);
-                counter = 0;
             }
         }
 
@@ -64,7 +61,6 @@ namespace ViewController
         private void Grow()
         {
             //TODO make not stupid increment value
-            counter++;
             plantModel.plantAge += 2;
             if (plantModel.plantSize > PlantModel.plantMaxsize)
             {
@@ -129,7 +125,7 @@ namespace ViewController
             if (plantModel != null && plantModel.plantAge > PlantModel.plantMaxAge)
             {
                 dh.LogDeadPlant(plantModel);
-                Destroy(gameObject); //TODO destroying parent object also destroys children
+                Destroy(gameObject);
             }
         }
     }

@@ -1,10 +1,12 @@
-﻿using ICSharpCode.NRefactory.Ast;
+﻿using System;
+using ICSharpCode.NRefactory.Ast;
 using UnityEngine;
 
 namespace Model
 {
     public class PlantModel : IEdible
     {
+
         public bool isEaten = false;
         public float plantSize;
         public float plantAge;
