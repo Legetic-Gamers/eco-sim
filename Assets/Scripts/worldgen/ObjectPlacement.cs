@@ -107,6 +107,7 @@ public class ObjectPlacement : MonoBehaviour
                 }
             }
         }
+        ObjectPooler.instance.HandleFinishedSpawning();
     }
 
     public static List<Vector2> GeneratePlacementPoints(ObjectPlacementSettings settings, float meshScale, int objectIndex, int size)
