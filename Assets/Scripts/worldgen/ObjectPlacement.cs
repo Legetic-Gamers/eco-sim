@@ -35,7 +35,7 @@ public class ObjectPlacement : MonoBehaviour
 
         for (int i = 0; i < simulationSettings.ObjectPlacementSettings.ObjectTypes.Count; i++)
         {
-            PlaceObjectType(simulationSettings.ObjectPlacementSettings.ObjectTypes[i], positionOffset);
+            PlaceObjectType(simulationSettings.ObjectPlacementSettings.GetObjectType(i), positionOffset);
         }
     }
 
@@ -133,12 +133,12 @@ public class ObjectPlacement : MonoBehaviour
     public void UpdateObjectType(int index, Vector2 positionOffset)
     {
         DestoryGroupObjectWithIndex(index);
-        PlaceObjectType(simulationSettings.ObjectPlacementSettings.ObjectTypes[index], positionOffset);
+        PlaceObjectType(simulationSettings.ObjectPlacementSettings.GetObjectType(index), positionOffset);
     }
 
     public void DestoryGroupObjectWithIndex(int index)
     {
-        DestroyGroupObjectWithName(simulationSettings.ObjectPlacementSettings.ObjectTypes[index].Name);
+        DestroyGroupObjectWithName(simulationSettings.ObjectPlacementSettings.GetObjectType(index).Name);
     }
 
     public void DestroyGroupObjectWithName(string name)

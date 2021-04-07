@@ -19,6 +19,7 @@ public class GameObjectSelectorFitter : MonoBehaviour
         Clear();
         Debug.Log("Populate the gameobjectlist");
         var gameObjectSettings = objectType.GameObjectSettings;
+        Debug.Log("Name was " + objectType.Name + " and length was " + gameObjectSettings.Count);
         for (int i = 0; i < gameObjectSettings.Count; i++)
         {
             InstantiateGameObjectManager(gameObjectSettings[i]);
@@ -27,8 +28,6 @@ public class GameObjectSelectorFitter : MonoBehaviour
 
     public void OnGameObjectAdd()
     {
-        RectTransform rect = gameObject.GetComponent<RectTransform>();
-        rect.sizeDelta += new Vector2(0, sizeOfElements);
         InstantiateGameObjectManager(new GameObjectSettings(0, 1f));
     }
 
@@ -59,6 +58,9 @@ public class GameObjectSelectorFitter : MonoBehaviour
 
     private void InstantiateGameObjectManager(GameObjectSettings gameObjectSettings)
     {
+        RectTransform rect = gameObject.GetComponent<RectTransform>();
+        rect.sizeDelta += new Vector2(0, sizeOfElements);
+
         GameObject obj = Instantiate(gameObjectSettingsPanel, transform);
         panels.Add(obj);
         GameObjectSettingsPanel panel = obj.GetComponent<GameObjectSettingsPanel>();
@@ -68,6 +70,9 @@ public class GameObjectSelectorFitter : MonoBehaviour
 
     private void Clear()
     {
+        RectTransform rect = gameObject.GetComponent<RectTransform>();
+        rect.sizeDelta = new Vector2(rect.rect.width, 0);
+        panels.Clear();
         foreach (Transform child in transform)
         {
             Destroy(child.gameObject);

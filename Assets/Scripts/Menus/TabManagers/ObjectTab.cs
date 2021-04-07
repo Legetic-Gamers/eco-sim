@@ -29,9 +29,9 @@ public class ObjectTab : SettingsManager
         if (simulationSettings.ObjectPlacementSettings.ObjectTypes.Count > 0)
         {
             currentlySelectedIndex = 0;
-            SetValuesToFields(simulationSettings.ObjectPlacementSettings.ObjectTypes[currentlySelectedIndex]);
+            SetValuesToFields(simulationSettings.ObjectPlacementSettings.GetObjectType(currentlySelectedIndex));
+            fitter.Populate(simulationSettings.ObjectPlacementSettings.GetObjectType(currentlySelectedIndex));
         }
-        ChangeSelection(currentlySelectedIndex);
     }
 
     public void AddObjectType()
@@ -85,7 +85,7 @@ public class ObjectTab : SettingsManager
         {
             currentlySelectedIndex = index;
             objectTypeSelectorDropdown.value = currentlySelectedIndex;
-            ObjectType objectType = simulationSettings.ObjectPlacementSettings.ObjectTypes[currentlySelectedIndex];
+            ObjectType objectType = simulationSettings.ObjectPlacementSettings.GetObjectType(currentlySelectedIndex);
             SetValuesToFields(objectType);
             fitter.Populate(objectType);
         }
