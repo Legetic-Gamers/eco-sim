@@ -10,6 +10,9 @@ public class SimulationPreview : MonoBehaviour
     public SimulationSettings simulationSettings;
     public TextureApplication textureApplication;
 
+    private ObjectPlacement objectPlacement;
+
+
     public Material terrainMaterial;
 
     public bool autoUpdate;
@@ -26,7 +29,38 @@ public class SimulationPreview : MonoBehaviour
 
         OnWaterUpdated();
         OnTextureValuesUpdated();
+
+        objectPlacement = meshFilter.gameObject.AddComponent<ObjectPlacement>();
+        objectPlacement.PlaceObjects(new Vector2(meshFilter.gameObject.transform.position.x, meshFilter.gameObject.transform.position.z));
+        simulationSettings.ObjectPlacementSettings.OnTypeAdded += OnObjectTypeAdded;
+        simulationSettings.ObjectPlacementSettings.OnTypeChanged += OnTypeChanged;
+        simulationSettings.ObjectPlacementSettings.OnTypeDeleted += objectPlacement.DestroyGroupObjectWithName;
+
     }
+
+    private void OnObjectTypeAdded(int index)
+    {
+        var objectTypes = simulationSettings.ObjectPlacementSettings.ObjectTypes;
+        Debug.Log("Index / value: " + index + " " + objectTypes[index].Name);
+        objectPlacement.PlaceObjectType(
+            objectTypes[index],
+            new Vector2(
+                meshFilter.gameObject.transform.position.x,
+                meshFilter.gameObject.transform.position.z)
+        );
+    }
+
+    private void OnTypeChanged(int index)
+    {
+        objectPlacement.UpdateObjectType(
+            index,
+            new Vector2(
+                meshFilter.gameObject.transform.position.x,
+                meshFilter.gameObject.transform.position.z)
+        );
+    }
+
+
 
     public void DisplaySimulationPreview()
     {

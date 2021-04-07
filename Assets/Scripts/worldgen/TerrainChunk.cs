@@ -233,9 +233,8 @@ public class TerrainChunk
         if (hasSetCollider)
         {
             ObjectPlacement objectPlacement = meshObject.AddComponent<ObjectPlacement>();
-            objectPlacement.PlaceObjects(coordinate * meshSettings.MeshWorldSize, objectPlacementSettings, meshSettings, heightMapSettings);
+            objectPlacement.PlaceObjects(coordinate * meshSettings.MeshWorldSize);
         }
-
     }
 
     public void SetVisible(bool visible)

@@ -16,7 +16,9 @@ public class WaterTab : SettingsManager
         waterSourceDelta.value = simulationSettings.WaterSettings.WaterVertexDiff;
     }
 
-    public void SetSettings() {
+    public void SetSettings()
+    {
+        Debug.Log("Water Tab set settings " + simulationSettings.ToString());
         simulationSettings.WaterSettings = new WaterSettings(
             simulationSettings.WaterSettings.GenerateWater,
             stylizedWater.isOn,

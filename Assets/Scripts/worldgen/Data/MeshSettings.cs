@@ -11,14 +11,14 @@ public class MeshSettings
 
     [SerializeField]
     private float meshScale = 2.5f;
-    
+
     [SerializeField]
     private bool useFlatShading;
 
     [SerializeField]
     [Range(0, numSupportedChunkSizes - 1)]
     private int chunkSizeIndex;
-    
+
     [SerializeField]
     [Range(0, numSupportedFlatshadedChunkSizes - 1)]
     private int flatShadedChunkSizeIndex;
@@ -30,7 +30,7 @@ public class MeshSettings
         this.chunkSizeIndex = chunkSizeIndex;
         this.flatShadedChunkSizeIndex = flatShadedChunkSizeIndex;
     }
-    
+
     // number of verticies per line of mesh rendered at LOD = 0. Includes the two extra verticies that are excluded
     // from final mesh , but used for calculating normals.    
     public int NumVertsPerLine
@@ -51,9 +51,9 @@ public class MeshSettings
 
     public float MeshScale
     {
-        get { return meshScale;}
+        get { return meshScale; }
     }
-    
+
     public bool UseFlatShading
     {
         get { return useFlatShading; }
@@ -64,7 +64,7 @@ public class MeshSettings
         get { return chunkSizeIndex; }
     }
 
-    public int FlatShadedChunkSizeIndex 
+    public int FlatShadedChunkSizeIndex
     {
         get { return flatShadedChunkSizeIndex; }
     }
