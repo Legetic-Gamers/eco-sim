@@ -2566,7 +2566,8 @@ GameObject:
   - component: {fileID: 905557162}
   - component: {fileID: 481723368070252415}
   - component: {fileID: 5506011368490316984}
-  - component: {fileID: 3825933015066498268}
+  - component: {fileID: 9185665264343821648}
+  - component: {fileID: -8162256050700786706}
   m_Layer: 8
   m_Name: Rabbit Brown
   m_TagString: Animal
@@ -2657,6 +2658,8 @@ MonoBehaviour:
   heardFriendlyTargets: []
   heardPreyTargets: []
   isInfertile: 0
+  eyesTransform: {fileID: 0}
+  centerTransform: {fileID: 0}
 --- !u!114 &1380498083
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2751,7 +2754,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.23, y: 0.3, z: 0.59}
   m_Center: {x: 0, y: 0.17, z: 0}
---- !u!114 &3825933015066498268
+--- !u!114 &9185665264343821648
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2760,7 +2763,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5945667779142240406}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 07422175caeb4ae7abedf1488c86805e, type: 3}
+  m_Script: {fileID: 11500000, guid: bb8c3b788da21de4bb762fff73b53444, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   targetMask:
@@ -2769,6 +2772,23 @@ MonoBehaviour:
   obstacleMask:
     serializedVersion: 2
     m_Bits: 2048
+--- !u!114 &-8162256050700786706
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5945667779142240406}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0795e2e31cde64428dc997f642c4648, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  showNavMeshAgentPath: 1
+  allowNavigateWithClick: 0
+  showVisibleTargets: 1
+  showFleeingVector: 0
+  showPerceptionRange: 0
 --- !u!1 &5945667779165617436
 GameObject:
   m_ObjectHideFlags: 0

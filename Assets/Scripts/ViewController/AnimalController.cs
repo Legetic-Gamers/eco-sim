@@ -19,7 +19,6 @@ using Random = System.Random;
 
 public abstract class AnimalController : MonoBehaviour, IPooledObject
 {
-    public static Random random = new Random();
 
     public AnimalModel animalModel;
 
@@ -136,33 +135,13 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     }
     
 
-    protected void Start()
+    private void Start()
     {
-        /*
-        // Init the NavMesh agent
-        agent = GetComponent<NavMeshAgent>();
-        agent.autoBraking = true;
-
-        animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
-
-        //Can be used later.
-        baseAngularSpeed = agent.angularSpeed;
-        baseAcceleration = agent.acceleration;
-
-        agent.speed = animalModel.currentSpeed * Time.timeScale;
-        agent.acceleration *= Time.timeScale;
-        agent.angularSpeed *= Time.timeScale;
-        dh = FindObjectOfType<DataHandler>();
-        dh.LogNewAnimal(animalModel);
-        //Debug.Log(agent.autoBraking);
-        tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
-        EventSubscribe();
-
-        SetPhenotype();
-        
-    }
-
-        */
+        //If there is no object pooler present, we need to call onObjectSpawn through start
+        if (FindObjectOfType<ObjectPooler>() == null)
+        {
+            onObjectSpawn();
+        }
     }
     
     /// <summary>

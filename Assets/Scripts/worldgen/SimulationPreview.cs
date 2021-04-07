@@ -27,15 +27,15 @@ public class SimulationPreview : MonoBehaviour
         simulationSettings.OnWaterChanged += OnWaterUpdated;
         simulationSettings.OnTextureChanged += OnTextureValuesUpdated;
 
+
+        OnTerrainChanged();
         OnWaterUpdated();
-        OnTextureValuesUpdated();
 
         objectPlacement = meshFilter.gameObject.AddComponent<ObjectPlacement>();
         objectPlacement.PlaceObjects(new Vector2(meshFilter.gameObject.transform.position.x, meshFilter.gameObject.transform.position.z));
         simulationSettings.ObjectPlacementSettings.OnTypeAdded += OnObjectTypeAdded;
         simulationSettings.ObjectPlacementSettings.OnTypeChanged += OnTypeChanged;
         simulationSettings.ObjectPlacementSettings.OnTypeDeleted += objectPlacement.DestroyGroupObjectWithName;
-
     }
 
     private void OnObjectTypeAdded(int index)
@@ -85,6 +85,7 @@ public class SimulationPreview : MonoBehaviour
         {
             DisplaySimulationPreview();
             meshFilter.gameObject.GetComponent<MeshCollider>().sharedMesh = meshFilter.sharedMesh;
+            textureApplication.UpdateMeshHeights(terrainMaterial, simulationSettings.HeightMapSettings.MinHeight, simulationSettings.HeightMapSettings.MaxHeight);
         }
     }
 

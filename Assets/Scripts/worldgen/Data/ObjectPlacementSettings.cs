@@ -35,6 +35,11 @@ public class ObjectPlacementSettings
         objectTypes.RemoveAt(index);
         OnTypeDeleted.Invoke(name);
     }
+
+    public ObjectType GetObjectType(int index)
+    {
+        return objectTypes[index];
+    }
 }
 
 

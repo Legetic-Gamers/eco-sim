@@ -130,22 +130,22 @@ public class AnimalBrainAgent : Agent,IAgent
         if (discreteActions[0] == 0)
         {
             ChangeState(animalController.wanderState);
-            print("Wander.");
+            //print("Wander.");
         }
         else if (discreteActions[0] == 1)
         {
             ChangeState(animalController.goToWaterState);
-            print("Look for Water.");
+            //print("Look for Water.");
         }
         else if (discreteActions[0] == 2)
         {
             ChangeState(animalController.goToMate);
-            print("Look for Mate.");
+            //print("Look for Mate.");
         }
         else if (discreteActions[0] == 3)
         {
             ChangeState(animalController.goToFoodState);
-            print("Look for food.");
+            //print("Look for food.");
         }
 
         ///////////////////////////////////////////////////////////////SET REWARDS/PENALTIES
@@ -156,7 +156,7 @@ public class AnimalBrainAgent : Agent,IAgent
             {
                 ChangeState(animalController.fleeingState);
         
-                print("Flee!");
+                //print("Flee!");
             }
             else
             {

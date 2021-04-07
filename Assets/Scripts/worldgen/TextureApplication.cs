@@ -6,17 +6,9 @@ using UnityEngine;
 
 public class TextureApplication : MonoBehaviour
 {
-
-    SimulationSettings settings;
-
-    private void Awake()
-    {
-        settings = FindObjectOfType<SimulationSettings>();
-    }
-
     public void UpdateTextureSettings(Color[] baseColours, float[] newBaseHeights, float minHeight, float maxHeight)
     {
-        settings.TextureSettings = new TextureSettings(
+        SimulationSettings.instance.TextureSettings = new TextureSettings(
             baseColours,
             newBaseHeights,
             minHeight,
@@ -31,8 +23,8 @@ public class TextureApplication : MonoBehaviour
         // Debug.Log("Base colors: " + settings.TextureSettings.BaseColours.Count);
         // Debug.Log("Start Height: " + settings.TextureSettings.BaseStartHeights.Count);
 
-        Color[] colours = settings.TextureSettings.BaseColours.ToArray();
-        float[] startHeight = settings.TextureSettings.BaseStartHeights.ToArray();
+        Color[] colours = SimulationSettings.instance.TextureSettings.BaseColours.ToArray();
+        float[] startHeight = SimulationSettings.instance.TextureSettings.BaseStartHeights.ToArray();
 
         material.SetColor("waterColor", colours[0]);
         material.SetColor("sandColor", colours[1]);
@@ -47,9 +39,9 @@ public class TextureApplication : MonoBehaviour
 
     public void UpdateMeshHeights(Material material, float minHeight, float maxHeight)
     {
-        settings.TextureSettings = new TextureSettings(
-            settings.TextureSettings.BaseColours.ToArray(),
-            settings.TextureSettings.BaseStartHeights.ToArray(),
+        SimulationSettings.instance.TextureSettings = new TextureSettings(
+            SimulationSettings.instance.TextureSettings.BaseColours.ToArray(),
+            SimulationSettings.instance.TextureSettings.BaseStartHeights.ToArray(),
             minHeight,
             maxHeight
         );
@@ -58,7 +50,7 @@ public class TextureApplication : MonoBehaviour
 
     private void SetHeightsBasedFromSettings(Material material)
     {
-        material.SetFloat("minHeight", settings.TextureSettings.SavedMinHeight);
-        material.SetFloat("maxHeight", settings.TextureSettings.SavedMaxHeight);
+        material.SetFloat("minHeight", SimulationSettings.instance.TextureSettings.SavedMinHeight);
+        material.SetFloat("maxHeight", SimulationSettings.instance.TextureSettings.SavedMaxHeight);
     }
 }
