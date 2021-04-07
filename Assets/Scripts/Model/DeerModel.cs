@@ -25,8 +25,8 @@ public class DeerModel : AnimalModel, IEdible
     {
         Traits childTraits = traits.Crossover(otherParent.traits, age, otherParent.age);
         childTraits.Mutation();
-        //TODO logic for determining generation
-        return new DeerModel(childTraits, 0);
+        
+        return new DeerModel(childTraits, (int) Math.Max(age, otherParent.age) + 1);
     }
     
     public override bool CanEat<T>(T obj)

@@ -8,6 +8,7 @@ public class ObjectPlacement : MonoBehaviour
     public List<GameObject> groups;
     public SimulationSettings simulationSettings;
     int size;
+    private List<string> pooledObjects = new List<string> { "Rabbits", "Wolfs", "Deers", "Bears" };
 
     public void Awake()
     {
@@ -86,6 +87,12 @@ public class ObjectPlacement : MonoBehaviour
                         bool withinSpan = hit.point.y <= (simulationSettings.HeightMapSettings.MaxHeight - simulationSettings.HeightMapSettings.MinHeight) * objectType.MaxHeight
                         && hit.point.y >= (simulationSettings.HeightMapSettings.MaxHeight - simulationSettings.HeightMapSettings.MinHeight) * objectType.MinHeight;
 
+                        var animalName = objectType.Name;
+                        if (pooledObjects.IndexOf(animalName) != -1)
+                        {
+                            ObjectPooler.instance.HandleAnimalInstantiated(gameObject, animalName);
+                        }
+                        
                         if (withinSpan)
                         {
                             Vector3 oldPosition = gameObject.transform.position;

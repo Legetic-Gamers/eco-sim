@@ -22,8 +22,8 @@ public class BearModel : AnimalModel
     {
         Traits childTraits = traits.Crossover(otherParent.traits, age, otherParent.age);
         childTraits.Mutation();
-        //TODO logic to determine generation
-        return new BearModel(childTraits, 0);
+        
+        return new BearModel(childTraits, (int) Math.Max(age, otherParent.age) + 1);
     }
     
     public override bool CanEat<T>(T obj)

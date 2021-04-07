@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using AnimalsV2;
 using AnimalsV2.States;
 using AnimalsV2.States.AnimalsV2.States;
 using DataCollection;
+using DefaultNamespace;
 using Model;
 using UnityEditor;
 using UnityEngine;
@@ -16,7 +16,7 @@ using Debug = UnityEngine.Debug;
 using Random = System.Random;
 
 
-public abstract class AnimalController : MonoBehaviour
+public abstract class AnimalController : MonoBehaviour, IPooledObject
 {
     public static Random random = new Random();
 
@@ -29,6 +29,8 @@ public abstract class AnimalController : MonoBehaviour
     // decisionMaker subscribes to these actions
     public Action<GameObject> actionPerceivedHostile;
     public Action actionDeath;
+    public Action<AnimalController> Dead;
+    public Action<AnimalModel, Vector3, float, float> SpawnNew;
 
     // AnimalParticleManager is subscribed to these
     public event Action<bool> ActionPregnant;
@@ -100,7 +102,7 @@ public abstract class AnimalController : MonoBehaviour
     {
         //Create the FSM.
         fsm = new FiniteStateMachine();
-
+        
         goToFoodState = new GoToFood(this, fsm);
         fleeingState = new FleeingState(this, fsm);
         wanderState = new Wander(this, fsm);
@@ -112,9 +114,12 @@ public abstract class AnimalController : MonoBehaviour
         eatingState = new EatingState(this, fsm);
         goToMate = new GoToMate(this, fsm);
         waitingState = new Waiting(this, fsm);
+        
         fsm.Initialize(wanderState);
 
         animationController = new AnimationController(this);
+        agent = GetComponent<NavMeshAgent>();
+        
         
         if (eyesTransform == null)
         {
@@ -132,6 +137,7 @@ public abstract class AnimalController : MonoBehaviour
 
     protected void Start()
     {
+        /*
         // Init the NavMesh agent
         agent = GetComponent<NavMeshAgent>();
         agent.autoBraking = true;
@@ -155,6 +161,33 @@ public abstract class AnimalController : MonoBehaviour
         
     }
 
+        */
+    }
+    /// <summary>
+    /// "Start()" when using animal pooling, called when the animal is set to be active. 
+    /// </summary>
+    public void onObjectSpawn()
+    {
+        // Init the NavMesh agent
+        agent.autoBraking = true;
+
+        animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
+
+        //Can be used later.
+        baseAngularSpeed = agent.angularSpeed;
+        baseAcceleration = agent.acceleration;
+        
+        agent.speed = animalModel.currentSpeed * Time.timeScale;
+        agent.acceleration *= Time.timeScale;
+        agent.angularSpeed *= Time.timeScale;
+        dh = FindObjectOfType<DataHandler>();
+        dh.LogNewAnimal(animalModel);
+        //Debug.Log(agent.autoBraking);
+        tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
+        EventSubscribe();
+
+        SetPhenotype();
+    }
 
     /* /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\ */
     /*                                   Parameter handlers                                   */
@@ -282,6 +315,8 @@ public abstract class AnimalController : MonoBehaviour
         animalModel.reproductiveUrge += 0.01f * reproductiveUrgeModifier;
         // animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
         // agent.speed = animalModel.currentSpeed * Time.timeScale;
+        agent.acceleration = baseAcceleration * Time.timeScale;
+        agent.angularSpeed = baseAngularSpeed * Time.timeScale;
     }
 
 
@@ -421,27 +456,28 @@ public abstract class AnimalController : MonoBehaviour
         AnimalController otherParentAnimalController)
     {
         yield return new WaitForSeconds(laborTime);
-        
+        AnimalModel childModel = animalModel.Mate(otherParentAnimalController.animalModel);
+        SpawnNew?.Invoke(childModel, transform.position, childEnergy, childHydration);
+        animalModel.isPregnant = false;
         //Instantiate here
+        /*
         GameObject child = Instantiate(gameObject, transform.position, transform.rotation); //NOTE CHANGE SO THAT PREFAB IS USED
         
         // Generate the offspring traits
         AnimalModel childModel = animalModel.Mate(otherParentAnimalController.animalModel);
-        AnimalController childController = child.GetComponent<AnimalController>();
-        childController.animalModel = childModel;
-        childController.animalModel.currentEnergy = childEnergy;
-        childController.animalModel.currentHydration = childHydration;   
+        
+        child.GetComponent<AnimalController>().animalModel = childModel;
+        child.GetComponent<AnimalController>().animalModel.currentEnergy = childEnergy;
+        child.GetComponent<AnimalController>().animalModel.currentHydration = childHydration;   
 
-        // update the child's speed (in case of mutation).
-        childController.animalModel.traits.maxSpeed = 1;
+        // update the childs speed (in case of mutation).
+        child.GetComponent<AnimalController>().animalModel.traits.maxSpeed = 1;
         
-        // trigger birth particle effect
-        childController.ActionBirth?.Invoke();
-        ActionPregnant?.Invoke(false);
         
-        animalModel.isPregnant = false;
         //Debug.Log(child.GetComponent<AnimalController>().animalModel.generation);
-        OnBirth?.Invoke(this,new OnBirthEventArgs{child = child});
+        onBirth?.Invoke(this,new OnBirthEventArgs{child = child});
+        */
+        
     }
 
     /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
@@ -462,7 +498,7 @@ public abstract class AnimalController : MonoBehaviour
             if (animalModel.currentHealth == 0) cause = AnimalModel.CauseOfDeath.Health;
             if (animalModel.currentHydration == 0) cause = AnimalModel.CauseOfDeath.Hydration;
             else cause = AnimalModel.CauseOfDeath.Eaten;
-            //dh.LogDeadAnimal(animalModel, cause);
+            dh.LogDeadAnimal(animalModel, cause);
 
             // invoke death state with method HandleDeath() in decisionmaker
             actionDeath?.Invoke();
@@ -525,7 +561,9 @@ public abstract class AnimalController : MonoBehaviour
 
                 break;
         }
+
     }
 
     public abstract Vector3 getNormalizedScale();
+    
 }
