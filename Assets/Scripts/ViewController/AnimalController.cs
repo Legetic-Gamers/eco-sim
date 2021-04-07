@@ -30,7 +30,6 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
 
     // decisionMaker subscribes to these actions
     public Action<GameObject> actionPerceivedHostile;
-    public Action<AnimalController> Dead;
     public Action<AnimalModel, Vector3, float, float> SpawnNew;
 
     //Subscribed to by animalBrainAgent.

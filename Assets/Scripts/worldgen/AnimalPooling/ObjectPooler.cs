@@ -85,7 +85,7 @@ public class ObjectPooler : MonoBehaviour
             
             if (objectToSpawn.CompareTag("Animal"))
             {
-                objectToSpawn.GetComponent<AnimalController>().Dead += HandleDeadAnimal;
+                objectToSpawn.GetComponent<AnimalController>().deadState.onDeath += HandleDeadAnimal;
                 objectToSpawn.GetComponent<AnimalController>().SpawnNew += HandleBirthAnimal;
             }
             poolDictionary[tag].Enqueue(objectToSpawn);
@@ -185,7 +185,7 @@ public class ObjectPooler : MonoBehaviour
 
                     if (objectToSpawn.CompareTag("Animal"))
                     {
-                        objectToSpawn.GetComponent<AnimalController>().Dead += HandleDeadAnimal;
+                        objectToSpawn.GetComponent<AnimalController>().deadState.onDeath += HandleDeadAnimal;
                         objectToSpawn.GetComponent<AnimalController>().SpawnNew += HandleBirthAnimal;
                     }
 
