@@ -175,7 +175,7 @@ public class DumbAgent : Agent, IAgent
     }
     
     
-    private void HandleDeath()
+    private void HandleDeath(AnimalController animalController)
     {
         AddReward(-1);
         onEpisodeEnd?.Invoke(100f);
@@ -245,7 +245,7 @@ public class DumbAgent : Agent, IAgent
     {
         //Request decision on every sense tick
         eventPublisher.onSenseTickEvent += RequestDecision;
-        animalController.actionDeath += HandleDeath;
+        animalController.deadState.onDeath += HandleDeath;
         animalController.eatingState.onEatFood += HandleEat;
         animalController.matingState.onMate += HandleMate;
         animalController.drinkingState.onDrinkWater += HandleDrink;
@@ -255,7 +255,7 @@ public class DumbAgent : Agent, IAgent
     public void EventUnsubscribe()
     {
         eventPublisher.onSenseTickEvent -= RequestDecision;
-        animalController.actionDeath -= HandleDeath;
+        animalController.deadState.onDeath -= HandleDeath;
         animalController.eatingState.onEatFood -= HandleEat;
         animalController.matingState.onMate -= HandleMate;
         animalController.drinkingState.onDrinkWater -= HandleDrink;
