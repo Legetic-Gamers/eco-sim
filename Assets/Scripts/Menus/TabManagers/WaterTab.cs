@@ -18,7 +18,6 @@ public class WaterTab : SettingsManager
 
     public void SetSettings()
     {
-        Debug.Log("Water Tab set settings " + simulationSettings.ToString());
         simulationSettings.WaterSettings = new WaterSettings(
             simulationSettings.WaterSettings.GenerateWater,
             stylizedWater.isOn,
