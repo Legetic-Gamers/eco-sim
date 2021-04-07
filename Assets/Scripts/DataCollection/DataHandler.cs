@@ -31,7 +31,10 @@ namespace DataCollection
         private Collector c;
         private List<float> sendList1 = new List<float>();
         private List<float> sendList2 = new List<float>();
-        
+
+        private static int _listNumber = 1; // 0 population, 1 trait, 2 birth rate, 3 food available
+        private static int _speciesNumberPopulation = 0; //default all animals 
+        private static int _speciesNumberBirthRate = 0; // default rabbit
         private static int _speciesNumber1 = 0;
         private static int _traitNumber1 = 0;
         private static int _dataTypeNumber1 = 0;
@@ -66,8 +69,8 @@ namespace DataCollection
             tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
             // Subscribe to Tick Event publisher update data and graph 
             tickEventPublisher.onCollectorUpdate += UpdateDataAndGraph;
-            //ButtonClick bc = FindObjectOfType<ButtonClick>();
-            //bc.GetListType += SetList;
+            ButtonClick bc = FindObjectOfType<ButtonClick>();
+            bc.GetListType += SetTrait;
             // Make a collector to handle data
             c = new Collector();
             // Prepare for frame rate collection
@@ -136,45 +139,122 @@ namespace DataCollection
             c.CollectDeadFood(plantModel);
         }
 
-        private void SetList(int a, int x, int y, int z)
+        private void SetPopulation(int speciesNumberPopulation)
         {
             List<float> tmplist = new List<float>();
-            switch (x)
+            switch (speciesNumberPopulation)
             {
                 case 0:
-                    if (z == 0) tmplist = c.rabbitStatsPerGenMean[y];
-                    if (z == 1) tmplist = c.rabbitStatsPerGenVar[y];
+                    tmplist = ConvertIntListToFloatList(c.totalAnimalsAlivePerGeneration);
                     break;
                 case 1:
-                    if (z == 0) tmplist = c.wolfStatsPerGenMean[y];
-                    if (z == 1) tmplist = c.wolfStatsPerGenVar[y];
+                    tmplist = c.rabbitTotalAlivePerGen;
+                    break;
+                case 2:
+                    tmplist = c.wolfTotalAlivePerGen;
+                    break;
+                case 3:
+                    tmplist = c.deerTotalAlivePerGen;
+                    break;
+                case 4:
+                    tmplist = c.bearTotalAlivePerGen;
+                    break;
+                
+            }
+
+            sendList1 = tmplist;
+            _speciesNumberPopulation = speciesNumberPopulation;
+            _listNumber = 0;
+        }
+
+        private void SetTrait(int listNumber, int speciesNumber, int traitNumber, int dataType)
+        {
+            List<float> tmplist = new List<float>();
+            switch (speciesNumber)
+            {
+                case 0:
+                    if (dataType == 0) tmplist = c.rabbitStatsPerGenMean[traitNumber];
+                    if (dataType == 1) tmplist = c.rabbitStatsPerGenVar[traitNumber];
+                    break;
+                case 1:
+                    if (dataType == 0) tmplist = c.wolfStatsPerGenMean[traitNumber];
+                    if (dataType == 1) tmplist = c.wolfStatsPerGenVar[traitNumber];
                     break;      
                 case 2:         
-                    if (z == 0) tmplist = c.deerStatsPerGenMean[y];
-                    if (z == 1) tmplist = c.deerStatsPerGenVar[y];
+                    if (dataType == 0) tmplist = c.deerStatsPerGenMean[traitNumber];
+                    if (dataType == 1) tmplist = c.deerStatsPerGenVar[traitNumber];
                     break;      
                 case 3:         
-                    if (z == 0) tmplist = c.bearStatsPerGenMean[y];
-                    if (z == 1) tmplist = c.bearStatsPerGenVar[y];
+                    if (dataType == 0) tmplist = c.bearStatsPerGenMean[traitNumber];
+                    if (dataType == 1) tmplist = c.bearStatsPerGenVar[traitNumber];
                     break;
             }
 
-            if (a == 0)
+            _listNumber = 1;
+
+            if (listNumber == 0)
             {
                 sendList1 = tmplist;
-                _speciesNumber1 = x;
-                _traitNumber1 = y;
-                _dataTypeNumber1 = z;
+                _speciesNumber1 = speciesNumber;
+                _traitNumber1 = traitNumber;
+                _dataTypeNumber1 = dataType;
             }
 
             else
             {
                 sendList2 = tmplist;
-                _speciesNumber2 = x;
-                _traitNumber2 = y;
-                _dataTypeNumber2 = z;
+                _speciesNumber2 = speciesNumber;
+                _traitNumber2 = traitNumber;
+                _dataTypeNumber2 = dataType;
             }
         }
+        
+        private void SetBirthRate(int speciesNumberBirthRate)
+        {
+            List<float> tmplist = new List<float>();
+            switch (speciesNumberBirthRate)
+            {
+                case 0:
+                    tmplist = c.birthRatePerMinute[0];
+                    break;
+                case 1:
+                    tmplist = c.birthRatePerMinute[1];
+                    break;
+                case 2:
+                    tmplist = c.birthRatePerMinute[2];
+                    break;
+                case 3:
+                    tmplist = c.birthRatePerMinute[3];
+                    break;
+            }
+
+            sendList1 = tmplist;
+            _speciesNumberPopulation = speciesNumberBirthRate;
+            _listNumber = 2;
+        }
+
+        private void SetFoodAvailable()
+        {
+            sendList1 = ConvertIntListToFloatList(c.foodActivePerMinute);
+            _listNumber = 3;
+        }
+
+        private void Updatelist(int listNumber)
+        {
+            switch (listNumber)
+            {
+                case 0: SetPopulation(_speciesNumberPopulation);
+                    break;
+                case 1: SetTrait(0,_speciesNumber1, _traitNumber1, 0);
+                    break;
+                case 2: SetBirthRate(_speciesNumberBirthRate);
+                    break;
+                case 3: SetFoodAvailable();
+                    break;
+                
+            }
+        }
+
         
         /// <summary>
         /// Uses the Formatter to print a list in json format in /Export. name will match trait name. 
@@ -192,10 +272,11 @@ namespace DataCollection
         /// </summary>
         private void UpdateDataAndGraph()
         {
-            //c.Collect();
+            c.Collect();
 
-            SetList(0,_speciesNumber1,_traitNumber1,_dataTypeNumber1);
-            SetList(1,_speciesNumber2,_traitNumber2,_dataTypeNumber2);
+            Updatelist(_listNumber);
+            //SetTrait(0,_speciesNumber1,_traitNumber1,_dataTypeNumber1);
+            //SetList(1,_speciesNumber2,_traitNumber2,_dataTypeNumber2);
             Display?.Invoke(sendList1, sendList2);
             //if (ShowFrameRate) Display(ConvertFloatListToIntList(framerate));
             //ExportDataToFile(0);
@@ -212,6 +293,14 @@ namespace DataCollection
 
             foreach (float f in list.ToArray()) integerList.Add((int) f);
             return integerList;
+        }
+        
+        private List<float> ConvertIntListToFloatList(List<int> list)
+        {
+            List<float> floatList = new List<float>();
+
+            foreach (int f in list.ToArray()) floatList.Add((float) f);
+            return floatList;
         }
     }
 }

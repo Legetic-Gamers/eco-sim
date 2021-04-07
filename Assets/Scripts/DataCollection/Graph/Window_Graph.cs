@@ -104,6 +104,8 @@ public class Window_Graph : MonoBehaviour
         ButtonClick.OnButtonReDraw += ReDraw;
     }
 
+
+
 private void Draw(List<float> list1, List<float> list2)
 {
     _list1 = list1;
