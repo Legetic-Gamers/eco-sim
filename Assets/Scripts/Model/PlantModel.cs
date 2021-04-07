@@ -5,36 +5,7 @@ namespace Model
     public class PlantModel : IEdible
     {
         public bool isEaten = false;
-<<<<<<< HEAD
         
-<<<<<<< HEAD
-        public float plantAge;
-
-        public const float plantMaxAge = 60;
-        public const float plantMaxsize = 30;
-
-
-        public float nutritionValue { get; set; }
-
-        public float GetEaten()
-        {
-            isEaten = true;
-            float tmp = nutritionValue;
-            nutritionValue = 0;
-            return tmp;
-
-        }
-        
-        public PlantModel()
-        {
-            this.plantAge = 0;
-            this.nutritionValue = 0;
-        }
-=======
->>>>>>> parent of e186d122 (Merge branch 'dynamic-food' into develop)
-        
-        
-=======
         public float nutritionValue { get; set; }
 
         public PlantModel(float nutritionValue)
@@ -52,9 +23,6 @@ namespace Model
             isEaten = true;
             return nutritionValue;
         }
-<<<<<<< HEAD
->>>>>>> parent of e186d122 (Merge branch 'dynamic-food' into develop)
-=======
->>>>>>> parent of e186d122 (Merge branch 'dynamic-food' into develop)
+
     }
 }
