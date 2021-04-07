@@ -61,12 +61,6 @@ public class ObjectPlacement : MonoBehaviour
                 }
 
                 GameObject gameObject = Instantiate(settings.objectTypes[i].gameObjectSettings[randomIndex].gameObject, new Vector3(point.x - size / 2, heightMapSettings.maxHeight + 10, point.y - size / 2), Quaternion.identity);
-                var animalName = settings.objectTypes[i].name;
-                if (pooledObjects.IndexOf(animalName) != -1)
-                {
-                    //gameObject.SetActive(false);
-                    ObjectPooler.instance.HandleAnimalInstantiated(gameObject, animalName);
-                }
                 //gameObject.transform.position = new Vector3(point.x - size / 2, heightMapSettings.maxHeight + 10, point.y - size / 2);
                 gameObject.transform.parent = groupObject.transform;
                 //gameObject.transform.localScale = Vector3.one * settings.objectTypes[i].scale * meshSettings.meshScale;
@@ -79,7 +73,13 @@ public class ObjectPlacement : MonoBehaviour
                     {
                         bool withinSpan = hit.point.y <= (heightMapSettings.maxHeight - heightMapSettings.minHeight) * settings.objectTypes[i].maxHeight
                         && hit.point.y >= (heightMapSettings.maxHeight - heightMapSettings.minHeight) * settings.objectTypes[i].minHeight;
-
+                        
+                        var animalName = settings.objectTypes[i].name;
+                        if (pooledObjects.IndexOf(animalName) != -1)
+                        {
+                            ObjectPooler.instance.HandleAnimalInstantiated(gameObject, animalName);
+                        }
+                        
                         if (withinSpan)
                         {
                             Vector3 oldPosition = gameObject.transform.position;
