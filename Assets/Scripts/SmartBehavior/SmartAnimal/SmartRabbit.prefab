@@ -1689,6 +1689,8 @@ MonoBehaviour:
   matingParticleSystem: {fileID: 19800004, guid: bde53105b8182734c8ea3b60cf07dfdc,
     type: 3}
   bornParticleSystem: {fileID: 19800000, guid: cad95613d7466d549bf4928aef790dfd, type: 3}
+  pregnancyParticleSystem: {fileID: 19800004, guid: fb667f08336441b4fa2b6369a17fe4e5,
+    type: 3}
 --- !u!54 &293866762
 Rigidbody:
   m_ObjectHideFlags: 0
