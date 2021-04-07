@@ -164,32 +164,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
 
         */
     }
-    /// <summary>
-    /// "Start()" when using animal pooling, called when the animal is set to be active. 
-    /// </summary>
-    public void onObjectSpawn()
-    {
-        // Init the NavMesh agent
-        agent.autoBraking = true;
-
-        animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
-
-        //Can be used later.
-        baseAngularSpeed = agent.angularSpeed;
-        baseAcceleration = agent.acceleration;
-        
-        agent.speed = animalModel.currentSpeed * Time.timeScale;
-        agent.acceleration *= Time.timeScale;
-        agent.angularSpeed *= Time.timeScale;
-        dh = FindObjectOfType<DataHandler>();
-        dh.LogNewAnimal(animalModel);
-        //Debug.Log(agent.autoBraking);
-        tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
-        EventSubscribe();
-
-        SetPhenotype();
-        */
-    }
+    
     /// <summary>
     /// "Start()" when using animal pooling, called when the animal is set to be active. 
     /// </summary>

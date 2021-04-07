@@ -97,7 +97,7 @@ public class ObjectPlacement : MonoBehaviour
                         var animalName = objectType.Name;
                         if (pooledObjects.IndexOf(animalName) != -1)
                         {
-                            ObjectPooler.instance.HandleAnimalInstantiated(gameObject, animalName);
+                            ObjectPooler.GetInstance().HandleAnimalInstantiated(gameObject, animalName);
                         }
                         
                         if (withinSpan)
