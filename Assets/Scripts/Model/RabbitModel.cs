@@ -10,7 +10,7 @@ public class RabbitModel : AnimalModel,IEdible
     public RabbitModel() : base(new Traits(1f, 100, 100, 
                                     50, 6.65f, 5f, 
                                     10,40, 10, 
-                                    160, 13, 10), 0)
+                                    160, 13, 7), 0)
 
     {
         // Rabbit specific initialization 
