@@ -16,7 +16,6 @@ public class ObjectPlacement : MonoBehaviour
     private List<string> pooledObjects = new List<string> { "Rabbits", "Wolfs", "Deers", "Bears" };
     public void PlaceObjects(ObjectPlacementSettings settings, MeshSettings meshSettings, HeightMapSettings heightMapSettings)
     {
-        var pooler = ObjectPooler.instance;
         int size;
         //Debug.Log("Is this called more than once");
         groups = new List<GameObject>();

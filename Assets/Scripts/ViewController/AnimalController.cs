@@ -150,7 +150,6 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     /// </summary>
     public void onObjectSpawn()
     {
-        Debug.Log("onobjectspawn");
         // Init the NavMesh agent
         agent.autoBraking = true;
 
