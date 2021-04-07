@@ -49,6 +49,7 @@ namespace Menus
             SceneManager.LoadScene("Main");
             Debug.Log("Load menu");
             isEnded = false;
+            isPaused = false;
         }
 
         public void End()
