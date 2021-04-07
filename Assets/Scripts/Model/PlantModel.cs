@@ -5,6 +5,7 @@ namespace Model
     public class PlantModel : IEdible
     {
         public bool isEaten = false;
+<<<<<<< HEAD
         
 <<<<<<< HEAD
         public float plantAge;
@@ -29,6 +30,8 @@ namespace Model
             this.plantAge = 0;
             this.nutritionValue = 0;
         }
+=======
+>>>>>>> parent of e186d122 (Merge branch 'dynamic-food' into develop)
         
         
 =======
@@ -49,6 +52,9 @@ namespace Model
             isEaten = true;
             return nutritionValue;
         }
+<<<<<<< HEAD
+>>>>>>> parent of e186d122 (Merge branch 'dynamic-food' into develop)
+=======
 >>>>>>> parent of e186d122 (Merge branch 'dynamic-food' into develop)
     }
 }
