@@ -72,18 +72,6 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - unity_Lightmaps:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - unity_LightmapsInd:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - unity_ShadowMasks:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     m_Floats:
     - ShadowBlend: 0.3
     - ShadowSize: 0.1
@@ -127,11 +115,8 @@ Material:
     - Color_59D500A6: {r: 0.4245283, g: 0.014017452, b: 0.014017452, a: 0}
     - Color_B8C88667: {r: 0, g: 0, b: 0, a: 0}
     - Color_C90FA907: {r: 0.41509432, g: 0.35715848, b: 0.15859737, a: 0}
-    - Color_aeba79397a7e4c059352e22a5d56ae77: {r: 0.3882353, g: 0.29411766, b: 0.12941177,
-        a: 0}
     - ShadowColor: {r: 0.23584905, g: 0.025587412, b: 0.025587412, a: 0}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 0.6691177, g: 0.6691177, b: 0.6691177, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0, g: 0, b: 0, a: 1}
-  m_BuildTextureStacks: []

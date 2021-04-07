@@ -65,21 +65,7 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - unity_Lightmaps:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - unity_LightmapsInd:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - unity_ShadowMasks:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     m_Floats:
-    - TransparencyDistance: 3
-    - TransparencyDitherSize: 0.2
     - Vector1_1A6F2BEE: 0.1
     - Vector1_42EB5EEC: 0.3
     - Vector1_6DDC62FF: 2
@@ -87,8 +73,6 @@ Material:
     - Vector1_91917DA: 0.3
     - Vector1_EEB92BFD: 2
     - WindDensity: 3
-    - WindDirX: 0.3
-    - WindDirY: 0.3
     - WindSpeed: 0.5
     - WindStrength: 1
     - _AlphaClip: 0
@@ -119,4 +103,3 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
-  m_BuildTextureStacks: []

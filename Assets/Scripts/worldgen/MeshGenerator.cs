@@ -18,7 +18,7 @@ public static class MeshGenerator
 
         int verticiesPerLine = (meshSize - 1) / meshSimplificationIncrement + 1;
 
-        MeshData meshData = new MeshData(verticiesPerLine, meshSettings.UseFlatShading);
+        MeshData meshData = new MeshData(verticiesPerLine, meshSettings.useFlatShading);
 
         int[,] vertexIndiciesMap = new int[borderedSize, borderedSize];
         int meshVertexIndex = 0;
@@ -50,7 +50,7 @@ public static class MeshGenerator
                 int vertexIndex = vertexIndiciesMap[x, y];
                 Vector2 percent = new Vector2((x - meshSimplificationIncrement) / (float)meshSize, (y - meshSimplificationIncrement) / (float)meshSize);
                 float height = heightMap[x, y];
-                Vector3 vertexPosition = new Vector3((topLeftX + percent.x * meshSizeUnsimplified) * meshSettings.MeshScale, height, (topLeftZ - percent.y * meshSizeUnsimplified) * meshSettings.MeshScale);
+                Vector3 vertexPosition = new Vector3((topLeftX + percent.x * meshSizeUnsimplified) * meshSettings.meshScale, height, (topLeftZ - percent.y * meshSizeUnsimplified) * meshSettings.meshScale);
 
                 meshData.AddVertex(vertexPosition, percent, vertexIndex);
 

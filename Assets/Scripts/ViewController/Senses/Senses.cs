@@ -19,8 +19,6 @@ namespace ViewController.Senses
     
         private AnimalController animalController;
 
-        private Transform thisTransform;
-
         /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
 
         // reduce clutter in FindTargets()
@@ -41,47 +39,20 @@ namespace ViewController.Senses
             // prevent adding duplicates
             ClearLists();
 
-            if (thisTransform == null)
-            {
-                thisTransform = transform;
-            }
-
             // add targets in list when they enter the sphere
-            Collider[] targetsInRadius = Physics.OverlapSphere(thisTransform.position, radius, targetMask);
+            Collider[] targetsInRadius = Physics.OverlapSphere(transform.position, radius, targetMask);
 
             // loop through targets within the entire circle to determine whether to add to a Targets list
             for (int i = 0; i < targetsInRadius.Length; i++)
             {
                 GameObject target = targetsInRadius[i].gameObject;
-                Transform targetTransform = target.transform;
 
                 // don't add self
                 if (target == gameObject) continue;
                 
-                //If target is an animal, try to find its center transform, otherwise target transform is at the feet.
-                if (target.gameObject.CompareTag("Animal"))
-                {
-                    if(target.TryGetComponent(out AnimalController targetController) && targetController.centerTransform != null)
-                    {
-                        targetTransform = targetController.centerTransform;
-                    }
-                    
-                }
-                
-                //If target is a plant, try to find its center transform, otherwise target transform is at the bottom.
-                if (target.gameObject.CompareTag("Plant"))
-                {
-                    if(target.TryGetComponent(out PlantController plantController) && plantController.centerTransform != null)
-                    {
-                        targetTransform = plantController.centerTransform;
-                    }
-                    
-                }
-                
-                
-                Vector3 dirToTarget = (targetTransform.position - transform.position).normalized;
+                Vector3 dirToTarget = (target.transform.position - transform.position).normalized;
 
-                float distToTarget = Vector3.Distance(thisTransform.position, targetTransform.position);
+                float distToTarget = Vector3.Distance(transform.position, target.transform.position);
 
                 if (distToTarget <= hearingRadius && 
                     target.gameObject.CompareTag("Animal")) HandleHeardAnimalTarget(target);
@@ -91,7 +62,7 @@ namespace ViewController.Senses
                     if (distToTarget <= viewRadius)
                     {
                         // if target is not obscured
-                        if (!Physics.Raycast(thisTransform.position, dirToTarget, distToTarget, obstacleMask))
+                        if (!Physics.Raycast(transform.position, dirToTarget, distToTarget, obstacleMask))
                         {
                             if (target.gameObject.CompareTag("Plant"))
                             {
@@ -106,7 +77,6 @@ namespace ViewController.Senses
                                 HandleWaterTarget(target);
                             }
                         }
-                        
                     }
                 }
             }
@@ -187,13 +157,6 @@ namespace ViewController.Senses
             radius = Mathf.Max(hearingRadius,viewRadius);
             
             angle = animalController.animalModel.traits.viewAngle;
-
-            thisTransform = animalController.eyesTransform;
-            if (thisTransform == null)
-            {
-                Debug.LogWarning("NO EYES FOUND, SENSING FROM FEET!");
-                thisTransform = transform;
-            }
 
             StartCoroutine(SensesLoop());
         }

@@ -13,77 +13,57 @@ public class ObjectPlacement : MonoBehaviour
 {
     
     public List<GameObject> groups;
-    public SimulationSettings simulationSettings;
-    int size;
     private List<string> pooledObjects = new List<string> { "Rabbits", "Wolfs", "Deers", "Bears" };
-
-    public void Awake()
-    {
-        simulationSettings = FindObjectOfType<SimulationSettings>();
-    }
-
-
-    public void PlaceObjects(Vector2 positionOffset)
+    public void PlaceObjects(ObjectPlacementSettings settings, MeshSettings meshSettings, HeightMapSettings heightMapSettings)
     {
         int size;
+        //Debug.Log("Is this called more than once");
         groups = new List<GameObject>();
 
-        if (simulationSettings.MeshSettings.UseFlatShading)
+        if (meshSettings.useFlatShading)
         {
-            size = MeshSettings.supportedChunkSizes[simulationSettings.MeshSettings.FlatShadedChunkSizeIndex];
+            size = MeshSettings.supportedChunkSizes[meshSettings.flatShadedChunkSizeIndex];
         }
         else
         {
-            size = MeshSettings.supportedChunkSizes[simulationSettings.MeshSettings.ChunkSizeIndex];
+            size = MeshSettings.supportedChunkSizes[meshSettings.chunkSizeIndex];
         }
 
-        size = Mathf.RoundToInt(size * simulationSettings.MeshSettings.MeshScale);
-        this.size = size;
+        size = Mathf.RoundToInt(size * meshSettings.meshScale);
 
-        for (int i = 0; i < simulationSettings.ObjectPlacementSettings.ObjectTypes.Count; i++)
+        for (int i = 0; i < settings.objectTypes.Length; i++)
         {
-            PlaceObjectType(simulationSettings.ObjectPlacementSettings.ObjectTypes[i], positionOffset);
-        }
-    }
-
-    public void PlaceObjectType(ObjectType objectType, Vector2 positionOffset)
-    {
-        int deleted = 0;
-        if (objectType.GameObjectSettings == null || objectType.GameObjectSettings.Count <= 0)
-        {
-            return;
-        }
-        GameObject groupObject = new GameObject(objectType.Name + " Group");
-        groups.Add(groupObject);
-        groupObject.transform.parent = this.transform;
-        List<Vector2> points = GeneratePlacementPoints(objectType, simulationSettings.MeshSettings.MeshScale, size);
-        foreach (var point in points)
-        {
-            float maxLength = 0;
-            foreach (var obj in objectType.GameObjectSettings)
+            GameObject groupObject = new GameObject(settings.objectTypes[i].name + " Group");
+            groups.Add(groupObject);
+            groupObject.transform.parent = this.transform;
+            List<Vector2> points = GeneratePlacementPoints(settings, meshSettings.meshScale, i, size);
+            foreach (var point in points)
             {
-                maxLength += obj.Probability;
-            }
-
-            float randomChoice = Random.Range(0f, maxLength);
-            float counter = 0;
-            int randomIndex = 0;
-
-            for (int j = 0; j < objectType.GameObjectSettings.Count; j++)
-            {
-                counter += objectType.GameObjectSettings[j].Probability;
-                if (randomChoice <= counter)
+                // GameObject gameObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                float maxLength = 0;
+                foreach (var obj in settings.objectTypes[i].gameObjectSettings)
                 {
-                    randomIndex = j;
-                    break;
+                    maxLength += obj.probability;
                 }
-            }
-            //Debug.Log("GameObjectSettings Count [" + objectType.GameObjectSettings.Count + "] Random index: " + randomIndex);
-            if (objectType.GameObjectSettings[randomIndex].GameObject != null)
-            {
-                GameObject gameObject = Instantiate(objectType.GameObjectSettings[randomIndex].GameObject, new Vector3(point.x - size / 2 + positionOffset.x, simulationSettings.HeightMapSettings.MaxHeight + 10, point.y - size / 2 + positionOffset.y), Quaternion.identity);
 
+                float randomChoice = Random.Range(0f, maxLength);
+                float counter = 0;
+                int randomIndex = 0;
+
+                for (int j = 0; j < settings.objectTypes[i].gameObjectSettings.Length; j++)
+                {
+                    counter += settings.objectTypes[i].gameObjectSettings[j].probability;
+                    if (randomChoice < counter)
+                    {
+                        randomIndex = j;
+                        break;
+                    }
+                }
+
+                GameObject gameObject = Instantiate(settings.objectTypes[i].gameObjectSettings[randomIndex].gameObject, new Vector3(point.x - size / 2, heightMapSettings.maxHeight + 10, point.y - size / 2), Quaternion.identity);
+                //gameObject.transform.position = new Vector3(point.x - size / 2, heightMapSettings.maxHeight + 10, point.y - size / 2);
                 gameObject.transform.parent = groupObject.transform;
+                //gameObject.transform.localScale = Vector3.one * settings.objectTypes[i].scale * meshSettings.meshScale;
 
                 Ray ray = new Ray(gameObject.transform.position, gameObject.transform.TransformDirection(Vector3.down));
                 RaycastHit hit;
@@ -91,26 +71,22 @@ public class ObjectPlacement : MonoBehaviour
                 {
                     if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Ground"))
                     {
-                        bool withinSpan = hit.point.y <= (simulationSettings.HeightMapSettings.MaxHeight - simulationSettings.HeightMapSettings.MinHeight) * objectType.MaxHeight
-                        && hit.point.y >= (simulationSettings.HeightMapSettings.MaxHeight - simulationSettings.HeightMapSettings.MinHeight) * objectType.MinHeight;
-
-                        var animalName = objectType.Name;
-                        if (pooledObjects.IndexOf(animalName) != -1)
-                        {
-                            ObjectPooler.instance.HandleAnimalInstantiated(gameObject, animalName);
-                        }
+                        bool withinSpan = hit.point.y <= (heightMapSettings.maxHeight - heightMapSettings.minHeight) * settings.objectTypes[i].maxHeight
+                        && hit.point.y >= (heightMapSettings.maxHeight - heightMapSettings.minHeight) * settings.objectTypes[i].minHeight;
                         
+                        var animalName = settings.objectTypes[i].name;
+
                         if (withinSpan)
                         {
                             Vector3 oldPosition = gameObject.transform.position;
                             var agent = gameObject.GetComponent<NavMeshAgent>();
                             if (agent == null)
                             {
-                                gameObject.transform.position = new Vector3(oldPosition.x, hit.point.y + objectType.yOffset, oldPosition.z);
+                                gameObject.transform.position = new Vector3(oldPosition.x, hit.point.y + settings.objectTypes[i].yOffset, oldPosition.z);
                             }
                             else
                             {
-                                agent.Warp(new Vector3(oldPosition.x, hit.point.y + objectType.yOffset, oldPosition.z));
+                                agent.Warp(new Vector3(oldPosition.x, hit.point.y + settings.objectTypes[i].yOffset, oldPosition.z));
                             }
                             
                             //Indirect logs animal as instantiated in collector
@@ -132,37 +108,16 @@ public class ObjectPlacement : MonoBehaviour
                 {
                     Destroy(gameObject);
                 }
-                deleted++;
             }
         }
         ObjectPooler.GetInstance().HandleFinishedSpawning();
     }
 
-    public static List<Vector2> GeneratePlacementPoints(ObjectType objectType, float meshScale, int size)
+    public static List<Vector2> GeneratePlacementPoints(ObjectPlacementSettings settings, float meshScale, int objectIndex, int size)
     {
-        List<Vector2> points = PoissonDiskSampling.GeneratePoisson(size, size, objectType.MinimumDistance * meshScale, objectType.NewPointCount);
+        List<Vector2> points = PoissonDiskSampling.GeneratePoisson(size, size, settings.objectTypes[objectIndex].minimumDistance * meshScale, settings.objectTypes[objectIndex].newPointCount);
 
         return points;
-    }
-
-    public void UpdateObjectType(int index, Vector2 positionOffset)
-    {
-        DestoryGroupObjectWithIndex(index);
-        PlaceObjectType(simulationSettings.ObjectPlacementSettings.ObjectTypes[index], positionOffset);
-    }
-
-    public void DestoryGroupObjectWithIndex(int index)
-    {
-        DestroyGroupObjectWithName(simulationSettings.ObjectPlacementSettings.ObjectTypes[index].Name);
-    }
-
-    public void DestroyGroupObjectWithName(string name)
-    {
-        var groupObject = GameObject.Find(name + " Group");
-        if (groupObject != null)
-        {
-            Destroy(GameObject.Find(name + " Group"));
-        }
     }
 }
 

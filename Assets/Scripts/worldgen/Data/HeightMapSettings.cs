@@ -2,29 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[System.Serializable()]
-public class HeightMapSettings
+[CreateAssetMenu()]
+public class HeightMapSettings : UpdatableData
 {
-    [SerializeField]
-    private NoiseSettings noiseSettings;
+    public NoiseSettings noiseSettings;
 
-    [SerializeField]
-    private bool useFalloff;
+    public bool useFalloff;
 
-    [SerializeField]
-    private float heightMultiplier;
-    
-    [SerializeField]
-    private AnimationCurve heightCurve;
+    public float heightMultiplier;
+    public AnimationCurve heightCurve;
 
-    public HeightMapSettings(NoiseSettings noiseSettings, bool useFalloff, float heightMultiplier, AnimationCurve heightCurve){
-        this.noiseSettings = noiseSettings;
-        this.useFalloff = useFalloff;
-        this.heightMultiplier = heightMultiplier;
-        this.heightCurve = heightCurve;
-    }
 
-    public float MinHeight
+    public float minHeight
     {
         get
         {
@@ -32,7 +21,7 @@ public class HeightMapSettings
         }
     }
 
-    public float MaxHeight
+    public float maxHeight
     {
         get
         {
@@ -40,29 +29,12 @@ public class HeightMapSettings
         }
     }
 
-    public float HeightMultiplier{
-        get {
-            return heightMultiplier;
-        }
-    }
 
-    public NoiseSettings NoiseSettings 
+#if UNITY_EDITOR
+    protected override void OnValidate()
     {
-        get {
-            return noiseSettings;
-        }
+        noiseSettings.ValidateValues();
+        base.OnValidate();
     }
-
-    public bool UseFalloff {
-        get {
-            return useFalloff;
-        }
-    }
-
-    public AnimationCurve HeightCurve{
-        get {
-            return heightCurve;
-        }
-    }
-
+#endif
 }

@@ -14,8 +14,8 @@ public class AnimalParticleManager : MonoBehaviour
     public ParticleSystem hitParticleSystem;
     public ParticleSystem matingParticleSystem;
     public ParticleSystem bornParticleSystem;
-    public ParticleSystem pregnancyParticleSystem;
     
+
     private AnimalController animalController;
     private FiniteStateMachine fsm;
 
@@ -25,7 +25,7 @@ public class AnimalParticleManager : MonoBehaviour
         
     }
 
-    private void Start()
+    void Start()
     {
         fsm = animalController.fsm;
         InitializeParticleSystems();
@@ -35,67 +35,23 @@ public class AnimalParticleManager : MonoBehaviour
 
     private void InitializeParticleSystems()
     {
-        Quaternion upRotation = Quaternion.LookRotation(Vector3.up, Vector3.forward);
-        
-        if (deathParticleSystem)
+        if (deathParticleSystem != null)
         {
             deathParticleSystem = Instantiate(deathParticleSystem, transform.position, Quaternion.identity);
             deathParticleSystem.transform.parent = gameObject.transform;
         }
 
-        if (smokeTrailParticleSystem)
+        if (smokeTrailParticleSystem != null)
         {
             smokeTrailParticleSystem = Instantiate(smokeTrailParticleSystem, transform.position, Quaternion.identity);
             smokeTrailParticleSystem.transform.parent = gameObject.transform;
-        }
-
-        if (hitParticleSystem)
-        {
-            hitParticleSystem = Instantiate(hitParticleSystem, transform.position, Quaternion.identity);
-            hitParticleSystem.transform.parent = gameObject.transform;
-        }
-
-        if (matingParticleSystem)
-        {
-            matingParticleSystem = Instantiate(matingParticleSystem, transform.position, upRotation);
-            matingParticleSystem.transform.parent = gameObject.transform;
-        }
-
-        if (pregnancyParticleSystem)
-        {
-            Sprite spriteName = Resources.Load<Sprite>("Sprites/rabbit-sprite");
-            switch (animalController.animalModel)
-            {
-                case BearModel _:
-                    spriteName = Resources.Load<Sprite>("Sprites/bear-sprite");
-                    break;
-                case WolfModel _:
-                    spriteName = Resources.Load<Sprite>("Sprites/wolf-sprite");
-                    break;
-                case DeerModel _:
-                    spriteName = Resources.Load<Sprite>("Sprites/deer-sprite");
-                    break;
-                case RabbitModel _:
-                    spriteName = Resources.Load<Sprite>("Sprites/rabbit-sprite");
-                    break;
-            }
-            pregnancyParticleSystem.textureSheetAnimation.SetSprite(0, spriteName);
-            pregnancyParticleSystem = Instantiate(pregnancyParticleSystem, transform.position, upRotation);
-            pregnancyParticleSystem.transform.parent = gameObject.transform;
-        }
-
-        if (bornParticleSystem)
-        {
-            bornParticleSystem = Instantiate(bornParticleSystem, transform.position, Quaternion.identity);
-            bornParticleSystem.transform.parent = gameObject.transform;
         }
     }
 
     private void EventSubscribe()
     {
         animalController.fsm.OnStateEnter += ShowStateParticles;
-        animalController.ActionPregnant += ShowPregnancyParticles;
-        animalController.ActionBirth += ShowBirthParticles;
+        animalController.deadState.onDeath += ShowDeathParticles;
     }
     private void EventUnsubscribe()
     {
@@ -104,84 +60,48 @@ public class AnimalParticleManager : MonoBehaviour
             animalController.fsm.OnStateEnter -= ShowStateParticles;
         }
 
-        animalController.ActionPregnant -= ShowPregnancyParticles;
-        animalController.ActionBirth -= ShowBirthParticles;
+        animalController.deadState.onDeath -= ShowDeathParticles;
     }
 
     private void ShowStateParticles(State state)
     {
         //Reset particle systems.
         smokeTrailParticleSystem.Stop();
-
-        switch (state)
+        
+        if (state is MatingState)
         {
-            case MatingState _:
+            
+        }
+        else if (state is FleeingState)
+        {
+            if (smokeTrailParticleSystem != null)
             {
-                
-                if (matingParticleSystem)
-                {
-                    matingParticleSystem.Play();
-                }
-
-                break;
-            }
-            case FleeingState _:
-            {
-                if (smokeTrailParticleSystem)
-                {
           
-                    smokeTrailParticleSystem.Play();
+                smokeTrailParticleSystem.Play();
 
-                }
-
-                break;
             }
-            case Dead _:
+        }else if (state is Dead)
+        {
+            if (deathParticleSystem != null)
             {
-                if (deathParticleSystem)
-                {
-                    deathParticleSystem.Play();
-                }
-
-                break;
+                deathParticleSystem.Play();
             }
         }
     }
 
-    private void ShowPregnancyParticles(bool isPregnant)
+    private void ShowDeathParticles(AnimalController animalController)
     {
-        if (pregnancyParticleSystem)
-        {
-            if (isPregnant)
-            {
-                matingParticleSystem.Stop();
-                pregnancyParticleSystem.Play();
-            }
-            else
-            {
-                pregnancyParticleSystem.Stop();
-            }
-        }
-    }
-
-    private void ShowBirthParticles()
-    {
-        if (bornParticleSystem)
-        {
-            bornParticleSystem.Play();
-        }
-    }
-
-    private void ShowHitParticles()
-    {
-        if (hitParticleSystem)
-        {
-            hitParticleSystem.Play();
-        }
+        
     }
 
     private void OnDestroy()
     {
         EventUnsubscribe();
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
     }
 }

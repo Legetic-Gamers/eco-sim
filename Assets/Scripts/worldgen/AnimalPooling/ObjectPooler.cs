@@ -208,8 +208,11 @@ public class ObjectPooler : MonoBehaviour
                     //TODO Maintain list of all components for more performance
                     objectToSpawn.GetComponent<IPooledObject>()?.onObjectSpawn();
 
-                    objectToSpawn.GetComponent<AnimalController>().deadState.onDeath += HandleDeadAnimal;
-                    objectToSpawn.GetComponent<AnimalController>().SpawnNew += HandleBirthAnimal;
+                    if (objectToSpawn.CompareTag("Animal"))
+                    {
+                        objectToSpawn.GetComponent<AnimalController>().deadState.onDeath += HandleDeadAnimal;
+                        objectToSpawn.GetComponent<AnimalController>().SpawnNew += HandleBirthAnimal;
+                    }
 
                     return objectToSpawn;    
                 }
