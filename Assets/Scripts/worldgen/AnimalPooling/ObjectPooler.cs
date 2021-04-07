@@ -33,7 +33,7 @@ public class ObjectPooler : MonoBehaviour
 
     public List<Pool> pools;
     public Dictionary<string, Queue<GameObject>> poolDictionary;
-    
+    private bool isInstantiated = false;
 
     private void Awake()
     {
@@ -69,29 +69,37 @@ public class ObjectPooler : MonoBehaviour
                 poolDictionary[objTag].Enqueue(obj);
             }
         }
+
+        isInstantiated = true;
     }
 
     /// <summary>
-    /// 
+    /// When the terrain generator makes a new animal, the pool handles the animals start method (onObjectSpawn)
+    /// and subscribes to the animal mating and death. 
     /// </summary>
-    /// <param name="objectToSpawn"></param>
-    /// <param name="tag"></param>
+    /// <param name="objectToSpawn"> The pooled object the terrain generator will spawn. </param>
+    /// <param name="tag"> Tag of the animal, must match names in terrain generator. </param>
     public void HandleAnimalInstantiated(GameObject objectToSpawn, string tag)
     {
-        if (poolDictionary != null && poolDictionary.ContainsKey(tag))
+        if (!isInstantiated)
         {
-            objectToSpawn.SetActive(true);
-            objectToSpawn.GetComponent<IPooledObject>()?.onObjectSpawn();
-            
-            if (objectToSpawn.CompareTag("Animal"))
+            if (poolDictionary != null && poolDictionary.ContainsKey(tag))
             {
+                objectToSpawn.SetActive(true);
+                objectToSpawn.GetComponent<IPooledObject>()?.onObjectSpawn();
+
                 objectToSpawn.GetComponent<AnimalController>().deadState.onDeath += HandleDeadAnimal;
                 objectToSpawn.GetComponent<AnimalController>().SpawnNew += HandleBirthAnimal;
+
+                poolDictionary[tag].Enqueue(objectToSpawn);
             }
-            poolDictionary[tag].Enqueue(objectToSpawn);
         }
     }
 
+    /// <summary>
+    /// Make more space in the queue and disable the animal.
+    /// </summary>
+    /// <param name="animalController"> Controller of the deceased animal. </param>
     private void HandleDeadAnimal(AnimalController animalController)
     {
         StartCoroutine(HandleDeadAnimalDelay(animalController));
@@ -122,6 +130,13 @@ public class ObjectPooler : MonoBehaviour
         
     }
 
+    /// <summary>
+    /// Handles animal birth by instantiating the animal as previously using the pool
+    /// </summary>
+    /// <param name="childModel"> Model to spawn animal with </param>
+    /// <param name="pos"> Where the animal is to be spawned </param>
+    /// <param name="energy"> The energy of the child </param>
+    /// <param name="hydration"> The hydration of the child </param>
     private void HandleBirthAnimal(AnimalModel childModel, Vector3 pos, float energy, float hydration)
     {
         GameObject child = null;
@@ -153,6 +168,13 @@ public class ObjectPooler : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Activates an object from the given pool named "tag". 
+    /// </summary>
+    /// <param name="tag"> Name of the pool to spawn from, ie Rabbits</param>
+    /// <param name="position"> Where the object is to be spawned </param>
+    /// <param name="rotation"> Rotation of the object</param>
+    /// <returns></returns>
     public GameObject SpawnFromPool(string tag, Vector3 position, Quaternion rotation)
     {
         if (!poolDictionary[tag].Any())
@@ -163,16 +185,19 @@ public class ObjectPooler : MonoBehaviour
                 if (pool.tag.Equals(tag))
                 {
                     pool.size += 20;
-                    GameObject obj = Instantiate(pool.prefab);
-                    obj.SetActive(false);
-                    poolDictionary[tag].Enqueue(obj);
+                    for (int i = 0; i < 20; i++)
+                    {
+                        GameObject obj = Instantiate(pool.prefab);
+                        obj.SetActive(false);
+                        poolDictionary[tag].Enqueue(obj);
+                    }
                 }
             }
         }
 
         if (poolDictionary != null && poolDictionary.ContainsKey(tag))
         {
-                GameObject objectToSpawn = poolDictionary[tag].Dequeue();
+            GameObject objectToSpawn = poolDictionary[tag].Dequeue();
 
                 if (objectToSpawn != null)
                 {
