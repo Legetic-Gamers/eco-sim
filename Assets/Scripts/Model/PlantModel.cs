@@ -1,14 +1,12 @@
-﻿using System;
-using ICSharpCode.NRefactory.Ast;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Model
 {
     public class PlantModel : IEdible
     {
-
         public bool isEaten = false;
         
+<<<<<<< HEAD
         public float plantAge;
 
         public const float plantMaxAge = 60;
@@ -33,7 +31,24 @@ namespace Model
         }
         
         
-    }
-    
+=======
+        public float nutritionValue { get; set; }
 
+        public PlantModel(float nutritionValue)
+        {
+            nutritionValue = nutritionValue;
+        }
+
+        public PlantModel()
+        {
+            nutritionValue = 30f;
+        }
+       
+        public float GetEaten()
+        {
+            isEaten = true;
+            return nutritionValue;
+        }
+>>>>>>> parent of e186d122 (Merge branch 'dynamic-food' into develop)
+    }
 }
