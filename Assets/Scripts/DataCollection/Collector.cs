@@ -14,7 +14,7 @@ namespace DataCollection
         private int cap = 13;
         public Action onAllDeath;
 
-        private int totalAnimalsAlive = 0;
+        public int totalAnimalsAlive = 0;
         
         // Index is generation
         public readonly List<int> totalAnimalsAlivePerGeneration;

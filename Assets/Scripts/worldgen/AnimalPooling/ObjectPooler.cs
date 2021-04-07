@@ -28,6 +28,7 @@ public class ObjectPooler : MonoBehaviour
 
     public List<Pool> pools;
     public Dictionary<string, Queue<GameObject>> poolDictionary;
+    private bool isInstantiated = false;
 
     /// <summary>
     /// Instantiate this object and make a dictionary for the queues.
@@ -65,6 +66,8 @@ public class ObjectPooler : MonoBehaviour
                 poolDictionary[objTag].Enqueue(obj);
             }
         }
+
+        isInstantiated = true;
     }
 
     /// <summary>
@@ -75,15 +78,18 @@ public class ObjectPooler : MonoBehaviour
     /// <param name="tag"> Tag of the animal, must match names in terrain generator. </param>
     public void HandleAnimalInstantiated(GameObject objectToSpawn, string tag)
     {
-        if (poolDictionary != null && poolDictionary.ContainsKey(tag))
+        if (!isInstantiated)
         {
-            objectToSpawn.SetActive(true);
-            objectToSpawn.GetComponent<IPooledObject>()?.onObjectSpawn();
-            
-            objectToSpawn.GetComponent<AnimalController>().Dead += HandleDeadAnimal;
-            objectToSpawn.GetComponent<AnimalController>().SpawnNew += HandleBirthAnimal;
-            
-            poolDictionary[tag].Enqueue(objectToSpawn);
+            if (poolDictionary != null && poolDictionary.ContainsKey(tag))
+            {
+                objectToSpawn.SetActive(true);
+                objectToSpawn.GetComponent<IPooledObject>()?.onObjectSpawn();
+
+                objectToSpawn.GetComponent<AnimalController>().Dead += HandleDeadAnimal;
+                objectToSpawn.GetComponent<AnimalController>().SpawnNew += HandleBirthAnimal;
+
+                poolDictionary[tag].Enqueue(objectToSpawn);
+            }
         }
     }
 
