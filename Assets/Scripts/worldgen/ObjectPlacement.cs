@@ -13,11 +13,7 @@ public class ObjectPlacement : MonoBehaviour
 {
     
     public List<GameObject> groups;
-    public Action<GameObject, String> onObjectPlaced;
-    public Action isDone;
-    //public UnityEvent<GameObject, String> onObjectPlaced;
     private List<string> pooledObjects = new List<string> { "Rabbits", "Wolfs", "Deers", "Bears" };
-    //public PoolEvent poolEvent = new PoolEvent(); 
     public void PlaceObjects(ObjectPlacementSettings settings, MeshSettings meshSettings, HeightMapSettings heightMapSettings)
     {
         int size;
@@ -65,14 +61,12 @@ public class ObjectPlacement : MonoBehaviour
                 }
 
                 GameObject gameObject = Instantiate(settings.objectTypes[i].gameObjectSettings[randomIndex].gameObject, new Vector3(point.x - size / 2, heightMapSettings.maxHeight + 10, point.y - size / 2), Quaternion.identity);
-
                 var animalName = settings.objectTypes[i].name;
                 if (pooledObjects.IndexOf(animalName) != -1)
                 {
-                    //gameObject.SetActive(false);
+                    gameObject.SetActive(false);
                     ObjectPooler.GetInstance().HandleAnimalInstantiated(gameObject, animalName);
                 }
-
                 //gameObject.transform.position = new Vector3(point.x - size / 2, heightMapSettings.maxHeight + 10, point.y - size / 2);
                 gameObject.transform.parent = groupObject.transform;
                 //gameObject.transform.localScale = Vector3.one * settings.objectTypes[i].scale * meshSettings.meshScale;
@@ -113,9 +107,6 @@ public class ObjectPlacement : MonoBehaviour
                 }
             }
         }
-        Debug.Log("Done");
-        
-        ObjectPooler.GetInstance().HandleFinishedSpawning();
     }
 
     public static List<Vector2> GeneratePlacementPoints(ObjectPlacementSettings settings, float meshScale, int objectIndex, int size)

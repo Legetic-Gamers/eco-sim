@@ -9,6 +9,9 @@ using Object = UnityEngine.Object;
 
 public class ObjectPooler : MonoBehaviour
 {
+    /// <summary>
+    /// A Pool has a tag for the contained element, rabbit. A prefab and an amount of that object to start with (size)
+    /// </summary>
     [Serializable]
     public class Pool
     {
@@ -25,8 +28,6 @@ public class ObjectPooler : MonoBehaviour
 
     public List<Pool> pools;
     public Dictionary<string, Queue<GameObject>> poolDictionary;
-    private List<string> pooledObjects = new List<string> { "Rabbit", "Wolf", "Deer", "Bear" };
-    private bool allSpawnedAtStart = false;
 
     public static ObjectPooler GetInstance()
     {
@@ -43,16 +44,12 @@ public class ObjectPooler : MonoBehaviour
         ObjectPooler.GetInstance();
         poolDictionary = new Dictionary<string, Queue<GameObject>>();
     }
+    
+    /// <summary>
+    /// Instantiate all pools. 
+    /// </summary>
     void Start()
     {
-        ObjectPlacement objPl = FindObjectOfType<ObjectPlacement>();
-        //objPl.poolEvent.AddListener(HandleAnimalInstantiated);
-        objPl.onObjectPlaced += HandleAnimalInstantiated;
-        objPl.isDone += HandleFinishedSpawning;
-        //AnimalSpawner animalSpawner = FindObjectOfType<AnimalSpawner>();
-        //animalSpawner.onAnimalInstantiated += HandleAnimalInstantiated;
-        //animalSpawner.isDone += HandleFinishedSpawning;
-
         foreach (Pool pool in pools)
         {
             Queue<GameObject> objectPool = new Queue<GameObject>();
@@ -60,33 +57,34 @@ public class ObjectPooler : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Called when the terrain generator is finished placing all animals and object. 
+    /// </summary>
     public void HandleFinishedSpawning()
     {
-        if (!allSpawnedAtStart)
+        foreach (Pool pool in pools)
         {
-            allSpawnedAtStart = true;
-            
-            foreach (Pool pool in pools)
+            string objTag = pool.tag;
+            for (int i = poolDictionary[objTag].Count; i < pool.size; i++)
             {
-                string objTag = pool.tag;
-                for (int i = poolDictionary[objTag].Count; i < pool.size; i++)
-                {
-                    GameObject obj = Instantiate(pool.prefab);
-                    obj.SetActive(false);
-                    poolDictionary[objTag].Enqueue(obj);
-                }
+                GameObject obj = Instantiate(pool.prefab);
+                obj.SetActive(false);
+                poolDictionary[objTag].Enqueue(obj);
             }
-            Debug.Log("Finished HandleFinishedSpawning");
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="objectToSpawn"></param>
+    /// <param name="tag"></param>
     public void HandleAnimalInstantiated(GameObject objectToSpawn, string tag)
     {
-        Debug.Log("Handling");
         if (poolDictionary != null && poolDictionary.ContainsKey(tag))
         {
-            objectToSpawn.GetComponent<IPooledObject>()?.onObjectSpawn();
             objectToSpawn.SetActive(true);
+            objectToSpawn.GetComponent<IPooledObject>()?.onObjectSpawn();
             
             if (objectToSpawn.CompareTag("Animal"))
             {
