@@ -126,7 +126,7 @@ public class VisualAnimalDebugger : MonoBehaviour
             Debug.DrawLine(thisTransform.position, thisTransform.position + transform.forward * rayRange, Color.black);
 
 
-            Debug.Log("Perception");
+            //Debug.Log("Perception");
         }
     }
 

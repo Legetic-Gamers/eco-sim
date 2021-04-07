@@ -85,8 +85,16 @@ public class ObjectPooler : MonoBehaviour
                 objectToSpawn.SetActive(true);
                 objectToSpawn.GetComponent<IPooledObject>()?.onObjectSpawn();
 
-                objectToSpawn.GetComponent<AnimalController>().Dead += HandleDeadAnimal;
-                objectToSpawn.GetComponent<AnimalController>().SpawnNew += HandleBirthAnimal;
+                if (TryGetComponent(out AnimalController animalController))
+                {
+                    Debug.Log("YES");
+                    animalController.Dead += HandleDeadAnimal;
+                    animalController.SpawnNew += HandleBirthAnimal;
+                }
+                else
+                {
+                    Debug.Log("NO");
+                }
 
                 poolDictionary[tag].Enqueue(objectToSpawn);
             }
