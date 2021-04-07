@@ -273,11 +273,13 @@ public class AnimalBrainAgent : Agent,IAgent
             discreteActions[0] = 4;
             
         }
+        /*
         else if (Input.GetKey(KeyCode.Alpha0))
         {
             HandleDeath();
             
         }
+        */
     }
 
 
@@ -293,7 +295,7 @@ public class AnimalBrainAgent : Agent,IAgent
     {
         eventPublisher.onSenseTickEvent += RequestDecision;
 
-        animalController.actionDeath += HandleDeath;
+        animalController.deadState.onDeath += HandleDeath;
         animalController.matingState.onMate += HandleMate;
         animalController.eatingState.onEatFood += HandleEating;
         animalController.drinkingState.onDrinkWater += HandleDrinking;
@@ -307,7 +309,7 @@ public class AnimalBrainAgent : Agent,IAgent
     {
         eventPublisher.onSenseTickEvent -= RequestDecision;
 
-        animalController.actionDeath -= HandleDeath;
+        animalController.deadState.onDeath -= HandleDeath;
         animalController.matingState.onMate -= HandleMate;
         animalController.eatingState.onEatFood -= HandleEating;
         animalController.drinkingState.onDrinkWater -= HandleDrinking;
@@ -323,13 +325,13 @@ public class AnimalBrainAgent : Agent,IAgent
     // }
 
 
-    private void HandleDeath()
+    private void HandleDeath(AnimalController animalController)
     {
         //Penalize for every year not lived. (mating gives more than death)
         // AddReward( (animalModel.age / animalModel.traits.ageLimit)/2);
         // if (world) world.totalScore += (int)((animalModel.age / animalModel.traits.ageLimit)/2);
         
-        ChangeState(animalController.deadState);
+        //ChangeState(animalController.deadState);
         EventUnsubscribe();
 
         //Task failed

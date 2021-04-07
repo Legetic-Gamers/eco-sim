@@ -94,6 +94,13 @@ public class ObjectPooler : MonoBehaviour
 
     private void HandleDeadAnimal(AnimalController animalController)
     {
+        StartCoroutine(HandleDeadAnimalDelay(animalController));
+    }
+    
+    private IEnumerator HandleDeadAnimalDelay(AnimalController animalController)
+    {
+        yield return new WaitForSeconds(5.0f/Time.timeScale);
+        
         GameObject animalObj;
         (animalObj = animalController.gameObject).SetActive(false);
         
@@ -112,6 +119,7 @@ public class ObjectPooler : MonoBehaviour
                 poolDictionary["Bears"].Enqueue(animalObj);
                 break;
         }
+        
     }
 
     private void HandleBirthAnimal(AnimalModel childModel, Vector3 pos, float energy, float hydration)

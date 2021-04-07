@@ -51,7 +51,7 @@ public class AnimalParticleManager : MonoBehaviour
     private void EventSubscribe()
     {
         animalController.fsm.OnStateEnter += ShowStateParticles;
-        animalController.actionDeath += ShowDeathParticles;
+        animalController.deadState.onDeath += ShowDeathParticles;
     }
     private void EventUnsubscribe()
     {
@@ -60,7 +60,7 @@ public class AnimalParticleManager : MonoBehaviour
             animalController.fsm.OnStateEnter -= ShowStateParticles;
         }
 
-        animalController.actionDeath -= ShowDeathParticles;
+        animalController.deadState.onDeath -= ShowDeathParticles;
     }
 
     private void ShowStateParticles(State state)
@@ -89,7 +89,7 @@ public class AnimalParticleManager : MonoBehaviour
         }
     }
 
-    private void ShowDeathParticles()
+    private void ShowDeathParticles(AnimalController animalController)
     {
         
     }

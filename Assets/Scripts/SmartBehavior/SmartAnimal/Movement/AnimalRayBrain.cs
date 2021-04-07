@@ -94,7 +94,7 @@ public class AnimalRayBrain : Agent, IAgent
     {
         eventPublisher.onSenseTickEvent += RequestDecision;
         
-        animalController.actionDeath += HandleDeath;
+        animalController.deadState.onDeath += HandleDeath;
         animalController.eatingState.onEatFood += HandleEat;
         animalController.drinkingState.onDrinkWater += HandleDrink;
         animalController.matingState.onMate += HandleMate;
@@ -105,7 +105,7 @@ public class AnimalRayBrain : Agent, IAgent
     {
         eventPublisher.onSenseTickEvent -= RequestDecision;
 
-        animalController.actionDeath -= HandleDeath;
+        animalController.deadState.onDeath -= HandleDeath;
         animalController.eatingState.onEatFood -= HandleEat;
         animalController.drinkingState.onDrinkWater -= HandleDrink;
         animalController.matingState.onMate -= HandleMate;
@@ -113,7 +113,7 @@ public class AnimalRayBrain : Agent, IAgent
     }
     
     
-    private void HandleDeath()
+    private void HandleDeath(AnimalController animalController)
     {
         //Penalize for every year not lived.
         AddReward(- (1 - (animalModel.age / animalModel.traits.ageLimit)));
