@@ -375,8 +375,6 @@ public abstract class AnimalController : MonoBehaviour
             targetAnimalController = target.GetComponent<AnimalController>();
         }
 
-        }
-        
         if(targetAnimalController.isInfertile) return;
         
         Random rng = new Random();
