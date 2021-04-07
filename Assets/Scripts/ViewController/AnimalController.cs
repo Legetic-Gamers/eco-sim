@@ -18,7 +18,6 @@ using Random = System.Random;
 
 public abstract class AnimalController : MonoBehaviour, IPooledObject
 {
-    public static Random random = new Random();
 
     public AnimalModel animalModel;
 
@@ -293,6 +292,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
 
     public virtual void UpdateParameters()
     {
+        Debug.Log("UPDATING PARAMETERS");
         //The age will increase 2 per 2 seconds.
         animalModel.age += 1;
 
