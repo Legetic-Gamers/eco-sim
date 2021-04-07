@@ -94,12 +94,6 @@ public class ObjectPlacement : MonoBehaviour
                         bool withinSpan = hit.point.y <= (simulationSettings.HeightMapSettings.MaxHeight - simulationSettings.HeightMapSettings.MinHeight) * objectType.MaxHeight
                         && hit.point.y >= (simulationSettings.HeightMapSettings.MaxHeight - simulationSettings.HeightMapSettings.MinHeight) * objectType.MinHeight;
 
-                        var animalName = objectType.Name;
-                        if (pooledObjects.IndexOf(animalName) != -1)
-                        {
-                            ObjectPooler.GetInstance().HandleAnimalInstantiated(gameObject, animalName);
-                        }
-                        
                         if (withinSpan)
                         {
                             Vector3 oldPosition = gameObject.transform.position;
@@ -112,7 +106,7 @@ public class ObjectPlacement : MonoBehaviour
                             {
                                 agent.Warp(new Vector3(oldPosition.x, hit.point.y + objectType.yOffset, oldPosition.z));
                             }
-                            
+                            var animalName = objectType.Name;
                             //Indirect logs animal as instantiated in collector
                             if (pooledObjects.IndexOf(animalName) != -1)
                             {

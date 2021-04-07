@@ -33,7 +33,6 @@ public class ObjectPooler : MonoBehaviour
 
     public List<Pool> pools;
     public Dictionary<string, Queue<GameObject>> poolDictionary;
-    private bool isInstantiated = false;
 
     private void Awake()
     {
@@ -68,9 +67,7 @@ public class ObjectPooler : MonoBehaviour
                 obj.SetActive(false);
                 poolDictionary[objTag].Enqueue(obj);
             }
-        }
-
-        isInstantiated = true;
+        } 
     }
 
     /// <summary>
@@ -81,16 +78,16 @@ public class ObjectPooler : MonoBehaviour
     /// <param name="tag"> Tag of the animal, must match names in terrain generator. </param>
     public void HandleAnimalInstantiated(GameObject objectToSpawn, string tag)
     {
-        if (!isInstantiated)
-        {
+        
             if (poolDictionary != null && poolDictionary.ContainsKey(tag))
             {
                 objectToSpawn.SetActive(true);
                 objectToSpawn.GetComponent<IPooledObject>()?.onObjectSpawn();
-
-                if (TryGetComponent(out AnimalController animalController))
+                
+                if (objectToSpawn.TryGetComponent(out AnimalController animalController))
                 {
-                    animalController.Dead += HandleDeadAnimal;
+
+                    animalController.deadState.onDeath += HandleDeadAnimal;
                     animalController.SpawnNew += HandleBirthAnimal;
                 }
                 else
@@ -100,7 +97,7 @@ public class ObjectPooler : MonoBehaviour
 
                 poolDictionary[tag].Enqueue(objectToSpawn);
             }
-        }
+        
     }
 
     /// <summary>

@@ -10,13 +10,13 @@ namespace Menus
 
         public void SetStandardSpeed()
         {
-            if (!GameMenuManager.isPaused) Time.timeScale = 1f;
+            //if (!GameMenuManager.isPaused) Time.timeScale = 1f;
             //Debug.Log("Setting standard speed");
         }
         
         public void FastForward()
         {
-            if (!GameMenuManager.isPaused) Time.timeScale = 2f;
+            //if (!GameMenuManager.isPaused) Time.timeScale = 2f;
             //Debug.Log("Speeding up");
         }
 

@@ -28,8 +28,6 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
 
     // decisionMaker subscribes to these actions
     public Action<GameObject> actionPerceivedHostile;
-    public Action actionDeath;
-    public Action<AnimalController> Dead;
     public Action<AnimalModel, Vector3, float, float> SpawnNew;
 
     // AnimalParticleManager is subscribed to these
@@ -274,6 +272,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
 
     public virtual void UpdateParameters()
     {
+        Debug.Log("WHAT");
         //The age will increase 2 per 2 seconds.
         animalModel.age += 1;
 
