@@ -256,8 +256,6 @@ public abstract class AnimalModel
 
     public abstract AnimalModel Mate(AnimalModel otherParent);
 
-    public Action actionKilled;
-    
     public abstract bool CanEat<T>(T obj);
 
     public abstract bool IsSameSpecies<T>(T obj);

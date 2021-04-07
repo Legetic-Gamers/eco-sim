@@ -36,6 +36,7 @@ public class AnimalParticleManager : MonoBehaviour
     private void InitializeParticleSystems()
     {
         Quaternion upRotation = Quaternion.LookRotation(Vector3.up, Vector3.forward);
+        
         if (deathParticleSystem)
         {
             deathParticleSystem = Instantiate(deathParticleSystem, transform.position, Quaternion.identity);
@@ -62,24 +63,24 @@ public class AnimalParticleManager : MonoBehaviour
 
         if (pregnancyParticleSystem)
         {
-            pregnancyParticleSystem = Instantiate(pregnancyParticleSystem, transform.position, upRotation);
-            Sprite spriteName = Resources.Load<Sprite>("rabbit-sprite");;
+            Sprite spriteName = Resources.Load<Sprite>("Sprites/rabbit-sprite");
             switch (animalController.animalModel)
             {
                 case BearModel _:
-                    spriteName = Resources.Load<Sprite>("bear-sprite");
+                    spriteName = Resources.Load<Sprite>("Sprites/bear-sprite");
                     break;
                 case WolfModel _:
-                    spriteName = Resources.Load<Sprite>("wolf-sprite");
+                    spriteName = Resources.Load<Sprite>("Sprites/wolf-sprite");
                     break;
                 case DeerModel _:
-                    spriteName = Resources.Load<Sprite>("deer-sprite");
+                    spriteName = Resources.Load<Sprite>("Sprites/deer-sprite");
                     break;
                 case RabbitModel _:
-                    spriteName = Resources.Load<Sprite>("rabbit-sprite");
+                    spriteName = Resources.Load<Sprite>("Sprites/rabbit-sprite");
                     break;
             }
             pregnancyParticleSystem.textureSheetAnimation.SetSprite(0, spriteName);
+            pregnancyParticleSystem = Instantiate(pregnancyParticleSystem, transform.position, upRotation);
             pregnancyParticleSystem.transform.parent = gameObject.transform;
         }
 
@@ -93,9 +94,8 @@ public class AnimalParticleManager : MonoBehaviour
     private void EventSubscribe()
     {
         animalController.fsm.OnStateEnter += ShowStateParticles;
-        animalController.actionPregnant += ShowPregnancyParticles;
-        animalController.actionBirth += ShowBirthParticles;
-        animalController.animalModel.actionKilled += ShowHitParticles;
+        animalController.ActionPregnant += ShowPregnancyParticles;
+        animalController.ActionBirth += ShowBirthParticles;
     }
     private void EventUnsubscribe()
     {
@@ -104,9 +104,8 @@ public class AnimalParticleManager : MonoBehaviour
             animalController.fsm.OnStateEnter -= ShowStateParticles;
         }
 
-        animalController.actionPregnant -= ShowPregnancyParticles;
-        animalController.actionBirth -= ShowBirthParticles;
-        animalController.animalModel.actionKilled -= ShowHitParticles;
+        animalController.ActionPregnant -= ShowPregnancyParticles;
+        animalController.ActionBirth -= ShowBirthParticles;
     }
 
     private void ShowStateParticles(State state)
@@ -121,7 +120,6 @@ public class AnimalParticleManager : MonoBehaviour
                 
                 if (matingParticleSystem)
                 {
-                    Debug.Log("mating particle system");
                     matingParticleSystem.Play();
                 }
 
@@ -156,14 +154,13 @@ public class AnimalParticleManager : MonoBehaviour
         {
             if (isPregnant)
             {
+                matingParticleSystem.Stop();
                 pregnancyParticleSystem.Play();
             }
             else
             {
                 pregnancyParticleSystem.Stop();
             }
-
-            
         }
     }
 

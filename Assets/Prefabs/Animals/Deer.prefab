@@ -5326,7 +5326,7 @@ NavMeshAgent:
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
-  m_StoppingDistance: 0.3
+  m_StoppingDistance: 0.8
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
@@ -5380,7 +5380,7 @@ MonoBehaviour:
   matingParticleSystem: {fileID: 19800004, guid: 92aaabfe08d50fa43b36214095279955,
     type: 3}
   bornParticleSystem: {fileID: 19800000, guid: b1a4cfac024ce2a48a0da2d8565729b3, type: 3}
-  pregnancyParticleSystem: {fileID: 19800004, guid: fb667f08336441b4fa2b6369a17fe4e5,
+  pregnancyParticleSystem: {fileID: 19800004, guid: efb5f25e1f6de7e48b41419b711d8a5d,
     type: 3}
 --- !u!114 &4380821721372479982
 MonoBehaviour:

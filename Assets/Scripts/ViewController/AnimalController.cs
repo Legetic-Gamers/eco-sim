@@ -30,11 +30,11 @@ public abstract class AnimalController : MonoBehaviour
     public Action actionDeath;
 
     // AnimalParticleManager is subscribed to these
-    public event Action<bool> actionPregnant;
-    public event Action actionBirth;
+    public event Action<bool> ActionPregnant;
+    public event Action ActionBirth;
 
     //Subscribed to by animalBrainAgent.
-    public event EventHandler<OnBirthEventArgs> onBirth;
+    public event EventHandler<OnBirthEventArgs> OnBirth;
 
     public class OnBirthEventArgs : EventArgs
     {
@@ -239,8 +239,8 @@ public abstract class AnimalController : MonoBehaviour
         // speed
         animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier;
         //TODO, maybe move from here?
-        agent.speed = animalModel.currentSpeed;
-        /*
+        agent.speed = animalModel.currentSpeed * Time.timeScale;
+        
         // energy
         animalModel.currentEnergy -= (animalModel.age + animalModel.currentSpeed + 
             animalModel.traits.viewRadius / 10 + animalModel.traits.hearingRadius / 10)
@@ -251,11 +251,9 @@ public abstract class AnimalController : MonoBehaviour
                                         (1 + 
                                          animalModel.currentSpeed / animalModel.traits.endurance * 
                                          hydrationModifier);
-        */
+        
         // reproductive urge
         animalModel.reproductiveUrge += 0.01f * reproductiveUrgeModifier;
-        animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
-        agent.speed = animalModel.currentSpeed * Time.timeScale;
     }
 
 
@@ -385,11 +383,10 @@ public abstract class AnimalController : MonoBehaviour
 
 
             animalModel.isPregnant = true;
-            actionPregnant?.Invoke(true);
+            ActionPregnant?.Invoke(true);
             for (int i = 1; i <= offspringCount; i++)
                 // Wait some time before giving birth
                 StartCoroutine(GiveBirth(childEnergy, childHydration, gestationTime, targetAnimalController));
-            actionPregnant?.Invoke(false);
         }
     }
     
@@ -397,10 +394,9 @@ public abstract class AnimalController : MonoBehaviour
     IEnumerator GiveBirth(float childEnergy, float childHydration, float laborTime, AnimalController otherParentAnimalController)
     {
         yield return new WaitForSeconds(laborTime);
-        //Instantiate here
         
-        GameObject child = Instantiate(gameObject, transform.position,
-            transform.rotation); //NOTE CHANGE SO THAT PREFAB IS USED
+        //Instantiate here
+        GameObject child = Instantiate(gameObject, transform.position, transform.rotation); //NOTE CHANGE SO THAT PREFAB IS USED
         
         // Generate the offspring traits
         AnimalModel childModel = animalModel.Mate(otherParentAnimalController.animalModel);
@@ -413,11 +409,12 @@ public abstract class AnimalController : MonoBehaviour
         childController.animalModel.traits.maxSpeed = 1;
         
         // trigger birth particle effect
-        childController.actionBirth?.Invoke();
+        childController.ActionBirth?.Invoke();
+        ActionPregnant?.Invoke(false);
         
         animalModel.isPregnant = false;
         //Debug.Log(child.GetComponent<AnimalController>().animalModel.generation);
-        onBirth?.Invoke(this,new OnBirthEventArgs{child = child});
+        OnBirth?.Invoke(this,new OnBirthEventArgs{child = child});
 
     }
 

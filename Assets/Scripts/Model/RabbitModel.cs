@@ -34,7 +34,6 @@ public class RabbitModel : AnimalModel,IEdible
 
     public float GetEaten()
     {
-        actionKilled?.Invoke();
         return nutritionValue;
     }
 
