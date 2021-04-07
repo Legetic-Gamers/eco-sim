@@ -64,7 +64,7 @@ public class ObjectPlacement : MonoBehaviour
                 var animalName = settings.objectTypes[i].name;
                 if (pooledObjects.IndexOf(animalName) != -1)
                 {
-                    gameObject.SetActive(false);
+                    //gameObject.SetActive(false);
                     ObjectPooler.instance.HandleAnimalInstantiated(gameObject, animalName);
                 }
                 //gameObject.transform.position = new Vector3(point.x - size / 2, heightMapSettings.maxHeight + 10, point.y - size / 2);
@@ -95,8 +95,8 @@ public class ObjectPlacement : MonoBehaviour
                             continue;
                         }
                     }
-
                 }
+                
                 if (Application.isEditor)
                 {
                     DestroyImmediate(gameObject);
