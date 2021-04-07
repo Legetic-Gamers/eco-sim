@@ -21,7 +21,7 @@ public class ObjectPlacementSettings
     {
         Debug.Log("Updating index: " + index);
         objectTypes[index] = objectType;
-        OnTypeChanged.Invoke(index);
+        OnTypeChanged?.Invoke(index);
     }
 
     public void AddType(ObjectType objectType)
@@ -29,7 +29,7 @@ public class ObjectPlacementSettings
         Debug.Log("Adding type");
 
         objectTypes.Add(objectType);
-        OnTypeAdded.Invoke(objectTypes.Count - 1);
+        OnTypeAdded?.Invoke(objectTypes.Count - 1);
     }
 
     public void RemoveTypeIndex(int index)

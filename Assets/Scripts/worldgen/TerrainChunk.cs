@@ -234,7 +234,7 @@ public class TerrainChunk
         {
             ObjectPlacement objectPlacement = meshObject.AddComponent<ObjectPlacement>();
             objectPlacement.PlaceObjects(coordinate * meshSettings.MeshWorldSize);
-            ObjectPooler.GetInstance().HandleFinishedSpawning();
+            ObjectPooler.Instance.HandleFinishedSpawning();
         }
     }
 

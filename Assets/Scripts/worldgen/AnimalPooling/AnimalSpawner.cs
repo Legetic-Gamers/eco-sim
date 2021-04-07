@@ -12,7 +12,7 @@ public class AnimalSpawner : MonoBehaviour
     public Action isDone;
     public void Start()
     {
-        pooler = ObjectPooler.GetInstance();
+        pooler = ObjectPooler.Instance;
         
         //StartCoroutine(SpawnRabbit());
         for (int i = 0; i < 2; i++)

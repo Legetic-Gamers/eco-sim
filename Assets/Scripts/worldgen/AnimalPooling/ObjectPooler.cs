@@ -20,23 +20,26 @@ public class ObjectPooler : MonoBehaviour
         public int size;
     }
 
-    #region Singleton
-
-    private static ObjectPooler instance;
-    
-    public static ObjectPooler GetInstance()
+    public static ObjectPooler Instance
     {
-        return instance;
+        get
+        {
+            if (instance == null)
+                instance = FindObjectOfType(typeof(ObjectPooler)) as ObjectPooler;
+
+            return instance;
+        }
+        set { instance = value; }
     }
 
-    #endregion
+    public static ObjectPooler instance;
+
 
     public List<Pool> pools;
     public Dictionary<string, Queue<GameObject>> poolDictionary;
 
     private void Awake()
     {
-        //GetInstance();
         instance = this;
         poolDictionary = new Dictionary<string, Queue<GameObject>>();
     }
@@ -78,8 +81,8 @@ public class ObjectPooler : MonoBehaviour
     /// <param name="tag"> Tag of the animal, must match names in terrain generator. </param>
     public void HandleAnimalInstantiated(GameObject objectToSpawn, string tag)
     {
-        
-            if (poolDictionary != null && poolDictionary.ContainsKey(tag))
+        Debug.Log("HANDLEANIMALINSTANTIATED");
+        if (poolDictionary != null && poolDictionary.ContainsKey(tag))
             {
                 objectToSpawn.SetActive(true);
                 objectToSpawn.GetComponent<IPooledObject>()?.onObjectSpawn();

@@ -48,6 +48,7 @@ public class ObjectPlacement : MonoBehaviour
 
     public void PlaceObjectType(ObjectType objectType, Vector2 positionOffset)
     {
+        Debug.Log("PLACEOBJECTYPE");
         int deleted = 0;
         if (objectType.GameObjectSettings == null || objectType.GameObjectSettings.Count <= 0)
         {
@@ -110,9 +111,9 @@ public class ObjectPlacement : MonoBehaviour
                             //Indirect logs animal as instantiated in collector
                             if (pooledObjects.IndexOf(animalName) != -1)
                             {
-                                ObjectPooler.GetInstance().HandleAnimalInstantiated(gameObject, animalName);
+                                ObjectPooler.Instance.HandleAnimalInstantiated(gameObject, animalName);
                             }
-                            
+
                             continue;
                         }
                     }
@@ -129,7 +130,7 @@ public class ObjectPlacement : MonoBehaviour
                 deleted++;
             }
         }
-        ObjectPooler.GetInstance().HandleFinishedSpawning();
+        ObjectPooler.Instance?.HandleFinishedSpawning();
     }
 
     public static List<Vector2> GeneratePlacementPoints(ObjectType objectType, float meshScale, int size)
