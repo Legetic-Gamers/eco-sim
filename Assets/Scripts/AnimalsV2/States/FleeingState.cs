@@ -77,12 +77,28 @@ namespace AnimalsV2.States
                 }//Try running perpendicular to front (Avoid walls).
                 else if (NavigationUtilities.PerpendicularPoint(animal.transform.position,animal.transform.forward,animal.transform.up,animal.agent.height*2 + 2f,out pointToRunTo))
                 {
-                    animal.agent.SetDestination(pointToRunTo);
+                    //animal.agent.SetDestination(pointToRunTo);
+                    
+                    //To avoid async path calculation we do this
+                    NavMeshPath path = new NavMeshPath();
+                    animal.agent.CalculatePath(pointToRunTo, path);
+                    if (path.status != NavMeshPathStatus.PathInvalid)
+                    {
+                        animal.agent.SetPath(path);
+                    }
                     
                 } //Try running randomly if no other way found.
                 else if(NavigationUtilities.RandomPoint(animal.transform.position, 10f,10f, out pointToRunTo))
                 {
-                    animal.agent.SetDestination(pointToRunTo);
+                    //animal.agent.SetDestination(pointToRunTo);
+                    
+                    //To avoid async path calculation we do this
+                    NavMeshPath path = new NavMeshPath();
+                    animal.agent.CalculatePath(pointToRunTo, path);
+                    if (path.status != NavMeshPathStatus.PathInvalid)
+                    {
+                        animal.agent.SetPath(path);
+                    }
                 }
                 
                 // animal.agent.height*2
