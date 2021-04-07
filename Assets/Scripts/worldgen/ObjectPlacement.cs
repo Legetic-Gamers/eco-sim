@@ -75,11 +75,7 @@ public class ObjectPlacement : MonoBehaviour
                         && hit.point.y >= (heightMapSettings.maxHeight - heightMapSettings.minHeight) * settings.objectTypes[i].minHeight;
                         
                         var animalName = settings.objectTypes[i].name;
-                        if (pooledObjects.IndexOf(animalName) != -1)
-                        {
-                            ObjectPooler.instance.HandleAnimalInstantiated(gameObject, animalName);
-                        }
-                        
+
                         if (withinSpan)
                         {
                             Vector3 oldPosition = gameObject.transform.position;
@@ -92,6 +88,13 @@ public class ObjectPlacement : MonoBehaviour
                             {
                                 agent.Warp(new Vector3(oldPosition.x, hit.point.y + settings.objectTypes[i].yOffset, oldPosition.z));
                             }
+                            
+                            //Indirect logs animal as instantiated in collector
+                            if (pooledObjects.IndexOf(animalName) != -1)
+                            {
+                                ObjectPooler.GetInstance().HandleAnimalInstantiated(gameObject, animalName);
+                            }
+                            
                             continue;
                         }
                     }
@@ -107,7 +110,7 @@ public class ObjectPlacement : MonoBehaviour
                 }
             }
         }
-        ObjectPooler.instance.HandleFinishedSpawning();
+        ObjectPooler.GetInstance().HandleFinishedSpawning();
     }
 
     public static List<Vector2> GeneratePlacementPoints(ObjectPlacementSettings settings, float meshScale, int objectIndex, int size)
