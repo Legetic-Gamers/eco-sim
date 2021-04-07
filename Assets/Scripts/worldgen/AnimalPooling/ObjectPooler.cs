@@ -35,14 +35,6 @@ public class ObjectPooler : MonoBehaviour
     }
     void Start()
     {
-        ObjectPlacement objPl = FindObjectOfType<ObjectPlacement>();
-        //objPl.poolEvent.AddListener(HandleAnimalInstantiated);
-        objPl.onObjectPlaced += HandleAnimalInstantiated;
-        objPl.isDone += HandleFinishedSpawning;
-        //AnimalSpawner animalSpawner = FindObjectOfType<AnimalSpawner>();
-        //animalSpawner.onAnimalInstantiated += HandleAnimalInstantiated;
-        //animalSpawner.isDone += HandleFinishedSpawning;
-
         foreach (Pool pool in pools)
         {
             Queue<GameObject> objectPool = new Queue<GameObject>();
@@ -54,7 +46,7 @@ public class ObjectPooler : MonoBehaviour
     {
         if (!allSpawnedAtStart)
         {
-            allSpawnedAtStart = true;
+            //allSpawnedAtStart = true;
             
             foreach (Pool pool in pools)
             {
@@ -72,11 +64,10 @@ public class ObjectPooler : MonoBehaviour
 
     public void HandleAnimalInstantiated(GameObject objectToSpawn, string tag)
     {
-        Debug.Log("Handling");
         if (poolDictionary != null && poolDictionary.ContainsKey(tag))
         {
-            objectToSpawn.GetComponent<IPooledObject>()?.onObjectSpawn();
             objectToSpawn.SetActive(true);
+            objectToSpawn.GetComponent<IPooledObject>()?.onObjectSpawn();
             
             if (objectToSpawn.CompareTag("Animal"))
             {
