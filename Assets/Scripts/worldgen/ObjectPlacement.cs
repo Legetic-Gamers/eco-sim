@@ -92,7 +92,7 @@ public class ObjectPlacement : MonoBehaviour
                         {
                             ObjectPooler.instance.HandleAnimalInstantiated(gameObject, animalName);
                         }
-                        
+
                         if (withinSpan)
                         {
                             Vector3 oldPosition = gameObject.transform.position;

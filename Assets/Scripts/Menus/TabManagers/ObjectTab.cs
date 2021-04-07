@@ -21,9 +21,13 @@ public class ObjectTab : SettingsManager
 
     public GameObjectSelectorFitter fitter;
 
+    private bool isStarting = true;
+    private bool isBlocked = false;
+
     protected override void Start()
     {
         base.Start();
+        isStarting = true;
         fitter.OnInnerSettingsSaved = SaveValuesToSettings;
         UpdateDropdownOptions();
         if (simulationSettings.ObjectPlacementSettings.ObjectTypes.Count > 0)
@@ -32,6 +36,7 @@ public class ObjectTab : SettingsManager
             SetValuesToFields(simulationSettings.ObjectPlacementSettings.GetObjectType(currentlySelectedIndex));
             fitter.Populate(simulationSettings.ObjectPlacementSettings.GetObjectType(currentlySelectedIndex));
         }
+        isStarting = false;
     }
 
     public void AddObjectType()
@@ -48,7 +53,6 @@ public class ObjectTab : SettingsManager
                 1
             )
         );
-        Debug.Log("Added Type");
         UpdateDropdownOptions();
         ChangeSelection(simulationSettings.ObjectPlacementSettings.ObjectTypes.Count - 1);
     }
@@ -81,6 +85,7 @@ public class ObjectTab : SettingsManager
 
     public void ChangeSelection(int index)
     {
+        isBlocked = true;
         if (index >= 0 && index < simulationSettings.ObjectPlacementSettings.ObjectTypes.Count)
         {
             currentlySelectedIndex = index;
@@ -89,6 +94,7 @@ public class ObjectTab : SettingsManager
             SetValuesToFields(objectType);
             fitter.Populate(objectType);
         }
+        isBlocked = false;
     }
 
     public void SetValuesToFields(ObjectType objectType)
@@ -109,6 +115,9 @@ public class ObjectTab : SettingsManager
 
     public void SaveValuesToSettings()
     {
+        if (isStarting || isBlocked)
+            return;
+
         ObjectType newObjectType = new ObjectType(
             nameField.text,
             fitter.GetCurrentSettings(),

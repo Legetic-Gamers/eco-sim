@@ -8,6 +8,6 @@ public class SettingsManager : MonoBehaviour
     // Start is called before the first frame update
     protected virtual void Start()
     {
-        simulationSettings = FindObjectOfType<SimulationSettings>();
+        simulationSettings = SimulationSettings.instance;
     }
 }

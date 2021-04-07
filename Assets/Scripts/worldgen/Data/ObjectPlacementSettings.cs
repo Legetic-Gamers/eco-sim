@@ -6,7 +6,7 @@ using UnityEngine;
 public class ObjectPlacementSettings
 {
     [SerializeField]
-    private List<ObjectType> objectTypes = new List<ObjectType>();
+    private List<ObjectType> objectTypes;
 
     public event Action<int> OnTypeChanged;
     public event Action<string> OnTypeDeleted;
@@ -19,18 +19,22 @@ public class ObjectPlacementSettings
 
     public void UpdateIndex(int index, ObjectType objectType)
     {
+        Debug.Log("Updating index: " + index);
         objectTypes[index] = objectType;
         OnTypeChanged.Invoke(index);
     }
 
     public void AddType(ObjectType objectType)
     {
+        Debug.Log("Adding type");
+
         objectTypes.Add(objectType);
         OnTypeAdded.Invoke(objectTypes.Count - 1);
     }
 
     public void RemoveTypeIndex(int index)
     {
+        Debug.Log("Removing index: " + index);
         string name = objectTypes[index].Name;
         objectTypes.RemoveAt(index);
         OnTypeDeleted.Invoke(name);

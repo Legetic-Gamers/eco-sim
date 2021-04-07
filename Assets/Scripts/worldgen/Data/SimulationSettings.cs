@@ -37,7 +37,6 @@ public class SimulationSettings : MonoBehaviour
     public int xFixedSize;
     public int yFixedSize;
 
-
     public HeightMapSettings HeightMapSettings
     {
         get { return heightMapSettings; }

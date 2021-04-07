@@ -27,7 +27,6 @@ public class SimulationPreview : MonoBehaviour
         simulationSettings.OnWaterChanged += OnWaterUpdated;
         simulationSettings.OnTextureChanged += OnTextureValuesUpdated;
 
-
         OnTerrainChanged();
         OnWaterUpdated();
 
