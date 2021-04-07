@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MenuButtonManager : MonoBehaviour
 {
@@ -21,6 +22,7 @@ public class MenuButtonManager : MonoBehaviour
     {
         WindowButtonsMain.SetActive(false);
         WindowButtonsPopulation.SetActive(true);
+        
     }
 
     public void Traits()
