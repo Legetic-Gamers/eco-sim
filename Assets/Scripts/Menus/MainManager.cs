@@ -19,6 +19,7 @@ namespace Menus
 
         public void ChangeToSimulationScene()
         {
+            SimulationSettings.instance.preview = false;
             SceneManager.LoadScene(1);
         }
     }
