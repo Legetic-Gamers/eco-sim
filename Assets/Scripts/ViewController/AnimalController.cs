@@ -7,9 +7,11 @@ using AnimalsV2.States.AnimalsV2.States;
 using DataCollection;
 using DefaultNamespace;
 using Model;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 using ViewController;
+using ViewController.Senses;
 using Debug = UnityEngine.Debug;
 using Random = System.Random;
 
@@ -30,8 +32,12 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     public Action<AnimalController> Dead;
     public Action<AnimalModel, Vector3, float, float> SpawnNew;
 
+    // AnimalParticleManager is subscribed to these
+    public event Action<bool> ActionPregnant;
+    public event Action ActionBirth;
+
     //Subscribed to by animalBrainAgent.
-    public event EventHandler<OnBirthEventArgs> onBirth;
+    public event EventHandler<OnBirthEventArgs> OnBirth;
 
     public class OnBirthEventArgs : EventArgs
     {
@@ -74,7 +80,6 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     private float baseAcceleration;
     private float baseAngularSpeed;
 
-
     //target lists
     public List<GameObject> visibleHostileTargets = new List<GameObject>();
     public List<GameObject> visibleFriendlyTargets = new List<GameObject>();
@@ -85,9 +90,6 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     public List<GameObject> heardHostileTargets = new List<GameObject>();
     public List<GameObject> heardFriendlyTargets = new List<GameObject>();
     public List<GameObject> heardPreyTargets = new List<GameObject>();
-
-
-    public bool IsControllable { get; set; } = false;
 
     //used for ml, so that it does not spawn a lot of children that might interfere with training
     public bool isInfertile = false;
@@ -408,10 +410,10 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
             targetAnimalController = target.GetComponent<AnimalController>();
         }
 
-        if (targetAnimalController.isInfertile) return;
-
-        Random rng = new System.Random();
-
+        if(targetAnimalController.isInfertile) return;
+        
+        Random rng = new Random();
+        
         // make sure target has an AnimalController,
         // that its animalModel is same species, and neither animal is already carrying
         if (targetAnimalController != null && targetAnimalController.animalModel.IsSameSpecies(animalModel) &&
@@ -442,6 +444,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
 
 
             animalModel.isPregnant = true;
+            ActionPregnant?.Invoke(true);
             for (int i = 1; i <= offspringCount; i++)
                 // Wait some time before giving birth
                 StartCoroutine(GiveBirth(childEnergy, childHydration, gestationTime, targetAnimalController));
