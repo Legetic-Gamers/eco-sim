@@ -23,5 +23,6 @@ namespace Model
             isEaten = true;
             return nutritionValue;
         }
+
     }
 }
