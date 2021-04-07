@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
@@ -165,6 +166,7 @@ public class TerrainGenerator : MonoBehaviour
         if (loadedChunks >= fixedSizeX * fixedSizeY)
         {
             navMeshSurface.BuildNavMesh();
+            //NavMesh.pathfindingIterationsPerFrame = (int)Math.Floor(500 * Time.timeScale);
         }
     }
 
