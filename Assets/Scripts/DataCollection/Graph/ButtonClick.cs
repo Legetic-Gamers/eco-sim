@@ -79,12 +79,13 @@ public class ButtonClick : Window_Graph
         int species = dropdownPopulation.GetComponent<Dropdown>().value;
         GetListPopulation(species);
         OnButtonReDraw?.Invoke(this,EventArgs.Empty);
-        yLabel.text = dropdownPopulation.GetComponent<Dropdown>().captionText + " population";
+        yLabel.text = dropdownPopulation.GetComponent<Dropdown>().options [species].text + " population";
         xLabel.text = "Generation";
     }
 
     public void DropDownTrait()
     {
+        Debug.Log("HELLO");
         int species1 = dropdownSpecies1.GetComponent<Dropdown>().value;
         //int species2 = dropdownSpecies2.GetComponent<Dropdown>().value;
         int trait1 = dropdownTrait1.GetComponent<Dropdown>().value;
@@ -96,7 +97,7 @@ public class ButtonClick : Window_Graph
         //GetListType(1, species2, trait2, dataType2);
         
         OnButtonReDraw?.Invoke(this, EventArgs.Empty);
-        yLabel.text = dropdownSpecies1.GetComponent<Dropdown>().name + " " + dropdownTrait1.GetComponent<Dropdown>().name;
+        yLabel.text = dropdownSpecies1.GetComponent<Dropdown>().options [species1].text + " " + dropdownTrait1.GetComponent<Dropdown>().options [trait1].text;
         xLabel.text = "Generation";
     }
 
@@ -105,7 +106,7 @@ public class ButtonClick : Window_Graph
         int species = dropdownBirthRate.GetComponent<Dropdown>().value;
         GetListBirthRate(species);
         OnButtonReDraw?.Invoke(this,EventArgs.Empty);
-        yLabel.text = "Birth rate " + dropdownBirthRate.GetComponent<Dropdown>().name;
+        yLabel.text = "Birth rate " + dropdownBirthRate.GetComponent<Dropdown>().options [species].text;
         xLabel.text = "Minute";
     }
 
