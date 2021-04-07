@@ -23,19 +23,19 @@ public class TerrainGenerator : MonoBehaviour
     public LODInfo[] detailLevels;
     public Transform viewer;
 
-    [Header("Fixed terrain settings")]
-    public int fixedSizeX;
-    public int fixedSizeY;
+
     public NavMeshSurface navMeshSurface;
 
     [Header("General")]
     public Material mapMaterial;
-    public MeshSettings meshSettings;
-    public HeightMapSettings heightMapSettings;
-    public TextureData textureSettings;
-    public WaterSettings waterSettings;
-    public ObjectPlacementSettings objectPlacementSettings;
 
+    private MeshSettings meshSettings;
+    private HeightMapSettings heightMapSettings;
+    private TextureSettings textureSettings;
+    private WaterSettings waterSettings;
+    private ObjectPlacementSettings objectPlacementSettings;
+
+    private TextureApplication textureApplication;
 
     private Vector2 viewerPosition;
     private Vector2 viewerPositionOld;
@@ -49,17 +49,31 @@ public class TerrainGenerator : MonoBehaviour
     private List<TerrainChunk> fixedSizeChunks = new List<TerrainChunk>();
     private int loadedChunks = 0;
 
+    private bool hasStarted = false;
+
+    private int fixedSizeX;
+    private int fixedSizeY;
 
 
-    private void Start()
+    public void StartSimulation(MeshSettings meshSettings, HeightMapSettings heightMapSettings, TextureSettings textureSettings, WaterSettings waterSettings, ObjectPlacementSettings objectPlacementSettings, TextureApplication textureApplication, int fixedSizeX, int fixedSizeY)
     {
-        textureSettings.ApplyToMaterial(mapMaterial);
-        textureSettings.UpdateMeshHeights(mapMaterial, heightMapSettings.minHeight, heightMapSettings.maxHeight);
+
+        this.meshSettings = meshSettings;
+        this.heightMapSettings = heightMapSettings;
+        this.textureSettings = textureSettings;
+        this.waterSettings = waterSettings;
+        this.objectPlacementSettings = objectPlacementSettings;
+        this.fixedSizeX = fixedSizeX;
+        this.fixedSizeY = fixedSizeY;
+        this.textureApplication = textureApplication;
+
+        textureApplication.ApplyToMaterial(mapMaterial);
+        textureApplication.UpdateMeshHeights(mapMaterial, heightMapSettings.MinHeight, heightMapSettings.MaxHeight);
 
         if (terrainMode == TerrainMode.Endless)
         {
             float maxViewDistance = detailLevels[detailLevels.Length - 1].visibleDistanceThreshold;
-            meshWorldSize = meshSettings.meshWorldSize;
+            meshWorldSize = meshSettings.MeshWorldSize;
             chunksVisibleInViewDistance = Mathf.RoundToInt(maxViewDistance / meshWorldSize);
             UpdateVisibleChunks();
         }
@@ -71,6 +85,9 @@ public class TerrainGenerator : MonoBehaviour
 
     private void Update()
     {
+        if (!hasStarted)
+            return;
+
         if (terrainMode == TerrainMode.Endless)
         {
             viewerPosition = new Vector2(viewer.position.x, viewer.position.z);

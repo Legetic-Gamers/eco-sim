@@ -285,7 +285,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
                                          hydrationModifier);
         
         // reproductive urge
-        animalModel.reproductiveUrge += 0.2f * reproductiveUrgeModifier;
+        animalModel.reproductiveUrge += 0.01f * reproductiveUrgeModifier;
         animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
         agent.speed = animalModel.currentSpeed * Time.timeScale;
         agent.acceleration = baseAcceleration * Time.timeScale;
@@ -382,6 +382,8 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
             targetAnimalController = target.GetComponent<AnimalController>();
 
         }
+        
+        if(targetAnimalController.isInfertile) return;
         
         Random rng = new System.Random();
         

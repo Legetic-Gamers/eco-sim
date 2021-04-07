@@ -6925,12 +6925,11 @@ GameObject:
   - component: {fileID: 1340517445734484234}
   - component: {fileID: 1362982912692463142}
   - component: {fileID: 1259058539405274520}
-  - component: {fileID: 1426360519153040675}
-  - component: {fileID: 1426360519153040674}
   - component: {fileID: 347855080844062186}
   - component: {fileID: 5973917812887291707}
   - component: {fileID: 3510711425170286178}
   - component: {fileID: -7173135997215604939}
+  - component: {fileID: 222662561602814254}
   m_Layer: 8
   m_Name: DumbWolf
   m_TagString: Animal
@@ -7092,44 +7091,6 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &1426360519153040675
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1426360519153040676}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1a761c182f2694a439b75faed2a0edc6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  radius: 0
-  targetMask:
-    serializedVersion: 2
-    m_Bits: 256
-  animalController: {fileID: 0}
---- !u!114 &1426360519153040674
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1426360519153040676}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 204dc7aed427ccc42a01c25c1813e09c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  angle: 0
-  radius: 0
-  targetMask:
-    serializedVersion: 2
-    m_Bits: 256
-  obstacleMask:
-    serializedVersion: 2
-    m_Bits: 1024
-  animalController: {fileID: 0}
 --- !u!54 &347855080844062186
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -7173,11 +7134,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tickEventPublisher: {fileID: 0}
   agent: {fileID: 0}
+  energyModifier: 0
+  hydrationModifier: 0
+  reproductiveUrgeModifier: 0.3
   speedModifier: 0.4
   visibleHostileTargets: []
   visibleFriendlyTargets: []
   visibleFoodTargets: []
   visibleWaterTargets: []
+  heardHostileTargets: []
+  heardFriendlyTargets: []
+  heardPreyTargets: []
   isInfertile: 0
 --- !u!114 &-7173135997215604939
 MonoBehaviour:
@@ -7193,12 +7160,36 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tickEventPublisher: {fileID: 0}
   agent: {fileID: 0}
+  energyModifier: 0
+  hydrationModifier: 0
+  reproductiveUrgeModifier: 0.3
   speedModifier: 0.4
   visibleHostileTargets: []
   visibleFriendlyTargets: []
   visibleFoodTargets: []
   visibleWaterTargets: []
+  heardHostileTargets: []
+  heardFriendlyTargets: []
+  heardPreyTargets: []
   isInfertile: 0
+--- !u!114 &222662561602814254
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1426360519153040676}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07422175caeb4ae7abedf1488c86805e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetMask:
+    serializedVersion: 2
+    m_Bits: 256
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 1024
 --- !u!1 &1426362545843532218
 GameObject:
   m_ObjectHideFlags: 0
@@ -7646,6 +7637,7 @@ SkinnedMeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:

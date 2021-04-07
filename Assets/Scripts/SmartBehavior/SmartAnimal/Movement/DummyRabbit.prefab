@@ -200,6 +200,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0.65882355, b: 1, a: 1}
   m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -274,6 +275,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 0.6117647, g: 0.53333336, b: 1, a: 1}
   m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -348,6 +350,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 0.9607843, g: 0.9647059, b: 0.98039216, a: 1}
   m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -422,6 +425,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 0.29803923, g: 0.81960785, b: 0.21568628, a: 1}
   m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -640,6 +644,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -734,6 +739,7 @@ MonoBehaviour:
   m_ChildControlHeight: 0
   m_ChildScaleWidth: 1
   m_ChildScaleHeight: 1
+  m_ReverseArrangement: 0
 --- !u!114 &6495063316326597231
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -836,6 +842,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
+  m_PresetInfoIsWorld: 0
 --- !u!114 &2908317138842179049
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1454,11 +1461,10 @@ GameObject:
   - component: {fileID: 8505818697369016337}
   - component: {fileID: 8505818697369016334}
   - component: {fileID: 8505818697369016332}
-  - component: {fileID: 8505818697369016338}
-  - component: {fileID: 8505818697369016339}
   - component: {fileID: 1389232664}
   - component: {fileID: 1389232662}
-  - component: {fileID: 4722733235302477569}
+  - component: {fileID: 3918154162833772615}
+  - component: {fileID: 8983037899961157824}
   m_Layer: 8
   m_Name: DummyRabbit
   m_TagString: Animal
@@ -1523,44 +1529,6 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 1
---- !u!114 &8505818697369016338
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8505818697369016331}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 204dc7aed427ccc42a01c25c1813e09c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  angle: 0
-  radius: 0
-  targetMask:
-    serializedVersion: 2
-    m_Bits: 256
-  obstacleMask:
-    serializedVersion: 2
-    m_Bits: 4
-  animalController: {fileID: 0}
---- !u!114 &8505818697369016339
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8505818697369016331}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1a761c182f2694a439b75faed2a0edc6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  radius: 0
-  targetMask:
-    serializedVersion: 2
-    m_Bits: 256
-  animalController: {fileID: 0}
 --- !u!54 &1389232664
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1590,7 +1558,25 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.3, y: 0.3, z: 0.3}
   m_Center: {x: 0, y: 0.15, z: 0}
---- !u!114 &4722733235302477569
+--- !u!114 &3918154162833772615
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8505818697369016331}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07422175caeb4ae7abedf1488c86805e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetMask:
+    serializedVersion: 2
+    m_Bits: 256
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 1024
+--- !u!114 &8983037899961157824
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1604,11 +1590,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tickEventPublisher: {fileID: 0}
   agent: {fileID: 0}
+  energyModifier: 0
+  hydrationModifier: 0
+  reproductiveUrgeModifier: 0.3
+  speedModifier: 0.5
   visibleHostileTargets: []
   visibleFriendlyTargets: []
   visibleFoodTargets: []
   visibleWaterTargets: []
-  isInfertile: 0
+  heardHostileTargets: []
+  heardFriendlyTargets: []
+  heardPreyTargets: []
+  isInfertile: 1
 --- !u!1 &8505818697383472513
 GameObject:
   m_ObjectHideFlags: 0
@@ -2430,6 +2423,7 @@ SkinnedMeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -2912,6 +2906,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Navigation:
     m_Mode: 3
+    m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
@@ -3001,6 +2996,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Navigation:
     m_Mode: 3
+    m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
@@ -3090,6 +3086,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Navigation:
     m_Mode: 3
+    m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
@@ -3179,6 +3176,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Navigation:
     m_Mode: 3
+    m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
@@ -3275,6 +3273,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0, b: 0, a: 0.78431374}
   m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -3349,6 +3348,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0, b: 0, a: 0.78431374}
   m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -3423,6 +3423,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0, b: 0, a: 0.78431374}
   m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -3497,6 +3498,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0, b: 0, a: 0.78431374}
   m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
