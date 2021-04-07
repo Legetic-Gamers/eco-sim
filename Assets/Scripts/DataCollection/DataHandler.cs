@@ -200,6 +200,7 @@ namespace DataCollection
             Display?.Invoke(sendList1, sendList2);
             //if (ShowFrameRate) Display(ConvertFloatListToIntList(framerate));
             //ExportDataToFile(0);
+            Debug.Log(c.totalAnimalsAlive);
         }
         
         /// <summary>

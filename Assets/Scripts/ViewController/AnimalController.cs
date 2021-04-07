@@ -272,7 +272,6 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
 
     public virtual void UpdateParameters()
     {
-        Debug.Log("WHAT");
         //The age will increase 2 per 2 seconds.
         animalModel.age += 1;
 

@@ -46,8 +46,9 @@ namespace Menus
         public void LoadMenu()
         {
             Time.timeScale = 1f;
-            //SceneManager.LoadScene("Menu");
+            SceneManager.LoadScene("Main");
             Debug.Log("Load menu");
+            isEnded = false;
         }
 
         public void End()
