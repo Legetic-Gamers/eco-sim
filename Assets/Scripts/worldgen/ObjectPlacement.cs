@@ -111,7 +111,7 @@ public class ObjectPlacement : MonoBehaviour
                             //Indirect logs animal as instantiated in collector
                             if (pooledObjects.IndexOf(animalName) != -1)
                             {
-                                ObjectPooler.Instance.HandleAnimalInstantiated(gameObject, animalName);
+                                ObjectPooler.Instance?.HandleAnimalInstantiated(gameObject, animalName);
                             }
 
                             continue;
