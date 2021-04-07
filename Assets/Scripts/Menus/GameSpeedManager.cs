@@ -1,16 +1,12 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Menus
 {
     public class GameSpeedManager : MonoBehaviour
     {
-        
-        public void SlowDown()
-        {
-            if (!PauseMenuManager.isPaused) Time.timeScale = 0.5f;
-            //Debug.Log("Slowing down");
-        }
-        
+        public Slider mainSlider;
+
         public void SetStandardSpeed()
         {
             if (!PauseMenuManager.isPaused) Time.timeScale = 1f;
@@ -21,6 +17,11 @@ namespace Menus
         {
             if (!PauseMenuManager.isPaused) Time.timeScale = 2f;
             //Debug.Log("Speeding up");
+        }
+
+        public void ChangeSpeed()
+        {
+            Time.timeScale = mainSlider.value;
         }
     }
 }

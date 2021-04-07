@@ -52,13 +52,13 @@ public class HearingAbility : MonoBehaviour
         AnimalController targetAnimalController = target.GetComponent<AnimalController>();
 
         //if the targets animalModel can eat this animalModel: add to visibleHostileTargets
-        if (targetAnimalController.animalModel.CanEat(animalController.animalModel))
+        if (targetAnimalController.animalModel.CanEat(animalController.animalModel) && targetAnimalController.animalModel.IsAlive)
         {
             animalController.heardHostileTargets.Add(target);
             animalController.actionPerceivedHostile?.Invoke(target);
         }
         //if the target is of same species: add to visibleFriendlyTargets
-        else if (animalController.animalModel.IsSameSpecies(targetAnimalController.animalModel))
+        else if (animalController.animalModel.IsSameSpecies(targetAnimalController.animalModel) && targetAnimalController.animalModel.IsAlive)
         {
             animalController.heardFriendlyTargets.Add(target);
         }
@@ -71,7 +71,7 @@ public class HearingAbility : MonoBehaviour
     
     private void Start()
     {
-        tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
+        //tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
         
         animalController = GetComponent<AnimalController>();
         // set animals hearing distance
@@ -79,7 +79,7 @@ public class HearingAbility : MonoBehaviour
         if (tickEventPublisher)
         {
             // subscribe to Ticks
-            tickEventPublisher.onSenseTickEvent += FindHeardTargets;   
+            //tickEventPublisher.onSenseTickEvent += FindHeardTargets;   
         }
     }
 

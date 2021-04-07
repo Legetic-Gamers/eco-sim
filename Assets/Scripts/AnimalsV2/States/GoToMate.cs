@@ -7,14 +7,20 @@ namespace AnimalsV2.States
 {
     public class GoToMate : State
     {
+        
+        
         public GoToMate(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine)
         {
-            currentStateAnimation = StateAnimation.Walking;
+            
         }
 
         public override void Enter()
         {
             base.Enter();
+            currentStateAnimation = StateAnimation.Walking;
+            
+            //Make an update instantly
+            LogicUpdate();
         }
 
         public override void HandleInput()
@@ -31,15 +37,28 @@ namespace AnimalsV2.States
                 GameObject foundMate = GetFoundMate();
                 if (foundMate != null && animal.agent.isActiveAndEnabled)
                 {
-                    Vector3 pointToRunTo = NavigationUtilities.RunToFromPoint(animal.transform, foundMate.transform.position, true);
+                    Vector3 pointToRunTo = foundMate.transform.position;
+                    
+                    // if(foundMate.TryGetComponent(out AnimalController otherAnimalController))
+                    // {
+                    //     if (otherAnimalController.fsm.currentState is Wander)
+                    //     {
+                    //         otherAnimalController.fsm.ChangeState(otherAnimalController.waitingState);
+                    //     }
+                    // }
                     //Move the animal using the navmeshagent.
                     NavigationUtilities.NavigateToPoint(animal,pointToRunTo);
-                    // NavMeshHit hit;
-                    // NavMesh.SamplePosition(pointToRunTo, out hit, 100, 1 << NavMesh.GetAreaFromName("Walkable"));
-                    // animal.agent.SetDestination(hit.position);
-                    if (Vector3.Distance(animal.transform.position, foundMate.transform.position) <= 2f)
+                    
+                    
+                    if (Vector3.Distance(animal.transform.position, foundMate.transform.position) <= animal.agent.stoppingDistance + 0.3)
                     {
-                        finiteStateMachine.ChangeState(animal.matingStateState);
+                        animal.matingState.SetTarget(foundMate);
+                        //Try to change state, else go to default state
+                        if (!finiteStateMachine.ChangeState(animal.matingState))
+                        {
+                            finiteStateMachine.GoToDefaultState();
+                        }
+                        
                     }    
                 }
                 
@@ -59,16 +78,16 @@ namespace AnimalsV2.States
 
         public override bool MeetRequirements()
         {
-            return animal.heardFriendlyTargets.Concat(animal.visibleFriendlyTargets).ToList().Count > 0 && !(finiteStateMachine.CurrentState is MatingState) && animal.animalModel.WantingOffspring && GetFoundMate() != null;
+            return  !(finiteStateMachine.currentState is MatingState) && animal.animalModel.WantingOffspring && GetFoundMate() != null;
         }
 
-        private GameObject GetFoundMate()
+        public GameObject GetFoundMate()
         {
             List<GameObject> allNearbyFriendly = animal.heardFriendlyTargets.Concat(animal.visibleFriendlyTargets).ToList();
             //Debug.Log("Nfriendly" + allNearbyFriendly.Count);
             foreach(GameObject potentialMate in allNearbyFriendly)
             {
-                if (potentialMate != null && potentialMate.TryGetComponent(out AnimalController potentialMateAnimalController) && potentialMateAnimalController.animalModel.WantingOffspring && potentialMateAnimalController.animalModel.IsAlive)
+                if (potentialMate != null && potentialMate.TryGetComponent(out AnimalController potentialMateAnimalController) && potentialMateAnimalController.animalModel.IsAlive && !potentialMateAnimalController.animalModel.isPregnant)
                 {
                     
                     return potentialMateAnimalController.gameObject;

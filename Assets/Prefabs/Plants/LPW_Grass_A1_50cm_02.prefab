@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3637134996407698182}
   - component: {fileID: 3637134996408664518}
   - component: {fileID: -6828328055284148010}
+  - component: {fileID: 2469678663867093435}
   m_Layer: 8
   m_Name: LPW_Grass_A1_50cm_02
   m_TagString: Plant
@@ -92,3 +93,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51d4a3e797174bb2a5f88de66a8f8da3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!65 &2469678663867093435
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3637134996410867462}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.27575868, y: 0.50682193, z: 0.21548975}
+  m_Center: {x: 0.01774681, y: 0.2476205, z: -0.039199512}

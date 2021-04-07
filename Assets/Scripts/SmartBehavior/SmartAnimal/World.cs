@@ -5,6 +5,7 @@ using System.Linq;
 using AnimalsV2.States.AnimalsV2.States;
 using Unity.MLAgents;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.UI;
 using ViewController;
 using Random = UnityEngine.Random;
@@ -16,6 +17,9 @@ using Random = UnityEngine.Random;
 /// </summary>
 public class World : MonoBehaviour
 {
+    //Reference navmesh surface to allow for variable environment size.
+    public NavMeshSurface surface;
+
     //Objects that live in the environment
     [SerializeField] private GameObject food;
     [SerializeField] private GameObject rabbit;
@@ -23,18 +27,26 @@ public class World : MonoBehaviour
     [SerializeField] private GameObject water;
     
     //Environment parameters.
-    [SerializeField] private int numFood;
-    [SerializeField] private int numRabbits;
-    [SerializeField] private int numWolves;
-    [SerializeField] private int numWater;
-    [SerializeField] private float foodRespawnRate;
+    private int numFood;
+    private int numRabbits;
+    private int numWolves;
+    private int numWater;
+    private float foodRespawnRate;
+    
+    //Parameter defaults
+    [SerializeField] private int numFoodDefault;
+    [SerializeField] private int numRabbitsDefault;
+    [SerializeField] private int numWolvesDefault;
+    [SerializeField] private int numWaterDefault;
+    [SerializeField] private float foodRespawnRateDefault;
     
     //Specific to the environment size, used for spawning
-    [SerializeField] private float range;
+    [SerializeField] public float rangeX;
+    [SerializeField] public float rangeZ;
 
     
 
-    public List<AnimalBrainAgent> agents;
+    public List<Agent> agents;
     public List<WolfController> wolves;
     public List<PlantController> plants;
     public List<GameObject> waters;
@@ -46,17 +58,34 @@ public class World : MonoBehaviour
 
     public void Awake()
     {
-        //ResetWorld();
-
         //Academy.Instance.OnEnvironmentReset += ResetWorld;
-        // Academy.Instance.EnvironmentParameters.GetWithDefault("numFood", 15.0f);
-        // Academy.Instance.EnvironmentParameters.GetWithDefault("numRabbits", 3.0f);
-        // Academy.Instance.EnvironmentParameters.GetWithDefault("numWolves", 0.0f);
-        // Academy.Instance.EnvironmentParameters.GetWithDefault("numWater", 3.0f);
-        // Academy.Instance.EnvironmentParameters.GetWithDefault("foodRespawnRate", 100.0f);
-
+        
+        //Randomize environment size
+        float scaleX = Mathf.Round(Academy.Instance.EnvironmentParameters.GetWithDefault("envScaleX", transform.localScale.x));
+        float scaleZ = Mathf.Round(Academy.Instance.EnvironmentParameters.GetWithDefault("envScaleZ", transform.localScale.z));
+        //Set size of environment
+        transform.localScale = new Vector3(scaleX,1f,scaleZ);
+        //Set spawn bounds
+        rangeX = 5f * scaleX - 0.5f;
+        rangeZ = 5f * scaleZ - 0.5f;
+        //Build Navmesh
+        surface.BuildNavMesh();
+        
+        //Randomize parameters
+        numFood = (int )Mathf.Round(Academy.Instance.EnvironmentParameters.GetWithDefault("numFood", numFoodDefault));
+        numRabbits = (int )Mathf.Round(Mathf.Round(Academy.Instance.EnvironmentParameters.GetWithDefault("numRabbits", numRabbitsDefault)));
+        numWolves = (int )Mathf.Round(Mathf.Round(Academy.Instance.EnvironmentParameters.GetWithDefault("numWolves", numWolvesDefault)));
+        numWater = (int )Mathf.Round(Mathf.Round(Academy.Instance.EnvironmentParameters.GetWithDefault("numWater", numWaterDefault)));
+        foodRespawnRate = (int )Mathf.Round(Mathf.Round(Academy.Instance.EnvironmentParameters.GetWithDefault("foodRespawnRate", foodRespawnRateDefault)));
         
         
+        //Adjust parameters for environment size
+        //maxscale should be set to same as in config file (max_value for z and x scale).
+        int maxScale = 6;
+        numFood = (int) Mathf.Ceil((numFood * scaleX * scaleZ) / maxScale) + 30;//atleast 10 food.
+        numWater = (int) Mathf.Ceil((numWater* scaleX * scaleZ) / (maxScale)) + 2;
+        numRabbits = (int) Mathf.Ceil((numRabbits * scaleX * scaleZ) / maxScale) +  1; //Atleast 2 rabbits. Divide by 4 to sort of normalize the scale factor with max scale.
+        numWolves = (int) Mathf.Floor((numWolves * scaleX * scaleZ) / (2*maxScale)); // Should be a lot less wolves. Can be 0.
         
         m_Recorder = Academy.Instance.StatsRecorder;
 
@@ -67,7 +96,7 @@ public class World : MonoBehaviour
     {
         //agents = FindObjectsOfType<AnimalBrainAgent>();
 
-        scoreText.text = $"Score: {totalScore}";
+        //scoreText.text = $"Score: {totalScore}";
 
         // Send stats via SideChannel so that they'll appear in TensorBoard.
         // These values get averaged every summary_frequency steps, so we don't
@@ -88,15 +117,17 @@ public class World : MonoBehaviour
         for (int i = 0; i < num; i++)
         {
             //Instantiate
-            GameObject newObject = Instantiate(type, new Vector3(Random.Range(-range, range), 0,
-                    Random.Range(-range, range)) + transform.position,
-                Quaternion.Euler(new Vector3(0f, Random.Range(0f, 360f), 90f)));
+            GameObject newObject = SpawnNew(type);
 
             //Add agents to lists
-            AnimalBrainAgent agent = newObject.GetComponent<AnimalBrainAgent>();
+            Agent agent = newObject.GetComponent<Agent>();
             if (agent)
             {
-                agent.world = this;
+                if (agent is AnimalBrainAgent animalBrainAgent)
+                {
+                    animalBrainAgent.world = this;
+                }
+                
                 agents.Add(agent);
             }
 
@@ -105,6 +136,7 @@ public class World : MonoBehaviour
             if (wolf)
             {
                 wolves.Add(wolf);
+                
             }
 
             //Add Water to list.
@@ -129,6 +161,13 @@ public class World : MonoBehaviour
                 
             }
         }
+    }
+
+    public virtual GameObject SpawnNew(GameObject type)
+    {
+        return Instantiate(type, new Vector3(Random.Range(-rangeX, rangeX), 0,
+                Random.Range(-rangeZ, rangeZ)) + transform.position,
+            Quaternion.Euler(new Vector3(0f, Random.Range(0f, 360f), 0f)));
     }
 
     private void OnDestroy()
@@ -175,6 +214,7 @@ public class World : MonoBehaviour
         CreateObjects(numWater, water);
         CreateObjects(numRabbits, rabbit);
         CreateObjects(numWolves, wolf);
+        //CreateObjects(numFood, food);
     }
 
     public void ResetWorld()
@@ -239,7 +279,7 @@ public class World : MonoBehaviour
 
     private void HandleBirth(object sender, AnimalController.OnBirthEventArgs e)
     {
-        AnimalBrainAgent childAgent = e.child.GetComponent<AnimalBrainAgent>();
+        Agent childAgent = e.child.GetComponent<Agent>();
         if (childAgent != null)
         {
             agents.Add(childAgent);
@@ -251,12 +291,21 @@ public class World : MonoBehaviour
         //Reset if all agents are dead.
         if (agents.All(agent => IsDead(agent) ))
         {
-            Debug.Log("Extinction");
+            //Debug.Log("Extinction");
             ResetWorld();
         }
     }
 
-    private static bool IsDead(AnimalBrainAgent agent)
+    public void ResetOnOnlyOneLeft()
+    {
+        if (agents.Where(agent => !IsDead(agent)).Count() == 1)
+        {
+            //Debug.Log("Extinction");
+            ResetWorld();
+        }
+    }
+
+    private static bool IsDead(Agent agent)
     {
         //agent is dead if nonexistent
         if (agent == null)
@@ -266,9 +315,9 @@ public class World : MonoBehaviour
 
         //agent is dead if dead
         AnimalController animalController = agent.GetComponent<AnimalController>();
-        if (animalController)
+        if (animalController != null)
         {
-            if (animalController.fsm.CurrentState is Dead || !animalController.animalModel.IsAlive)
+            if (animalController.fsm.currentState is Dead || !animalController.animalModel.IsAlive)
             {
                 return true;
             }
@@ -286,7 +335,11 @@ public class World : MonoBehaviour
 
     private void SpawnNewFood()
     {
-        CreateObjects(numFood, food);
+        if (numFoodDefault > 0)
+        {
+            CreateObjects(numFood, food);
+            
+        }
     }
 
    

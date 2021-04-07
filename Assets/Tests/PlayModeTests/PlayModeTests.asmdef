@@ -3,7 +3,9 @@
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "ScriptAssembly"
+        "ScriptAssembly",
+        "Unity.ML-Agents",
+        "Tests"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using DataCollection;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 
 /// <summary>
@@ -12,74 +12,170 @@ using UnityEngine.UI;
 /// Use function ShowGraph to draw graph, and DestroyGraph to erase it.
 /// </summary>
 
+
+
 public class Window_Graph : MonoBehaviour
 {
-
     [SerializeField] private int dotSize = 5;
     [SerializeField] Color lineColor = new Color(1, 1, 1, .5f);
     [SerializeField] float lineWidth = 2f; // line connecting dots
     
     [SerializeField] private float yBufferTop = 1.2f;
-    [SerializeField] private int firstX = 3;
-    [SerializeField] private int gridCountY = 10;
-    [SerializeField] private int gridCountX = 20;
     [SerializeField] private Sprite circleSprite;
+    [SerializeField] private float windowGraphSizeX = 1000;
+    [SerializeField] private float windowGraphSizeY = 700;
+    [SerializeField] private float graphContainerSizeX = 720;
+    [SerializeField] private float graphContainerSizeY = 405;
+
+    private static List<float> _list1 = new List<float>() {0};
+    private static List<float> _list2 = new List<float>() {0};
+    private static int _truncateFactor = 1;
+    private static int _gridCountY = 12;
+    private int firstX = 1;
+    private static bool _isGraphOne = true;
+    private static bool _isGraphTwo = false;
     
+
+
+    private RectTransform window_graph;
     private RectTransform graphContainer;
     private RectTransform labelTemplateX;
     private RectTransform labelTemplateY;
     private RectTransform dashTemplateX;
     private RectTransform dashTemplateY;
+    
     private List<GameObject> gameObjectList;
     
+    
+
+    public static int TruncateFactor
+    {
+        get => _truncateFactor;
+        set => _truncateFactor = value;
+    }
+
+    public static int GridCountY
+    {
+        get => _gridCountY;
+        set => _gridCountY = value;
+    }
+    
+    public static List<float> List1 
+    {
+        get => _list1;
+        set => _list1 = value;
+    }
+    
+    public static List<float> List2 
+    {
+        get => _list2;
+        set => _list2 = value;
+    }
+
+    public static bool IsGraphOne
+    {
+        get => _isGraphOne;
+        set => _isGraphOne = value;
+    }
+
+    public static bool IsGraphTwo
+    {
+        get => _isGraphTwo;
+        set => _isGraphTwo = value;
+    }
+
+
     private void Awake()
     {
-        graphContainer = transform.Find("graphContainer").GetComponent<RectTransform>();
+        window_graph = GetComponent<RectTransform>();
+        graphContainer = window_graph.Find("graphContainer").GetComponent<RectTransform>();
         labelTemplateX = graphContainer.Find("labelTemplateX").GetComponent<RectTransform>();
         labelTemplateY = graphContainer.Find("labelTemplateY").GetComponent<RectTransform>();
         dashTemplateX = graphContainer.Find("dashTemplateX").GetComponent<RectTransform>();
         dashTemplateY = graphContainer.Find("dashTemplateY").GetComponent<RectTransform>();
         gameObjectList = new List<GameObject>();
         DataHandler dh = FindObjectOfType<DataHandler>();
-        dh.Display += ShowGraph;
+
+        window_graph.sizeDelta = new Vector2(windowGraphSizeX, windowGraphSizeY);
+        graphContainer.sizeDelta = new Vector2(graphContainerSizeX, graphContainerSizeY);
+        dashTemplateX.sizeDelta = new Vector2(graphContainerSizeY + 2, 1);
+        dashTemplateY.sizeDelta = new Vector2(graphContainerSizeX + 2, 1); 
+        dh.Display += Draw;
+        ButtonClick.OnButtonReDraw += ReDraw;
     }
+
+private void Draw(List<float> list1, List<float> list2)
+{
+    _list1 = list1;
+    _list2 = list2;
+    if (gameObjectList != null) DestroyGraph(gameObjectList);
+    if (_isGraphOne && _isGraphTwo)
+    {
+        ShowGraph(list1, Color.red);
+        DrawCurve(list2, Color.blue);
+    }
+        
+    else if (_isGraphOne)
+        ShowGraph(list1, Color.red);
+    else if (_isGraphTwo)
+        ShowGraph(list2, Color.blue);
+}
+
+
+private void ReDraw(object sender, EventArgs e)
+{
+    if (gameObjectList != null) DestroyGraph(gameObjectList);
+    if (_isGraphOne && _isGraphTwo)
+    {
+        ShowGraph(_list1, Color.red);
+        DrawCurve(_list2, Color.blue);
+    }
+    else if (_isGraphOne)
+        ShowGraph(_list1, Color.red);
+    else if (_isGraphTwo)
+        ShowGraph(_list2, Color.blue);
+}
+
+
+
     
     // Draws entire graph.
-    void ShowGraph(List<int> valueList)
+    private void ShowGraph(List<float> valueList, Color color)
     {
-        DestroyGraph();
+        if (valueList.Count == 0) return;
         var sizeDelta = graphContainer.sizeDelta;
         float graphHeight = sizeDelta.y;
         float graphWidth = sizeDelta.x;
 
-        AddGridX(valueList, graphWidth);
-        AddGridY(valueList, graphHeight);
-        DrawCurve(valueList, sizeDelta);
+        AddGridX(valueList);
+        AddGridY(valueList);
+        DrawCurve(valueList, color);
         
     }
     
     // Destroys the previous graph.
     
 
-    public void DestroyGraph()
+    private void DestroyGraph(List<GameObject> gameobjects)
     {
-        foreach (GameObject gameObject in gameObjectList)
+        foreach (GameObject obj in gameobjects)
         {
-            Destroy(gameObject);
+            Destroy(obj);
         }
 
         gameObjectList.Clear();
     }
     
+    
 
-    private GameObject CreateCircle(Vector2 anchoredPosition)
+    private GameObject CreateCircle(Vector2 anchoredPosition, Color color)
     {
         // create circle object, make it child of graph container, set its position in graph container.
 
         GameObject gameObject = new GameObject("circle", typeof(Image));
         gameObject.transform.SetParent(graphContainer, false);
         gameObject.GetComponent<Image>().sprite = circleSprite;
-        gameObject.GetComponent<Image>().color = lineColor;
+        gameObject.GetComponent<Image>().color = color;
         RectTransform rectTransform = gameObject.GetComponent<RectTransform>();
         rectTransform.anchoredPosition = anchoredPosition;
         rectTransform.sizeDelta = new Vector2(dotSize, dotSize);
@@ -92,11 +188,11 @@ public class Window_Graph : MonoBehaviour
     
     
     // Draws lines between points.
-    private GameObject CreateDotConnection(Vector2 dotPositionA, Vector2 dotPositionB)
+    private GameObject CreateDotConnection(Vector2 dotPositionA, Vector2 dotPositionB, Color color)
     {
         GameObject gameObject = new GameObject("dotConnection", typeof(Image));
         gameObject.transform.SetParent(graphContainer, false);
-        gameObject.GetComponent<Image>().color = lineColor;
+        gameObject.GetComponent<Image>().color = color;
         RectTransform rectTransform = gameObject.GetComponent<RectTransform>();
         Vector2 dir = (dotPositionB - dotPositionA).normalized;
         float distance = Vector2.Distance(dotPositionA, dotPositionB);
@@ -113,12 +209,11 @@ public class Window_Graph : MonoBehaviour
 
 
     // Draws the grid and labels of the X-axis.
-    private void AddGridX(List<int> valueList, float graphWidth)
+    protected void AddGridX(List<float> valueList)
     {
-
-        int separatorCount = gridCountX;
+        float graphWidth = graphContainer.sizeDelta.x;
+        //int separatorCount = _gridCountX;
         int numberOfValues = valueList.Count;
-        int truncateFactor = (int)Math.Ceiling((numberOfValues)*1f / separatorCount);
         float xDelta = graphWidth / numberOfValues;
         int count = firstX;
 
@@ -134,24 +229,27 @@ public class Window_Graph : MonoBehaviour
             labelX.gameObject.SetActive(true); 
             labelX.anchoredPosition = new Vector2(xPosition, -7f); 
             labelX.GetComponent<Text>().text = count.ToString();
-            gameObjectList.Add(labelX.gameObject);
+            gameObjectList.Add(labelX.gameObject); 
 
             RectTransform dashX = Instantiate(dashTemplateX);
             dashX.SetParent(graphContainer);
             dashX.gameObject.SetActive(true); 
-            dashX.anchoredPosition = new Vector2(xPosition, -2f); 
-            gameObjectList.Add(dashX.gameObject);
+            dashX.anchoredPosition = new Vector2(xPosition, -2f);
+            gameObjectList.Add(dashX.gameObject); 
             
-            count += truncateFactor;
+            count += _truncateFactor;
         }
 
     }
 
     // Draws the grid of the Y-axis, as well as the labels of the Y-axis.
-    void AddGridY(List<int> valueList, float graphHeight)
+    private void AddGridY(List<float> valueList)
     {
+        float graphHeight = graphContainer.sizeDelta.y;
         float yMax = valueList.Max() * yBufferTop;
-        int separatorCount = gridCountY;
+        int separatorCount = _gridCountY;
+        if (_isGraphOne && _isGraphTwo)
+            yMax = Mathf.Max(_list1.Max(), _list2.Max())*yBufferTop;
         for (int i = 0; i <= separatorCount; i++)
         {
             RectTransform labelY = Instantiate(labelTemplateY);
@@ -159,43 +257,52 @@ public class Window_Graph : MonoBehaviour
             labelY.gameObject.SetActive(true); 
             float normalizedValue = (i * 1f) / separatorCount;
             labelY.anchoredPosition = (new Vector2(-10f, normalizedValue * graphHeight));
-            labelY.GetComponent<Text>().text =
-                (yMax * normalizedValue).ToString("0.0"); 
-            gameObjectList.Add(labelY.gameObject);
+            labelY.GetComponent<Text>().text = (yMax * normalizedValue).ToString("0.0");
+            gameObjectList.Add(labelY.gameObject); 
 
 
             RectTransform dashY = Instantiate(dashTemplateY);
             dashY.SetParent(graphContainer);
             dashY.gameObject.SetActive(true); 
             dashY.anchoredPosition = new Vector2(-2f, normalizedValue * graphHeight);
-            gameObjectList.Add(dashY.gameObject);
+            gameObjectList.Add(dashY.gameObject); 
         }
     }
 
     // Draws the curve of the graph.
-    private void DrawCurve(List<int> valueList, Vector2 graphSize)
+    private void DrawCurve(List<float> valueList, Color color)
     {
-        float graphHeight = graphSize.y;
-        float graphWidth = graphSize.x;
+        if (valueList.Count == 0) return;
+
+        var sizeDelta = graphContainer.sizeDelta;
+        float graphHeight = sizeDelta.y;
+        float graphWidth = sizeDelta.x;
         int numberOfValues = valueList.Count;
         float xDelta = graphWidth / numberOfValues;
-        float yMax = valueList.Max() * yBufferTop;
+        float yMax = valueList.Max() *yBufferTop;
         int count = firstX;
+
+        if (_isGraphOne && _isGraphTwo)
+        {
+            if (_list1.Count == 0 || _list2.Count == 0) return;
+            yMax = Mathf.Max(_list1.Max(), _list2.Max()) *yBufferTop;
+        }
+
 
         GameObject lastCircleGameObject = null;
 
-        foreach (int value in valueList)
+        foreach (float value in valueList)
         {
             float xPosition = (count-firstX) * xDelta;
             float yPosition = (value / yMax) * graphHeight;
-            GameObject circleGameObject = CreateCircle(new Vector2(xPosition, yPosition));
+            GameObject circleGameObject = CreateCircle(new Vector2(xPosition, yPosition), color);
             gameObjectList.Add(circleGameObject);
 
             if (lastCircleGameObject != null)
             {
                 GameObject dotConnectionGameObject = CreateDotConnection(
                     lastCircleGameObject.GetComponent<RectTransform>().anchoredPosition,
-                    circleGameObject.GetComponent<RectTransform>().anchoredPosition);
+                    circleGameObject.GetComponent<RectTransform>().anchoredPosition, color);
                 gameObjectList.Add(dotConnectionGameObject);
             }
 

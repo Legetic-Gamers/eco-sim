@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
@@ -13,13 +12,13 @@ namespace Tests
         public void TestCrossover()
         {
             // Initialize two parents
-            AnimalModel parent1 = new RabbitModel(new Traits(10,10,10,10,10,1,10,10,10,10,10,10,10), 0);
-            AnimalModel parent2 = new RabbitModel(new Traits(1,1,1,1,1,1,1,1,1,1,1,1,1), 1);
+            AnimalModel parent1 = new RabbitModel(new Traits(10,10,10,10, 10,1,10,10,10,10,10,10), 0);
+            AnimalModel parent2 = new RabbitModel(new Traits(1,1,1,1, 1,1,1,1,1,1,1,1), 1);
 
             // Set age
             parent1.age = 80;
             parent2.age = 20;
-            
+
             // Mate
             AnimalModel child = parent1.Mate(parent2);
             
@@ -34,7 +33,6 @@ namespace Tests
                       + "maxSpeed: " + child.traits.maxSpeed + "\n"
                       + "endurance: " + child.traits.endurance + "\n"
                       + "ageLimit: " + child.traits.ageLimit + "\n"
-                      + "temperatureResist: " + child.traits.temperatureResist + "\n"
                       + "desirability: " + child.traits.desirability + "\n"
                       + "viewAngle: " + child.traits.viewAngle + "\n"
                       + "viewRadius: " + child.traits.viewRadius + "\n"

@@ -2,6 +2,10 @@
 {
     public interface IEdible
     {
+        float nutritionValue
+        {
+            get;
+        }
         float GetEaten();
     }
 }
