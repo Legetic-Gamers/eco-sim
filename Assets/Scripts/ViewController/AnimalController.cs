@@ -366,7 +366,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
             animalModel.CanEat(ediblePlant))
         {
             animalModel.currentEnergy += ediblePlant.GetEaten();
-            Destroy(food);
+            //Destroy(food); 
         }
     }
 
@@ -446,8 +446,14 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         AnimalModel childModel = animalModel.Mate(otherParentAnimalController.animalModel);
         
         child.GetComponent<AnimalController>().animalModel = childModel;
+<<<<<<< HEAD
         child.GetComponent<AnimalController>().animalModel.currentEnergy = childEnergy;
         child.GetComponent<AnimalController>().animalModel.currentHydration = childHydration;   
+=======
+        //Debug.Log(child.GetComponent<AnimalController>().animalModel.generation);
+        onBirth?.Invoke(this,new OnBirthEventArgs{child = child});
+    }
+>>>>>>> dynamic-food
 
         // update the childs speed (in case of mutation).
         child.GetComponent<AnimalController>().animalModel.traits.maxSpeed = 1;
