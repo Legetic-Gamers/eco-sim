@@ -134,33 +134,13 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     }
     
 
-    protected void Start()
+    private void Start()
     {
-        /*
-        // Init the NavMesh agent
-        agent = GetComponent<NavMeshAgent>();
-        agent.autoBraking = true;
-
-        animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
-
-        //Can be used later.
-        baseAngularSpeed = agent.angularSpeed;
-        baseAcceleration = agent.acceleration;
-
-        agent.speed = animalModel.currentSpeed * Time.timeScale;
-        agent.acceleration *= Time.timeScale;
-        agent.angularSpeed *= Time.timeScale;
-        dh = FindObjectOfType<DataHandler>();
-        dh.LogNewAnimal(animalModel);
-        //Debug.Log(agent.autoBraking);
-        tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
-        EventSubscribe();
-
-        SetPhenotype();
-        
-    }
-
-        */
+        //If there is no object pooler present, we need to call onObjectSpawn through start
+        if (FindObjectOfType<ObjectPooler>() == null)
+        {
+            onObjectSpawn();
+        }
     }
     /// <summary>
     /// "Start()" when using animal pooling, called when the animal is set to be active. 
@@ -292,7 +272,6 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
 
     public virtual void UpdateParameters()
     {
-        Debug.Log("UPDATING PARAMETERS");
         //The age will increase 2 per 2 seconds.
         animalModel.age += 1;
 
