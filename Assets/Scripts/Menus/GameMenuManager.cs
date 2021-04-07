@@ -13,12 +13,15 @@ namespace Menus
     {
         public static bool isPaused;
         public static bool isEnded;
+        
         public GameObject pauseMenu;
+        public GameObject endMenu;
+        
         private float lastGameSpeed = 1f;
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Escape))
+            if (Input.GetKeyDown(KeyCode.Escape) && !isEnded)
             {
                 if (isPaused) Resume();
                 else Pause();
@@ -28,7 +31,7 @@ namespace Menus
         public void Resume()
         {
             Time.timeScale = lastGameSpeed;
-            pauseMenu.SetActive(false);
+            pauseMenu.SetActive(false); 
             isPaused = false;
         }
 
@@ -50,7 +53,23 @@ namespace Menus
         public void End()
         {
             Debug.Log("GAME IS ENDED");
-            Pause();
+            if (!isEnded)
+            {
+                isEnded = true;
+                //make sure pause menu is inactive
+                pauseMenu.SetActive(false);
+                endMenu.SetActive(true);
+                Time.timeScale = 0f;    
+            }
+        }
+
+        public void Restart()
+        {
+            Debug.Log("Restart");
+            //Restart scene
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            Time.timeScale = 1f;
+            isEnded = false;
         }
 
         public void Start()

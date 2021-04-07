@@ -97,6 +97,8 @@ namespace DataCollection
                 times.Add(Time.deltaTime);
                 counter--;
             }
+            
+            Debug.Log(c.totalAnimalsAlive);
         }
         
         /// <summary>
@@ -213,5 +215,6 @@ namespace DataCollection
             foreach (float f in list.ToArray()) integerList.Add((int) f);
             return integerList;
         }
+        
     }
 }
