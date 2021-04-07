@@ -50,7 +50,7 @@ public class ObjectPooler : MonoBehaviour
         }
     }
 
-    private void HandleFinishedSpawning()
+    public void HandleFinishedSpawning()
     {
         if (!allSpawnedAtStart)
         {
@@ -70,7 +70,7 @@ public class ObjectPooler : MonoBehaviour
         }
     }
 
-    private void HandleAnimalInstantiated(GameObject objectToSpawn, string tag)
+    public void HandleAnimalInstantiated(GameObject objectToSpawn, string tag)
     {
         Debug.Log("Handling");
         if (poolDictionary != null && poolDictionary.ContainsKey(tag))

@@ -2,6 +2,7 @@
  * Author: Johan A.
  */
 
+using System;
 using System.Collections.Generic;
 using Model;
 using UnityEngine;
@@ -11,6 +12,9 @@ namespace DataCollection
     public class Collector
     {
         private int cap = 13;
+        public Action onAllDeath;
+
+        private int totalAnimalsAlive = 0;
         
         // Index is generation
         public readonly List<int> totalAnimalsAlivePerGeneration;
@@ -177,6 +181,8 @@ namespace DataCollection
             // Finally add to the total of animals
             if (totalAnimalsAlivePerGeneration.Count <= gen) totalAnimalsAlivePerGeneration.Add(1);
             else totalAnimalsAlivePerGeneration[gen] += 1;
+
+            totalAnimalsAlive++;
         }
 
         /// <summary>
@@ -240,7 +246,9 @@ namespace DataCollection
                     currentanimalsTotalAlivePerSpecies[3] -= 1;
                     break;
             }
-            
+
+            totalAnimalsAlive--;
+            if(totalAnimalsAlive <= 0) onAllDeath?.Invoke();
         }
 
         /// <summary>
