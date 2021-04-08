@@ -93,7 +93,7 @@ namespace DataCollection
             for (int i = 0; i < cap; i++) deerStatsPerGenVar.Add(new List<float>{0});
             for (int i = 0; i < cap; i++) bearStatsPerGenVar.Add(new List<float>{0});
 
-            totalAnimalsAlivePerGeneration = new List<int> {GameObject.FindGameObjectsWithTag("Animal").Length};
+            totalAnimalsAlivePerGeneration = new List<int> {0};
 
             birthRatePerMinute = new List<List<float>>(4);
             for (int i = 0; i < 4; i++) birthRatePerMinute.Add(new List<float>{0});

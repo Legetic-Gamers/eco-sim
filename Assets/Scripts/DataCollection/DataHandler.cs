@@ -70,11 +70,11 @@ namespace DataCollection
             // Subscribe to Tick Event publisher update data and graph 
             tickEventPublisher.onDataHandlerUpdate += UpdateDataAndGraph;
             tickEventPublisher.onCollectorUpdate += CollectBirthRate;
-            ButtonClick bc = FindObjectOfType<ButtonClick>();
-            bc.GetListTrait += SetTrait;
-            bc.GetListPopulation += SetPopulation;
-            bc.GetListBirthRate += SetBirthRate;
-            bc.GetListFoodAvailable += SetFoodAvailable;
+            //ButtonClick bc = FindObjectOfType<ButtonClick>();
+            //bc.GetListTrait += SetTrait;
+            //bc.GetListPopulation += SetPopulation;
+            //bc.GetListBirthRate += SetBirthRate;
+            //bc.GetListFoodAvailable += SetFoodAvailable;
             // Make a collector to handle data
             c = new Collector();
             // Prepare for frame rate collection
@@ -284,7 +284,6 @@ namespace DataCollection
             Display?.Invoke(sendList1, sendList2);
             //if (ShowFrameRate) Display(ConvertFloatListToIntList(framerate));
             //ExportDataToFile(0);
-            Debug.Log(c.totalAnimalsAlive);
         }
 
         private void CollectBirthRate()

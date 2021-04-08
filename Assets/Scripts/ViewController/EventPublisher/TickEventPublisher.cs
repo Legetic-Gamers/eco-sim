@@ -42,7 +42,7 @@ public class TickEventPublisher : MonoBehaviour
     {
         while (true)
         {
-            yield return new WaitForSeconds(60f);
+            yield return new WaitForSeconds(60f / Time.timeScale);
             onCollectorUpdate?.Invoke();
         }
     }
@@ -51,7 +51,7 @@ public class TickEventPublisher : MonoBehaviour
     {
         while (true)
         {
-            yield return new WaitForSeconds(2f);
+            yield return new WaitForSeconds(2f / Time.timeScale);
             onDataHandlerUpdate?.Invoke();
         }
     }
