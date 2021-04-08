@@ -223,10 +223,22 @@ namespace DataCollection
         public void CollectDeath(AnimalModel am, AnimalModel.CauseOfDeath cause, float distanceTravelled)
         {
             int gen = am.generation;
+            Debug.Log(gen);
+            
             for (int i = totalDeadAnimals.Count - 1; i <= gen; i++) totalDeadAnimals.Add(0);
+            if(gen >= totalDeadAnimals.Count - 1) Debug.Log(gen);
+             
             totalDeadAnimals[gen] += 1;
+
             // Changes the referenced lists depending on the species of the animal. 
             (List<List<float>> animalMean, List<List<float>> animalVar, List<float> _) = GetAnimalList(am);
+            
+            for (int i = 0; i <= gen - (animalMean[12].Count - 1); i++) animalMean[12].Add(0);
+            for (int i = 0; i <= gen - (animalVar[12].Count - 1); i++) animalVar[12].Add(0);
+                
+            for (int i = 0; i <= gen - (animalMean[11].Count - 1); i++) animalMean[11].Add(0);
+            for (int i = 0; i <= gen - (animalVar[11].Count - 1); i++) animalVar[11].Add(0);
+
             (float meanAge, float varAge) =
                 GetNewMeanVariance(animalMean[12][gen], animalVar[12][gen], am.age, totalDeadAnimals[gen]);
             
