@@ -42,6 +42,7 @@ namespace Menus
                 if(this != _instance)
                     Destroy(this.gameObject);
             }
+            audioMixer.SetFloat("MasterVolume", Mathf.Log10(0.003f)*20);
         }
         
         public void SetVolume(float volume)
