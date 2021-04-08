@@ -1,10 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using DefaultNamespace;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Events;
+using Object = System.Object;
+using Random = UnityEngine.Random;
 
 // http://devmag.org.za/2009/05/03/poisson-disk-sampling/
 public class ObjectPlacement : MonoBehaviour
 {
+    
     public List<GameObject> groups;
     public SimulationSettings simulationSettings;
     int size;
@@ -41,6 +48,7 @@ public class ObjectPlacement : MonoBehaviour
 
     public void PlaceObjectType(ObjectType objectType, Vector2 positionOffset)
     {
+        Debug.Log("PLACEOBJECTYPE");
         int deleted = 0;
         if (objectType.GameObjectSettings == null || objectType.GameObjectSettings.Count <= 0)
         {
@@ -87,12 +95,6 @@ public class ObjectPlacement : MonoBehaviour
                         bool withinSpan = hit.point.y <= (simulationSettings.HeightMapSettings.MaxHeight - simulationSettings.HeightMapSettings.MinHeight) * objectType.MaxHeight
                         && hit.point.y >= (simulationSettings.HeightMapSettings.MaxHeight - simulationSettings.HeightMapSettings.MinHeight) * objectType.MinHeight;
 
-                        var animalName = objectType.Name;
-                        if (pooledObjects.IndexOf(animalName) != -1)
-                        {
-                            ObjectPooler.instance.HandleAnimalInstantiated(gameObject, animalName);
-                        }
-
                         if (withinSpan)
                         {
                             Vector3 oldPosition = gameObject.transform.position;
@@ -105,11 +107,18 @@ public class ObjectPlacement : MonoBehaviour
                             {
                                 agent.Warp(new Vector3(oldPosition.x, hit.point.y + objectType.yOffset, oldPosition.z));
                             }
+                            var animalName = objectType.Name;
+                            //Indirect logs animal as instantiated in collector
+                            if (pooledObjects.IndexOf(animalName) != -1)
+                            {
+                                ObjectPooler.Instance?.HandleAnimalInstantiated(gameObject, animalName);
+                            }
+
                             continue;
                         }
                     }
-
                 }
+                
                 if (Application.isEditor)
                 {
                     DestroyImmediate(gameObject);
@@ -121,6 +130,7 @@ public class ObjectPlacement : MonoBehaviour
                 deleted++;
             }
         }
+        ObjectPooler.Instance?.HandleFinishedSpawning();
     }
 
     public static List<Vector2> GeneratePlacementPoints(ObjectType objectType, float meshScale, int size)

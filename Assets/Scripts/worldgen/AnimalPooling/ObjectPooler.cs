@@ -20,19 +20,24 @@ public class ObjectPooler : MonoBehaviour
         public int size;
     }
 
-    #region Singleton
+    public static ObjectPooler Instance
+    {
+        get
+        {
+            if (instance == null)
+                instance = FindObjectOfType(typeof(ObjectPooler)) as ObjectPooler;
+
+            return instance;
+        }
+        set { instance = value; }
+    }
 
     public static ObjectPooler instance;
 
-    #endregion
 
     public List<Pool> pools;
     public Dictionary<string, Queue<GameObject>> poolDictionary;
-    private bool isInstantiated = false;
 
-    /// <summary>
-    /// Instantiate this object and make a dictionary for the queues.
-    /// </summary>
     private void Awake()
     {
         instance = this;
@@ -65,9 +70,7 @@ public class ObjectPooler : MonoBehaviour
                 obj.SetActive(false);
                 poolDictionary[objTag].Enqueue(obj);
             }
-        }
-
-        isInstantiated = true;
+        } 
     }
 
     /// <summary>
@@ -78,27 +81,26 @@ public class ObjectPooler : MonoBehaviour
     /// <param name="tag"> Tag of the animal, must match names in terrain generator. </param>
     public void HandleAnimalInstantiated(GameObject objectToSpawn, string tag)
     {
-        if (!isInstantiated)
-        {
-            if (poolDictionary != null && poolDictionary.ContainsKey(tag))
+        Debug.Log("HANDLEANIMALINSTANTIATED");
+        if (poolDictionary != null && poolDictionary.ContainsKey(tag))
             {
                 objectToSpawn.SetActive(true);
                 objectToSpawn.GetComponent<IPooledObject>()?.onObjectSpawn();
-
-                if (TryGetComponent(out AnimalController animalController))
+                
+                if (objectToSpawn.TryGetComponent(out AnimalController animalController))
                 {
-                    Debug.Log("YES");
-                    animalController.Dead += HandleDeadAnimal;
+
+                    animalController.deadState.onDeath += HandleDeadAnimal;
                     animalController.SpawnNew += HandleBirthAnimal;
                 }
                 else
                 {
-                    Debug.Log("NO");
+                    Debug.Log("HandleAnimalInstantiated() did not succeed to bind methods to animalcontrollers action");
                 }
 
                 poolDictionary[tag].Enqueue(objectToSpawn);
             }
-        }
+        
     }
 
     /// <summary>
@@ -107,6 +109,13 @@ public class ObjectPooler : MonoBehaviour
     /// <param name="animalController"> Controller of the deceased animal. </param>
     private void HandleDeadAnimal(AnimalController animalController)
     {
+        StartCoroutine(HandleDeadAnimalDelay(animalController));
+    }
+    
+    private IEnumerator HandleDeadAnimalDelay(AnimalController animalController)
+    {
+        yield return new WaitForSeconds(5.0f/Time.timeScale);
+        
         GameObject animalObj;
         (animalObj = animalController.gameObject).SetActive(false);
         
@@ -125,6 +134,7 @@ public class ObjectPooler : MonoBehaviour
                 poolDictionary["Bears"].Enqueue(animalObj);
                 break;
         }
+        
     }
 
     /// <summary>
@@ -196,17 +206,21 @@ public class ObjectPooler : MonoBehaviour
         {
             GameObject objectToSpawn = poolDictionary[tag].Dequeue();
 
-            objectToSpawn.transform.position = position;
-            objectToSpawn.transform.rotation = rotation;
-            objectToSpawn.SetActive(true);
+                if (objectToSpawn != null)
+                {
+                    objectToSpawn.transform.position = position;
+                    objectToSpawn.transform.rotation = rotation;
+                    objectToSpawn.SetActive(true);
 
-            //TODO Maintain list of all components for more performance
-            objectToSpawn.GetComponent<IPooledObject>()?.onObjectSpawn();
-            
-            objectToSpawn.GetComponent<AnimalController>().Dead += HandleDeadAnimal;
-            objectToSpawn.GetComponent<AnimalController>().SpawnNew += HandleBirthAnimal;
+                    //TODO Maintain list of all components for more performance
+                    objectToSpawn.GetComponent<IPooledObject>()?.onObjectSpawn();
 
-            return objectToSpawn;
+                    objectToSpawn.GetComponent<AnimalController>().deadState.onDeath += HandleDeadAnimal;
+                    objectToSpawn.GetComponent<AnimalController>().SpawnNew += HandleBirthAnimal;
+
+                    return objectToSpawn;    
+                }
+                
         }
 
         return null;

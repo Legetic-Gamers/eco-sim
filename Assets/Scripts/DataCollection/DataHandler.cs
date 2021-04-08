@@ -28,7 +28,7 @@ namespace DataCollection
         private int counter;
         
         private TickEventPublisher tickEventPublisher;
-        private Collector c;
+        public Collector c;
         private List<float> sendList1 = new List<float>();
         private List<float> sendList2 = new List<float>();
 
@@ -280,9 +280,11 @@ namespace DataCollection
             Updatelist(_listNumber);
             //SetTrait(0,_speciesNumber1,_traitNumber1,_dataTypeNumber1);
             //SetList(1,_speciesNumber2,_traitNumber2,_dataTypeNumber2);
+
             Display?.Invoke(sendList1, sendList2);
             //if (ShowFrameRate) Display(ConvertFloatListToIntList(framerate));
             //ExportDataToFile(0);
+            Debug.Log(c.totalAnimalsAlive);
         }
 
         private void CollectBirthRate()
@@ -304,6 +306,7 @@ namespace DataCollection
             return integerList;
         }
         
+
         private List<float> ConvertIntListToFloatList(List<int> list)
         {
             List<float> floatList = new List<float>();
@@ -311,5 +314,6 @@ namespace DataCollection
             foreach (int f in list.ToArray()) floatList.Add((float) f);
             return floatList;
         }
+
     }
 }

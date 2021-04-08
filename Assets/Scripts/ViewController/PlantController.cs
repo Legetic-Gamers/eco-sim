@@ -2,7 +2,6 @@
 using DataCollection;
 using Model;
 using UnityEngine;
-using UnityEngine.AI;
 using Random = UnityEngine.Random;
 
 namespace ViewController
@@ -12,7 +11,7 @@ namespace ViewController
         private TickEventPublisher tickEventPublisher;
         
         public PlantModel plantModel;
-        
+
         private DataHandler dh;
         
         public Transform centerTransform;
@@ -28,30 +27,18 @@ namespace ViewController
 
         public void Start()
         {
-            tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
             plantModel = new PlantModel();
-            EventSubscribe();
+            if (tickEventPublisher)
+            {
+                tickEventPublisher = FindObjectOfType<TickEventPublisher>();
+                tickEventPublisher.onParamTickEvent += HandleDeathStatus;    
+            }
 
             dh = FindObjectOfType<DataHandler>();
             dh.LogNewPlant(plantModel);
         }
 
         public void OnDestroy()
-        {
-            EventUnSubscribe();
-        }
-
-        private void EventSubscribe()
-        {
-            if (tickEventPublisher)
-            {
-                tickEventPublisher.onParamTickEvent += HandleDeathStatus;
-                tickEventPublisher.onParamTickEvent += HandleEaten; //TODO HandleEaten should be called somewhere else.
-                tickEventPublisher.onParamTickEvent += Grow;
-            }
-        }
-
-        private void EventUnSubscribe()
         {
             if (tickEventPublisher)
             {
@@ -127,11 +114,12 @@ namespace ViewController
             if (!plantModel.isEaten) return;
             gameObject.SetActive(false);
             
-        }
+            }
+    
 
         private void HandleDeathStatus()
         {
-            if (plantModel != null && plantModel.plantAge > PlantModel.plantMaxAge)
+            if (plantModel != null && plantModel.isEaten)
             {
                 dh.LogDeadPlant(plantModel);
                 Destroy(gameObject);

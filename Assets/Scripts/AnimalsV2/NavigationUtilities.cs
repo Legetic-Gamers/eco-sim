@@ -37,7 +37,14 @@ namespace AnimalsV2
             if (NavMesh.SamplePosition(position, out hit, animal.agent.height * 2,
                 1 << NavMesh.GetAreaFromName("Walkable")))
             {
-                animal.agent.SetDestination(hit.position);
+                //animal.agent.SetDestination(hit.position);
+                //To avoid async path calculation we do this
+                NavMeshPath path = new NavMeshPath();
+                animal.agent.CalculatePath(hit.position, path);
+                if (path.status != NavMeshPathStatus.PathInvalid)
+                {
+                    animal.agent.SetPath(path);
+                }
             }
             //TODO Maybe handle this!
 
@@ -210,19 +217,7 @@ namespace AnimalsV2
         //     }
         //     return allPercievedObjectsWithTag;
         // }
-
-        public static Vector3 RandomNavSphere(Vector3 origin, float dist, int layermask)
-        {
-            Vector3 randDirection = Random.insideUnitSphere * dist;
-
-            randDirection += origin;
-
-            NavMeshHit navHit;
-
-            NavMesh.SamplePosition(randDirection, out navHit, dist, layermask);
-
-            return navHit.position;
-        }
+        
 
         public static void NavigateRelative(AnimalController animal, Vector3 relativeVector, int layerMask)
         {

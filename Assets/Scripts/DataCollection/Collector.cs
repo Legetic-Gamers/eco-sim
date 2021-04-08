@@ -12,7 +12,7 @@ namespace DataCollection
     public class Collector
     {
         private int cap = 13;
-        public Action onAllDeath;
+        public Action onAllExtinct;
 
         public int totalAnimalsAlive = 0;
         
@@ -248,7 +248,7 @@ namespace DataCollection
             }
 
             totalAnimalsAlive--;
-            if(totalAnimalsAlive <= 0) onAllDeath?.Invoke();
+            if(totalAnimalsAlive <= 0) onAllExtinct?.Invoke();
         }
 
         /// <summary>

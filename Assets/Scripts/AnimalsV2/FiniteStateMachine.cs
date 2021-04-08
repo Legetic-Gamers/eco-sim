@@ -4,8 +4,7 @@ using System.Collections.Generic;
 using AnimalsV2.States;
 using UnityEditorInternal;
 using UnityEngine;
-
-
+using Random = UnityEngine.Random;
 
 
 namespace AnimalsV2
@@ -103,5 +102,6 @@ namespace AnimalsV2
         {
             defaultState = state;
         }
+        
     }
 }

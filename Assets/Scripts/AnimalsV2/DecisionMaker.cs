@@ -153,7 +153,7 @@ namespace AnimalsV2
             eventPublisher.onSenseTickEvent += MakeDecision;
 
             animalController.actionPerceivedHostile += HandleHostileTarget;
-            animalController.actionDeath += HandleDeath;
+            animalController.deadState.onDeath += HandleDeath;
         }
 
 
@@ -163,7 +163,7 @@ namespace AnimalsV2
             eventPublisher.onSenseTickEvent -= MakeDecision;
 
             animalController.actionPerceivedHostile -= HandleHostileTarget;
-            animalController.actionDeath -= HandleDeath;
+            animalController.deadState.onDeath -= HandleDeath;
         }
 
         /// <summary>
@@ -176,10 +176,10 @@ namespace AnimalsV2
             ChangeState(animalController.fleeingState);
         }
 
-        private void HandleDeath()
+        private void HandleDeath(AnimalController animalController)
         {
             //Debug.Log("You dead!");
-            ChangeState(animalController.deadState);
+            //ChangeState(animalController.deadState);
         }
     }
 }

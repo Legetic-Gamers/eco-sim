@@ -1,13 +1,11 @@
-﻿using System;
-using ICSharpCode.NRefactory.Ast;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Model
 {
     public class PlantModel : IEdible
     {
-
         public bool isEaten = false;
+
         public float nutritionValue { get; set; }
         public float plantAge;
 
@@ -15,25 +13,23 @@ namespace Model
         public const float plantMaxsize = 30;
 
 
-        
 
+
+        public PlantModel(float nutritionValue)
+        {
+            nutritionValue = nutritionValue;
+        }
+
+        public PlantModel()
+        {
+            nutritionValue = 30f;
+        }
+       
         public float GetEaten()
         {
             isEaten = true;
-            float tmp = nutritionValue;
-            nutritionValue = 0;
-            return tmp;
+            return nutritionValue;
+        }
 
-        }
-        
-        public PlantModel()
-        {
-            this.plantAge = 0;
-            this.nutritionValue = 0;
-        }
-        
-        
     }
-    
-
 }

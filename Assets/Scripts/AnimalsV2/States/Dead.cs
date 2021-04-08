@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace AnimalsV2.States
 {
@@ -6,6 +7,9 @@ namespace AnimalsV2.States
     {
         public class Dead : State
         {
+
+            public Action<AnimalController> onDeath;
+            
             public Dead(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal,
                 finiteStateMachine)
             {
@@ -19,11 +23,11 @@ namespace AnimalsV2.States
                 if (animal.agent.isActiveAndEnabled && animal.agent.isOnNavMesh)
                 {
                     animal.agent.isStopped = true;
+                    onDeath?.Invoke(animal);
                 }
                 //animal.DestroyGameObject(20f);
                 // Set state so that it can't change
                 finiteStateMachine.absorbingState = true;
-                animal.Dead?.Invoke(animal);
             }
 
             public override void HandleInput()

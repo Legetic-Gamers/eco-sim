@@ -10,6 +10,7 @@ using Model;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UIElements;
 using ViewController;
 using ViewController.Senses;
 using Debug = UnityEngine.Debug;
@@ -27,8 +28,6 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
 
     // decisionMaker subscribes to these actions
     public Action<GameObject> actionPerceivedHostile;
-    public Action actionDeath;
-    public Action<AnimalController> Dead;
     public Action<AnimalModel, Vector3, float, float> SpawnNew;
 
     // AnimalParticleManager is subscribed to these
@@ -142,6 +141,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
             onObjectSpawn();
         }
     }
+    
     /// <summary>
     /// "Start()" when using animal pooling, called when the animal is set to be active. 
     /// </summary>
@@ -305,7 +305,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         {
             // every 2 sec
             tickEventPublisher.onParamTickEvent += UpdateParameters;
-            tickEventPublisher.onParamTickEvent += HandleDeathStatus;
+            tickEventPublisher.onParamTickEvent += CheckDeath;
             // every 0.5 sec
             tickEventPublisher.onSenseTickEvent += fsm.UpdateStatesLogic;
         }
@@ -315,6 +315,8 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         eatingState.onEatFood += EatFood;
 
         drinkingState.onDrinkWater += DrinkWater;
+
+        deadState.onDeath += HandleDeathStatus;
 
         matingState.onMate += Mate;
 
@@ -327,7 +329,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         {
             // every 2 sec
             tickEventPublisher.onParamTickEvent -= UpdateParameters;
-            tickEventPublisher.onParamTickEvent -= HandleDeathStatus;
+            tickEventPublisher.onParamTickEvent -= CheckDeath;
             // every 0.5 sec
             tickEventPublisher.onSenseTickEvent -= fsm.UpdateStatesLogic;
         }
@@ -342,6 +344,8 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
 
         drinkingState.onDrinkWater -= DrinkWater;
 
+        deadState.onDeath -= HandleDeathStatus;
+        
         matingState.onMate -= Mate;
 
         animationController.EventUnsubscribe();
@@ -366,7 +370,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
             animalModel.CanEat(ediblePlant))
         {
             animalModel.currentEnergy += ediblePlant.GetEaten();
-            //Destroy(food); 
+            Destroy(food);
         }
     }
 
@@ -438,62 +442,33 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         AnimalModel childModel = animalModel.Mate(otherParentAnimalController.animalModel);
         SpawnNew?.Invoke(childModel, transform.position, childEnergy, childHydration);
         animalModel.isPregnant = false;
-        //Instantiate here
-        /*
-        GameObject child = Instantiate(gameObject, transform.position, transform.rotation); //NOTE CHANGE SO THAT PREFAB IS USED
-        
-        // Generate the offspring traits
-        AnimalModel childModel = animalModel.Mate(otherParentAnimalController.animalModel);
-        
-        child.GetComponent<AnimalController>().animalModel = childModel;
-<<<<<<< HEAD
-        child.GetComponent<AnimalController>().animalModel.currentEnergy = childEnergy;
-        child.GetComponent<AnimalController>().animalModel.currentHydration = childHydration;   
-=======
-        //Debug.Log(child.GetComponent<AnimalController>().animalModel.generation);
-        onBirth?.Invoke(this,new OnBirthEventArgs{child = child});
-    }
->>>>>>> dynamic-food
-
-        // update the childs speed (in case of mutation).
-        child.GetComponent<AnimalController>().animalModel.traits.maxSpeed = 1;
-        
-        
-        //Debug.Log(child.GetComponent<AnimalController>().animalModel.generation);
-        onBirth?.Invoke(this,new OnBirthEventArgs{child = child});
-        */
-        
     }
 
     /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
-
-    public void DestroyGameObject(float delay)
-    {
-        Destroy(gameObject, delay);
-    }
-
+    
+    
 
     //should be refactored so that this logic is in AnimalModel
-    private void HandleDeathStatus()
+    private void HandleDeathStatus(AnimalController animalController)
+    {
+        AnimalModel.CauseOfDeath cause;
+        if (animalModel.currentEnergy == 0) cause = AnimalModel.CauseOfDeath.Hunger;
+        if (animalModel.currentHealth == 0) cause = AnimalModel.CauseOfDeath.Health;
+        if (animalModel.currentHydration == 0) cause = AnimalModel.CauseOfDeath.Hydration;
+        else cause = AnimalModel.CauseOfDeath.Eaten;
+        dh.LogDeadAnimal(animalModel, cause);
+
+        //Stop animal from giving birth once dead.
+        StopCoroutine("GiveBirth");
+        StopAllCoroutines();
+    }
+
+    //Check if animal is dead and activate deadState (absorbing state)
+    private void CheckDeath()
     {
         if (!animalModel.IsAlive)
         {
-            AnimalModel.CauseOfDeath cause;
-            if (animalModel.currentEnergy == 0) cause = AnimalModel.CauseOfDeath.Hunger;
-            if (animalModel.currentHealth == 0) cause = AnimalModel.CauseOfDeath.Health;
-            if (animalModel.currentHydration == 0) cause = AnimalModel.CauseOfDeath.Hydration;
-            else cause = AnimalModel.CauseOfDeath.Eaten;
-            dh.LogDeadAnimal(animalModel, cause);
-
-            // invoke death state with method HandleDeath() in decisionmaker
-            actionDeath?.Invoke();
-
-            //Stop animal from giving birth once dead.
-            StopCoroutine("GiveBirth");
-            StopAllCoroutines();
-
-            // unsubscribe all events because we want only want to invoke it once.
-            //actionDeath = null;
+            fsm.ChangeState(deadState);
         }
     }
 

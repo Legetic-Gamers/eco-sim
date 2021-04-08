@@ -67,7 +67,15 @@ namespace AnimalsV2.States
 
                     if(NavigationUtilities.RandomPoint(animal.transform.position, 10f,10f, out nextPosition))
                     {
-                        animal.agent.SetDestination(nextPosition);
+                        //animal.agent.SetDestination(nextPosition);
+                        
+                        //To avoid async path calculation we do this
+                        NavMeshPath path = new NavMeshPath();
+                        animal.agent.CalculatePath(nextPosition, path);
+                        if (path.status != NavMeshPathStatus.PathInvalid)
+                        {
+                            animal.agent.SetPath(path);
+                        }
                     }else
                     {
                         Debug.Log("Agent stuck, Dist: " + Vector3.Distance(animal.transform.position, nextPosition)+ " Stopping: " + animal.agent.stoppingDistance + 0.2);
