@@ -223,8 +223,7 @@ namespace DataCollection
         public void CollectDeath(AnimalModel am, AnimalModel.CauseOfDeath cause, float distanceTravelled)
         {
             int gen = am.generation;
-            Debug.Log(gen);
-            
+
             for (int i = totalDeadAnimals.Count - 1; i <= gen; i++) totalDeadAnimals.Add(0);
             if(gen >= totalDeadAnimals.Count - 1) Debug.Log(gen);
              
