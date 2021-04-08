@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Security.Authentication.ExtendedProtection;
 using AnimalsV2;
+using AnimalsV2.States;
 using Model;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
@@ -41,8 +42,10 @@ public class DumbAgent : Agent, IAgent
         }
         
         //change to a state which does not navigate the agent. If no decisionmaker is present, it will stay at this state (if default state is also set).
-        fsm.SetDefaultState(animalController.idleState);
-        fsm.ChangeState(animalController.idleState);
+        MLState mlState = new MLState(animalController, animalController.fsm);
+        fsm.SetDefaultState(mlState);
+        fsm.ChangeState(mlState);
+        animalController.ChangeModifiers(mlState);
         
         EventSubscribe();
     }
@@ -134,9 +137,11 @@ public class DumbAgent : Agent, IAgent
 
         float speedModifier = actions.ContinuousActions[1];
         speedModifier = 0.5f * speedModifier + 0.5f; //make sure that function of interval [-1,1] maps to [0,1]
-        
-        
-        animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
+
+
+        //Handle speed
+        animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier;
+        animalModel.currentSpeed *= speedModifier;
         animalController.agent.speed = animalModel.currentSpeed * Time.timeScale;
         
         NavigationUtilities.NavigateRelative(animalController, dirToGo, 1 << NavMesh.GetAreaFromName("Walkable"));
@@ -272,12 +277,6 @@ public class DumbAgent : Agent, IAgent
         {
             animalController.Interact(other.gameObject);
         }
-/*
-        if (other.gameObject.CompareTag("Wall"))
-        {
-            HandleDeath();
-        }
-        */
     }
     
 }

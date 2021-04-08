@@ -126,11 +126,9 @@ public class SteeringAcademy : MonoBehaviour
 
             animalModel.currentEnergy = 0.5f * animalModel.traits.maxEnergy;
             animalModel.currentHydration = 0.5f * animalModel.traits.maxHydration;
-            animalModel.reproductiveUrge = 0.5f;
             animalModel.reproductiveUrge = 0.2f;
             animalModel.age = 0;
-            animalController.fsm.absorbingState = false;
-            animalController.fsm.GoToDefaultState();
+            animalController.fsm.ForceDefaultState();
             if(animalController.agent.isActiveAndEnabled && animalController.agent.isOnNavMesh) animalController.agent.ResetPath();
         }
     }

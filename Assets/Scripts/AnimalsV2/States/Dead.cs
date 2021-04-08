@@ -23,11 +23,10 @@ namespace AnimalsV2.States
                 if (animal.agent.isActiveAndEnabled && animal.agent.isOnNavMesh)
                 {
                     animal.agent.isStopped = true;
+                    // Set state so that it can't change
+                    finiteStateMachine.absorbingState = true;
                     onDeath?.Invoke(animal);
                 }
-                //animal.DestroyGameObject(20f);
-                // Set state so that it can't change
-                finiteStateMachine.absorbingState = true;
             }
 
             public override void HandleInput()

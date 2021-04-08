@@ -16,10 +16,15 @@ namespace ViewController.Senses
         private LayerMask targetMask;
         [SerializeField]
         private LayerMask obstacleMask;
-    
+
+        [SerializeField] private bool useConstantTickInterval;
+        
         private AnimalController animalController;
 
         private Transform thisTransform;
+
+        private TickEventPublisher tickEventPublisher;
+        
 
         /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
 
@@ -195,7 +200,17 @@ namespace ViewController.Senses
                 thisTransform = transform;
             }
 
-            StartCoroutine(SensesLoop());
+            //Used in ML
+            tickEventPublisher = FindObjectOfType<TickEventPublisher>() ;
+            if (useConstantTickInterval && tickEventPublisher)
+            {
+                Debug.Log("Using tickEventPublisher for senses");
+                tickEventPublisher.onSenseTickEvent += FindTargets;
+            }
+            else
+            {
+                StartCoroutine(SensesLoop());
+            }
         }
         
         private IEnumerator SensesLoop()
@@ -210,7 +225,10 @@ namespace ViewController.Senses
 
         private void OnDestroy()
         {
-            
+            if (useConstantTickInterval && tickEventPublisher)
+            {
+                tickEventPublisher.onSenseTickEvent -= FindTargets;
+            }
         }
     }
 }

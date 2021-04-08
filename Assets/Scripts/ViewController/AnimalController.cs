@@ -64,9 +64,9 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     public Waiting waitingState;
 
     //Constants
-    private const float WalkingSpeed = 0.3f;
-    private const float JoggingSpeed = 0.5f;
-    private const float RunningSpeed = 1f;
+    protected const float WalkingSpeed = 0.3f;
+    protected const float JoggingSpeed = 0.5f;
+    protected const float RunningSpeed = 1f;
 
     //Modifiers
     [HideInInspector] public float energyModifier;
@@ -160,7 +160,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         agent.acceleration *= Time.timeScale;
         agent.angularSpeed *= Time.timeScale;
         dh = FindObjectOfType<DataHandler>();
-        dh.LogNewAnimal(animalModel);
+        dh?.LogNewAnimal(animalModel);
         //Debug.Log(agent.autoBraking);
         tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
         EventSubscribe();
@@ -182,6 +182,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     /// </summary>
     public virtual void ChangeModifiers(State state)
     {
+        //Debug.Log("Changing modifiers for state: " + state.ToString());
         switch (state)
         {
             case GoToFood _:
@@ -224,6 +225,12 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
                 reproductiveUrgeModifier = 0f;
                 speedModifier = 0f;
                 break;
+            case MLState _:
+                energyModifier = 0.5f;
+                hydrationModifier = 0.5f;
+                reproductiveUrgeModifier = 20f;
+                speedModifier = JoggingSpeed;
+                break;
             default:
                 energyModifier = 0.1f;
                 hydrationModifier = 0.05f;
@@ -246,7 +253,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     //     Debug.Log(speedModifier);
     // }
 
-    private void HighEnergyState()
+    protected void HighEnergyState()
     {
         energyModifier = 1f;
         hydrationModifier = 1f;
@@ -254,7 +261,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         speedModifier = RunningSpeed;
     }
 
-    private void MediumEnergyState()
+    protected void MediumEnergyState()
     {
         energyModifier = 0.35f;
         hydrationModifier = 0.5f;
@@ -262,7 +269,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         speedModifier = JoggingSpeed;
     }
 
-    private void LowEnergyState()
+    protected void LowEnergyState()
     {
         energyModifier = 0.15f;
         hydrationModifier = 0.25f;
@@ -456,7 +463,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         if (animalModel.currentHealth == 0) cause = AnimalModel.CauseOfDeath.Health;
         if (animalModel.currentHydration == 0) cause = AnimalModel.CauseOfDeath.Hydration;
         else cause = AnimalModel.CauseOfDeath.Eaten;
-        dh.LogDeadAnimal(animalModel, cause);
+        dh?.LogDeadAnimal(animalModel, cause);
 
         //Stop animal from giving birth once dead.
         StopCoroutine("GiveBirth");

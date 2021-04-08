@@ -34,7 +34,7 @@ namespace ViewController
             }
 
             dh = FindObjectOfType<DataHandler>();
-            dh.LogNewPlant(plantModel);
+            dh?.LogNewPlant(plantModel);
         }
 
         public void OnDestroy()
