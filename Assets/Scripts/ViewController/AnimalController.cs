@@ -29,6 +29,9 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     // decisionMaker subscribes to these actions
     public Action<GameObject> actionPerceivedHostile;
     public Action<AnimalModel, Vector3, float, float> SpawnNew;
+    
+    // Start vector for the animal, used in datahandler distance travelled
+    private Vector3 startVector;
 
     // AnimalParticleManager is subscribed to these
     public event Action<bool> ActionPregnant;
@@ -166,6 +169,8 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         EventSubscribe();
 
         SetPhenotype();
+
+        startVector = transform.position;
     }
 
     /* /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\ */
@@ -456,7 +461,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         if (animalModel.currentHealth == 0) cause = AnimalModel.CauseOfDeath.Health;
         if (animalModel.currentHydration == 0) cause = AnimalModel.CauseOfDeath.Hydration;
         else cause = AnimalModel.CauseOfDeath.Eaten;
-        dh.LogDeadAnimal(animalModel, cause);
+        dh.LogDeadAnimal(animalModel, cause, (transform.position - startVector).magnitude);
 
         //Stop animal from giving birth once dead.
         StopCoroutine("GiveBirth");
