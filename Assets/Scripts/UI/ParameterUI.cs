@@ -34,7 +34,7 @@ public class ParameterUI : MonoBehaviour
         animalController = animal.GetComponent<AnimalController>();
         if (tickEventPublisher)
         {
-            tickEventPublisher.onParamTickEvent += UpdateUI;
+            tickEventPublisher.onSenseTickEvent += UpdateUI;
         }
     }
 
@@ -42,7 +42,7 @@ public class ParameterUI : MonoBehaviour
     {
         if (tickEventPublisher)
         {
-            tickEventPublisher.onParamTickEvent -= UpdateUI;
+            tickEventPublisher.onSenseTickEvent -= UpdateUI;
         }
         
     }
@@ -87,6 +87,6 @@ public class ParameterUI : MonoBehaviour
         energy.value = animal.GetEnergyPercentage;
         hydration.value = animal.GetHydrationPercentage;
         reproductiveUrge.value = animal.GetUrgePercentage;
-        state.text = animalController.fsm.CurrentState.ToString();
+        state.text = animalController.fsm.currentState.ToString();
     }
 }

@@ -11,14 +11,14 @@ namespace AnimalsV2
         private AnimalController animal;
         private Animator animator;
 
-        private float transitionSpeed = 0.2f;
+        private float transitionSpeed = 0.1f;
 
 
         public AnimationController(AnimalController animal)
         {
             //Get access to animal to animate
             this.animal = animal;
-
+            
             //Get access to Animator to animate the animal.
             animator = this.animal.GetComponent<Animator>();
             animator.Play("Base Layer." + StateAnimation.Walking,0);
@@ -44,7 +44,7 @@ namespace AnimalsV2
         private void FSM_OnStateEnter(State state)
         {
             //Debug.Log("Enter " + state.GetStateAnimation() +" Animation");
-
+            
             //animator.SetFloat("runningSpeed",animal.animalModel.GetSpeedPercentage);
             animator?.CrossFade("Base Layer." + state.GetStateAnimation(), transitionSpeed, 0);
         }

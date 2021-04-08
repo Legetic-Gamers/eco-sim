@@ -27,8 +27,7 @@ namespace AnimalsV2.States
                 //check so that the target is within viewRadius, if not set targetObject = null (which leads to fleeingstate being exited in decision maker)
                 if(Vector3.Distance(animal.transform.position, targetObject.transform.position) <= animal.animalModel.traits.viewRadius)
                 {
-                    Vector3 pointToRunTo =
-                        NavigationUtilities.RunToFromPoint(animal.transform, targetObject.transform.position, true);
+                    Vector3 pointToRunTo = targetObject.transform.position;
                     //Move the animal using the navmeshagent.
                     NavMeshHit hit;
                     NavMesh.SamplePosition(pointToRunTo, out hit, 5, 1 << NavMesh.GetAreaFromName("Walkable"));

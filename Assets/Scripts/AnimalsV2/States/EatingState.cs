@@ -6,22 +6,28 @@ using UnityEngine;
 
 namespace AnimalsV2.States
 {
+
     public class EatingState : State
     {
-        public Action<GameObject> onEatFood;
 
+        public Action<GameObject, float> onEatFood;
         private GameObject target;
 
         public EatingState(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal,
             finiteStateMachine)
         {
+            currentStateAnimation = StateAnimation.Attack;
         }
 
         public override void Enter()
         {
             base.Enter();
-            currentStateAnimation = StateAnimation.Attack;
-            animal.agent.isStopped = true;
+
+            if (animal.agent.isActiveAndEnabled && animal.agent.isOnNavMesh)
+            {
+                animal.agent.isStopped = true;
+            }
+
             //GetNearestFood();
             animal.StartCoroutine(EatFood());
         }
@@ -29,20 +35,17 @@ namespace AnimalsV2.States
         public override void Exit()
         {
             base.Exit();
-            animal.agent.isStopped = false;
+            if (animal.agent.isActiveAndEnabled && animal.agent.isOnNavMesh)
+            {
+                animal.agent.isStopped = false;
+            }
+            
+            animal.StopCoroutine(EatFood());
         }
 
         public override void LogicUpdate()
         {
-            // base.LogicUpdate();
-            // if (MeetRequirements())
-            // {
-            //     EatFood(target);
-            // }
-            // else
-            // {
-            //     finiteStateMachine.GoToDefaultState();
-            // }
+            base.LogicUpdate();
         }
 
         //New
@@ -51,23 +54,24 @@ namespace AnimalsV2.States
             this.target = target;
         }
 
-        //public void EatFood(GameObject target)
-        // public void EatFood()
-        // {
-        //     onEatFood?.Invoke(target);
-        //     finiteStateMachine.GoToDefaultState();
-        // }
-
         private IEnumerator EatFood()
         {
-            //Eat the food
-            onEatFood?.Invoke(target);
             
+            //Eat the food
+            //The reason to why I have curentEnergy as an in-parameter is because currentEnergy is updated through EatFood before reward gets computed in AnimalMovementBrain
+            onEatFood?.Invoke(target, animal.animalModel.currentEnergy);
             
             // Wait a while then change state and resume walking
-            yield return new WaitForSeconds(1);
+            yield return new WaitForSeconds(1/Time.timeScale);
+            
+            
+            if (animal.agent.isActiveAndEnabled && animal.agent.isOnNavMesh)
+            {
+                animal.agent.isStopped = false;
+            }
+            //Debug.Log("Succesfully ate.");
+            
             finiteStateMachine.GoToDefaultState();
-            animal.agent.isStopped = false;
 
             // Very important, this tells Unity to move onto next frame. Everything crashes without this
             yield return null;
@@ -80,24 +84,8 @@ namespace AnimalsV2.States
 
         public override bool MeetRequirements()
         {
-            //Vector3 position = animal.transform.position;
-            //target = GetNearestFood();
-            //if (target == null) return false;
-            //bool isCloseEnough = Vector3.Distance(target.transform.position, position) <= 2f;
-            //return animal.visibleFoodTargets.Count > 0 && isCloseEnough;
-            return target != null;
+            return target != null && !animal.animalModel.HighEnergy;
         }
 
-        // private GameObject GetNearestFood()
-        // {
-        //     Vector3 position = animal.transform.position;
-        //     List<GameObject> nearbyFood = new List<GameObject>();
-        //     if (animal.visibleFoodTargets !=null)// first list may be null
-        //             nearbyFood=nearbyFood.Concat(animal.visibleFoodTargets).ToList();
-        //         if (animal.heardPreyTargets != null)// second list may be null
-        //             nearbyFood= nearbyFood.Concat(animal.heardPreyTargets).ToList(); 
-        //     
-        //     return NavigationUtilities.GetNearestObjectPosition(nearbyFood, position);
-        // }
     }
 }

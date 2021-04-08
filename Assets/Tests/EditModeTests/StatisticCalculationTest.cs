@@ -8,23 +8,24 @@ namespace Tests.EditModeTests
 {
     public class StatisticCalculationTest
     {
-        
-        AnimalModel am1 = new RabbitModel(new Traits(1f, 50, 100, 100, 6,1,
-            10,100,10,10,180,5,3),0);
-        AnimalModel am2 = new RabbitModel(new Traits(1f, 50, 100, 100, 6,1,
-            10,100,10,10,180,5,3),0);
-        AnimalModel am3 = new RabbitModel(new Traits(2f, 50, 100, 100, 6,1,
-            10,100,10,10,180,5,3),0);
-        AnimalModel am4 = new RabbitModel(new Traits(2f, 50, 100, 100, 6,1,
-            10,100,10,10,180,5,3),1);
-        AnimalModel am5 = new RabbitModel(new Traits(3f, 50, 100, 100, 6,1,
-            10,100,10,10,180,5,3),1);
 
         private PlantModel pl1 = new PlantModel();
         private PlantModel pl2 = new PlantModel();
         private PlantModel pl3 = new PlantModel();
         private PlantModel pl4 = new PlantModel();
         private PlantModel pl5 = new PlantModel();
+
+        AnimalModel am1 = new RabbitModel(new Traits(1f, 50, 100, 100, 6.6f, 1,
+            10,100,10,180,5,3),0);
+        AnimalModel am2 = new RabbitModel(new Traits(1f, 50, 100, 100, 6.6f, 1,
+            10,100,10,180,5,3),0);
+        AnimalModel am3 = new RabbitModel(new Traits(2f, 50, 100, 100, 6.6f, 1,
+            10,100,10,180,5,3),0);
+        AnimalModel am4 = new RabbitModel(new Traits(2f, 50, 100, 100, 6.6f, 1,
+            10,100,10,180,5,3),0);
+        AnimalModel am5 = new RabbitModel(new Traits(3f, 50, 100, 100, 6.6f, 1,
+            10,100,10,180,5,3),0);
+        
         /// <summary>
         /// Checks mean calculations of rabbit sizes. 
         /// </summary>
@@ -114,15 +115,15 @@ namespace Tests.EditModeTests
         public void CauseOfDeathsWorking()
         {
             Collector c = new Collector();
-            c.CollectDeath(am1, AnimalController.CauseOfDeath.Eaten);
-            c.CollectDeath(am1, AnimalController.CauseOfDeath.Hydration);
-            c.CollectDeath(am1, AnimalController.CauseOfDeath.Eaten);
-            c.CollectDeath(am1, AnimalController.CauseOfDeath.Health);
-            c.CollectDeath(am1, AnimalController.CauseOfDeath.Hunger);
-            Assert.AreEqual(2, c.causeOfDeath[AnimalController.CauseOfDeath.Eaten]);
-            Assert.AreEqual(1, c.causeOfDeath[AnimalController.CauseOfDeath.Hydration]);
-            Assert.AreEqual(1, c.causeOfDeath[AnimalController.CauseOfDeath.Health]);
-            Assert.AreEqual(1, c.causeOfDeath[AnimalController.CauseOfDeath.Hunger]);
+            c.CollectDeath(am1, AnimalModel.CauseOfDeath.Eaten);
+            c.CollectDeath(am1, AnimalModel.CauseOfDeath.Hydration);
+            c.CollectDeath(am1, AnimalModel.CauseOfDeath.Eaten);
+            c.CollectDeath(am1, AnimalModel.CauseOfDeath.Health);
+            c.CollectDeath(am1, AnimalModel.CauseOfDeath.Hunger);
+            Assert.AreEqual(2, c.causeOfDeath[AnimalModel.CauseOfDeath.Eaten]);
+            Assert.AreEqual(1, c.causeOfDeath[AnimalModel.CauseOfDeath.Hydration]);
+            Assert.AreEqual(1, c.causeOfDeath[AnimalModel.CauseOfDeath.Health]);
+            Assert.AreEqual(1, c.causeOfDeath[AnimalModel.CauseOfDeath.Hunger]);
         }
     }
 }

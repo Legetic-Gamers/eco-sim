@@ -17,7 +17,7 @@ namespace AnimalsV2
      /// </summary>
      public class FiniteStateMachine
     {
-        public State CurrentState { get; private set; }
+        public State currentState { get; set; }
         
         private State defaultState { get; set; }
         
@@ -50,24 +50,27 @@ namespace AnimalsV2
             // {
             //     Debug.Log("absorbingstate:" + absorbingState + " Meetrequirements: " + newState.MeetRequirements());
             // }
+            
 
             // if the state is absorbing, meaning that state change is not possible or newState == CurrentState or newState does not meet requirements, we return
-            if(newState == CurrentState || absorbingState || !newState.MeetRequirements()) return false;
+            if( absorbingState || !newState.MeetRequirements()) return false;
+            //If we try to enter same state, don't do anything but essentially the state change was good.
+            if (newState == currentState) return true;
             
-            if (CurrentState != null)
+            if (currentState != null)
             {
                 //Exit old state
-                CurrentState.Exit();
-                OnStateExit?.Invoke(CurrentState);
+                currentState.Exit();
+                OnStateExit?.Invoke(currentState);
             }
 
             //Change state
-            CurrentState = newState;
-            if (CurrentState != null)
+            currentState = newState;
+            if (currentState != null)
             {
                 //Enter new state
-                CurrentState.Enter();
-                OnStateEnter?.Invoke(CurrentState);
+                currentState.Enter();
+                OnStateEnter?.Invoke(currentState);
                 return true;
                 
             }
@@ -75,25 +78,30 @@ namespace AnimalsV2
         }
         
         public void  UpdateStatesLogic() {
-            if (CurrentState != null) CurrentState.LogicUpdate();
+            if (currentState != null) currentState.LogicUpdate();
             //Debug.Log(OnStateLogicUpdate.ToString());
-            OnStateLogicUpdate?.Invoke(CurrentState);
+            OnStateLogicUpdate?.Invoke(currentState);
         }
         
         public virtual void HandleStatesInput()
         {
-            if (CurrentState != null) CurrentState.HandleInput();
+            if (currentState != null) currentState.HandleInput();
         }
         
         public virtual void UpdateStatesPhysics()
         {
-            if (CurrentState != null) CurrentState.PhysicsUpdate();
-            OnStatePhysicsUpdate?.Invoke(CurrentState);
+            if (currentState != null) currentState.PhysicsUpdate();
+            OnStatePhysicsUpdate?.Invoke(currentState);
         }
 
         public void GoToDefaultState()
         {
             ChangeState(defaultState);
+        }
+
+        public void SetDefaultState(State state)
+        {
+            defaultState = state;
         }
     }
 }

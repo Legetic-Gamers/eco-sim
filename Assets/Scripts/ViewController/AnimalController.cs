@@ -1,31 +1,42 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using AnimalsV2;
 using AnimalsV2.States;
 using AnimalsV2.States.AnimalsV2.States;
 using DataCollection;
+using DefaultNamespace;
 using Model;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 using ViewController;
+using ViewController.Senses;
 using Debug = UnityEngine.Debug;
+using Random = System.Random;
 
-public abstract class AnimalController : MonoBehaviour
+
+public abstract class AnimalController : MonoBehaviour, IPooledObject
 {
+
     public AnimalModel animalModel;
 
-    public TickEventPublisher tickEventPublisher;
+    [HideInInspector] public TickEventPublisher tickEventPublisher;
 
     public Action<State> stateChange;
 
     // decisionMaker subscribes to these actions
     public Action<GameObject> actionPerceivedHostile;
     public Action actionDeath;
-    
+    public Action<AnimalController> Dead;
+    public Action<AnimalModel, Vector3, float, float> SpawnNew;
+
+    // AnimalParticleManager is subscribed to these
+    public event Action<bool> ActionPregnant;
+    public event Action ActionBirth;
+
     //Subscribed to by animalBrainAgent.
-    public event EventHandler<OnBirthEventArgs> onBirth;
+    public event EventHandler<OnBirthEventArgs> OnBirth;
 
     public class OnBirthEventArgs : EventArgs
     {
@@ -36,50 +47,126 @@ public abstract class AnimalController : MonoBehaviour
 
     public FiniteStateMachine fsm;
     private AnimationController animationController;
-    
+
     // Add a data handler
     private DataHandler dh;
 
-    public enum CauseOfDeath
-    {
-        Hydration,
-        Eaten,
-        Health,
-        Hunger,
-    };
-    
     //States
     public FleeingState fleeingState;
     public GoToFood goToFoodState;
     public Wander wanderState;
     public Idle idleState;
     public GoToWater goToWaterState;
-    public MatingState matingStateState;
+    public MatingState matingState;
     public Dead deadState;
     public DrinkingState drinkingState;
     public EatingState eatingState;
     public GoToMate goToMate;
+    public Waiting waitingState;
 
     //Constants
-    private const float JoggingSpeed = 0.4f;
+    private const float WalkingSpeed = 0.3f;
+    private const float JoggingSpeed = 0.5f;
     private const float RunningSpeed = 1f;
 
     //Modifiers
-    private float energyModifier;
-    private float hydrationModifier;
-    private float reproductiveUrgeModifier;
-    private float speedModifier = JoggingSpeed; //100% of maxSpeed in model
+    [HideInInspector] public float energyModifier;
+    [HideInInspector] public float hydrationModifier;
+    [HideInInspector] public float reproductiveUrgeModifier = 0.3f;
+    [HideInInspector] public float speedModifier = JoggingSpeed; //100% of maxSpeed in model
 
+    //Timescale stuff
+    private float baseAcceleration;
+    private float baseAngularSpeed;
+
+    //target lists
     public List<GameObject> visibleHostileTargets = new List<GameObject>();
     public List<GameObject> visibleFriendlyTargets = new List<GameObject>();
     public List<GameObject> visibleFoodTargets = new List<GameObject>();
     public List<GameObject> visibleWaterTargets = new List<GameObject>();
 
+
     public List<GameObject> heardHostileTargets = new List<GameObject>();
     public List<GameObject> heardFriendlyTargets = new List<GameObject>();
     public List<GameObject> heardPreyTargets = new List<GameObject>();
 
-    public bool IsControllable { get; set; } = false;
+    //used for ml, so that it does not spawn a lot of children that might interfere with training
+    public bool isInfertile = false;
+
+    //The neck bone of the animal.
+    public Transform eyesTransform;
+    public Transform centerTransform;
+    
+    public void Awake()
+    {
+        //Create the FSM.
+        fsm = new FiniteStateMachine();
+        
+        goToFoodState = new GoToFood(this, fsm);
+        fleeingState = new FleeingState(this, fsm);
+        wanderState = new Wander(this, fsm);
+        idleState = new Idle(this, fsm);
+        goToWaterState = new GoToWater(this, fsm);
+        matingState = new MatingState(this, fsm);
+        deadState = new Dead(this, fsm);
+        drinkingState = new DrinkingState(this, fsm);
+        eatingState = new EatingState(this, fsm);
+        goToMate = new GoToMate(this, fsm);
+        waitingState = new Waiting(this, fsm);
+        
+        fsm.Initialize(wanderState);
+
+        animationController = new AnimationController(this);
+        agent = GetComponent<NavMeshAgent>();
+        
+        
+        if (eyesTransform == null)
+        {
+            Debug.LogWarning("Eyes not assigned, defaulting to transform");
+            eyesTransform = transform;
+        }
+
+        if (centerTransform == null)
+        {
+            Debug.LogWarning("Center not assigned, defaulting to transform");
+            centerTransform = transform;
+        }
+    }
+    
+
+    private void Start()
+    {
+        //If there is no object pooler present, we need to call onObjectSpawn through start
+        if (FindObjectOfType<ObjectPooler>() == null)
+        {
+            onObjectSpawn();
+        }
+    }
+    /// <summary>
+    /// "Start()" when using animal pooling, called when the animal is set to be active. 
+    /// </summary>
+    public void onObjectSpawn()
+    {
+        // Init the NavMesh agent
+        agent.autoBraking = true;
+
+        animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
+
+        //Can be used later.
+        baseAngularSpeed = agent.angularSpeed;
+        baseAcceleration = agent.acceleration;
+        
+        agent.speed = animalModel.currentSpeed * Time.timeScale;
+        agent.acceleration *= Time.timeScale;
+        agent.angularSpeed *= Time.timeScale;
+        dh = FindObjectOfType<DataHandler>();
+        dh.LogNewAnimal(animalModel);
+        //Debug.Log(agent.autoBraking);
+        tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
+        EventSubscribe();
+
+        SetPhenotype();
+    }
 
     /* /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\ */
     /*                                   Parameter handlers                                   */
@@ -93,118 +180,143 @@ public abstract class AnimalController : MonoBehaviour
     ///
     /// Important to unsubscribe from the event publisher on death, however!
     /// </summary>
-    private void ChangeModifiers(State state)
+    public virtual void ChangeModifiers(State state)
     {
         switch (state)
         {
             case GoToFood _:
-                energyModifier = 0f;
-                hydrationModifier = 0.05f;
-                reproductiveUrgeModifier = 1f;
-
                 //TODO bad practice, hard coded values, this is temporary
                 if (animalModel is BearModel || animalModel is WolfModel)
-                {
-                    speedModifier = RunningSpeed;
-                }
+                    HighEnergyState();
                 else
-                {
-                    speedModifier = JoggingSpeed;
-                }
-
-                //Debug.Log("varying parameters depending on state: Eating");
-                break;
-            case FleeingState _:
-                energyModifier = 1f;
-                hydrationModifier = 1f;
-                reproductiveUrgeModifier = 1f;
-                speedModifier = RunningSpeed;
-                //Debug.Log("varying parameters depending on state: FleeingState");
+                    MediumEnergyState();
                 break;
             case GoToWater _:
-            {
-                energyModifier = 0.1f;
-                hydrationModifier = 0.05f;
-                reproductiveUrgeModifier = 1;
-
-                break;
-            }
-            case Idle _:
-                energyModifier = 0f;
-                hydrationModifier = 0.05f;
-                reproductiveUrgeModifier = 1;
-                //Debug.Log("varying parameters depending on state: Mating");
+                MediumEnergyState();
                 break;
             case GoToMate _:
-                energyModifier = 0.2f;
-                hydrationModifier = 0.2f;
-                reproductiveUrgeModifier = 0f;
-                //Debug.Log("varying parameters depending on state: Wander");
+                MediumEnergyState();
+                break;
+            case FleeingState _:
+                HighEnergyState();
+                break;
+            case EatingState _:
+                LowEnergyState();
+                break;
+            case DrinkingState _:
+                LowEnergyState();
+                break;
+            case MatingState _:
+                HighEnergyState();
+                break;
+            case SearchingState _:
+                MediumEnergyState();
+                break;
+            case Idle _:
+                LowEnergyState();
                 break;
             case Wander _:
-                energyModifier = 0.1f;
-                hydrationModifier = 0.05f;
-                reproductiveUrgeModifier = 1f;
-
-                speedModifier = JoggingSpeed;
-                //Debug.Log("varying parameters depending on state: Wander");
+                LowEnergyState();
                 break;
             case Dead _:
                 energyModifier = 0f;
                 hydrationModifier = 0f;
                 reproductiveUrgeModifier = 0f;
+                speedModifier = 0f;
+                break;
+            default:
+                energyModifier = 0.1f;
+                hydrationModifier = 0.05f;
+                reproductiveUrgeModifier = 0.2f;
+
+                speedModifier = JoggingSpeed;
+                //Debug.Log("varying parameters depending on state: Wander");
                 break;
         }
+        
+        //This is to make sure that the speed is set directly after State change.
+        animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier;
+        agent.speed = animalModel.currentSpeed * Time.timeScale;
     }
+    
+    
+    
+    // if (animalModel is WolfModel)
+    // {
+    //     Debug.Log(speedModifier);
+    // }
 
-    private void VaryParameters()
+    private void HighEnergyState()
     {
-        /*
-         * - Size * (deltaTemp / tempResist) * Const
-         * - (Vision + Hearing + Smell) * Const
-         * - currentAge * Const
-         *
-         * when highEnergy (can be 0 or 1), also add:
-         * - Size * Speed * Const
-         *
-         * currentEnergy -= ( size * (deltaTemp / tempResist) + (vision + hearing + smell) + currentAge
-         *                  + (highEnergy * size * speed) ) * Const
-         */
-
-        //https://www.uvm.edu/pdodds/research/papers/others/2017/hirt2017a.pdf
-        //above link for actual empirical max speed.
-        animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
-        //TODO, maybe move from here?
-        agent.speed = animalModel.currentSpeed;
-
-        animalModel.currentEnergy -= (animalModel.traits.size * 1) +
-                                     (animalModel.traits.size * animalModel.currentSpeed) * energyModifier;
-        animalModel.currentHydration -= (animalModel.traits.size * 1) +
-                                        (animalModel.traits.size * animalModel.currentSpeed) * hydrationModifier;
-        animalModel.reproductiveUrge += 0.1f * reproductiveUrgeModifier;
-
-        //The age will increase 1 per 1 second.
-        animalModel.age += Time.deltaTime;
+        energyModifier = 1f;
+        hydrationModifier = 1f;
+        reproductiveUrgeModifier = 0f;
+        speedModifier = RunningSpeed;
     }
+
+    private void MediumEnergyState()
+    {
+        energyModifier = 0.35f;
+        hydrationModifier = 0.5f;
+        reproductiveUrgeModifier = 1f;
+        speedModifier = JoggingSpeed;
+    }
+
+    private void LowEnergyState()
+    {
+        energyModifier = 0.15f;
+        hydrationModifier = 0.25f;
+        reproductiveUrgeModifier = 1f;
+        speedModifier = WalkingSpeed;
+    }
+
+    public virtual void UpdateParameters()
+    {
+        //The age will increase 2 per 2 seconds.
+        animalModel.age += 1;
+
+        // speed
+        animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier;
+        agent.speed = animalModel.currentSpeed * Time.timeScale;
+
+        // energy
+        animalModel.currentEnergy -= (animalModel.age + animalModel.currentSpeed +
+                                      animalModel.traits.viewRadius / 10 + animalModel.traits.hearingRadius / 10)
+                                     * animalModel.traits.size * energyModifier;
+
+        // hydration
+        animalModel.currentHydration -= animalModel.traits.size *
+                                        (1 +
+                                         animalModel.currentSpeed / animalModel.traits.endurance *
+                                         hydrationModifier);
+
+        // reproductive urge
+        animalModel.reproductiveUrge += 0.01f * reproductiveUrgeModifier;
+        // animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
+        // agent.speed = animalModel.currentSpeed * Time.timeScale;
+        agent.acceleration = baseAcceleration * Time.timeScale;
+        agent.angularSpeed = baseAngularSpeed * Time.timeScale;
+    }
+
 
     protected void EventSubscribe()
     {
         if (tickEventPublisher)
         {
             // every 2 sec
-            tickEventPublisher.onParamTickEvent += VaryParameters;
+            tickEventPublisher.onParamTickEvent += UpdateParameters;
             tickEventPublisher.onParamTickEvent += HandleDeathStatus;
             // every 0.5 sec
-            tickEventPublisher.onSenseTickEvent += fsm.UpdateStatesLogic;    
+            tickEventPublisher.onSenseTickEvent += fsm.UpdateStatesLogic;
         }
-        
+
         fsm.OnStateEnter += ChangeModifiers;
 
         eatingState.onEatFood += EatFood;
 
         drinkingState.onDrinkWater += DrinkWater;
 
-        matingStateState.onMate += Mate;
+        matingState.onMate += Mate;
 
         animationController.EventSubscribe();
     }
@@ -214,20 +326,23 @@ public abstract class AnimalController : MonoBehaviour
         if (tickEventPublisher)
         {
             // every 2 sec
-            tickEventPublisher.onParamTickEvent -= VaryParameters;
+            tickEventPublisher.onParamTickEvent -= UpdateParameters;
             tickEventPublisher.onParamTickEvent -= HandleDeathStatus;
             // every 0.5 sec
-            tickEventPublisher.onSenseTickEvent -= fsm.UpdateStatesLogic;    
+            tickEventPublisher.onSenseTickEvent -= fsm.UpdateStatesLogic;
         }
-        
-        
-        fsm.OnStateEnter -= ChangeModifiers;
+
+
+        if (fsm != null)
+        {
+            fsm.OnStateEnter -= ChangeModifiers;
+        }
 
         eatingState.onEatFood -= EatFood;
 
         drinkingState.onDrinkWater -= DrinkWater;
 
-        matingStateState.onMate -= Mate;
+        matingState.onMate -= Mate;
 
         animationController.EventUnsubscribe();
     }
@@ -238,115 +353,123 @@ public abstract class AnimalController : MonoBehaviour
         gameObject.transform.localScale = getNormalizedScale() * animalModel.traits.size;
     }
 
-    private void EatFood(GameObject food)
+    public void EatFood(GameObject food, float currentEnergy)
     {
-        //Access food script to consume the food.
-        if (food.GetComponent<AnimalController>()?.animalModel is IEdible edibleAnimal)
+        if (food != null && food.GetComponent<AnimalController>()?.animalModel is IEdible edibleAnimal &&
+            animalModel.CanEat(edibleAnimal))
         {
             animalModel.currentEnergy += edibleAnimal.GetEaten();
             Destroy(food);
         }
-        else if (food.GetComponent<PlantController>()?.plantModel is IEdible ediblePlant)
+
+        if (food != null && food.GetComponent<PlantController>()?.plantModel is IEdible ediblePlant &&
+            animalModel.CanEat(ediblePlant))
         {
             animalModel.currentEnergy += ediblePlant.GetEaten();
-            Destroy(food);
+            //Destroy(food); 
         }
     }
 
-    private void DrinkWater(GameObject water)
+    public void DrinkWater(GameObject water, float currentHydration)
     {
-        if (water.gameObject.CompareTag("Water"))
+        if (water != null && water.gameObject.CompareTag("Water") && !animalModel.HydrationFull)
         {
             animalModel.currentHydration = animalModel.traits.maxHydration;
         }
     }
 
-    //TODO a rabbit should be able to have more than one offspring at a time
-    void Mate(GameObject otherParent)
+    void Mate(GameObject target)
     {
-        
+        if (isInfertile) return;
 
-        // make sure target has an AnimalController and that its animalModel is same species
-        if (otherParent.TryGetComponent(out AnimalController otherParentAnimalController) && otherParentAnimalController.animalModel.IsSameSpecies(animalModel))
+        AnimalController targetAnimalController = null;
+
+        if (target != null)
         {
-            
-            
-            //Debug.Log(childModel.generation);
-            //TODO promote laborTime to model or something.
-            float childEnergy = animalModel.currentEnergy * 0.25f +
-                                otherParentAnimalController.animalModel.currentEnergy * 0.25f;
-            StartCoroutine(GiveBirth(gameObject, otherParentAnimalController, childEnergy, 5));
+            targetAnimalController = target.GetComponent<AnimalController>();
+        }
 
-            //Reset both reproductive urges. 
+        if(targetAnimalController.isInfertile) return;
+        
+        Random rng = new Random();
+        
+        // make sure target has an AnimalController,
+        // that its animalModel is same species, and neither animal is already carrying
+        if (targetAnimalController != null && targetAnimalController.animalModel.IsSameSpecies(animalModel) &&
+            targetAnimalController.animalModel.WantingOffspring)
+        {
+            // higher max urge gives greater potential for more offspring. (1-8 offspring)
+            int offspringCount = Math.Max(1, rng.Next((int) animalModel.traits.maxReproductiveUrge / 5 + 1));
+
+            // higher max urge => lower gestation time.
+            float gestationTime = Mathf.Max(1, 100 / animalModel.traits.maxReproductiveUrge);
+
+            float childEnergy = animalModel.currentEnergy * 0.3f +
+                                targetAnimalController.animalModel.currentEnergy * 0.3f;
+            childEnergy /= offspringCount;
+            float childHydration = animalModel.currentHydration * 0.25f +
+                                   targetAnimalController.animalModel.currentHydration * 0.25f;
+
+
+            // Expend energy and give it to child(ren)
+            animalModel.currentEnergy *= 0.7f;
+            targetAnimalController.animalModel.currentEnergy *= 0.7f;
+            animalModel.currentHydration *= 0.7f;
+            targetAnimalController.animalModel.currentHydration *= 0.7f;
+
+            // Reset both reproductive urges. 
             animalModel.reproductiveUrge = 0f;
-            otherParentAnimalController.animalModel.reproductiveUrge = 0f;
+            targetAnimalController.animalModel.reproductiveUrge = 0f;
 
-            //Expend energy
-            animalModel.currentEnergy = animalModel.currentEnergy * 0.75f;
-            otherParentAnimalController.animalModel.currentEnergy = otherParentAnimalController.animalModel.currentEnergy * 0.75f;
+
+            animalModel.isPregnant = true;
+            ActionPregnant?.Invoke(true);
+            for (int i = 1; i <= offspringCount; i++)
+                // Wait some time before giving birth
+                StartCoroutine(GiveBirth(childEnergy, childHydration, gestationTime, targetAnimalController));
         }
     }
 
-    IEnumerator GiveBirth(GameObject child, AnimalController otherParentAnimalController, float newEnergy, float laborTime)
+
+    IEnumerator GiveBirth(float childEnergy, float childHydration, float laborTime,
+        AnimalController otherParentAnimalController)
     {
         yield return new WaitForSeconds(laborTime);
+        AnimalModel childModel = animalModel.Mate(otherParentAnimalController.animalModel);
+        SpawnNew?.Invoke(childModel, transform.position, childEnergy, childHydration);
+        animalModel.isPregnant = false;
         //Instantiate here
-        child = Instantiate(child, gameObject.transform.position,
-            gameObject.transform.rotation); //NOTE CHANGE SO THAT PREFAB IS USED
-        
-        child.GetComponent<AnimalController>().animalModel.currentEnergy = newEnergy;
+        /*
+        GameObject child = Instantiate(gameObject, transform.position, transform.rotation); //NOTE CHANGE SO THAT PREFAB IS USED
         
         // Generate the offspring traits
         AnimalModel childModel = animalModel.Mate(otherParentAnimalController.animalModel);
+        
         child.GetComponent<AnimalController>().animalModel = childModel;
-        Debug.Log(child.GetComponent<AnimalController>().animalModel.generation);
+<<<<<<< HEAD
+        child.GetComponent<AnimalController>().animalModel.currentEnergy = childEnergy;
+        child.GetComponent<AnimalController>().animalModel.currentHydration = childHydration;   
+=======
+        //Debug.Log(child.GetComponent<AnimalController>().animalModel.generation);
         onBirth?.Invoke(this,new OnBirthEventArgs{child = child});
     }
+>>>>>>> dynamic-food
 
-    public void DestroyGameObject(float delay)
-    {
-        Destroy(gameObject, delay);
+        // update the childs speed (in case of mutation).
+        child.GetComponent<AnimalController>().animalModel.traits.maxSpeed = 1;
+        
+        
+        //Debug.Log(child.GetComponent<AnimalController>().animalModel.generation);
+        onBirth?.Invoke(this,new OnBirthEventArgs{child = child});
+        */
+        
     }
 
     /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
 
-    public void Awake()
+    public void DestroyGameObject(float delay)
     {
-        //Create the FSM.
-        fsm = new FiniteStateMachine();
-
-        goToFoodState = new GoToFood(this, fsm);
-        fleeingState = new FleeingState(this, fsm);
-        wanderState = new Wander(this, fsm);
-        idleState = new Idle(this, fsm);
-        goToWaterState = new GoToWater(this, fsm);
-        matingStateState = new MatingState(this, fsm);
-        deadState = new Dead(this, fsm);
-        drinkingState = new DrinkingState(this, fsm);
-        eatingState = new EatingState(this, fsm);
-        goToMate = new GoToMate(this, fsm);
-        fsm.Initialize(wanderState);
-
-        animationController = new AnimationController(this);
-
-        dh = FindObjectOfType<DataHandler>();
-    }
-
-    protected void Start()
-    {
-        // Init the NavMesh agent
-        agent = GetComponent<NavMeshAgent>();
-        agent.autoBraking = false;
-        animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
-        agent.speed = animalModel.currentSpeed;
-
-        dh.LogNewAnimal(animalModel);
-
-        tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
-        EventSubscribe();
-
-        SetPhenotype();
-        
+        Destroy(gameObject, delay);
     }
 
 
@@ -355,16 +478,20 @@ public abstract class AnimalController : MonoBehaviour
     {
         if (!animalModel.IsAlive)
         {
-            CauseOfDeath cause;
-            if (animalModel.currentEnergy == 0) cause = CauseOfDeath.Hunger;
-            if (animalModel.currentHealth == 0) cause = CauseOfDeath.Health;
-            if (animalModel.currentHydration == 0) cause = CauseOfDeath.Hydration;
-            else cause = CauseOfDeath.Eaten;
+            AnimalModel.CauseOfDeath cause;
+            if (animalModel.currentEnergy == 0) cause = AnimalModel.CauseOfDeath.Hunger;
+            if (animalModel.currentHealth == 0) cause = AnimalModel.CauseOfDeath.Health;
+            if (animalModel.currentHydration == 0) cause = AnimalModel.CauseOfDeath.Hydration;
+            else cause = AnimalModel.CauseOfDeath.Eaten;
             dh.LogDeadAnimal(animalModel, cause);
 
             // invoke death state with method HandleDeath() in decisionmaker
             actionDeath?.Invoke();
-           
+
+            //Stop animal from giving birth once dead.
+            StopCoroutine("GiveBirth");
+            StopAllCoroutines();
+
             // unsubscribe all events because we want only want to invoke it once.
             //actionDeath = null;
         }
@@ -372,15 +499,56 @@ public abstract class AnimalController : MonoBehaviour
 
     public void OnDestroy()
     {
+        StopAllCoroutines();
         EventUnsubscribe();
     }
 
 
-    public abstract Vector3 getNormalizedScale();
-    private void FixedUpdate()
+    //General method that takes unknown gameobject as input and interacts with the given gameobject depending on what it is. It can be to e.g. consume or to mate
+    // It is not guaranteed that the statechange will happen since meetrequirements has to be true for given statechange.
+    public void Interact(GameObject target)
     {
-        //Update physics
-        //Fsm.UpdateStatesPhysics();
+        //Dont stop to interact if we are fleeing.
+        if (fsm.currentState is FleeingState) return;
+
+        //Debug.Log(gameObject.name);
+        switch (target.tag)
+        {
+            case "Water":
+                drinkingState.SetTarget(target);
+                fsm.ChangeState(drinkingState);
+                break;
+            case "Plant":
+                if (target.TryGetComponent(out PlantController plantController) &&
+                    animalModel.CanEat(plantController.plantModel))
+                {
+                    eatingState.SetTarget(target);
+                    fsm.ChangeState(eatingState);
+                }
+
+                break;
+            case "Animal":
+                if (target.TryGetComponent(out AnimalController otherAnimalController))
+                {
+                    AnimalModel otherAnimalModel = otherAnimalController.animalModel;
+                    //if we can eat the other animal we try to do so
+                    if (animalModel.CanEat(otherAnimalModel))
+                    {
+                        eatingState.SetTarget(target);
+                        fsm.ChangeState(eatingState);
+                    }
+                    else if (animalModel.IsSameSpecies(otherAnimalModel))
+                    {
+                        matingState.SetTarget(target);
+                        fsm.ChangeState(matingState);
+                    }
+                }
+
+                break;
+        }
+
     }
+
+    public abstract Vector3 getNormalizedScale();
     
 }

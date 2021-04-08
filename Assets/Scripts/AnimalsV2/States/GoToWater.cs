@@ -10,12 +10,16 @@ using UnityEngine;
 
         public GoToWater(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine)
         {
-            currentStateAnimation = StateAnimation.Walking;
+            
         }
 
         public override void Enter()
         {
             base.Enter();
+            currentStateAnimation = StateAnimation.Walking;
+            
+            //Make an update instantly
+            LogicUpdate();
         }
 
         public override void HandleInput()
@@ -29,19 +33,18 @@ using UnityEngine;
             base.LogicUpdate();
             if (MeetRequirements())
             {
-                GameObject closestWater = NavigationUtilities.GetNearestObjectPosition(animal.visibleWaterTargets, animal.transform.position);
+                GameObject closestWater = NavigationUtilities.GetNearestObject(animal.visibleWaterTargets, animal.transform.position);
                 if (closestWater != null && animal.agent.isActiveAndEnabled)
                 {
-                    Vector3 pointToRunTo = NavigationUtilities.RunToFromPoint(animal.transform, closestWater.transform.position, true);
+                    Vector3 pointToRunTo = closestWater.transform.position;
                     //Move the animal using the navmeshagent.
                     NavigationUtilities.NavigateToPoint(animal,pointToRunTo);
-                    // NavMeshHit hit;
-                    // NavMesh.SamplePosition(pointToRunTo, out hit, 100, 1 << NavMesh.GetAreaFromName("Walkable"));
-                    // animal.agent.SetDestination(hit.position);
-                    if (Vector3.Distance(animal.transform.position, closestWater.transform.position) <= 3f)
-                    {
+                    
+                    if(Vector3.Distance(animal.transform.position, closestWater.transform.position) <= animal.agent.stoppingDistance + 0.3){
+                        animal.drinkingState.SetTarget(closestWater);
                         finiteStateMachine.ChangeState(animal.drinkingState);
                     }    
+                    
                 }
                 
             }
@@ -54,13 +57,13 @@ using UnityEngine;
 
         public override string ToString()
         {
-            return "Going to water";
+            return "Go to water";
         }
 
         public override bool MeetRequirements()
         {
             // rewuirements for this state are following
-            return animal.visibleWaterTargets.Count > 0 && !(finiteStateMachine.CurrentState is DrinkingState);
+            return animal.visibleWaterTargets.Count > 0 && !animal.animalModel.HighHydration;
         }
     }
 }

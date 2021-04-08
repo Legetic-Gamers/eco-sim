@@ -32,7 +32,6 @@ public class AnimalSelectPanel : MonoBehaviour
         maxHealth.text = "maxHealth: " + traits.maxHealth;
         movementSpeed.text = "maxSpeed: " + traits.maxSpeed;
         ageLimit.text = "ageLimit: " + traits.ageLimit;
-        temperatureResist.text = "temperatureResist: " + traits.temperatureResist;
         desirability.text = "desirability: " + traits.desirability;
         viewAngle.text = "viewAngle: " + traits.viewAngle;
         viewRadius.text = "viewRadius: " + traits.viewRadius;

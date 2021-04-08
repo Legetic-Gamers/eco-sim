@@ -1,0 +1,217 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3029247130075776119
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3029247130075776117}
+  - component: {fileID: 3029247130075776116}
+  m_Layer: 0
+  m_Name: SimulationSettings
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3029247130075776117
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3029247130075776119}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3029247130075776116
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3029247130075776119}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a41be72edca3c34fbd80b9e75cfa52f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  heightMapSettings:
+    noiseSettings:
+      normalizeMode: 1
+      scale: 50
+      octaves: 6
+      persistance: 0.6
+      lacunarity: 2
+      seed: 0
+      offset: {x: 0, y: 0}
+    useFalloff: 0
+    heightMultiplier: 10.85
+    heightCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 2
+        outSlope: 2
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  meshSettings:
+    meshScale: 2.5
+    useFlatShading: 1
+    chunkSizeIndex: 0
+    flatShadedChunkSizeIndex: 0
+  waterSettings:
+    generateWater: 1
+    stylizedWater: 1
+    waterLevel: 0.205
+    waterVertexDiff: 0.112
+    size: 1
+    gridSize: 16
+    material: {fileID: 2100000, guid: 7d15e8e57b643694a8665fc53363315c, type: 2}
+    stylizedMaterial: {fileID: 2100000, guid: 8c69baf2737c74646964642f0ae67ca6, type: 2}
+  textureSettings:
+    baseColours:
+    - {r: 1, g: 0.996498, b: 0.7688679, a: 1}
+    - {r: 0.32484868, g: 0.6886792, b: 0.31510323, a: 1}
+    - {r: 0.14994213, g: 0.4339623, b: 0.034798868, a: 1}
+    - {r: 0.4528302, g: 0.4528302, b: 0.4528302, a: 1}
+    baseStartHeights:
+    - 0.047
+    - 0.24
+    - 0.432
+    - 1
+  objectPlacementSettings:
+    objectTypes:
+    - name: Trees
+      gameObjectSettings:
+      - gameObjectIndex: 0
+        probability: 0.126
+      - gameObjectIndex: 1
+        probability: 0.228
+      - gameObjectIndex: 2
+        probability: 0.24
+      - gameObjectIndex: 3
+        probability: 0.24
+      - gameObjectIndex: 4
+        probability: 0.24
+      minimumDistance: 7.06
+      newPointCount: 20
+      scale: 1
+      _yOffset: 0
+      minHeight: 0.181
+      maxHeight: 0.843
+    - name: Rocks
+      gameObjectSettings:
+      - gameObjectIndex: 6
+        probability: 0.132
+      - gameObjectIndex: 7
+        probability: 0.162
+      - gameObjectIndex: 8
+        probability: 0.162
+      - gameObjectIndex: 9
+        probability: 0.162
+      minimumDistance: 12
+      newPointCount: 10
+      scale: 1
+      _yOffset: 0
+      minHeight: 0
+      maxHeight: 1
+  preview: 1
+  availableGameObjects:
+  - simulationObject: {fileID: 1069101916615702, guid: fff1095f568a7964c8c455e72f096fe7,
+      type: 3}
+    previewObject: {fileID: 1069101916615702, guid: fff1095f568a7964c8c455e72f096fe7,
+      type: 3}
+  - simulationObject: {fileID: 2222111361404534124, guid: 94f989ef58ad00643a4052dd699c6f2b,
+      type: 3}
+    previewObject: {fileID: 2222111361404534124, guid: 94f989ef58ad00643a4052dd699c6f2b,
+      type: 3}
+  - simulationObject: {fileID: 6941765000743290380, guid: c371cf579cc08af42a09550662084657,
+      type: 3}
+    previewObject: {fileID: 6941765000743290380, guid: c371cf579cc08af42a09550662084657,
+      type: 3}
+  - simulationObject: {fileID: 8758888183437167707, guid: 656e84f5406ec3f4490ea7c618b4a07f,
+      type: 3}
+    previewObject: {fileID: 8758888183437167707, guid: 656e84f5406ec3f4490ea7c618b4a07f,
+      type: 3}
+  - simulationObject: {fileID: 1130959867764666, guid: 97d04c1a128285640bea9a6421aeec54,
+      type: 3}
+    previewObject: {fileID: 1130959867764666, guid: 97d04c1a128285640bea9a6421aeec54,
+      type: 3}
+  - simulationObject: {fileID: 4661435515762455780, guid: f664d6bbcbea02340b0ff331cd2877a1,
+      type: 3}
+    previewObject: {fileID: 4661435515762455780, guid: f664d6bbcbea02340b0ff331cd2877a1,
+      type: 3}
+  - simulationObject: {fileID: 8672003455025440434, guid: 64780fc93899ef9498532cf299ef2b04,
+      type: 3}
+    previewObject: {fileID: 8672003455025440434, guid: 64780fc93899ef9498532cf299ef2b04,
+      type: 3}
+  - simulationObject: {fileID: 7405846476849542632, guid: 8c2b434b350c21945aa7e5d7868a523c,
+      type: 3}
+    previewObject: {fileID: 7405846476849542632, guid: 8c2b434b350c21945aa7e5d7868a523c,
+      type: 3}
+  - simulationObject: {fileID: 5202732821079448320, guid: bf3d0e1321e7b0f49bacb6bce0698d2f,
+      type: 3}
+    previewObject: {fileID: 5202732821079448320, guid: bf3d0e1321e7b0f49bacb6bce0698d2f,
+      type: 3}
+  - simulationObject: {fileID: 4680757731160225450, guid: 8e761cdcbbcbd96439e187fa8ea6d938,
+      type: 3}
+    previewObject: {fileID: 4680757731160225450, guid: 8e761cdcbbcbd96439e187fa8ea6d938,
+      type: 3}
+  - simulationObject: {fileID: 8783306491908617939, guid: c9bcfa149c882d44a8157a75caeecea7,
+      type: 3}
+    previewObject: {fileID: 8783306491908617939, guid: c9bcfa149c882d44a8157a75caeecea7,
+      type: 3}
+  - simulationObject: {fileID: 4263922822445002727, guid: 62de58e8ca55f2d4589d9d58f2e801ad,
+      type: 3}
+    previewObject: {fileID: 4263922822445002727, guid: 62de58e8ca55f2d4589d9d58f2e801ad,
+      type: 3}
+  - simulationObject: {fileID: 6239969156481229051, guid: 46c32b1f33e881742baa57db4434a16a,
+      type: 3}
+    previewObject: {fileID: 6239969156481229051, guid: 46c32b1f33e881742baa57db4434a16a,
+      type: 3}
+  - simulationObject: {fileID: 8585085198824190955, guid: faca9fdb3f703844aa60f6115d12e202,
+      type: 3}
+    previewObject: {fileID: 388263950056863094, guid: d78dceeb617012d47a7d1d5a4e7d1228,
+      type: 3}
+  - simulationObject: {fileID: 5945667779142240406, guid: 20038c4620a64ee45aaed9ddd2e5f10e,
+      type: 3}
+    previewObject: {fileID: 1971363165378548586, guid: 3ff25ae09fa3c8e47bc18643f60840f4,
+      type: 3}
+  - simulationObject: {fileID: 4362939137640418624, guid: 9a3fc11558a4b4a4c97a046dc0bd6872,
+      type: 3}
+    previewObject: {fileID: 2443035894578729959, guid: a7afe39ab1be159428ad2dbbf6162fe3,
+      type: 3}
+  - simulationObject: {fileID: 1567582185033856, guid: 70e110c1886e4174e8c3ed315798a2f1,
+      type: 3}
+    previewObject: {fileID: 6101972966518227433, guid: b343a143aed6e934fa74d552587a9669,
+      type: 3}
+  - simulationObject: {fileID: 8012323441774472881, guid: 51e551f1cef16d9488952707d8521940,
+      type: 3}
+    previewObject: {fileID: 8707029122432189503, guid: 1e5656598aba98b429ef77df7012c598,
+      type: 3}
+  xFixedSize: 1
+  yFixedSize: 1

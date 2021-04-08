@@ -30,19 +30,13 @@ namespace AnimalsV2
 
             EventSubscribe();
         }
-
+        
 
         private void MakeDecision()
         {
-            //TODO STATE should be called ACTION instead?!
-            GetBestAction(animalModel);
-        }
-
-        private void GetBestAction(AnimalModel parameters)
-        {
             // no decision making while fleeing!
-            if (fsm.CurrentState is FleeingState || fsm.CurrentState is EatingState ||
-                fsm.CurrentState is DrinkingState || fsm.CurrentState is MatingState) return;
+            if (fsm.currentState is FleeingState || fsm.currentState is EatingState ||
+                fsm.currentState is DrinkingState || fsm.currentState is MatingState || fsm.currentState is Waiting) return;
             Prioritize();
         }
 
@@ -63,6 +57,8 @@ namespace AnimalsV2
 
                 prio.Insert(0, Food);
                 prio.Insert(0, Water);
+
+                
             }
 
             if (animalModel.HighHydration && !animalModel.HighEnergy)
@@ -98,6 +94,16 @@ namespace AnimalsV2
             {
                 prio.Insert(0, Mate);
             }
+
+            // if (animalController is WolfController)
+            // {
+            //     String priolist = String.Empty;
+            //     foreach (var p in prio)
+            //     {
+            //         priolist += p + ", ";
+            //     }
+            //     Debug.Log(priolist);
+            // }
 
             //TODO det som händer här är att det blir alltid den som är sist i priority vi går till, which is bad.
             foreach (var priority in prio)
@@ -172,7 +178,7 @@ namespace AnimalsV2
 
         private void HandleDeath()
         {
-            Debug.Log("You dead!");
+            //Debug.Log("You dead!");
             ChangeState(animalController.deadState);
         }
     }

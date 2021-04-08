@@ -2,39 +2,38 @@
 
 namespace AnimalsV2.States
 {
-
     namespace AnimalsV2.States
     {
         public class Dead : State
         {
-
-            public Dead(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine)
+            public Dead(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal,
+                finiteStateMachine)
             {
-                
+                currentStateAnimation = StateAnimation.Dead;
             }
 
             public override void Enter()
             {
                 //when entering state dead,
                 base.Enter();
-                animal.agent.isStopped = true;
-                currentStateAnimation = StateAnimation.Dead;
-                animal.DestroyGameObject(20f);
-                
+                if (animal.agent.isActiveAndEnabled && animal.agent.isOnNavMesh)
+                {
+                    animal.agent.isStopped = true;
+                }
+                //animal.DestroyGameObject(20f);
                 // Set state so that it can't change
                 finiteStateMachine.absorbingState = true;
+                animal.Dead?.Invoke(animal);
             }
 
             public override void HandleInput()
             {
                 base.HandleInput();
-            
             }
 
             public override void LogicUpdate()
             {
                 base.LogicUpdate();
-             
             }
 
             public override string ToString()
@@ -46,7 +45,6 @@ namespace AnimalsV2.States
             {
                 return true;
             }
-            
         }
     }
 }

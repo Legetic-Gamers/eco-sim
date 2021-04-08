@@ -1,22 +1,32 @@
-﻿using Model;
+﻿using System;
+using Model;
 
 public class DeerModel : AnimalModel, IEdible
 {
-    public DeerModel() : base(new Traits(3, 100, 100, 100, 6,10,10,10,10,10,180,10,10),0)
+
+    public DeerModel() : base(new Traits(3.25f, 200, 100, 
+                                    300, 6f, 10, 
+                                    10, 150, 10, 
+                                    180, 17, 10), 0)
+
     {
         // Set variables specific to deer
+        nutritionValue = traits.maxEnergy;
     }
+    public float nutritionValue { get; set; }
+
     
     public DeerModel(Traits traits, int generation) : base(traits, generation)
     {
-
+        nutritionValue = traits.maxEnergy;
     }
 
     public override AnimalModel Mate(AnimalModel otherParent)
     {
         Traits childTraits = traits.Crossover(otherParent.traits, age, otherParent.age);
-        //TODO logic for determining generation
-        return new DeerModel(childTraits, 0);
+        childTraits.Mutation();
+        
+        return new DeerModel(childTraits, (int) Math.Max(age, otherParent.age) + 1);
     }
     
     public override bool CanEat<T>(T obj)
@@ -28,9 +38,9 @@ public class DeerModel : AnimalModel, IEdible
     {
         return obj is DeerModel;
     }
-
+    
     public float GetEaten()
     {
-        return 10f;
+        return nutritionValue;
     }
 }
