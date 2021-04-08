@@ -32,9 +32,9 @@ namespace DataCollection
         private List<float> sendList1 = new List<float>();
         private List<float> sendList2 = new List<float>();
 
-        private static int _listNumber = 1; // 0 population, 1 trait, 2 birth rate, 3 food available
-        private static int _speciesNumberPopulation = 0; //default all animals 
-        private static int _speciesNumberBirthRate = 0; // default rabbit
+        private static int _listNumber = 1; 
+        private static int _speciesNumberPopulation = 0; 
+        private static int _speciesNumberBirthRate = 0; 
         private static int _speciesNumber1 = 0;
         private static int _traitNumber1 = 0;
         private static int _dataTypeNumber1 = 0;
@@ -68,7 +68,8 @@ namespace DataCollection
         {
             tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
             // Subscribe to Tick Event publisher update data and graph 
-            tickEventPublisher.onCollectorUpdate += UpdateDataAndGraph;
+            tickEventPublisher.onDataHandlerUpdate += UpdateDataAndGraph;
+            tickEventPublisher.onCollectorUpdate += CollectBirthRate;
             ButtonClick bc = FindObjectOfType<ButtonClick>();
             bc.GetListTrait += SetTrait;
             bc.GetListPopulation += SetPopulation;
@@ -275,7 +276,6 @@ namespace DataCollection
         /// </summary>
         private void UpdateDataAndGraph()
         {
-            c.Collect();
 
             Updatelist(_listNumber);
             //SetTrait(0,_speciesNumber1,_traitNumber1,_dataTypeNumber1);
@@ -283,6 +283,12 @@ namespace DataCollection
             Display?.Invoke(sendList1, sendList2);
             //if (ShowFrameRate) Display(ConvertFloatListToIntList(framerate));
             //ExportDataToFile(0);
+        }
+
+        private void CollectBirthRate()
+        {
+            c.Collect();
+
         }
         
         /// <summary>

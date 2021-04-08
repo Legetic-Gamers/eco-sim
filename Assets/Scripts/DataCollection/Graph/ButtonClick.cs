@@ -85,7 +85,6 @@ public class ButtonClick : Window_Graph
 
     public void DropDownTrait()
     {
-        Debug.Log("HELLO");
         int species1 = dropdownSpecies1.GetComponent<Dropdown>().value;
         //int species2 = dropdownSpecies2.GetComponent<Dropdown>().value;
         int trait1 = dropdownTrait1.GetComponent<Dropdown>().value;
