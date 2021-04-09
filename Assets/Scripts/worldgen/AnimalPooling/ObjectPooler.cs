@@ -84,23 +84,22 @@ public class ObjectPooler : MonoBehaviour
     public void HandleAnimalInstantiated(GameObject objectToSpawn, string tag)
     {
         if (poolDictionary != null && poolDictionary.ContainsKey(tag))
+        {
+                
+            objectToSpawn.SetActive(true);
+            objectToSpawn.GetComponent<IPooledObject>()?.onObjectSpawn();
+                
+            if (objectToSpawn.TryGetComponent(out AnimalController animalController))
             {
-                
-                objectToSpawn.SetActive(true);
-                objectToSpawn.GetComponent<IPooledObject>()?.onObjectSpawn();
-                
-                if (objectToSpawn.TryGetComponent(out AnimalController animalController))
-                {
 
-                    animalController.deadState.onDeath += HandleDeadAnimal;
-                    animalController.SpawnNew += HandleBirthAnimal;
-                }
-                else
-                {
-                    //Debug.Log("HandleAnimalInstantiated() did not succeed to bind methods to animalcontrollers action");
-                }
-                
+                animalController.deadState.onDeath += HandleDeadAnimal;
+                animalController.SpawnNew += HandleBirthAnimal;
             }
+            else
+            {
+                //Debug.Log("HandleAnimalInstantiated() did not succeed to bind methods to animalcontrollers action");
+            }
+        }
         
     }
 

@@ -225,21 +225,18 @@ namespace DataCollection
             int gen = am.generation;
 
             for (int i = totalDeadAnimals.Count - 1; i <= gen; i++) totalDeadAnimals.Add(0);
-            if(gen >= totalDeadAnimals.Count - 1) Debug.Log(gen);
-             
+
             totalDeadAnimals[gen] += 1;
 
             // Changes the referenced lists depending on the species of the animal. 
             (List<List<float>> animalMean, List<List<float>> animalVar, _) = GetAnimalList(am);
             
-            for (int i = animalMean[12].Count - 1; i <= gen; i++) animalMean[12].Add(0);
-            for (int i = animalMean[12].Count - 1; i <= gen; i++) animalVar[12].Add(0);
+            for (int i = animalMean[12].Count - 1; i < gen; i++) animalMean[12].Add(0);
+            for (int i = animalMean[12].Count - 1; i < gen; i++) animalVar[12].Add(0);
                 
-            for (int i = animalMean[11].Count - 1; i <= gen; i++) animalMean[11].Add(0);
-            for (int i = animalMean[11].Count - 1; i <= gen; i++) animalVar[11].Add(0);
-            Debug.Log(totalDeadAnimals[gen]);
-            Debug.Log(animalMean[12][gen]);
-            Debug.Log(animalVar[11][gen]);
+            for (int i = animalMean[11].Count - 1; i < gen; i++) animalMean[11].Add(0);
+            for (int i = animalMean[11].Count - 1; i < gen; i++) animalVar[11].Add(0);
+
             (float meanAge, float varAge) =
                 GetNewMeanVariance(animalMean[12][gen], animalVar[12][gen], am.age, totalDeadAnimals[gen]);
             
