@@ -74,3 +74,18 @@ MonoBehaviour:
     prefab: {fileID: 8012323441774472881, guid: 51e551f1cef16d9488952707d8521940,
       type: 3}
     size: 50
+  - tag: SmartRabbits
+    prefab: {fileID: 8505818697369016331, guid: d41c8705a05beb642a090f031a00299c,
+      type: 3}
+    size: 250
+  - tag: Wolves
+    prefab: {fileID: 2443608263682274251, guid: 36c50c1df400f6e47be4e48ed43c7155,
+      type: 3}
+    size: 50
+  - tag: SmartDeer
+    prefab: {fileID: 1472361199608738841, guid: bfeb36e4d17c8444f8e73db899f422c7,
+      type: 3}
+    size: 50
+  - tag: SmartBears
+    prefab: {fileID: 695402115701391966, guid: fec6ae813464c314991b94cea274b3cc, type: 3}
+    size: 50
