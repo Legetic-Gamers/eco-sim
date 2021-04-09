@@ -293,7 +293,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
                                         (1 +
                                          animalModel.currentSpeed / animalModel.traits.endurance *
                                          hydrationModifier);
-        animalModel.currentEnergy = 1.5f;
+        
         // reproductive urge
         animalModel.reproductiveUrge += 0.01f * reproductiveUrgeModifier;
         agent.acceleration = baseAcceleration * Time.timeScale;
@@ -444,7 +444,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         AnimalModel childModel = animalModel.Mate(otherParentAnimalController.animalModel);
         SpawnNew?.Invoke(childModel, transform.position, childEnergy, childHydration);
         
-        // invoke only once when birthing multiple
+        // invoke only once when birthing multiple children
         if (animalModel.isPregnant) ActionPregnant?.Invoke(false);
         animalModel.isPregnant = false;
     }
