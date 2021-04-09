@@ -12,9 +12,9 @@ namespace Menus
         
         public void OnClick()
         {
-            Debug.Log("Clicked");
-            graph.SetActive(!isActive);
             isActive = !isActive;
+            graph.GetComponent<Canvas>().enabled = isActive;
+            Window_Graph.IsGraphOne = isActive;
         }
     }
 }
