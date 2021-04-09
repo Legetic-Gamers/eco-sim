@@ -113,9 +113,9 @@ namespace DataCollection
         /// </summary>
         /// <param name="animalModel"> The model of the dead animal </param>
         /// <param name="causeOfDeath"> The Cause that made the animal call on dead state </param>
-        public void LogDeadAnimal(AnimalModel animalModel, AnimalModel.CauseOfDeath causeOfDeath)
+        public void LogDeadAnimal(AnimalModel animalModel, AnimalModel.CauseOfDeath causeOfDeath, float dist)
         {
-            c.CollectDeath(animalModel, causeOfDeath);
+            c.CollectDeath(animalModel, causeOfDeath, dist);
         }
         
         /// <summary>
@@ -193,14 +193,12 @@ namespace DataCollection
         private void UpdateDataAndGraph()
         {
             //c.Collect();
-
-            Debug.Log(c.totalAnimalsAlive);
+            
             SetList(0,_speciesNumber1,_traitNumber1,_dataTypeNumber1);
             SetList(1,_speciesNumber2,_traitNumber2,_dataTypeNumber2);
             Display?.Invoke(sendList1, sendList2);
             //if (ShowFrameRate) Display(ConvertFloatListToIntList(framerate));
             //ExportDataToFile(0);
-            Debug.Log(c.totalAnimalsAlive);
         }
         
         /// <summary>

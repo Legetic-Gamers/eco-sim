@@ -10,19 +10,32 @@ public class AnimalSpawner : MonoBehaviour
     private ObjectPooler pooler;
     public Action<GameObject, string> onAnimalInstantiated;
     public Action isDone;
+    private int loop = 0;
     public void Start()
     {
         pooler = ObjectPooler.Instance;
         
         //StartCoroutine(SpawnRabbit());
-        for (int i = 0; i < 2; i++)
+        for (int i = 0; i < 3; i++)
         {
-            //pooler.SpawnFromPool("Rabbit", new Vector3(Random.Range(0f, 10f), 0, Random.Range(0f, 10f)), Quaternion.identity);
+            //pooler.SpawnFromPool("Rabbits", new Vector3(Random.Range(0f, 10f), 0, Random.Range(0f, 10f)), Quaternion.identity);
             GameObject obj = Instantiate(pooler.pools[0].prefab, new Vector3(Random.Range(0f, 10f), 0, 0), Quaternion.identity);
             obj.SetActive(false);
-            onAnimalInstantiated?.Invoke(obj, "Rabbit");
+            pooler.HandleAnimalInstantiated(obj, "Rabbits");
         }
-        isDone?.Invoke();
+        pooler.HandleFinishedSpawning();
+    }
+
+    private void Update()
+    {
+        if (loop > 300)
+        {
+            pooler.SpawnFromPool("Rabbits", new Vector3(Random.Range(0f, 10f), 0, Random.Range(0f, 10f)), Quaternion.identity);
+            loop = 0;
+        }
+
+        loop++;
+
     }
 
     private IEnumerator SpawnRabbit()

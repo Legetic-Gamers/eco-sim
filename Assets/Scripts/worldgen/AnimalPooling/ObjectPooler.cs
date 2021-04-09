@@ -37,11 +37,17 @@ public class ObjectPooler : MonoBehaviour
 
     public List<Pool> pools;
     public Dictionary<string, Queue<GameObject>> poolDictionary;
+    private bool isInstantiated = false;
 
     private void Awake()
     {
         instance = this;
         poolDictionary = new Dictionary<string, Queue<GameObject>>();
+        foreach (Pool pool in pools)
+        {
+            Queue<GameObject> objectPool = new Queue<GameObject>();
+            poolDictionary.Add(pool.tag, objectPool);
+        }
     }
     
     /// <summary>
@@ -49,11 +55,7 @@ public class ObjectPooler : MonoBehaviour
     /// </summary>
     void Start()
     {
-        foreach (Pool pool in pools)
-        {
-            Queue<GameObject> objectPool = new Queue<GameObject>();
-            poolDictionary.Add(pool.tag, objectPool);
-        }
+        
     }
 
     /// <summary>
@@ -81,9 +83,9 @@ public class ObjectPooler : MonoBehaviour
     /// <param name="tag"> Tag of the animal, must match names in terrain generator. </param>
     public void HandleAnimalInstantiated(GameObject objectToSpawn, string tag)
     {
-        Debug.Log("HANDLEANIMALINSTANTIATED");
         if (poolDictionary != null && poolDictionary.ContainsKey(tag))
             {
+                
                 objectToSpawn.SetActive(true);
                 objectToSpawn.GetComponent<IPooledObject>()?.onObjectSpawn();
                 
@@ -95,10 +97,9 @@ public class ObjectPooler : MonoBehaviour
                 }
                 else
                 {
-                    Debug.Log("HandleAnimalInstantiated() did not succeed to bind methods to animalcontrollers action");
+                    //Debug.Log("HandleAnimalInstantiated() did not succeed to bind methods to animalcontrollers action");
                 }
-
-                poolDictionary[tag].Enqueue(objectToSpawn);
+                
             }
         
     }
@@ -173,6 +174,7 @@ public class ObjectPooler : MonoBehaviour
             // update the childs speed (in case of mutation).
             childController.animalModel.traits.maxSpeed = 1;
         }
+        
     }
 
     /// <summary>
@@ -211,14 +213,13 @@ public class ObjectPooler : MonoBehaviour
                     objectToSpawn.transform.position = position;
                     objectToSpawn.transform.rotation = rotation;
                     objectToSpawn.SetActive(true);
-
                     //TODO Maintain list of all components for more performance
                     objectToSpawn.GetComponent<IPooledObject>()?.onObjectSpawn();
 
                     objectToSpawn.GetComponent<AnimalController>().deadState.onDeath += HandleDeadAnimal;
                     objectToSpawn.GetComponent<AnimalController>().SpawnNew += HandleBirthAnimal;
 
-                    return objectToSpawn;    
+                    return objectToSpawn;
                 }
                 
         }
