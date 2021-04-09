@@ -120,7 +120,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1334390377315381499}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 7738820273117832448}
+        m_TargetAssemblyTypeName: GameObjectSettingsPanel, ScriptAssembly
+        m_MethodName: Delete
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &3504955890496235208
 GameObject:
   m_ObjectHideFlags: 0
@@ -1580,7 +1592,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objectChooser: {fileID: 4170375576217899047}
   prob: {fileID: 4170375576857565661}
-  gameObjectSelectorFitter: {fileID: 0}
   index: 0
 --- !u!1 &4170375576798573352
 GameObject:
