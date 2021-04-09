@@ -23,9 +23,9 @@ namespace Menus
                 if(_instance == null)
                 {
                     _instance = FindObjectOfType<OptionsMenu>();
-                    DontDestroyOnLoad(_instance.gameObject);
                 }
- 
+                DontDestroyOnLoad(_instance.gameObject);
+                Debug.Log("Dont destroy at instance");
                 return _instance;
             }
         }
@@ -36,13 +36,13 @@ namespace Menus
             {
                 _instance = this;
                 DontDestroyOnLoad(this);
+                Debug.Log("Dont destroy at awake");
             }
             else
             {
-                if(this != _instance)
-                    Destroy(this.gameObject);
+                if(this != _instance) Destroy(this.gameObject);
             }
-            audioMixer.SetFloat("MasterVolume", Mathf.Log10(0.003f)*20);
+            if(audioMixer !=null ) audioMixer.SetFloat("MasterVolume", Mathf.Log10(0.003f)*20);
         }
         
         public void SetVolume(float volume)
