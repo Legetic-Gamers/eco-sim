@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using DefaultNamespace;
+using Menus;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
@@ -38,6 +39,7 @@ public class ObjectPooler : MonoBehaviour
     public List<Pool> pools;
     public Dictionary<string, Queue<GameObject>> poolDictionary;
     private bool isInstantiated = false;
+    private bool showCanvasForAll;
 
     private void Awake()
     {
@@ -48,14 +50,8 @@ public class ObjectPooler : MonoBehaviour
             Queue<GameObject> objectPool = new Queue<GameObject>();
             poolDictionary.Add(pool.tag, objectPool);
         }
-    }
-    
-    /// <summary>
-    /// Instantiate all pools. 
-    /// </summary>
-    void Start()
-    {
-        
+
+        showCanvasForAll = FindObjectOfType<OptionsMenu>().alwaysShowParameterUI;
     }
 
     /// <summary>
@@ -85,13 +81,11 @@ public class ObjectPooler : MonoBehaviour
     {
         if (poolDictionary != null && poolDictionary.ContainsKey(tag))
         {
-                
             objectToSpawn.SetActive(true);
             objectToSpawn.GetComponent<IPooledObject>()?.onObjectSpawn();
                 
             if (objectToSpawn.TryGetComponent(out AnimalController animalController))
             {
-
                 animalController.deadState.onDeath += HandleDeadAnimal;
                 animalController.SpawnNew += HandleBirthAnimal;
             }
@@ -99,6 +93,11 @@ public class ObjectPooler : MonoBehaviour
             {
                 //Debug.Log("HandleAnimalInstantiated() did not succeed to bind methods to animalcontrollers action");
             }
+            if (objectToSpawn.gameObject.TryGetComponent(out ParameterUI can))
+            {
+                can.enabled = showCanvasForAll;
+            }
+
         }
         
     }
@@ -169,7 +168,11 @@ public class ObjectPooler : MonoBehaviour
             childController.animalModel = childModel;
             childController.animalModel.currentEnergy = energy;
             childController.animalModel.currentHydration = hydration;
-
+            if (childController.gameObject.TryGetComponent(out ParameterUI can))
+            {
+                can.enabled = showCanvasForAll;
+            }
+            
             // update the childs speed (in case of mutation).
             childController.animalModel.traits.maxSpeed = 1;
         }
