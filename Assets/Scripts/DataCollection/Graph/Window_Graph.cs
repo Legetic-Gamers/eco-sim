@@ -32,7 +32,7 @@ public class Window_Graph : MonoBehaviour
     private static int _truncateFactor = 1;
     private static int _gridCountY = 12;
     private int firstX = 1;
-    private static bool _isGraphOne = true;
+    private static bool _isGraphOne = false;
     private static bool _isGraphTwo = false;
     
 
@@ -87,21 +87,28 @@ public class Window_Graph : MonoBehaviour
 
     private void Awake()
     {
-        window_graph = GetComponent<RectTransform>();
-        graphContainer = window_graph.Find("graphContainer").GetComponent<RectTransform>();
+        window_graph = this.GetComponent<RectTransform>();
+        gameObjectList = new List<GameObject>();
+        graphContainer = GameObject.Find("graphContainer").GetComponent<RectTransform>();
+        //graphContainer = window_graph.Find("graphContainer").GetComponent<RectTransform>();
         labelTemplateX = graphContainer.Find("labelTemplateX").GetComponent<RectTransform>();
         labelTemplateY = graphContainer.Find("labelTemplateY").GetComponent<RectTransform>();
         dashTemplateX = graphContainer.Find("dashTemplateX").GetComponent<RectTransform>();
         dashTemplateY = graphContainer.Find("dashTemplateY").GetComponent<RectTransform>();
-        gameObjectList = new List<GameObject>();
-        DataHandler dh = FindObjectOfType<DataHandler>();
-
+        
         window_graph.sizeDelta = new Vector2(windowGraphSizeX, windowGraphSizeY);
         graphContainer.sizeDelta = new Vector2(graphContainerSizeX, graphContainerSizeY);
         dashTemplateX.sizeDelta = new Vector2(graphContainerSizeY + 2, 1);
         dashTemplateY.sizeDelta = new Vector2(graphContainerSizeX + 2, 1); 
+        
+        DataHandler dh = FindObjectOfType<DataHandler>();
         dh.Display += Draw;
         ButtonClick.OnButtonReDraw += ReDraw;
+    }
+
+    private void Start()
+    {
+
     }
 
 

@@ -70,17 +70,21 @@ namespace DataCollection
             // Subscribe to Tick Event publisher update data and graph 
             tickEventPublisher.onDataHandlerUpdate += UpdateDataAndGraph;
             tickEventPublisher.onCollectorUpdate += CollectBirthRate;
-            //ButtonClick bc = FindObjectOfType<ButtonClick>();
-            //bc.GetListTrait += SetTrait;
-            //bc.GetListPopulation += SetPopulation;
-            //bc.GetListBirthRate += SetBirthRate;
-            //bc.GetListFoodAvailable += SetFoodAvailable;
             // Make a collector to handle data
             c = new Collector();
             // Prepare for frame rate collection
             times = new List<float>(0);
             framerate = new List<float>(10);
             counter = 5;
+        }
+
+        public void Start()
+        {
+            ButtonClick bc = FindObjectOfType<ButtonClick>();
+            bc.GetListTrait += SetTrait;
+            bc.GetListPopulation += SetPopulation;
+            bc.GetListBirthRate += SetBirthRate;
+            bc.GetListFoodAvailable += SetFoodAvailable;
         }
             
         /// <summary>
@@ -169,6 +173,8 @@ namespace DataCollection
             sendList1 = tmplist;
             _speciesNumberPopulation = speciesNumberPopulation;
             _listNumber = 0;
+            Display?.Invoke(sendList1, sendList2);
+
         }
 
         private void SetTrait(int listNumber, int speciesNumber, int traitNumber, int dataType)
@@ -211,6 +217,8 @@ namespace DataCollection
                 _traitNumber2 = traitNumber;
                 _dataTypeNumber2 = dataType;
             }
+            Display?.Invoke(sendList1, sendList2);
+
         }
         
         private void SetBirthRate(int speciesNumberBirthRate)
@@ -235,12 +243,15 @@ namespace DataCollection
             sendList1 = tmplist;
             _speciesNumberPopulation = speciesNumberBirthRate;
             _listNumber = 2;
+            Display?.Invoke(sendList1, sendList2);
+
         }
 
         private void SetFoodAvailable()
         {
             sendList1 = ConvertIntListToFloatList(c.foodActivePerMinute);
             _listNumber = 3;
+            Display?.Invoke(sendList1, sendList2);
         }
 
         private void Updatelist(int listNumber)
@@ -276,12 +287,15 @@ namespace DataCollection
         /// </summary>
         private void UpdateDataAndGraph()
         {
-
-            Updatelist(_listNumber);
-            //SetTrait(0,_speciesNumber1,_traitNumber1,_dataTypeNumber1);
-            //SetList(1,_speciesNumber2,_traitNumber2,_dataTypeNumber2);
-
-            Display?.Invoke(sendList1, sendList2);
+            
+            
+            // only call display if graph is activated from ShowGraphManager
+            if (Window_Graph.IsGraphOne)
+            {
+                Updatelist(_listNumber);
+                Display?.Invoke(sendList1, sendList2);
+            }
+                
             //if (ShowFrameRate) Display(ConvertFloatListToIntList(framerate));
             //ExportDataToFile(0);
         }
@@ -289,7 +303,6 @@ namespace DataCollection
         private void CollectBirthRate()
         {
             c.Collect();
-
         }
         
         /// <summary>

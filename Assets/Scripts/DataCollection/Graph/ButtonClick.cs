@@ -78,7 +78,6 @@ public class ButtonClick : Window_Graph
     {
         int species = dropdownPopulation.GetComponent<Dropdown>().value;
         GetListPopulation(species);
-        OnButtonReDraw?.Invoke(this,EventArgs.Empty);
         yLabel.text = dropdownPopulation.GetComponent<Dropdown>().options [species].text + " population";
         xLabel.text = "Generation";
     }
@@ -95,7 +94,6 @@ public class ButtonClick : Window_Graph
         GetListTrait(0, species1, trait1, 0);
         //GetListType(1, species2, trait2, dataType2);
         
-        OnButtonReDraw?.Invoke(this, EventArgs.Empty);
         yLabel.text = dropdownSpecies1.GetComponent<Dropdown>().options [species1].text + " " + dropdownTrait1.GetComponent<Dropdown>().options [trait1].text;
         xLabel.text = "Generation";
     }
@@ -104,7 +102,6 @@ public class ButtonClick : Window_Graph
     {
         int species = dropdownBirthRate.GetComponent<Dropdown>().value;
         GetListBirthRate(species);
-        OnButtonReDraw?.Invoke(this,EventArgs.Empty);
         yLabel.text = "Birth rate " + dropdownBirthRate.GetComponent<Dropdown>().options [species].text;
         xLabel.text = "Minute";
     }
@@ -112,7 +109,6 @@ public class ButtonClick : Window_Graph
     public void OnButtonFoodAvailable()
     {
         GetListFoodAvailable();
-        OnButtonReDraw?.Invoke(this,EventArgs.Empty);
         yLabel.text = "Amount of food";
         xLabel.text = "Minute";
     }
