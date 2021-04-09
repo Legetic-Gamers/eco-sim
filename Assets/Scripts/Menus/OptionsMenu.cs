@@ -25,7 +25,6 @@ namespace Menus
                     _instance = FindObjectOfType<OptionsMenu>();
                 }
                 DontDestroyOnLoad(_instance.gameObject);
-                Debug.Log("Dont destroy at instance");
                 return _instance;
             }
         }
@@ -36,7 +35,6 @@ namespace Menus
             {
                 _instance = this;
                 DontDestroyOnLoad(this);
-                Debug.Log("Dont destroy at awake");
             }
             else
             {
