@@ -2057,8 +2057,7 @@ GameObject:
   - component: {fileID: -3072218237354650290}
   - component: {fileID: 3140382265690856846}
   - component: {fileID: 9052424143155263327}
-  - component: {fileID: -2455205438160608710}
-  - component: {fileID: -2828233953746162010}
+  - component: {fileID: 1436649500468928932}
   m_Layer: 8
   m_Name: Wolf Grey
   m_TagString: Animal
@@ -2246,6 +2245,8 @@ MonoBehaviour:
   heardFriendlyTargets: []
   heardPreyTargets: []
   isInfertile: 0
+  eyesTransform: {fileID: 0}
+  centerTransform: {fileID: 0}
 --- !u!114 &1491304840260045172
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2265,7 +2266,7 @@ MonoBehaviour:
   hitParticleSystem: {fileID: 19800000, guid: e25b6553b206ef74b8f99a65d36963bb, type: 3}
   matingParticleSystem: {fileID: 19800004, guid: 92aaabfe08d50fa43b36214095279955,
     type: 3}
-  bornParticleSystem: {fileID: 19800000, guid: b1a4cfac024ce2a48a0da2d8565729b3, type: 3}
+  bornParticleSystem: {fileID: 19800018, guid: 0fab5cbd8d8cb444199901f840ef0347, type: 3}
   pregnancyParticleSystem: {fileID: 19800004, guid: bf412ff7dade584439714fd7d7904a01,
     type: 3}
 --- !u!114 &-4900136795615843081
@@ -2340,7 +2341,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.82, y: 1.46, z: 1.73}
   m_Center: {x: 0, y: 0.82, z: 0}
---- !u!114 &-2455205438160608710
+--- !u!114 &1436649500468928932
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2349,24 +2350,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4362939137640418624}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1ff8f5fbbd2169f4eadc8c040957c156, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  showNavMeshAgentPath: 0
-  allowNavigateWithClick: 0
-  showVisibleTargets: 1
-  showFleeingVector: 0
-  showPerceptionRange: 1
---- !u!114 &-2828233953746162010
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4362939137640418624}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 07422175caeb4ae7abedf1488c86805e, type: 3}
+  m_Script: {fileID: 11500000, guid: bb8c3b788da21de4bb762fff73b53444, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   targetMask:

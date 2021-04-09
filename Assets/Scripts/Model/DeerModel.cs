@@ -41,6 +41,7 @@ public class DeerModel : AnimalModel, IEdible
     
     public float GetEaten()
     {
+        actionKilled?.Invoke();
         return nutritionValue;
     }
 }

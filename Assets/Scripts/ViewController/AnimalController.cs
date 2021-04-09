@@ -35,7 +35,6 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
 
     // AnimalParticleManager is subscribed to these
     public event Action<bool> ActionPregnant;
-    public event Action ActionBirth;
 
     //Subscribed to by animalBrainAgent.
     public event EventHandler<OnBirthEventArgs> OnBirth;
@@ -283,7 +282,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         // speed
         animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier;
         agent.speed = animalModel.currentSpeed * Time.timeScale;
-
+        
         // energy
         animalModel.currentEnergy -= (animalModel.age + animalModel.currentSpeed +
                                       animalModel.traits.viewRadius / 10 + animalModel.traits.hearingRadius / 10)
@@ -294,11 +293,9 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
                                         (1 +
                                          animalModel.currentSpeed / animalModel.traits.endurance *
                                          hydrationModifier);
-
+        animalModel.currentEnergy = 1.5f;
         // reproductive urge
         animalModel.reproductiveUrge += 0.01f * reproductiveUrgeModifier;
-        // animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
-        // agent.speed = animalModel.currentSpeed * Time.timeScale;
         agent.acceleration = baseAcceleration * Time.timeScale;
         agent.angularSpeed = baseAngularSpeed * Time.timeScale;
     }
@@ -433,19 +430,22 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
 
             animalModel.isPregnant = true;
             ActionPregnant?.Invoke(true);
+            
             for (int i = 1; i <= offspringCount; i++)
                 // Wait some time before giving birth
                 StartCoroutine(GiveBirth(childEnergy, childHydration, gestationTime, targetAnimalController));
         }
     }
-
-
+    
     IEnumerator GiveBirth(float childEnergy, float childHydration, float laborTime,
         AnimalController otherParentAnimalController)
     {
         yield return new WaitForSeconds(laborTime);
         AnimalModel childModel = animalModel.Mate(otherParentAnimalController.animalModel);
         SpawnNew?.Invoke(childModel, transform.position, childEnergy, childHydration);
+        
+        // invoke only once when birthing multiple
+        if (animalModel.isPregnant) ActionPregnant?.Invoke(false);
         animalModel.isPregnant = false;
     }
 
