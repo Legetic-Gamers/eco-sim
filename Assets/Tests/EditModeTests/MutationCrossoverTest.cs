@@ -23,21 +23,37 @@ namespace Tests
             AnimalModel child = parent1.Mate(parent2);
             
             // We make sure that parent1 is much likely to pass down the gense in comparison to parent2
-            Debug.Log("Click on me to see traits after crossover"+ "\n" + 
-                      " size: " + child.traits.size + "\n"
-                      + "maxEnergy: " + child.traits.maxEnergy + "\n" 
-                      + "maxHealth: " + child.traits.maxHealth + "\n"
-                      + "maxHydration: " + child.traits.maxHydration + "\n" 
-                      + "maxHydration: " + child.traits.maxHydration + "\n"
-                      + "maxSpeed: " + child.traits.maxSpeed + "\n"
-                      + "maxSpeed: " + child.traits.maxSpeed + "\n"
-                      + "endurance: " + child.traits.endurance + "\n"
-                      + "ageLimit: " + child.traits.ageLimit + "\n"
-                      + "desirability: " + child.traits.desirability + "\n"
-                      + "viewAngle: " + child.traits.viewAngle + "\n"
-                      + "viewRadius: " + child.traits.viewRadius + "\n"
-                      + "hearingRadius: " + child.traits.hearingRadius);
+            DebugLogTraits(child.traits);
             
+        }
+
+        [Test]
+        public void TestMutation()
+        {
+            AnimalModel animal1 = new RabbitModel(new Traits(100,100,100,100, 100,100,100,100,100,100,100,100), 1);
+
+            animal1.traits.Mutation(1f);
+            
+            DebugLogTraits(animal1.traits);
+        }
+
+
+        public void DebugLogTraits(Traits traits)
+        {
+            // We make sure that parent1 is much likely to pass down the gense in comparison to parent2
+            Debug.Log("Click on me to see traits"+ "\n" + 
+                      " size: " + traits.size + "\n"
+                      + "maxEnergy: " + traits.maxEnergy + "\n" 
+                      + "maxHealth: " + traits.maxHealth + "\n"
+                      + "maxHydration: " + traits.maxHydration + "\n"
+                      + "maxSpeed: " + traits.maxSpeed + "\n"
+                      + "acceleration: " + traits.acceleration + "\n"
+                      + "endurance: " + traits.endurance + "\n"
+                      + "ageLimit: " + traits.ageLimit + "\n"
+                      + "desirability: " + traits.desirability + "\n"
+                      + "viewAngle: " + traits.viewAngle + "\n"
+                      + "viewRadius: " + traits.viewRadius + "\n"
+                      + "hearingRadius: " + traits.hearingRadius);
         }
 
         // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use

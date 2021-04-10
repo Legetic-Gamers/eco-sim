@@ -21,7 +21,7 @@ public class BearModel : AnimalModel
     public override AnimalModel Mate(AnimalModel otherParent)
     {
         Traits childTraits = traits.Crossover(otherParent.traits, age, otherParent.age);
-        childTraits.Mutation();
+        childTraits.Mutation(0.05f);
         
         return new BearModel(childTraits, (int) Math.Max(age, otherParent.age) + 1);
     }
