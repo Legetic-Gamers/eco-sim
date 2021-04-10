@@ -107,7 +107,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
-  m_RenderPostProcessing: 0
+  m_RenderPostProcessing: 1
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
   m_StopNaN: 0
@@ -258,10 +258,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74831c89468543b4f9308ab73734f4a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  camera: {fileID: 6713186102624438355}
   followTransform: {fileID: 0}
   boundsOfWorld: {fileID: 0}
   restrictToBounds: 0
-  cameraMovmentEnable: 1
+  collisionMask:
+    serializedVersion: 2
+    m_Bits: 1024
+  cameraMovementEnable: 1
   navigateWithKeyboard: 1
   normalSpeed: 0.5
   fastSpeed: 3
@@ -269,13 +273,7 @@ MonoBehaviour:
   movementTime: 5
   rotationAmount: 1
   zoomAmount: {x: 0, y: -10, z: 10}
-  maxZoom: -10
+  maxZoom: 0
   minZoom: -700
   newPosition: {x: 0, y: 0, z: 0}
-  newRotation: {x: 0, y: 0, z: 0, w: 0}
   newZoom: {x: 0, y: 0, z: 0}
-  dragStartPosition: {x: 0, y: 0, z: 0}
-  dragCurrentPosition: {x: 0, y: 0, z: 0}
-  rotateStartPosition: {x: 0, y: 0, z: 0}
-  rotateCurrentPosition: {x: 0, y: 0, z: 0}
-  camera: {fileID: 6713186102624438355}
