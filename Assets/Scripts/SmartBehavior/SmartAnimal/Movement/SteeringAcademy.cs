@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using AnimalsV2;
 using AnimalsV2.States.AnimalsV2.States;
 using Unity.MLAgents;
 using UnityEditor;
@@ -128,6 +129,8 @@ public class SteeringAcademy : MonoBehaviour
             animalModel.currentHydration = 0.5f * animalModel.traits.maxHydration;
             animalModel.reproductiveUrge = 0.2f;
             animalModel.age = 0;
+            //Ugly solution to stop agent from entering dead animation and not resetting
+            animalController.deadState.currentStateAnimation = StateAnimation.Walking;
             animalController.fsm.ForceDefaultState();
             if(animalController.agent.isActiveAndEnabled && animalController.agent.isOnNavMesh) animalController.agent.ResetPath();
         }

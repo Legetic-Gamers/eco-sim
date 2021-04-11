@@ -45,7 +45,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     [HideInInspector] public NavMeshAgent agent;
 
     public FiniteStateMachine fsm;
-    private AnimationController animationController;
+    public AnimationController animationController;
 
     // Add a data handler
     private DataHandler dh;
