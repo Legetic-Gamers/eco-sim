@@ -310,6 +310,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
             tickEventPublisher.onParamTickEvent += CheckDeath;
             // every 0.5 sec
             tickEventPublisher.onSenseTickEvent += fsm.UpdateStatesLogic;
+            
         }
 
         fsm.OnStateEnter += ChangeModifiers;
@@ -325,6 +326,8 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         animationController.EventSubscribe();
     }
 
+    
+
     protected void EventUnsubscribe()
     {
         if (tickEventPublisher)
@@ -334,6 +337,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
             tickEventPublisher.onParamTickEvent -= CheckDeath;
             // every 0.5 sec
             tickEventPublisher.onSenseTickEvent -= fsm.UpdateStatesLogic;
+            
         }
 
 
@@ -353,6 +357,40 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         animationController.EventUnsubscribe();
     }
 
+
+    private void Update()
+    {
+        rotateToTerrain();
+    }
+
+    //This could be used as an alternative to rotateToTerrain to avoid updating rotation every frame.
+    // IEnumerator MoveObject(Vector3 source, Vector3 target, float overTime)
+    // {
+    //     float startTime = Time.time;
+    //     while(Time.time < startTime + overTime)
+    //     {
+    //         transform.position = Vector3.Lerp(source, target, (Time.time - startTime)/overTime);
+    //         yield return null;
+    //     }
+    //     transform.position = target;
+    // }
+    private void rotateToTerrain()
+    {
+        RaycastHit hit;
+        Vector3 direction = transform.TransformDirection(Vector3.down);
+        Quaternion targetRotation = transform.rotation;
+
+        if (Physics.Raycast(transform.position, direction, out hit, 50f, LayerMask.GetMask("Obstacle")))
+        {
+            Quaternion surfaceRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
+            targetRotation = surfaceRotation * transform.rotation;
+            //Dont rotate around Z.
+            targetRotation = Quaternion.Euler(targetRotation.eulerAngles.x,targetRotation.eulerAngles.y,0);
+        }
+
+        transform.GetChild(0).rotation = Quaternion.Lerp(transform.GetChild(0).rotation, targetRotation,  2 * Time.deltaTime);
+    }
+    
     //Set animals size based on traits.
     private void SetPhenotype()
     {

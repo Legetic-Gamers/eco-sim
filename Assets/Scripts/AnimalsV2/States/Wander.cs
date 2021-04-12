@@ -65,7 +65,8 @@ namespace AnimalsV2.States
                     //TODO this maxDistance is what is causing rabbits to dance sometimes, if poisition cant be found.
                     // ALEXANDER H: https://docs.unity3d.com/ScriptReference/AI.NavMesh.SamplePosition.html recommends setting maxDistance as agents height * 2
 
-                    if(NavigationUtilities.RandomPoint(animal.transform.position, 10f,10f, out nextPosition))
+                    float animalScale = Mathf.Max(1, animal.agent.height);
+                    if(NavigationUtilities.RandomPoint(animal.transform.position, 10 * animalScale,10f * animalScale, out nextPosition))
                     {
                         //animal.agent.SetDestination(nextPosition);
                         

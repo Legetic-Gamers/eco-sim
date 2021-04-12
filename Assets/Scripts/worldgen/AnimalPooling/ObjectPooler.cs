@@ -115,6 +115,11 @@ public class ObjectPooler : MonoBehaviour
     private IEnumerator HandleDeadAnimalDelay(AnimalController animalController)
     {
         yield return new WaitForSeconds(5.0f/Time.timeScale);
+
+        if (animalController == null)
+        {
+            yield return null;
+        }
         
         GameObject animalObj;
         (animalObj = animalController.gameObject).SetActive(false);
