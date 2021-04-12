@@ -965,7 +965,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 33.4, y: -2}
-  m_SizeDelta: {x: 392, y: 1}
+  m_SizeDelta: {x: 407, y: 1}
   m_Pivot: {x: 0, y: 0}
 --- !u!222 &6637793843504268324
 CanvasRenderer:
@@ -4231,7 +4231,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: -2, y: 22.5}
-  m_SizeDelta: {x: 742, y: 1}
+  m_SizeDelta: {x: 722, y: 1}
   m_Pivot: {x: 0, y: 0}
 --- !u!222 &6637793844024040137
 CanvasRenderer:
@@ -8358,10 +8358,10 @@ MonoBehaviour:
   lineWidth: 2
   yBufferTop: 1.2
   circleSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-  windowGraphSizeX: 1000
-  windowGraphSizeY: 700
-  graphContainerSizeX: 720
-  graphContainerSizeY: 405
+  labelTemplateX: {fileID: 6637793843408465879}
+  labelTemplateY: {fileID: 6637793844210157081}
+  dashTemplateX: {fileID: 6637793843504268322}
+  dashTemplateY: {fileID: 6637793844024040135}
   xLabel: {fileID: 6637793844920336480}
   yLabel: {fileID: 6637793844750060691}
   dropdownPopulation: {fileID: 6637793843830369651}
@@ -11610,10 +11610,10 @@ MonoBehaviour:
   lineWidth: 3
   yBufferTop: 1.2
   circleSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-  windowGraphSizeX: 900
-  windowGraphSizeY: 692
-  graphContainerSizeX: 720
-  graphContainerSizeY: 405
+  labelTemplateX: {fileID: 6637793843408465879}
+  labelTemplateY: {fileID: 6637793844210157081}
+  dashTemplateX: {fileID: 6637793844024040135}
+  dashTemplateY: {fileID: 6637793844024040135}
 --- !u!1 &6637793844964529208
 GameObject:
   m_ObjectHideFlags: 0
@@ -13627,7 +13627,7 @@ Canvas:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6637793845204476561}
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 3
   m_RenderMode: 0
   m_Camera: {fileID: 0}
@@ -13653,12 +13653,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
+  m_MatchWidthOrHeight: 0.5
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
