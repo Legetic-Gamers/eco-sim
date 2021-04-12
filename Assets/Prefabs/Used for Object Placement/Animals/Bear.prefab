@@ -902,7 +902,7 @@ MonoBehaviour:
     m_Bits: 256
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 2048
+    m_Bits: 3072
 --- !u!1 &8012327310415541241
 GameObject:
   m_ObjectHideFlags: 0
