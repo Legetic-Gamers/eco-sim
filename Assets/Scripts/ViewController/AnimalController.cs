@@ -380,7 +380,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         Vector3 direction = transform.TransformDirection(Vector3.down);
         Quaternion targetRotation = transform.rotation;
 
-        if (Physics.Raycast(transform.position, direction, out hit, 50f, LayerMask.GetMask("Obstacle")))
+        if (Physics.Raycast(transform.position, direction, out hit, 50f, LayerMask.GetMask("Ground")))
         {
             Quaternion surfaceRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
             targetRotation = surfaceRotation * transform.rotation;

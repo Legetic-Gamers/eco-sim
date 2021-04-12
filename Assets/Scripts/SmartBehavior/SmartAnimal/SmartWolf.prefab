@@ -4068,7 +4068,7 @@ MonoBehaviour:
     m_Bits: 256
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 2048
+    m_Bits: 3072
 --- !u!114 &6526752046021234922
 MonoBehaviour:
   m_ObjectHideFlags: 0
