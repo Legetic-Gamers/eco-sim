@@ -73,7 +73,7 @@ namespace AnimalsV2
 
         public void PlayAnimation(StateAnimation animation)
         {
-            animator.Play("Base Layer." + animation);
+            animator.Play("Base Layer." + animation, 0 , transitionSpeed);
         }
     }
 }
