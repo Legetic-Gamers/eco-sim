@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using DefaultNamespace;
+using Menus;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
@@ -38,6 +39,7 @@ public class ObjectPooler : MonoBehaviour
     public List<Pool> pools;
     public Dictionary<string, Queue<GameObject>> poolDictionary;
     private bool isInstantiated = false;
+    private bool showCanvasForAll;
 
     private void Awake()
     {
@@ -48,13 +50,7 @@ public class ObjectPooler : MonoBehaviour
             Queue<GameObject> objectPool = new Queue<GameObject>();
             poolDictionary.Add(pool.tag, objectPool);
         }
-    }
-
-    /// <summary>
-    /// Instantiate all pools. 
-    /// </summary>
-    void Start()
-    {
+        showCanvasForAll = OptionsMenu.alwaysShowParameterUI;
     }
 
     /// <summary>
@@ -91,10 +87,7 @@ public class ObjectPooler : MonoBehaviour
             {
                 animalController.deadState.onDeath += HandleDeadAnimal;
                 animalController.SpawnNew += HandleBirthAnimal;
-            }
-            else
-            {
-                //Debug.Log("HandleAnimalInstantiated() did not succeed to bind methods to animalcontrollers action");
+                animalController.parameterUI.gameObject.SetActive(showCanvasForAll);
             }
         }
     }
@@ -167,6 +160,7 @@ public class ObjectPooler : MonoBehaviour
             childController.animalModel = childModel;
             childController.animalModel.currentEnergy = energy;
             childController.animalModel.currentHydration = hydration;
+            childController.parameterUI.gameObject.SetActive(showCanvasForAll);
 
             // update the childs speed (in case of mutation).
             childController.animalModel.traits.maxSpeed = 1;

@@ -92,7 +92,7 @@ GameObject:
   - component: {fileID: 924811713546700151}
   - component: {fileID: 924811713546700148}
   m_Layer: 8
-  m_Name: Canvas
+  m_Name: ParameterUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2645,6 +2645,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bdd6549df376c1a4b9199e25eb73a7a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  parameterUI: {fileID: 924811713546700150}
   tickEventPublisher: {fileID: 0}
   agent: {fileID: 0}
   energyModifier: 0

@@ -21,6 +21,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
 {
 
     public AnimalModel animalModel;
+    public Canvas parameterUI;
 
     [HideInInspector] public TickEventPublisher tickEventPublisher;
 
@@ -29,7 +30,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     // decisionMaker subscribes to these actions
     public Action<GameObject> actionPerceivedHostile;
     public Action<AnimalModel, Vector3, float, float> SpawnNew;
-    
+
     // Start vector for the animal, used in datahandler distance travelled
     private Vector3 startVector;
 
