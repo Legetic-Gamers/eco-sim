@@ -15,7 +15,17 @@ namespace Menus
         private static OptionsMenu _instance;
 
         public AudioMixer audioMixer;
- 
+
+        public static bool alwaysShowParameterUI;
+        
+        void Awake()
+        {
+            _instance = this;
+            if(audioMixer !=null ) audioMixer.SetFloat("MasterVolume", Mathf.Log10(0.003f)*20);
+            alwaysShowParameterUI = false;
+        }
+        
+        /*
         public static OptionsMenu instance
         {
             get
@@ -28,24 +38,24 @@ namespace Menus
                 return _instance;
             }
         }
- 
-        void Awake() 
+        */
+        
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+        static void RuntimeInit()
         {
-            if(_instance == null)
-            {
-                _instance = this;
-                DontDestroyOnLoad(this);
-            }
-            else
-            {
-                if(this != _instance) Destroy(this.gameObject);
-            }
-            if(audioMixer !=null ) audioMixer.SetFloat("MasterVolume", Mathf.Log10(0.003f)*20);
-        }
+            var go = new GameObject { name = "[Options]" };
+            go.AddComponent<OptionsMenu>();
+            DontDestroyOnLoad(go);
+        }        
         
         public void SetVolume(float volume)
         {
             audioMixer.SetFloat("MasterVolume", Mathf.Log10(volume)*20);
+        }
+        
+        public void SetShowParameterUI(bool toggle)
+        {
+            alwaysShowParameterUI = toggle;
         }
     }
 }

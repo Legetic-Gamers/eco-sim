@@ -2,6 +2,7 @@
 using DataCollection;
 using Model;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace ViewController
 {
@@ -42,8 +43,79 @@ namespace ViewController
             if (tickEventPublisher)
             {
                 tickEventPublisher.onParamTickEvent -= HandleDeathStatus;
+                tickEventPublisher.onParamTickEvent -= HandleEaten; //TODO this does not belong here.
+                tickEventPublisher.onParamTickEvent -= Grow;
             }
         }
+        
+        private void SetPhenotype()
+        {
+            float normalizedValue = 1f / PlantModel.plantMaxsize;
+            gameObject.transform.localScale = new Vector3(normalizedValue, normalizedValue,normalizedValue) * plantModel.nutritionValue;
+        }
+        
+        private void Grow()
+        {
+            //TODO make not stupid increment value
+            plantModel.plantAge += 2;
+            if (plantModel.nutritionValue > PlantModel.plantMaxsize)
+            {
+                plantModel.nutritionValue = PlantModel.plantMaxsize;
+                SetPhenotype();
+            }
+            else plantModel.nutritionValue += 2;
+            
+
+            
+            // plant has regrown after being eaten
+            if (plantModel.isEaten && plantModel.nutritionValue > 15)
+            {
+                gameObject.SetActive(true);
+                SetPhenotype();
+            }
+
+            float r = Random.Range(0, 1f);
+            float rx = Random.Range(-5f, 5f);
+            float rz = Random.Range(-5f, 5f);
+            // 5% chance of reproducing every 2 seconds if age and size restrictions are met.
+            if (plantModel.plantAge > 30 && plantModel.nutritionValue > 15 && !plantModel.isEaten && r > 0.95) 
+            {
+                float height = 0;
+                bool isHit = false;
+                
+                var position = gameObject.transform.position;
+                Vector3 newPosition = new Vector3(position.x + rx, position.y + 100, position.z + rz);
+                Ray ray = new Ray(newPosition, gameObject.transform.TransformDirection(Vector3.down));
+                RaycastHit hit;
+                if (Physics.Raycast(ray, out hit, float.MaxValue))
+                {
+                    if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Ground"))
+                    {
+                        height = hit.point.y;
+                        isHit = true;
+                    }
+                }
+
+                if (!isHit) return;
+                //GameObject offspring = Instantiate(gameObject, gameObject.transform, true);
+                GameObject offspring = Instantiate(gameObject);
+                offspring.transform.position = new Vector3(position.x + rx, height, position.z + rz);
+                PlantModel offspringModel = new PlantModel();
+                offspring.GetComponent<PlantController>().plantModel = offspringModel;
+            }
+
+
+        }
+
+
+
+        private void HandleEaten()
+        {
+            if (!plantModel.isEaten) return;
+            gameObject.SetActive(false);
+            
+            }
+    
 
         private void HandleDeathStatus()
         {

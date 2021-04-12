@@ -5250,7 +5250,7 @@ GameObject:
   - component: {fileID: 3798916785587689332}
   - component: {fileID: 4380821721372479982}
   - component: {fileID: 4440942249907535268}
-  - component: {fileID: 7013921767885931364}
+  - component: {fileID: 2773130711886286214}
   m_Layer: 8
   m_Name: Deer
   m_TagString: Animal
@@ -5346,6 +5346,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88de382ffe14e194aa20383352640f2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  parameterUI: {fileID: 7648655987314339766}
   tickEventPublisher: {fileID: 0}
   agent: {fileID: 0}
   energyModifier: 0
@@ -5360,6 +5361,8 @@ MonoBehaviour:
   heardFriendlyTargets: []
   heardPreyTargets: []
   isInfertile: 0
+  eyesTransform: {fileID: 0}
+  centerTransform: {fileID: 0}
 --- !u!114 &3798916785587689332
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5379,7 +5382,7 @@ MonoBehaviour:
   hitParticleSystem: {fileID: 19800000, guid: e25b6553b206ef74b8f99a65d36963bb, type: 3}
   matingParticleSystem: {fileID: 19800004, guid: 92aaabfe08d50fa43b36214095279955,
     type: 3}
-  bornParticleSystem: {fileID: 19800000, guid: b1a4cfac024ce2a48a0da2d8565729b3, type: 3}
+  bornParticleSystem: {fileID: 19800018, guid: 0fab5cbd8d8cb444199901f840ef0347, type: 3}
   pregnancyParticleSystem: {fileID: 19800004, guid: efb5f25e1f6de7e48b41419b711d8a5d,
     type: 3}
 --- !u!114 &4380821721372479982
@@ -5406,7 +5409,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c71b720863ec4e7a8484c019f6979fe3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &7013921767885931364
+--- !u!114 &2773130711886286214
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -5415,7 +5418,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1567582185033856}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 07422175caeb4ae7abedf1488c86805e, type: 3}
+  m_Script: {fileID: 11500000, guid: bb8c3b788da21de4bb762fff73b53444, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   targetMask:
@@ -5423,7 +5426,7 @@ MonoBehaviour:
     m_Bits: 256
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 2048
+    m_Bits: 3072
 --- !u!1 &1571034971651392
 GameObject:
   m_ObjectHideFlags: 0
@@ -10041,6 +10044,12 @@ PrefabInstance:
 --- !u!224 &7648655987314339765 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7109646815149258884, guid: 030b186df69ae1e4d8b9c97864d578e2,
+    type: 3}
+  m_PrefabInstance: {fileID: 616982173202536241}
+  m_PrefabAsset: {fileID: 0}
+--- !u!223 &7648655987314339766 stripped
+Canvas:
+  m_CorrespondingSourceObject: {fileID: 7109646815149258887, guid: 030b186df69ae1e4d8b9c97864d578e2,
     type: 3}
   m_PrefabInstance: {fileID: 616982173202536241}
   m_PrefabAsset: {fileID: 0}

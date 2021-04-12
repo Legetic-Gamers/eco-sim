@@ -254,6 +254,8 @@ public abstract class AnimalModel
         Hunger,
     };
 
+    public Action actionKilled;
+    
     public abstract AnimalModel Mate(AnimalModel otherParent);
 
     public abstract bool CanEat<T>(T obj);

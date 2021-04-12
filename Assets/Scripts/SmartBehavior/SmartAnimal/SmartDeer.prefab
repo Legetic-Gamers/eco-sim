@@ -6197,6 +6197,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88de382ffe14e194aa20383352640f2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  parameterUI: {fileID: 9101226295806495535}
   tickEventPublisher: {fileID: 0}
   agent: {fileID: 0}
   energyModifier: 0
@@ -6243,9 +6244,9 @@ MonoBehaviour:
     type: 3}
   hitParticleSystem: {fileID: 198381239668097408, guid: 8592e667e07bd3848843966df9cc1079,
     type: 3}
-  matingParticleSystem: {fileID: 19800004, guid: bde53105b8182734c8ea3b60cf07dfdc,
+  matingParticleSystem: {fileID: 19800004, guid: 92aaabfe08d50fa43b36214095279955,
     type: 3}
-  bornParticleSystem: {fileID: 19800000, guid: cad95613d7466d549bf4928aef790dfd, type: 3}
+  bornParticleSystem: {fileID: 19800018, guid: 0fab5cbd8d8cb444199901f840ef0347, type: 3}
   pregnancyParticleSystem: {fileID: 19800004, guid: efb5f25e1f6de7e48b41419b711d8a5d,
     type: 3}
 --- !u!114 &8741368179318248608
@@ -6341,7 +6342,7 @@ MonoBehaviour:
     m_Bits: 256
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 2048
+    m_Bits: 3072
 --- !u!114 &4413302867235204443
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6349,7 +6350,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1472361199608738841}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c0795e2e31cde64428dc997f642c4648, type: 3}
   m_Name: 
@@ -10181,6 +10182,12 @@ PrefabInstance:
 --- !u!224 &9101226295806495532 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7109646815149258884, guid: 030b186df69ae1e4d8b9c97864d578e2,
+    type: 3}
+  m_PrefabInstance: {fileID: 2081937380654773160}
+  m_PrefabAsset: {fileID: 0}
+--- !u!223 &9101226295806495535 stripped
+Canvas:
+  m_CorrespondingSourceObject: {fileID: 7109646815149258887, guid: 030b186df69ae1e4d8b9c97864d578e2,
     type: 3}
   m_PrefabInstance: {fileID: 2081937380654773160}
   m_PrefabAsset: {fileID: 0}

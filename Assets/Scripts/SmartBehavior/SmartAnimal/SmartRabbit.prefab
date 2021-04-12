@@ -803,7 +803,7 @@ GameObject:
   - component: {fileID: 2908317138842179050}
   - component: {fileID: 2908317138842179049}
   m_Layer: 8
-  m_Name: Canvas
+  m_Name: ParameterUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -872,7 +872,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!114 &2908317138842179049
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1605,6 +1605,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bdd6549df376c1a4b9199e25eb73a7a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  parameterUI: {fileID: 2908317138842179051}
   tickEventPublisher: {fileID: 0}
   agent: {fileID: 0}
   energyModifier: 0
@@ -1686,9 +1687,9 @@ MonoBehaviour:
     type: 3}
   hitParticleSystem: {fileID: 198381239668097408, guid: 8592e667e07bd3848843966df9cc1079,
     type: 3}
-  matingParticleSystem: {fileID: 19800004, guid: bde53105b8182734c8ea3b60cf07dfdc,
+  matingParticleSystem: {fileID: 19800004, guid: 92aaabfe08d50fa43b36214095279955,
     type: 3}
-  bornParticleSystem: {fileID: 19800000, guid: cad95613d7466d549bf4928aef790dfd, type: 3}
+  bornParticleSystem: {fileID: 19800018, guid: 0fab5cbd8d8cb444199901f840ef0347, type: 3}
   pregnancyParticleSystem: {fileID: 19800004, guid: fb667f08336441b4fa2b6369a17fe4e5,
     type: 3}
 --- !u!54 &293866762
@@ -1737,7 +1738,7 @@ MonoBehaviour:
     m_Bits: 256
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 2048
+    m_Bits: 3072
 --- !u!114 &1968797970220886526
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1745,7 +1746,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8505818697369016331}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c0795e2e31cde64428dc997f642c4648, type: 3}
   m_Name: 

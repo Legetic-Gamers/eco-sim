@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 19800004}
   - component: {fileID: 19900004}
   m_Layer: 0
-  m_Name: RabbitPregnant
+  m_Name: WolfPregnant
   m_TagString: Untagged
-  m_Icon: {fileID: 2800000, guid: 623a72cc0f71b9649823b1f733d35679, type: 3}
+  m_Icon: {fileID: 2800000, guid: 2819d7960cdd91c4fbca3081ad41e31c, type: 3}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -41,7 +41,7 @@ ParticleSystem:
   m_GameObject: {fileID: 100004}
   serializedVersion: 7
   lengthInSec: 5
-  simulationSpeed: 0.6
+  simulationSpeed: 1
   stopAction: 0
   cullingMode: 1
   ringBufferMode: 0
@@ -105,7 +105,7 @@ ParticleSystem:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  moveWithTransform: 1
+  moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 0
   randomSeed: 0
@@ -115,7 +115,7 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 5
+      scalar: 7
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -150,7 +150,7 @@ ParticleSystem:
     startSpeed:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 5
+      scalar: 1.5
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -248,7 +248,7 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 1.5
+      scalar: 1
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -564,13 +564,13 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     randomizeRotationDirection: 0
-    maxNumParticles: 100
+    maxNumParticles: 5
     size3D: 0
     rotation3D: 0
     gravityModifier:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0
+      scalar: 0.06
       minScalar: 0
       maxCurve:
         serializedVersion: 2
@@ -829,7 +829,7 @@ ParticleSystem:
     rateOverTime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 1
+      scalar: 0.7
       minScalar: 10
       maxCurve:
         serializedVersion: 2
@@ -1444,7 +1444,7 @@ ParticleSystem:
     uvChannelMask: -1
     rowMode: 1
     sprites:
-    - sprite: {fileID: 21300000, guid: 0938bd80fa32c4e43a62895c5f01dbdf, type: 3}
+    - sprite: {fileID: 21300000, guid: f2ffa64b4761cd842aab1e98f265d069, type: 3}
     flipU: 0
     flipV: 0
   VelocityModule:
@@ -4734,7 +4734,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 4ac101a35d578fa43b97183195b42c89, type: 2}
+  - {fileID: 2100000, guid: e241d130213b52e4b8cc96ff7a676bad, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

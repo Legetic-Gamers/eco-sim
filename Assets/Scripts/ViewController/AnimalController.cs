@@ -21,6 +21,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
 {
 
     public AnimalModel animalModel;
+    public Canvas parameterUI;
 
     [HideInInspector] public TickEventPublisher tickEventPublisher;
 
@@ -29,13 +30,12 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     // decisionMaker subscribes to these actions
     public Action<GameObject> actionPerceivedHostile;
     public Action<AnimalModel, Vector3, float, float> SpawnNew;
-    
+
     // Start vector for the animal, used in datahandler distance travelled
     private Vector3 startVector;
 
     // AnimalParticleManager is subscribed to these
     public event Action<bool> ActionPregnant;
-    public event Action ActionBirth;
 
     //Subscribed to by animalBrainAgent.
     public event EventHandler<OnBirthEventArgs> OnBirth;
@@ -283,7 +283,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         // speed
         animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier;
         agent.speed = animalModel.currentSpeed * Time.timeScale;
-
+        
         // energy
         animalModel.currentEnergy -= (animalModel.age + animalModel.currentSpeed +
                                       animalModel.traits.viewRadius / 10 + animalModel.traits.hearingRadius / 10)
@@ -294,11 +294,9 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
                                         (1 +
                                          animalModel.currentSpeed / animalModel.traits.endurance *
                                          hydrationModifier);
-
+        
         // reproductive urge
         animalModel.reproductiveUrge += 0.01f * reproductiveUrgeModifier;
-        // animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
-        // agent.speed = animalModel.currentSpeed * Time.timeScale;
         agent.acceleration = baseAcceleration * Time.timeScale;
         agent.angularSpeed = baseAngularSpeed * Time.timeScale;
     }
@@ -313,6 +311,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
             tickEventPublisher.onParamTickEvent += CheckDeath;
             // every 0.5 sec
             tickEventPublisher.onSenseTickEvent += fsm.UpdateStatesLogic;
+            
         }
 
         fsm.OnStateEnter += ChangeModifiers;
@@ -328,6 +327,8 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         animationController.EventSubscribe();
     }
 
+    
+
     protected void EventUnsubscribe()
     {
         if (tickEventPublisher)
@@ -337,6 +338,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
             tickEventPublisher.onParamTickEvent -= CheckDeath;
             // every 0.5 sec
             tickEventPublisher.onSenseTickEvent -= fsm.UpdateStatesLogic;
+            
         }
 
 
@@ -356,6 +358,40 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         animationController.EventUnsubscribe();
     }
 
+
+    private void Update()
+    {
+        rotateToTerrain();
+    }
+
+    //This could be used as an alternative to rotateToTerrain to avoid updating rotation every frame.
+    // IEnumerator MoveObject(Vector3 source, Vector3 target, float overTime)
+    // {
+    //     float startTime = Time.time;
+    //     while(Time.time < startTime + overTime)
+    //     {
+    //         transform.position = Vector3.Lerp(source, target, (Time.time - startTime)/overTime);
+    //         yield return null;
+    //     }
+    //     transform.position = target;
+    // }
+    private void rotateToTerrain()
+    {
+        RaycastHit hit;
+        Vector3 direction = transform.TransformDirection(Vector3.down);
+        Quaternion targetRotation = transform.rotation;
+
+        if (Physics.Raycast(transform.position, direction, out hit, 50f, LayerMask.GetMask("Ground")))
+        {
+            Quaternion surfaceRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
+            targetRotation = surfaceRotation * transform.rotation;
+            //Dont rotate around Z.
+            targetRotation = Quaternion.Euler(targetRotation.eulerAngles.x,targetRotation.eulerAngles.y,0);
+        }
+
+        transform.GetChild(0).rotation = Quaternion.Lerp(transform.GetChild(0).rotation, targetRotation,  2 * Time.deltaTime);
+    }
+    
     //Set animals size based on traits.
     private void SetPhenotype()
     {
@@ -433,19 +469,22 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
 
             animalModel.isPregnant = true;
             ActionPregnant?.Invoke(true);
+            
             for (int i = 1; i <= offspringCount; i++)
                 // Wait some time before giving birth
                 StartCoroutine(GiveBirth(childEnergy, childHydration, gestationTime, targetAnimalController));
         }
     }
-
-
+    
     IEnumerator GiveBirth(float childEnergy, float childHydration, float laborTime,
         AnimalController otherParentAnimalController)
     {
         yield return new WaitForSeconds(laborTime);
         AnimalModel childModel = animalModel.Mate(otherParentAnimalController.animalModel);
         SpawnNew?.Invoke(childModel, transform.position, childEnergy, childHydration);
+        
+        // invoke only once when birthing multiple children
+        if (animalModel.isPregnant) ActionPregnant?.Invoke(false);
         animalModel.isPregnant = false;
     }
 

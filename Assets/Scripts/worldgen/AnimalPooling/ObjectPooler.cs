@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using DefaultNamespace;
+using Menus;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
@@ -37,6 +38,7 @@ public class ObjectPooler : MonoBehaviour
     public List<Pool> pools;
     public Dictionary<string, Queue<GameObject>> poolDictionary;
     public Dictionary<string, Stack<GameObject>> stackDictionary;
+    private bool showCanvasForAll;
     private bool isFinishedPlacing;
 
     private void Awake()
@@ -51,6 +53,8 @@ public class ObjectPooler : MonoBehaviour
             poolDictionary.Add(pool.tag, objectPool);
             stackDictionary.Add(pool.tag, objectStack);
         }
+        showCanvasForAll = OptionsMenu.alwaysShowParameterUI;
+        isFinishedPlacing = false;
     }
 
     /// <summary>
@@ -94,11 +98,13 @@ public class ObjectPooler : MonoBehaviour
         {
             objectToSpawn.SetActive(true);
             objectToSpawn.GetComponent<IPooledObject>()?.onObjectSpawn();
-                
+
             if (objectToSpawn.TryGetComponent(out AnimalController animalController))
             {
+
                 animalController.deadState.onDeath += HandleDeadAnimal;
                 animalController.SpawnNew += HandleBirthAnimal;
+                animalController.parameterUI.gameObject.SetActive(showCanvasForAll);
             }
             else
             {
@@ -121,28 +127,31 @@ public class ObjectPooler : MonoBehaviour
     {
         StartCoroutine(HandleDeadAnimalDelay(animalController));
     }
-    
+
     private IEnumerator HandleDeadAnimalDelay(AnimalController animalController)
     {
-        yield return new WaitForSeconds(5.0f/Time.timeScale);
-        
-        GameObject animalObj;
-        (animalObj = animalController.gameObject).SetActive(false);
-        
-        switch (animalController.animalModel)
+        yield return new WaitForSeconds(5.0f / Time.timeScale);
+
+        if (animalController != null)
         {
-            case RabbitModel _:
-                poolDictionary["Rabbits"].Enqueue(animalObj);
-                break;
-            case WolfModel _:
-                poolDictionary["Wolfs"].Enqueue(animalObj);
-                break;
-            case DeerModel _:
-                poolDictionary["Deers"].Enqueue(animalObj);
-                break;
-            case BearModel _:
-                poolDictionary["Bears"].Enqueue(animalObj);
-                break;
+            GameObject animalObj;
+            (animalObj = animalController.gameObject).SetActive(false);
+
+            switch (animalController.animalModel)
+            {
+                case RabbitModel _:
+                    poolDictionary["Rabbits"].Enqueue(animalObj);
+                    break;
+                case WolfModel _:
+                    poolDictionary["Wolfs"].Enqueue(animalObj);
+                    break;
+                case DeerModel _:
+                    poolDictionary["Deers"].Enqueue(animalObj);
+                    break;
+                case BearModel _:
+                    poolDictionary["Bears"].Enqueue(animalObj);
+                    break;
+            }
         }
         
     }
@@ -179,11 +188,11 @@ public class ObjectPooler : MonoBehaviour
             childController.animalModel = childModel;
             childController.animalModel.currentEnergy = energy;
             childController.animalModel.currentHydration = hydration;
+            childController.parameterUI.gameObject.SetActive(showCanvasForAll);
 
             // update the childs speed (in case of mutation).
             childController.animalModel.traits.maxSpeed = 1;
         }
-        
     }
 
     /// <summary>
@@ -217,20 +226,19 @@ public class ObjectPooler : MonoBehaviour
         {
             GameObject objectToSpawn = poolDictionary[tag].Dequeue();
 
-                if (objectToSpawn != null)
-                {
-                    objectToSpawn.transform.position = position;
-                    objectToSpawn.transform.rotation = rotation;
-                    objectToSpawn.SetActive(true);
-                    //TODO Maintain list of all components for more performance
-                    objectToSpawn.GetComponent<IPooledObject>()?.onObjectSpawn();
+            if (objectToSpawn != null)
+            {
+                objectToSpawn.transform.position = position;
+                objectToSpawn.transform.rotation = rotation;
+                objectToSpawn.SetActive(true);
+                //TODO Maintain list of all components for more performance
+                objectToSpawn.GetComponent<IPooledObject>()?.onObjectSpawn();
 
-                    objectToSpawn.GetComponent<AnimalController>().deadState.onDeath += HandleDeadAnimal;
-                    objectToSpawn.GetComponent<AnimalController>().SpawnNew += HandleBirthAnimal;
+                objectToSpawn.GetComponent<AnimalController>().deadState.onDeath += HandleDeadAnimal;
+                objectToSpawn.GetComponent<AnimalController>().SpawnNew += HandleBirthAnimal;
 
-                    return objectToSpawn;
-                }
-                
+                return objectToSpawn;
+            }
         }
 
         return null;
