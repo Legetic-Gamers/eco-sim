@@ -5346,6 +5346,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88de382ffe14e194aa20383352640f2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  parameterUI: {fileID: 7648655987314339766}
   tickEventPublisher: {fileID: 0}
   agent: {fileID: 0}
   energyModifier: 0
@@ -10043,6 +10044,12 @@ PrefabInstance:
 --- !u!224 &7648655987314339765 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7109646815149258884, guid: 030b186df69ae1e4d8b9c97864d578e2,
+    type: 3}
+  m_PrefabInstance: {fileID: 616982173202536241}
+  m_PrefabAsset: {fileID: 0}
+--- !u!223 &7648655987314339766 stripped
+Canvas:
+  m_CorrespondingSourceObject: {fileID: 7109646815149258887, guid: 030b186df69ae1e4d8b9c97864d578e2,
     type: 3}
   m_PrefabInstance: {fileID: 616982173202536241}
   m_PrefabAsset: {fileID: 0}

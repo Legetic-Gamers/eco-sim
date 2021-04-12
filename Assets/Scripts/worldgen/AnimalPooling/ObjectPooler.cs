@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using DefaultNamespace;
+using Menus;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
@@ -33,28 +34,27 @@ public class ObjectPooler : MonoBehaviour
     }
 
     public static ObjectPooler instance;
-
-
+    
     public List<Pool> pools;
     public Dictionary<string, Queue<GameObject>> poolDictionary;
-    private bool isInstantiated = false;
+    public Dictionary<string, Stack<GameObject>> stackDictionary;
+    private bool showCanvasForAll;
+    private bool isFinishedPlacing;
 
     private void Awake()
     {
         instance = this;
         poolDictionary = new Dictionary<string, Queue<GameObject>>();
+        stackDictionary = new Dictionary<string, Stack<GameObject>>();
         foreach (Pool pool in pools)
         {
             Queue<GameObject> objectPool = new Queue<GameObject>();
+            Stack<GameObject> objectStack = new Stack<GameObject>();
             poolDictionary.Add(pool.tag, objectPool);
+            stackDictionary.Add(pool.tag, objectStack);
         }
-    }
-
-    /// <summary>
-    /// Instantiate all pools. 
-    /// </summary>
-    void Start()
-    {
+        showCanvasForAll = OptionsMenu.alwaysShowParameterUI;
+        isFinishedPlacing = false;
     }
 
     /// <summary>
@@ -62,15 +62,27 @@ public class ObjectPooler : MonoBehaviour
     /// </summary>
     public void HandleFinishedSpawning()
     {
-        foreach (Pool pool in pools)
+        if (!isFinishedPlacing)
         {
-            string objTag = pool.tag;
-            for (int i = poolDictionary[objTag].Count; i < pool.size; i++)
+            foreach (Pool pool in pools)
             {
-                GameObject obj = Instantiate(pool.prefab);
-                obj.SetActive(false);
-                poolDictionary[objTag].Enqueue(obj);
+                string objTag = pool.tag;
+                if (stackDictionary[objTag].Count > 0)
+                {
+                    GameObject groupObject = GameObject.Find(pool.tag + " Group");
+                    
+                    for (int i = stackDictionary[objTag].Count; i < pool.size; i++)
+                    {
+                        GameObject obj = Instantiate(pool.prefab, groupObject.transform, true);
+                        obj.SetActive(false);
+                        poolDictionary[objTag].Enqueue(obj);
+                    }
+
+                    for (int i = 0; i < stackDictionary[objTag].Count - 1; i++) poolDictionary[objTag].Enqueue(stackDictionary[objTag].Pop());
+                }
             }
+
+            isFinishedPlacing = true;
         }
     }
 
@@ -89,14 +101,22 @@ public class ObjectPooler : MonoBehaviour
 
             if (objectToSpawn.TryGetComponent(out AnimalController animalController))
             {
+
                 animalController.deadState.onDeath += HandleDeadAnimal;
                 animalController.SpawnNew += HandleBirthAnimal;
+                animalController.parameterUI.gameObject.SetActive(showCanvasForAll);
             }
             else
             {
                 //Debug.Log("HandleAnimalInstantiated() did not succeed to bind methods to animalcontrollers action");
             }
+
+            if (stackDictionary != null && stackDictionary.ContainsKey(tag))
+            {
+                stackDictionary[tag].Push(objectToSpawn);
+            }
         }
+        
     }
 
     /// <summary>
@@ -133,6 +153,7 @@ public class ObjectPooler : MonoBehaviour
                     break;
             }
         }
+        
     }
 
     /// <summary>
@@ -167,6 +188,7 @@ public class ObjectPooler : MonoBehaviour
             childController.animalModel = childModel;
             childController.animalModel.currentEnergy = energy;
             childController.animalModel.currentHydration = hydration;
+            childController.parameterUI.gameObject.SetActive(showCanvasForAll);
 
             // update the childs speed (in case of mutation).
             childController.animalModel.traits.maxSpeed = 1;

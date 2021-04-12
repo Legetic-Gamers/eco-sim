@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Menus;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -42,7 +43,7 @@ public class OrbitCameraController : MonoBehaviour
     private Vector3 _rotateCurrentPosition;
     
     private bool _breakAwayFromLockOn;
-
+    private bool showUI;
     // Start is called before the first frame update
     private void Start()
     {
@@ -50,6 +51,7 @@ public class OrbitCameraController : MonoBehaviour
         newPosition = transform.position;
         _newRotation = transform.rotation;
         newZoom = camera.transform.localPosition;
+        showUI = OptionsMenu.alwaysShowParameterUI;
     }
 
     // Update is called once per frame
@@ -79,6 +81,10 @@ public class OrbitCameraController : MonoBehaviour
         
         if (_breakAwayFromLockOn)
         {
+            if (followTransform != null && followTransform.gameObject.TryGetComponent(out AnimalController animalController))
+            {
+                animalController.parameterUI.gameObject.SetActive(showUI);
+            }
             followTransform = null;
             _breakAwayFromLockOn = false;
         }

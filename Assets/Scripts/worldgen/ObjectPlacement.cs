@@ -15,7 +15,7 @@ public class ObjectPlacement : MonoBehaviour
     public List<GameObject> groups;
     public SimulationSettings simulationSettings;
     int size;
-    private List<string> pooledObjects = new List<string> { "Rabbits", "Wolfs", "Deers", "Bears" };
+    private List<string> pooledObjects = new List<string> { "Rabbits", "Wolfs", "Deers", "Bears", "SmartRabbits", "SmartWolves", "SmartDeer", "SmartBear" };
 
     public void Awake()
     {
@@ -48,7 +48,7 @@ public class ObjectPlacement : MonoBehaviour
 
     public void PlaceObjectType(ObjectType objectType, Vector2 positionOffset)
     {
-        Debug.Log("PLACEOBJECTYPE");
+        //Debug.Log("PLACEOBJECTYPE");
         int deleted = 0;
         if (objectType.GameObjectSettings == null || objectType.GameObjectSettings.Count <= 0)
         {
@@ -130,7 +130,7 @@ public class ObjectPlacement : MonoBehaviour
                 deleted++;
             }
         }
-        ObjectPooler.Instance?.HandleFinishedSpawning();
+        //ObjectPooler.Instance?.HandleFinishedSpawning();
     }
 
     public static List<Vector2> GeneratePlacementPoints(ObjectType objectType, float meshScale, int size)
