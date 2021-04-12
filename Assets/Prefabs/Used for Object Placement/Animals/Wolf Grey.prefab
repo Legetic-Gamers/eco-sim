@@ -2057,8 +2057,6 @@ GameObject:
   - component: {fileID: -3072218237354650290}
   - component: {fileID: 3140382265690856846}
   - component: {fileID: 9052424143155263327}
-  - component: {fileID: -2455205438160608710}
-  - component: {fileID: -2828233953746162010}
   m_Layer: 8
   m_Name: Wolf Grey
   m_TagString: Animal
@@ -2232,6 +2230,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83f7b0fd8a5be3343b6635d2e91a2840, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  parameterUI: {fileID: 6028089216142816704}
   tickEventPublisher: {fileID: 0}
   agent: {fileID: 0}
   energyModifier: 0
@@ -2246,6 +2245,8 @@ MonoBehaviour:
   heardFriendlyTargets: []
   heardPreyTargets: []
   isInfertile: 0
+  eyesTransform: {fileID: 0}
+  centerTransform: {fileID: 0}
 --- !u!114 &1491304840260045172
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2340,41 +2341,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.82, y: 1.46, z: 1.73}
   m_Center: {x: 0, y: 0.82, z: 0}
---- !u!114 &-2455205438160608710
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4362939137640418624}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1ff8f5fbbd2169f4eadc8c040957c156, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  showNavMeshAgentPath: 0
-  allowNavigateWithClick: 0
-  showVisibleTargets: 1
-  showFleeingVector: 0
-  showPerceptionRange: 1
---- !u!114 &-2828233953746162010
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4362939137640418624}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 07422175caeb4ae7abedf1488c86805e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  targetMask:
-    serializedVersion: 2
-    m_Bits: 256
-  obstacleMask:
-    serializedVersion: 2
-    m_Bits: 2048
 --- !u!1 &4362942483931802740
 GameObject:
   m_ObjectHideFlags: 0
@@ -10161,6 +10127,12 @@ PrefabInstance:
 --- !u!224 &6028089216142816707 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7109646815149258884, guid: 030b186df69ae1e4d8b9c97864d578e2,
+    type: 3}
+  m_PrefabInstance: {fileID: 3531553455661075783}
+  m_PrefabAsset: {fileID: 0}
+--- !u!223 &6028089216142816704 stripped
+Canvas:
+  m_CorrespondingSourceObject: {fileID: 7109646815149258887, guid: 030b186df69ae1e4d8b9c97864d578e2,
     type: 3}
   m_PrefabInstance: {fileID: 3531553455661075783}
   m_PrefabAsset: {fileID: 0}

@@ -16,23 +16,8 @@ namespace Menus
 
         public AudioMixer audioMixer;
 
-        public bool alwaysShowParameterUI = false;
- 
-/*
-        public static OptionsMenu instance
-        {
-            get
-            {
-                if(_instance == null)
-                {
-                    _instance = FindObjectOfType<OptionsMenu>();
-                }
-                DontDestroyOnLoad(_instance.gameObject);
-                return _instance;
-            }
-        }
-*/
- 
+        public bool alwaysShowParameterUI = true;
+        
         void Awake()
         {
             _instance = this;

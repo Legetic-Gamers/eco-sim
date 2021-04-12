@@ -83,16 +83,12 @@ public class ObjectPooler : MonoBehaviour
         {
             objectToSpawn.SetActive(true);
             objectToSpawn.GetComponent<IPooledObject>()?.onObjectSpawn();
-                
+
             if (objectToSpawn.TryGetComponent(out AnimalController animalController))
             {
                 animalController.deadState.onDeath += HandleDeadAnimal;
                 animalController.SpawnNew += HandleBirthAnimal;
                 animalController.parameterUI.enabled = showCanvasForAll;
-            }
-            else
-            {
-                //Debug.Log("HandleAnimalInstantiated() did not succeed to bind methods to animalcontrollers action");
             }
         }
         
