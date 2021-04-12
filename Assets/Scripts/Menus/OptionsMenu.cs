@@ -16,12 +16,13 @@ namespace Menus
 
         public AudioMixer audioMixer;
 
-        public bool alwaysShowParameterUI = true;
+        public bool alwaysShowParameterUI;
         
         void Awake()
         {
             _instance = this;
             if(audioMixer !=null ) audioMixer.SetFloat("MasterVolume", Mathf.Log10(0.003f)*20);
+            alwaysShowParameterUI = false;
         }
         
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]

@@ -89,6 +89,7 @@ public class ObjectPooler : MonoBehaviour
                 animalController.deadState.onDeath += HandleDeadAnimal;
                 animalController.SpawnNew += HandleBirthAnimal;
                 animalController.parameterUI.enabled = showCanvasForAll;
+                Debug.Log(showCanvasForAll);
             }
         }
         

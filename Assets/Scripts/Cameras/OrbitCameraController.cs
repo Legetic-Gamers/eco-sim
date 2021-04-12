@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Menus;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -68,6 +69,10 @@ public class OrbitCameraController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             followTransform = null;
+            if (TryGetComponent(out AnimalController animalController))
+            {
+                animalController.parameterUI.enabled = FindObjectOfType<OptionsMenu>().alwaysShowParameterUI;;
+            }
         }
     }
 
