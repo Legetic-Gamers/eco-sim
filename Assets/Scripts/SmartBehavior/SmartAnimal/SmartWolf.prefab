@@ -3905,6 +3905,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83f7b0fd8a5be3343b6635d2e91a2840, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  parameterUI: {fileID: 5678236449309674315}
   tickEventPublisher: {fileID: 0}
   agent: {fileID: 0}
   energyModifier: 0
@@ -4076,7 +4077,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2443608263682274251}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c0795e2e31cde64428dc997f642c4648, type: 3}
   m_Name: 
@@ -10257,6 +10258,12 @@ PrefabInstance:
 --- !u!224 &5678236449309674312 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7109646815149258884, guid: 030b186df69ae1e4d8b9c97864d578e2,
+    type: 3}
+  m_PrefabInstance: {fileID: 3199719485476058060}
+  m_PrefabAsset: {fileID: 0}
+--- !u!223 &5678236449309674315 stripped
+Canvas:
+  m_CorrespondingSourceObject: {fileID: 7109646815149258887, guid: 030b186df69ae1e4d8b9c97864d578e2,
     type: 3}
   m_PrefabInstance: {fileID: 3199719485476058060}
   m_PrefabAsset: {fileID: 0}
