@@ -18,6 +18,8 @@ public class TickEventPublisher : MonoBehaviour
     public event TickDelegate onParamTickEvent;
     public event TickDelegate onSenseTickEvent;
     public event TickDelegate onCollectorUpdate;
+    
+    public event TickDelegate onDataHandlerUpdate;
 
     private IEnumerator ParamTickEvent()
     {
@@ -40,16 +42,26 @@ public class TickEventPublisher : MonoBehaviour
     {
         while (true)
         {
-            yield return new WaitForSeconds(60f);
+            yield return new WaitForSeconds(60f / Time.timeScale);
             onCollectorUpdate?.Invoke();
+        }
+    }
+    
+    private IEnumerator DataHandlerTickEvent()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(2f / Time.timeScale);
+            onDataHandlerUpdate?.Invoke();
         }
     }
 
 
     private void Awake()
     {
-        StartCoroutine(ParamTickEvent());
-        StartCoroutine(SenseTickEvent());
-        StartCoroutine(CollectorTickEvent());
+        StartCoroutine("ParamTickEvent");
+        StartCoroutine("SenseTickEvent");
+        StartCoroutine("CollectorTickEvent");
+        StartCoroutine("DataHandlerTickEvent");
     }
 }
