@@ -156,7 +156,7 @@ public class AnimalParticleManager : MonoBehaviour
 
     private void ShowHitParticles()
     {
-        if (hitParticleSystem)
+        if (hitParticleSystem && hitParticleSelfDestroyScript != null)
         {
             hitParticleSelfDestroyScript.SelfDestructAfterPlayAndDetach();
         }
