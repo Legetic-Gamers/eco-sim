@@ -173,6 +173,7 @@ public class AnimalParticleManager : MonoBehaviour
 
     private void OnDestroy()
     {
+        StopOnDeath(null);
         EventUnsubscribe();
     }
 }
