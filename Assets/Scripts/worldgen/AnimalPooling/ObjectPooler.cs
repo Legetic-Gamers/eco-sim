@@ -88,16 +88,12 @@ public class ObjectPooler : MonoBehaviour
             {
                 animalController.deadState.onDeath += HandleDeadAnimal;
                 animalController.SpawnNew += HandleBirthAnimal;
+                animalController.parameterUI.enabled = showCanvasForAll;
             }
             else
             {
                 //Debug.Log("HandleAnimalInstantiated() did not succeed to bind methods to animalcontrollers action");
             }
-            if (objectToSpawn.gameObject.TryGetComponent(out ParameterUI can))
-            {
-                can.enabled = showCanvasForAll;
-            }
-
         }
         
     }
@@ -168,11 +164,8 @@ public class ObjectPooler : MonoBehaviour
             childController.animalModel = childModel;
             childController.animalModel.currentEnergy = energy;
             childController.animalModel.currentHydration = hydration;
-            if (childController.gameObject.TryGetComponent(out ParameterUI can))
-            {
-                can.enabled = showCanvasForAll;
-            }
-            
+            childController.parameterUI.enabled = showCanvasForAll;
+
             // update the childs speed (in case of mutation).
             childController.animalModel.traits.maxSpeed = 1;
         }
