@@ -50,9 +50,7 @@ public class ObjectPooler : MonoBehaviour
             Queue<GameObject> objectPool = new Queue<GameObject>();
             poolDictionary.Add(pool.tag, objectPool);
         }
-
-        OptionsMenu.
-        Debug.Log(showCanvasForAll);
+        showCanvasForAll = OptionsMenu.alwaysShowParameterUI;
     }
 
     /// <summary>
@@ -90,7 +88,6 @@ public class ObjectPooler : MonoBehaviour
                 animalController.deadState.onDeath += HandleDeadAnimal;
                 animalController.SpawnNew += HandleBirthAnimal;
                 animalController.parameterUI.gameObject.SetActive(showCanvasForAll);
-                Debug.Log(showCanvasForAll);
             }
         }
         

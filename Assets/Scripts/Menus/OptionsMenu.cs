@@ -16,7 +16,7 @@ namespace Menus
 
         public AudioMixer audioMixer;
 
-        public bool alwaysShowParameterUI;
+        public static bool alwaysShowParameterUI;
         
         void Awake()
         {
@@ -24,6 +24,21 @@ namespace Menus
             if(audioMixer !=null ) audioMixer.SetFloat("MasterVolume", Mathf.Log10(0.003f)*20);
             alwaysShowParameterUI = false;
         }
+        
+        /*
+        public static OptionsMenu instance
+        {
+            get
+            {
+                if(_instance == null)
+                {
+                    _instance = FindObjectOfType<OptionsMenu>();
+                }
+                DontDestroyOnLoad(_instance.gameObject);
+                return _instance;
+            }
+        }
+        */
         
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         static void RuntimeInit()
@@ -41,7 +56,6 @@ namespace Menus
         public void SetShowParameterUI(bool toggle)
         {
             alwaysShowParameterUI = toggle;
-            Debug.Log(alwaysShowParameterUI);
         }
     }
 }

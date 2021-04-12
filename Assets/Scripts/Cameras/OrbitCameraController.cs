@@ -48,7 +48,7 @@ public class OrbitCameraController : MonoBehaviour
         newPosition = transform.position;
         newRotation = transform.rotation;
         newZoom = camera.transform.localPosition;
-        showUI = FindObjectOfType<OptionsMenu>().alwaysShowParameterUI;
+        showUI = OptionsMenu.alwaysShowParameterUI;
     }
 
     // Update is called once per frame
