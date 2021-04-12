@@ -22,10 +22,7 @@ public class Window_Graph : MonoBehaviour
     
     [SerializeField] private float yBufferTop = 1.2f;
     [SerializeField] private Sprite circleSprite;
-    //[SerializeField] private float windowGraphSizeX;
-    //[SerializeField] private float windowGraphSizeY;
-    //[SerializeField] private float graphContainerSizeX;
-    //[SerializeField] private float graphContainerSizeY;
+
 
     private static List<float> _list1 = new List<float>() {0};
     private static List<float> _list2 = new List<float>() {0};
@@ -96,21 +93,11 @@ public class Window_Graph : MonoBehaviour
         dashTemplateX = graphContainer.Find("dashTemplateX").GetComponent<RectTransform>();
         dashTemplateY = graphContainer.Find("dashTemplateY").GetComponent<RectTransform>();
         
-        
-        
         DataHandler dh = FindObjectOfType<DataHandler>();
         dh.Display += Draw;
         ButtonClick.OnButtonReDraw += ReDraw;
     }
-
-    private void Start()
-    {
-        //window_graph.sizeDelta = new Vector2(windowGraphSizeX, windowGraphSizeY);
-        //graphContainer.sizeDelta = new Vector2(graphContainerSizeX, graphContainerSizeY);
-        //dashTemplateX.sizeDelta = new Vector2(graphContainerSizeY + 2, 1);
-        //dashTemplateY.sizeDelta = new Vector2(graphContainerSizeX + 2, 1);
-        
-    }
+    
 
 
     private void Draw(List<float> list1, List<float> list2)

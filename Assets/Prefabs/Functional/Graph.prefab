@@ -8358,10 +8358,6 @@ MonoBehaviour:
   lineWidth: 2
   yBufferTop: 1.2
   circleSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-  labelTemplateX: {fileID: 6637793843408465879}
-  labelTemplateY: {fileID: 6637793844210157081}
-  dashTemplateX: {fileID: 6637793843504268322}
-  dashTemplateY: {fileID: 6637793844024040135}
   xLabel: {fileID: 6637793844920336480}
   yLabel: {fileID: 6637793844750060691}
   dropdownPopulation: {fileID: 6637793843830369651}
@@ -11610,10 +11606,6 @@ MonoBehaviour:
   lineWidth: 3
   yBufferTop: 1.2
   circleSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-  labelTemplateX: {fileID: 6637793843408465879}
-  labelTemplateY: {fileID: 6637793844210157081}
-  dashTemplateX: {fileID: 6637793844024040135}
-  dashTemplateY: {fileID: 6637793844024040135}
 --- !u!1 &6637793844964529208
 GameObject:
   m_ObjectHideFlags: 0
