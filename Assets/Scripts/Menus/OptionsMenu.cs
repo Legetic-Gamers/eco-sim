@@ -41,6 +41,7 @@ namespace Menus
         public void SetShowParameterUI(bool toggle)
         {
             alwaysShowParameterUI = toggle;
+            Debug.Log(alwaysShowParameterUI);
         }
     }
 }

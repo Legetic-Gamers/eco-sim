@@ -9,7 +9,7 @@ public class ClickToFollow : MonoBehaviour
         OrbitCameraController.instance.followTransform = transform;
         if (TryGetComponent(out AnimalController animalController))
         {
-            animalController.parameterUI.enabled = true;
+            animalController.parameterUI.gameObject.SetActive(true);
         }
     }
 }

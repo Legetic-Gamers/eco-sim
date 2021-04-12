@@ -51,7 +51,8 @@ public class ObjectPooler : MonoBehaviour
             poolDictionary.Add(pool.tag, objectPool);
         }
 
-        showCanvasForAll = FindObjectOfType<OptionsMenu>().alwaysShowParameterUI;
+        OptionsMenu.
+        Debug.Log(showCanvasForAll);
     }
 
     /// <summary>
@@ -88,7 +89,7 @@ public class ObjectPooler : MonoBehaviour
             {
                 animalController.deadState.onDeath += HandleDeadAnimal;
                 animalController.SpawnNew += HandleBirthAnimal;
-                animalController.parameterUI.enabled = showCanvasForAll;
+                animalController.parameterUI.gameObject.SetActive(showCanvasForAll);
                 Debug.Log(showCanvasForAll);
             }
         }
@@ -161,7 +162,7 @@ public class ObjectPooler : MonoBehaviour
             childController.animalModel = childModel;
             childController.animalModel.currentEnergy = energy;
             childController.animalModel.currentHydration = hydration;
-            childController.parameterUI.enabled = showCanvasForAll;
+            childController.parameterUI.gameObject.SetActive(showCanvasForAll);
 
             // update the childs speed (in case of mutation).
             childController.animalModel.traits.maxSpeed = 1;

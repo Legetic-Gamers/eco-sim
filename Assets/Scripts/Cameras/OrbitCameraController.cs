@@ -38,7 +38,8 @@ public class OrbitCameraController : MonoBehaviour
     public Vector3 rotateStartPosition;
     public Vector3 rotateCurrentPosition;
 
-
+    private bool showUI;
+    
     public Camera camera;
     // Start is called before the first frame update
     void Start()
@@ -47,6 +48,7 @@ public class OrbitCameraController : MonoBehaviour
         newPosition = transform.position;
         newRotation = transform.rotation;
         newZoom = camera.transform.localPosition;
+        showUI = FindObjectOfType<OptionsMenu>().alwaysShowParameterUI;
     }
 
     // Update is called once per frame
@@ -68,11 +70,11 @@ public class OrbitCameraController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            followTransform = null;
-            if (TryGetComponent(out AnimalController animalController))
+            if (followTransform != null && followTransform.gameObject.TryGetComponent(out AnimalController animalController))
             {
-                animalController.parameterUI.enabled = FindObjectOfType<OptionsMenu>().alwaysShowParameterUI;;
+                animalController.parameterUI.gameObject.SetActive(showUI);
             }
+            followTransform = null;
         }
     }
 
