@@ -2681,7 +2681,7 @@ MonoBehaviour:
   hitParticleSystem: {fileID: 19800000, guid: e25b6553b206ef74b8f99a65d36963bb, type: 3}
   matingParticleSystem: {fileID: 19800004, guid: 92aaabfe08d50fa43b36214095279955,
     type: 3}
-  bornParticleSystem: {fileID: 19800000, guid: b1a4cfac024ce2a48a0da2d8565729b3, type: 3}
+  bornParticleSystem: {fileID: 19800018, guid: 0fab5cbd8d8cb444199901f840ef0347, type: 3}
   pregnancyParticleSystem: {fileID: 19800004, guid: fb667f08336441b4fa2b6369a17fe4e5,
     type: 3}
 --- !u!114 &7273209833827066304
@@ -2773,7 +2773,7 @@ MonoBehaviour:
     m_Bits: 256
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 2048
+    m_Bits: 3072
 --- !u!114 &-8162256050700786706
 MonoBehaviour:
   m_ObjectHideFlags: 0

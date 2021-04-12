@@ -728,6 +728,7 @@ GameObject:
   - component: {fileID: -4273764703418341798}
   - component: {fileID: 8642883935400400780}
   - component: {fileID: 6500540738318742435}
+  - component: {fileID: 2783512026882503087}
   m_Layer: 8
   m_Name: Bear
   m_TagString: Animal
@@ -858,7 +859,7 @@ MonoBehaviour:
   hitParticleSystem: {fileID: 19800000, guid: e25b6553b206ef74b8f99a65d36963bb, type: 3}
   matingParticleSystem: {fileID: 19800004, guid: 92aaabfe08d50fa43b36214095279955,
     type: 3}
-  bornParticleSystem: {fileID: 19800000, guid: b1a4cfac024ce2a48a0da2d8565729b3, type: 3}
+  bornParticleSystem: {fileID: 19800018, guid: 0fab5cbd8d8cb444199901f840ef0347, type: 3}
   pregnancyParticleSystem: {fileID: 19800004, guid: dfc5ed62a314f3c468797f94c3830811,
     type: 3}
 --- !u!114 &8642883935400400780
@@ -885,6 +886,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c71b720863ec4e7a8484c019f6979fe3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2783512026882503087
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8012323441774472881}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb8c3b788da21de4bb762fff73b53444, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetMask:
+    serializedVersion: 2
+    m_Bits: 256
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 3072
 --- !u!1 &8012327310415541241
 GameObject:
   m_ObjectHideFlags: 0

@@ -67,7 +67,7 @@ public class ObjectPooler : MonoBehaviour
                 obj.SetActive(false);
                 poolDictionary[objTag].Enqueue(obj);
             }
-        } 
+        }
     }
 
     /// <summary>
@@ -90,7 +90,6 @@ public class ObjectPooler : MonoBehaviour
                 animalController.parameterUI.gameObject.SetActive(showCanvasForAll);
             }
         }
-        
     }
 
     /// <summary>
@@ -101,30 +100,32 @@ public class ObjectPooler : MonoBehaviour
     {
         StartCoroutine(HandleDeadAnimalDelay(animalController));
     }
-    
+
     private IEnumerator HandleDeadAnimalDelay(AnimalController animalController)
     {
-        yield return new WaitForSeconds(5.0f/Time.timeScale);
-        
-        GameObject animalObj;
-        (animalObj = animalController.gameObject).SetActive(false);
-        
-        switch (animalController.animalModel)
+        yield return new WaitForSeconds(5.0f / Time.timeScale);
+
+        if (animalController != null)
         {
-            case RabbitModel _:
-                poolDictionary["Rabbits"].Enqueue(animalObj);
-                break;
-            case WolfModel _:
-                poolDictionary["Wolfs"].Enqueue(animalObj);
-                break;
-            case DeerModel _:
-                poolDictionary["Deers"].Enqueue(animalObj);
-                break;
-            case BearModel _:
-                poolDictionary["Bears"].Enqueue(animalObj);
-                break;
+            GameObject animalObj;
+            (animalObj = animalController.gameObject).SetActive(false);
+
+            switch (animalController.animalModel)
+            {
+                case RabbitModel _:
+                    poolDictionary["Rabbits"].Enqueue(animalObj);
+                    break;
+                case WolfModel _:
+                    poolDictionary["Wolfs"].Enqueue(animalObj);
+                    break;
+                case DeerModel _:
+                    poolDictionary["Deers"].Enqueue(animalObj);
+                    break;
+                case BearModel _:
+                    poolDictionary["Bears"].Enqueue(animalObj);
+                    break;
+            }
         }
-        
     }
 
     /// <summary>
@@ -164,7 +165,6 @@ public class ObjectPooler : MonoBehaviour
             // update the childs speed (in case of mutation).
             childController.animalModel.traits.maxSpeed = 1;
         }
-        
     }
 
     /// <summary>
@@ -198,20 +198,19 @@ public class ObjectPooler : MonoBehaviour
         {
             GameObject objectToSpawn = poolDictionary[tag].Dequeue();
 
-                if (objectToSpawn != null)
-                {
-                    objectToSpawn.transform.position = position;
-                    objectToSpawn.transform.rotation = rotation;
-                    objectToSpawn.SetActive(true);
-                    //TODO Maintain list of all components for more performance
-                    objectToSpawn.GetComponent<IPooledObject>()?.onObjectSpawn();
+            if (objectToSpawn != null)
+            {
+                objectToSpawn.transform.position = position;
+                objectToSpawn.transform.rotation = rotation;
+                objectToSpawn.SetActive(true);
+                //TODO Maintain list of all components for more performance
+                objectToSpawn.GetComponent<IPooledObject>()?.onObjectSpawn();
 
-                    objectToSpawn.GetComponent<AnimalController>().deadState.onDeath += HandleDeadAnimal;
-                    objectToSpawn.GetComponent<AnimalController>().SpawnNew += HandleBirthAnimal;
+                objectToSpawn.GetComponent<AnimalController>().deadState.onDeath += HandleDeadAnimal;
+                objectToSpawn.GetComponent<AnimalController>().SpawnNew += HandleBirthAnimal;
 
-                    return objectToSpawn;
-                }
-                
+                return objectToSpawn;
+            }
         }
 
         return null;
