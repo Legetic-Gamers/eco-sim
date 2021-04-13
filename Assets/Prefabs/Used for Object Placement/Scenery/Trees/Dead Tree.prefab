@@ -12,8 +12,9 @@ GameObject:
   - component: {fileID: 33225762928097432}
   - component: {fileID: 23594342456011332}
   - component: {fileID: 136725087779374742}
+  - component: {fileID: 5714802818923524520}
   m_Layer: 0
-  m_Name: tree-dead 1
+  m_Name: Dead Tree
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -56,6 +57,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -80,6 +82,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!136 &136725087779374742
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -94,3 +97,19 @@ CapsuleCollider:
   m_Height: 7.9004927
   m_Direction: 1
   m_Center: {x: 0.1, y: 3.31, z: 0.096171394}
+--- !u!208 &5714802818923524520
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1069101916615702}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 1.034, y: 3.9410002, z: 0.934}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 0
+  m_Center: {x: 0.185, y: 3.9600003, z: 0.123}
+  m_TimeToStationary: 0.5
