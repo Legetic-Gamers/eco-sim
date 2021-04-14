@@ -6,6 +6,8 @@ using UnityEngine;
 
 public class TextureApplication : MonoBehaviour
 {
+    public SimulationSettings simulationSettings;
+
     public void UpdateTextureSettings(Color[] baseColours, float[] newBaseHeights, float minHeight, float maxHeight)
     {
         SimulationSettings.instance.TextureSettings = new TextureSettings(
@@ -22,9 +24,19 @@ public class TextureApplication : MonoBehaviour
         // Debug.Log("Texture Settings: " + settings.TextureSettings);
         // Debug.Log("Base colors: " + settings.TextureSettings.BaseColours.Count);
         // Debug.Log("Start Height: " + settings.TextureSettings.BaseStartHeights.Count);
+        Color[] colours;
+        float[] startHeight;
 
-        Color[] colours = SimulationSettings.instance.TextureSettings.BaseColours.ToArray();
-        float[] startHeight = SimulationSettings.instance.TextureSettings.BaseStartHeights.ToArray();
+        if (simulationSettings != null)
+        {
+            colours = simulationSettings.TextureSettings.BaseColours.ToArray();
+            startHeight = simulationSettings.TextureSettings.BaseStartHeights.ToArray();
+        }
+        else
+        {
+            colours = SimulationSettings.instance.TextureSettings.BaseColours.ToArray();
+            startHeight = SimulationSettings.instance.TextureSettings.BaseStartHeights.ToArray();
+        }
 
         material.SetColor("waterColor", colours[0]);
         material.SetColor("sandColor", colours[1]);
@@ -39,9 +51,19 @@ public class TextureApplication : MonoBehaviour
 
     public void UpdateMeshHeights(Material material, float minHeight, float maxHeight)
     {
-        SimulationSettings.instance.TextureSettings = new TextureSettings(
-            SimulationSettings.instance.TextureSettings.BaseColours.ToArray(),
-            SimulationSettings.instance.TextureSettings.BaseStartHeights.ToArray(),
+        SimulationSettings settings;
+        if (simulationSettings != null)
+        {
+            settings = simulationSettings;
+        }
+        else
+        {
+            settings = SimulationSettings.instance;
+        }
+
+        settings.TextureSettings = new TextureSettings(
+            settings.TextureSettings.BaseColours.ToArray(),
+            settings.TextureSettings.BaseStartHeights.ToArray(),
             minHeight,
             maxHeight
         );
@@ -50,7 +72,17 @@ public class TextureApplication : MonoBehaviour
 
     private void SetHeightsBasedFromSettings(Material material)
     {
-        material.SetFloat("minHeight", SimulationSettings.instance.TextureSettings.SavedMinHeight);
-        material.SetFloat("maxHeight", SimulationSettings.instance.TextureSettings.SavedMaxHeight);
+        SimulationSettings settings;
+        if (simulationSettings != null)
+        {
+            settings = simulationSettings;
+        }
+        else
+        {
+            settings = SimulationSettings.instance;
+        }
+
+        material.SetFloat("minHeight", settings.TextureSettings.SavedMinHeight);
+        material.SetFloat("maxHeight", settings.TextureSettings.SavedMaxHeight);
     }
 }

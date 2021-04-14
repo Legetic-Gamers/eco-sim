@@ -225,7 +225,7 @@ public class TerrainChunk
     {
         //Debug.Log("Position: " + coordinate * meshSettings.meshWorldSize);
         waterChunk = meshObject.AddComponent<WaterChunk>();
-        waterChunk.Setup(coordinate * meshSettings.MeshWorldSize, waterSettings, heightMapSettings, meshRenderer.bounds.size, meshObject.transform, meshFilter.mesh.vertices, true);
+        waterChunk.Setup(coordinate * meshSettings.MeshWorldSize, waterSettings, heightMapSettings, meshRenderer.bounds.size, meshObject.transform, meshFilter.sharedMesh.vertices, true);
     }
 
     public void PlaceObjects()

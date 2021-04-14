@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable()]
+[ExecuteInEditMode]
 public class SimulationSettings : MonoBehaviour
 {
     public static SimulationSettings instance;
@@ -31,6 +32,7 @@ public class SimulationSettings : MonoBehaviour
     public event System.Action OnTextureChanged;
 
     public bool preview;
+    public bool dontDestroyOnLoad;
 
     public GameObjectPair[] availableGameObjects;
 
@@ -86,8 +88,10 @@ public class SimulationSettings : MonoBehaviour
     private void Awake()
     {
         instance = this;
-        DontDestroyOnLoad(this);
-
+        if (dontDestroyOnLoad)
+        {
+            DontDestroyOnLoad(this);
+        }
     }
 }
 

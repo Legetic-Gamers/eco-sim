@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 
+[ExecuteInEditMode]
 public class ThreadedDataRequester : MonoBehaviour
 {
 
@@ -11,11 +12,20 @@ public class ThreadedDataRequester : MonoBehaviour
 
     private void Awake()
     {
+        SetInstance();
+    }
+
+    private static void SetInstance()
+    {
         instance = FindObjectOfType<ThreadedDataRequester>();
     }
 
     public static void RequestData(Func<object> generateData, Action<object> callback)
     {
+        if (instance == null)
+        {
+            SetInstance();
+        }
         ThreadStart threadStart = delegate
         {
             instance.DataThread(generateData, callback);

@@ -11,7 +11,7 @@ using Random = UnityEngine.Random;
 // http://devmag.org.za/2009/05/03/poisson-disk-sampling/
 public class ObjectPlacement : MonoBehaviour
 {
-    
+
     public List<GameObject> groups;
     public SimulationSettings simulationSettings;
     int size;
@@ -19,12 +19,22 @@ public class ObjectPlacement : MonoBehaviour
 
     public void Awake()
     {
+        GetSettings();
+    }
+
+    private void GetSettings()
+    {
         simulationSettings = FindObjectOfType<SimulationSettings>();
     }
 
 
     public void PlaceObjects(Vector2 positionOffset)
     {
+        if (simulationSettings == null)
+        {
+            GetSettings();
+        }
+
         int size;
         groups = new List<GameObject>();
 
@@ -48,7 +58,6 @@ public class ObjectPlacement : MonoBehaviour
 
     public void PlaceObjectType(ObjectType objectType, Vector2 positionOffset)
     {
-        Debug.Log("PLACEOBJECTYPE");
         int deleted = 0;
         if (objectType.GameObjectSettings == null || objectType.GameObjectSettings.Count <= 0)
         {
@@ -118,7 +127,7 @@ public class ObjectPlacement : MonoBehaviour
                         }
                     }
                 }
-                
+
                 if (Application.isEditor)
                 {
                     DestroyImmediate(gameObject);
