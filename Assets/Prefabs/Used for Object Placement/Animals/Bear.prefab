@@ -885,10 +885,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animalSound: {fileID: 0}
-  walking: {fileID: 0}
-  eating: {fileID: 0}
+  walking: {fileID: 8300000, guid: b8d66fbf2a4c44b208b86bdcaf684983, type: 3}
+  eating: {fileID: 8300000, guid: 39081a8f8fcfc43319c8f687e415712a, type: 3}
   running: {fileID: 0}
-  attacking: {fileID: 0}
+  attacking: {fileID: 8300000, guid: a63e9f3704ea34881a61eaaed67c4ccc, type: 3}
   death: {fileID: 0}
   sleeping: {fileID: 0}
 --- !u!54 &-3243254847893978395

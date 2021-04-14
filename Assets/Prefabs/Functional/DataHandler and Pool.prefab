@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2274048877407332942}
   - component: {fileID: 8309080692029644007}
   - component: {fileID: 6116915485549523933}
+  - component: {fileID: 924481341116857174}
   m_Layer: 0
   m_Name: DataHandler and Pool
   m_TagString: Untagged
@@ -89,3 +90,19 @@ MonoBehaviour:
   - tag: SmartBears
     prefab: {fileID: 695402115701391966, guid: fec6ae813464c314991b94cea274b3cc, type: 3}
     size: 50
+--- !u!114 &924481341116857174
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1154639552217620268}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee744710697d4c043b8044651949c781, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  muteSound: 0
+  objectPoolLength: 20
+  soundDistance: 0.5
+  logSounds: 0

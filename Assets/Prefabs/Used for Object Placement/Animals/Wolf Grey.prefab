@@ -2214,7 +2214,7 @@ MonoBehaviour:
   animalSound: {fileID: 8300000, guid: e4aa6f48a36014dcc9d111bf13e6c85f, type: 3}
   walking: {fileID: 8300000, guid: b8d66fbf2a4c44b208b86bdcaf684983, type: 3}
   eating: {fileID: 8300000, guid: 39081a8f8fcfc43319c8f687e415712a, type: 3}
-  running: {fileID: 0}
+  running: {fileID: 8300000, guid: b8d66fbf2a4c44b208b86bdcaf684983, type: 3}
   attacking: {fileID: 8300000, guid: fcd0b1302b70c48c198a88d22f962f35, type: 3}
   death: {fileID: 0}
   sleeping: {fileID: 0}
