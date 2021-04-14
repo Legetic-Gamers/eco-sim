@@ -25,7 +25,8 @@ public class PresetBuilderEditor : Editor
 
     private void CreatePrefab(GameObject root, string name)
     {
-        PrefabUtility.SaveAsPrefabAsset(root, "Assets/Worlds/" + name + ".prefab");
-        Debug.Log("Complete! Prefab saved in: " + "Assets/World/" + name + ".prefab");
+        var path = AssetDatabase.GenerateUniqueAssetPath("Assets/Worlds/" + name + ".prefab");
+        PrefabUtility.SaveAsPrefabAsset(root, path);
+        Debug.Log("Complete! Prefab saved in: " + path);
     }
 }

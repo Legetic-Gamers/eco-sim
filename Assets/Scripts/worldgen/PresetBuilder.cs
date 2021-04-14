@@ -14,7 +14,7 @@ public class PresetBuilder : MonoBehaviour
 
     public int colliderLevelOfDetailIndex;
     public LODInfo[] detailLevels;
-    public NavMeshSurface navMeshSurface;
+    private NavMeshSurface navMeshSurface;
 
     public Material terrainMaterial;
 
@@ -29,11 +29,17 @@ public class PresetBuilder : MonoBehaviour
 
     public void BuildPreset(Action<GameObject, string> IsDone)
     {
+        loadedChunks = 0;
         Debug.Log("Started building prefab!");
         this.IsDoneCallback = IsDone;
         textureApplication.ApplyToMaterial(terrainMaterial);
         textureApplication.UpdateMeshHeights(terrainMaterial, simulationSettings.HeightMapSettings.MinHeight, simulationSettings.HeightMapSettings.MaxHeight);
         world = new GameObject("World");
+        var navMeshSurfaceGO = new GameObject("NavMeshSurface");
+        navMeshSurfaceGO.transform.parent = world.transform;
+        NavMeshSurface navMeshSurface = navMeshSurfaceGO.AddComponent<NavMeshSurface>();
+        this.navMeshSurface = navMeshSurface;
+        this.navMeshSurface.useGeometry = NavMeshCollectGeometry.PhysicsColliders;
         worlds.Add(world);
 
         for (int y = 0; y < simulationSettings.yFixedSize; y++)
@@ -52,6 +58,7 @@ public class PresetBuilder : MonoBehaviour
                     world.transform,
                     null,
                     terrainMaterial,
+                    false,
                     OnChunkLoaded
                 );
                 fixedSizeChunks.Add(newChunk);

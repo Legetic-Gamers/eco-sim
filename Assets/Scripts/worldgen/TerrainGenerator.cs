@@ -136,7 +136,7 @@ public class TerrainGenerator : MonoBehaviour
                     }
                     else
                     {
-                        TerrainChunk newChunk = new TerrainChunk(viewedChunkCoordinate, heightMapSettings, meshSettings, waterSettings, objectPlacementSettings, false, detailLevels, colliderLevelOfDetailIndex, transform, viewer, mapMaterial);
+                        TerrainChunk newChunk = new TerrainChunk(viewedChunkCoordinate, heightMapSettings, meshSettings, waterSettings, objectPlacementSettings, false, detailLevels, colliderLevelOfDetailIndex, transform, viewer, mapMaterial, true);
                         terrainChunkDictionary.Add(viewedChunkCoordinate, newChunk);
                         newChunk.onVisibilityChanged += OnTerrainChunkVisibilityChanged;
                         newChunk.Load();
@@ -152,7 +152,7 @@ public class TerrainGenerator : MonoBehaviour
         {
             for (int x = 0; x < fixedSizeX; x++)
             {
-                TerrainChunk newChunk = new TerrainChunk(new Vector2(x - fixedSizeX / 2, y - fixedSizeY / 2), heightMapSettings, meshSettings, waterSettings, objectPlacementSettings, true, detailLevels, colliderLevelOfDetailIndex, transform, viewer, mapMaterial, OnChunkLoaded);
+                TerrainChunk newChunk = new TerrainChunk(new Vector2(x - fixedSizeX / 2, y - fixedSizeY / 2), heightMapSettings, meshSettings, waterSettings, objectPlacementSettings, true, detailLevels, colliderLevelOfDetailIndex, transform, viewer, mapMaterial, true, OnChunkLoaded);
                 fixedSizeChunks.Add(newChunk);
                 newChunk.Load();
                 newChunk.SetCollisionMesh();

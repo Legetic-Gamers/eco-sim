@@ -17,6 +17,7 @@ public class TerrainChunk
     MeshRenderer meshRenderer;
     MeshFilter meshFilter;
     MeshCollider meshCollider;
+    SerializeMesh serializeMesh;
 
 
     // Endless terrain
@@ -42,7 +43,7 @@ public class TerrainChunk
 
     ObjectPlacementSettings objectPlacementSettings;
 
-    public TerrainChunk(Vector2 coordinate, HeightMapSettings heightMapSettings, MeshSettings meshSettings, WaterSettings waterSettings, ObjectPlacementSettings objectPlacementSettings, bool fixedTerrain, LODInfo[] detailLevels, int colliderLevelOfDetailIndex, Transform parent, Transform viewer, Material material, System.Action OnChunkLoaded = null)
+    public TerrainChunk(Vector2 coordinate, HeightMapSettings heightMapSettings, MeshSettings meshSettings, WaterSettings waterSettings, ObjectPlacementSettings objectPlacementSettings, bool fixedTerrain, LODInfo[] detailLevels, int colliderLevelOfDetailIndex, Transform parent, Transform viewer, Material material, bool placeObjects, System.Action OnChunkLoaded = null)
     {
         this.coordinate = coordinate;
         this.detailLevels = detailLevels;
@@ -62,6 +63,7 @@ public class TerrainChunk
         meshRenderer = meshObject.AddComponent<MeshRenderer>();
         meshFilter = meshObject.AddComponent<MeshFilter>();
         meshCollider = meshObject.AddComponent<MeshCollider>();
+        serializeMesh = meshObject.AddComponent<SerializeMesh>();
 
         meshRenderer.material = material;
 
@@ -78,7 +80,8 @@ public class TerrainChunk
             if (waterSettings.GenerateWater) terrainMesh.updateCallback += SetWater;
             if (OnChunkLoaded != null)
                 terrainMesh.updateCallback += OnChunkLoaded;
-            terrainMesh.updateCallback += PlaceObjects;
+            if (placeObjects)
+                terrainMesh.updateCallback += PlaceObjects;
             SetVisible(true);
         }
         else
@@ -129,6 +132,7 @@ public class TerrainChunk
             if (terrainMesh.hasMesh)
             {
                 meshFilter.mesh = terrainMesh.mesh;
+                serializeMesh.Serialize();
             }
             else if (!terrainMesh.hasRequestedMesh)
             {
