@@ -86,27 +86,24 @@ public class DumbAgent : Agent, IAgent
         
         //Add observations for food
         sensor.AddObservation(nearestFoodDistance);
-        sensor.AddObservation(nearestFood.x);
-        sensor.AddObservation(nearestFood.z);
+        sensor.AddObservation(nearestFood);
         sensor.AddObservation(animalModel.GetEnergyPercentage);
         
         //Add observations for water
         sensor.AddObservation(nearestWaterDistance);
-        sensor.AddObservation(nearestWater.x);
-        sensor.AddObservation(nearestWater.z);
+        sensor.AddObservation(nearestWater);
         sensor.AddObservation(animalModel.GetHydrationPercentage);
         
         //Add observations for mate
         sensor.AddObservation(potentialMateDistance);
-        sensor.AddObservation(potentialMate.x);
-        sensor.AddObservation(potentialMate.z);
+        sensor.AddObservation(potentialMate);
         sensor.AddObservation(animalModel.WantingOffspring);
         
         
         //Add agents velocity (as a direction) to observations
         Vector3 velocity = transform.InverseTransformDirection(animalController.agent.velocity);
-        sensor.AddObservation(velocity.x);
-        sensor.AddObservation(velocity.z);
+        sensor.AddObservation(velocity);
+
 
     }
 
@@ -114,22 +111,14 @@ public class DumbAgent : Agent, IAgent
     //steering inspired by: https://github.com/Unity-Technologies/ml-agents/blob/release_2_verified_docs/Project/Assets/ML-Agents/Examples/FoodCollector/Scripts/FoodCollectorAgent.cs
     public override void OnActionReceived(ActionBuffers actions)
     {
-
-        AddReward(-0.0025f * 0.1f);
         Vector3 dirToGo = transform.forward;
-        /*
-        //binary possiblity 1 or 0
-        int run = actions.DiscreteActions[0];
-
-        //if run is 1, set running speed
-        float speedModifier = run == 1 ? AnimalController.RunningSpeed : AnimalController.JoggingSpeed;
-        */
         
         //Continuous actions are preclamped by mlagents [-1, 1]
         float rotationAngle = actions.ContinuousActions[0] * 110; //90
         
-        //Give penalty based on how much rotation is made. 0 is no rotation and 1 (or -1) is max rotation.
-        AddReward(- Math.Abs(actions.ContinuousActions[0]) * 0.0050f);
+        //Give reward based on how much rotation is made. 0 is no rotation and 1 (or -1) is max rotation.
+        //positive reward is better for shaping desired behavior
+        AddReward(0.005f - Math.Abs(actions.ContinuousActions[0]) * 0.005f);
         
         //Rotate vector based on rotation from the action
         dirToGo = Quaternion.AngleAxis(rotationAngle, Vector3.up) * dirToGo;
@@ -141,7 +130,6 @@ public class DumbAgent : Agent, IAgent
 
         //Handle speed
         animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier;
-        animalModel.currentSpeed *= speedModifier;
         animalController.agent.speed = animalModel.currentSpeed * Time.timeScale;
         
         NavigationUtilities.NavigateRelative(animalController, dirToGo, 1 << NavMesh.GetAreaFromName("Walkable"));
@@ -228,28 +216,33 @@ public class DumbAgent : Agent, IAgent
             reward /= animalModel.traits.maxEnergy;
         }
 
-        AddReward(0.1f);
+        AddReward(reward * 0.1f);
     }
     
     private void HandleMate(GameObject obj)
     {
         //SetReward(1f);
-        AddReward(1f);
+        AddReward(2f);
         //Task achieved
         onEpisodeEnd?.Invoke(100f);
         EndEpisode();
     }
-    
-    private void HandleBirth(object sender, AnimalController.OnBirthEventArgs e)
+
+    private void PreRequestDecision()
     {
-        
-     }
+        //make sure no decision is taken when a blocking state is running
+        if (!(fsm.currentState is EatingState) || !(fsm.currentState is DrinkingState) ||
+            !(fsm.currentState is MatingState))
+        {
+            RequestDecision();
+        }
+    }
     
     //Listen to when parameters or senses were updated.
     private void EventSubscribe()
     {
         //Request decision on every sense tick
-        eventPublisher.onSenseTickEvent += RequestDecision;
+        eventPublisher.onSenseTickEvent += PreRequestDecision;
         animalController.deadState.onDeath += HandleDeath;
         animalController.eatingState.onEatFood += HandleEat;
         animalController.matingState.onMate += HandleMate;
@@ -259,7 +252,7 @@ public class DumbAgent : Agent, IAgent
 
     public void EventUnsubscribe()
     {
-        eventPublisher.onSenseTickEvent -= RequestDecision;
+        eventPublisher.onSenseTickEvent -= PreRequestDecision;
         animalController.deadState.onDeath -= HandleDeath;
         animalController.eatingState.onEatFood -= HandleEat;
         animalController.matingState.onMate -= HandleMate;
