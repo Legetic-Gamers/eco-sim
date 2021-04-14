@@ -142,6 +142,13 @@ public class ObjectPooler : MonoBehaviour
         {
             GameObject animalObj;
             (animalObj = animalController.gameObject).SetActive(false);
+            AnimalModel.CauseOfDeath cause;
+            AnimalModel am = animalController.animalModel;
+            if (am.currentEnergy == 0) cause = AnimalModel.CauseOfDeath.Hunger;
+            if (am.currentHealth == 0) cause = AnimalModel.CauseOfDeath.Health;
+            if (am.currentHydration == 0) cause = AnimalModel.CauseOfDeath.Hydration;
+            else cause = AnimalModel.CauseOfDeath.Eaten;
+            dh.LogDeadAnimal(am, cause, (transform.position - animalController.startVector).magnitude);
 
             switch (animalController.animalModel)
             {
