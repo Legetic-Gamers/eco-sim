@@ -81,10 +81,11 @@ namespace ViewController
             }
 
             float r = Random.Range(0, 1f);
-            float rx = Random.Range(-5f, 5f);
-            float rz = Random.Range(-5f, 5f);
-            // 5% chance of reproducing every 2 seconds if age and size restrictions are met.
-            if (plantModel.plantAge > 30 && plantModel.nutritionValue > 15 && !plantModel.isEaten && r > 0.95)
+            float rx = Random.Range(-10f, 10f);
+            float rz = Random.Range(-10f, 10f);
+            // chance of reproducing every 2 seconds if age and size restrictions are met.
+            //if (plantModel.nutritionValue > 15 && !plantModel.isEaten && r > 0.95) 
+            if (plantModel.plantAge > 15 && plantModel.nutritionValue > 15 && !plantModel.isEaten && r > 0.95)
             {
                 float height = 0;
                 bool isHit = false;
