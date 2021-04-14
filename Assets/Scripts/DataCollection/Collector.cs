@@ -85,15 +85,15 @@ namespace DataCollection
             deerStatsPerGenVar = new List<List<float>>();
             bearStatsPerGenVar = new List<List<float>>();
             
-            for (int i = 0; i < cap; i++) rabbitStatsPerGenMean.Add(new List<float>{0});
-            for (int i = 0; i < cap; i++) wolfStatsPerGenMean.Add(new List<float>{0});
-            for (int i = 0; i < cap; i++) deerStatsPerGenMean.Add(new List<float>{0});
-            for (int i = 0; i < cap; i++) bearStatsPerGenMean.Add(new List<float>{0});
+            for (int i = 0; i < cap; i++) rabbitStatsPerGenMean.Add(new List<float>{0, 0});
+            for (int i = 0; i < cap; i++) wolfStatsPerGenMean.Add(new List<float>{0, 0});
+            for (int i = 0; i < cap; i++) deerStatsPerGenMean.Add(new List<float>{0, 0});
+            for (int i = 0; i < cap; i++) bearStatsPerGenMean.Add(new List<float>{0, 0});
             
-            for (int i = 0; i < cap; i++) rabbitStatsPerGenVar.Add(new List<float>{0});
-            for (int i = 0; i < cap; i++) wolfStatsPerGenVar.Add(new List<float>{0});
-            for (int i = 0; i < cap; i++) deerStatsPerGenVar.Add(new List<float>{0});
-            for (int i = 0; i < cap; i++) bearStatsPerGenVar.Add(new List<float>{0});
+            for (int i = 0; i < cap; i++) rabbitStatsPerGenVar.Add(new List<float>{0, 0});
+            for (int i = 0; i < cap; i++) wolfStatsPerGenVar.Add(new List<float>{0, 0});
+            for (int i = 0; i < cap; i++) deerStatsPerGenVar.Add(new List<float>{0, 0});
+            for (int i = 0; i < cap; i++) bearStatsPerGenVar.Add(new List<float>{0, 0});
 
             totalAnimalsAlivePerGeneration = new List<int> {0};
 
@@ -152,6 +152,7 @@ namespace DataCollection
         /// <param name="am"> Animal Model containing traits.</param>
         public void CollectBirth(AnimalModel am)
         {
+            
             int gen = am.generation;
 
             // Changes the referenced lists depending on the species of the animal. 
