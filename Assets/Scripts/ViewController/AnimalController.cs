@@ -491,7 +491,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     IEnumerator GiveBirth(float childEnergy, float childHydration, float laborTime,
         AnimalController otherParentAnimalController)
     {
-        yield return new WaitForSeconds(laborTime);
+        yield return new WaitForSeconds(laborTime / Time.timeScale);
         AnimalModel childModel = animalModel.Mate(otherParentAnimalController.animalModel);
         SpawnNew?.Invoke(childModel, transform.position, childEnergy, childHydration);
         

@@ -8,6 +8,8 @@ TagManager:
   - Water
   - Plant
   - Wall
+  - FxTemporaire
+  - Music
   layers:
   - Default
   - TransparentFX

@@ -2720,10 +2720,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0ca804d6b18f6d4db4ebe14203336f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animalSound: {fileID: 8300000, guid: 7e4289455ecb1465596eaeefe049e379, type: 3}
+  animalSound: {fileID: 0}
   walking: {fileID: 8300000, guid: b8d66fbf2a4c44b208b86bdcaf684983, type: 3}
-  eating: {fileID: 8300000, guid: 21d39ec6a10f64bef8e113d2db0ce741, type: 3}
-  running: {fileID: 0}
+  eating: {fileID: 8300000, guid: 39081a8f8fcfc43319c8f687e415712a, type: 3}
+  running: {fileID: 8300000, guid: b8d66fbf2a4c44b208b86bdcaf684983, type: 3}
   attacking: {fileID: 0}
   death: {fileID: 0}
   sleeping: {fileID: 0}
@@ -2798,7 +2798,7 @@ LineRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5945667779142240406}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1

@@ -11681,6 +11681,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8722570321270117107}
   - component: {fileID: 8722570321270117106}
+  - component: {fileID: 7716290158389592414}
   m_Layer: 5
   m_Name: MenuController
   m_TagString: Untagged
@@ -11723,6 +11724,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d341a16efd494e6fb4899e57e187c40, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &7716290158389592414
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8722570321270117105}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f87c457c008445aa6ae5f2941ccfecc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioMixer: {fileID: 24100000, guid: 62677725e18604efdabffa533e880b0c, type: 2}
+  slider: {fileID: 8722570321987562501}
 --- !u!1 &8722570321281828037
 GameObject:
   m_ObjectHideFlags: 0
@@ -18481,8 +18496,8 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8722570322139641945}
-        m_TargetAssemblyTypeName: Menus.OptionsMenu, ScriptAssembly
+      - m_Target: {fileID: 7716290158389592414}
+        m_TargetAssemblyTypeName: Menus.AudioSettings, ScriptAssembly
         m_MethodName: SetVolume
         m_Mode: 0
         m_Arguments:
@@ -19896,8 +19911,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5aa68fee57324b42a982912710ea1980, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  audioMixer: {fileID: 24100000, guid: 62677725e18604efdabffa533e880b0c, type: 2}
-  alwaysShowParameterUI: 0
 --- !u!1 &8722570322143391846
 GameObject:
   m_ObjectHideFlags: 0
