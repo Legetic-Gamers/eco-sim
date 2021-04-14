@@ -69,9 +69,9 @@ public class DumbAgent : Agent, IAgent
         Vector3 potentialMate = animalController.goToMate.GetFoundMate()?.transform.position ?? thisPosition;
         
         //Get Vector between animal and targets
-        nearestFood = nearestFood - thisPosition;
-        nearestWater = nearestWater - thisPosition;
-        potentialMate = potentialMate - thisPosition;
+        nearestFood = transform.InverseTransformPoint(nearestFood);
+        nearestWater = transform.InverseTransformPoint(nearestWater);
+        potentialMate = transform.InverseTransformPoint(potentialMate);
 
         //Get the magnitude of nearestFood, nearestWater potentialMate. (Normalized)
         float maxPercievableDistance = animalController.animalModel.traits.viewRadius;
@@ -79,24 +79,21 @@ public class DumbAgent : Agent, IAgent
         float nearestWaterDistance = nearestWater.magnitude / maxPercievableDistance;
         float potentialMateDistance = potentialMate.magnitude / maxPercievableDistance;
         
-        //Convert to relative vector to animal
-        nearestFood = transform.InverseTransformDirection(nearestFood);
-        nearestWater = transform.InverseTransformDirection(nearestWater);
-        potentialMate = transform.InverseTransformDirection(potentialMate);
+        
         
         //Add observations for food
         sensor.AddObservation(nearestFoodDistance);
-        sensor.AddObservation(nearestFood);
+        sensor.AddObservation(nearestFood.normalized);
         sensor.AddObservation(animalModel.GetEnergyPercentage);
         
         //Add observations for water
         sensor.AddObservation(nearestWaterDistance);
-        sensor.AddObservation(nearestWater);
+        sensor.AddObservation(nearestWater.normalized);
         sensor.AddObservation(animalModel.GetHydrationPercentage);
         
         //Add observations for mate
         sensor.AddObservation(potentialMateDistance);
-        sensor.AddObservation(potentialMate);
+        sensor.AddObservation(potentialMate.normalized);
         sensor.AddObservation(animalModel.WantingOffspring);
         
         
@@ -126,6 +123,9 @@ public class DumbAgent : Agent, IAgent
 
         float speedModifier = actions.ContinuousActions[1];
         speedModifier = 0.5f * speedModifier + 0.5f; //make sure that function of interval [-1,1] maps to [0,1]
+        
+        //Give reward for moving forward
+        AddReward(speedModifier * 0.005f);
 
 
         //Handle speed
@@ -178,14 +178,10 @@ public class DumbAgent : Agent, IAgent
     
     private void HandleDrink(GameObject water, float currentHydration)
     {
-        float reward = 0f;
-        if (water.gameObject.CompareTag("Water"))
-        {
-            // the reward should be proportional to how much hydration was gained when drinking
-            reward = animalModel.traits.maxHydration - currentHydration;
-            // normalize reward as a percentage
-            reward /= animalModel.traits.maxHydration;
-        }
+        // the reward should be proportional to how much hydration was gained when drinking
+        float reward = animalModel.traits.maxHydration - currentHydration;
+        // normalize reward as a percentage
+        reward /= animalModel.traits.maxHydration;
         //AddReward(reward * 0.1f);
         AddReward(reward * 0.1f);
     }

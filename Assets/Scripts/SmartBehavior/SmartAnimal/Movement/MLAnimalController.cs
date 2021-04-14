@@ -12,10 +12,12 @@ public class MLAnimalController : AnimalController
         base.Awake();
         animalModel = new RabbitModel(new Traits(1f, 100, 100, 
             100, 6.65f, 5f, 
-            10,2000, 10, 
+            1,2000, 10, 
             160, 13, 7), 0);
+        agent.acceleration *= Time.timeScale;
+        agent.angularSpeed *= Time.timeScale;
     }
-    
+
     public override void ChangeModifiers(State state)
     {
         //Debug.Log("Changing modifiers for state: " + state.ToString());
@@ -62,7 +64,7 @@ public class MLAnimalController : AnimalController
                 speedModifier = 0f;
                 break;
             default:
-                energyModifier = 0.5f;
+                energyModifier = 0.35f;
                 hydrationModifier = 0.5f;
                 reproductiveUrgeModifier = 20f;
                 speedModifier = JoggingSpeed;
@@ -73,6 +75,32 @@ public class MLAnimalController : AnimalController
     public override Vector3 getNormalizedScale()
     {
         return new Vector3(1, 1, 1);
+    }
+
+    protected override void SetPhenotype()
+    {
+        //gameObject.transform.localScale = getNormalizedScale() * animalModel.traits.size;
+    }
+
+    public override void UpdateParameters()
+    {
+        //The age will increase 2 per 2 seconds.
+        animalModel.age += 1;
+
+        // energy
+        animalModel.currentEnergy -= (animalModel.age + animalModel.currentSpeed +
+                                      animalModel.traits.viewRadius / 10 + animalModel.traits.hearingRadius / 10)
+                                     * animalModel.traits.size * energyModifier;
+
+        // hydration
+        animalModel.currentHydration -= animalModel.traits.size *
+                                        (1 +
+                                         animalModel.currentSpeed / animalModel.traits.endurance *
+                                         hydrationModifier);
+
+        // reproductive urge
+        animalModel.reproductiveUrge += 0.01f * reproductiveUrgeModifier;
+
     }
 
     

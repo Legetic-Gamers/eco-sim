@@ -7,12 +7,9 @@ using AnimalsV2.States.AnimalsV2.States;
 using DataCollection;
 using DefaultNamespace;
 using Model;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.UIElements;
 using ViewController;
-using ViewController.Senses;
 using Debug = UnityEngine.Debug;
 using Random = System.Random;
 
@@ -75,8 +72,8 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     [HideInInspector] public float speedModifier = JoggingSpeed; //100% of maxSpeed in model
 
     //Timescale stuff
-    private float baseAcceleration;
-    private float baseAngularSpeed;
+    protected float baseAcceleration;
+    protected float baseAngularSpeed;
 
     //target lists
     public List<GameObject> visibleHostileTargets = new List<GameObject>();
@@ -359,7 +356,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     }
 
     //Set animals size based on traits.
-    private void SetPhenotype()
+    protected virtual void SetPhenotype()
     {
         gameObject.transform.localScale = getNormalizedScale() * animalModel.traits.size;
     }
