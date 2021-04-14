@@ -152,7 +152,6 @@ namespace DataCollection
         /// <param name="am"> Animal Model containing traits.</param>
         public void CollectBirth(AnimalModel am)
         {
-            
             int gen = am.generation;
 
             // Changes the referenced lists depending on the species of the animal. 
@@ -182,7 +181,7 @@ namespace DataCollection
             
             // Update the number of births this minute
             UpdateBirths(am);
-
+            
             // Finally add to the total of animals
             if (totalAnimalsAlivePerGeneration.Count <= gen) totalAnimalsAlivePerGeneration.Add(1);
             else totalAnimalsAlivePerGeneration[gen] += 1;

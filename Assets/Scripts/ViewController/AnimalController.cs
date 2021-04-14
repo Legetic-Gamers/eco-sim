@@ -117,9 +117,6 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         goToMate = new GoToMate(this, fsm);
         waitingState = new Waiting(this, fsm);
         
-        fsm.Initialize(wanderState);
-
-        animationController = new AnimationController(this);
         agent = GetComponent<NavMeshAgent>();
         
         
@@ -151,26 +148,25 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     /// </summary>
     public void onObjectSpawn()
     {
+        animationController = new AnimationController(this);
         // Init the NavMesh agent
         agent.autoBraking = true;
-
         animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
 
         //Can be used later.
         baseAngularSpeed = agent.angularSpeed;
         baseAcceleration = agent.acceleration;
-        
+        fsm.Initialize(wanderState);
         agent.speed = animalModel.currentSpeed * Time.timeScale;
         agent.acceleration *= Time.timeScale;
         agent.angularSpeed *= Time.timeScale;
         dh = FindObjectOfType<DataHandler>();
-        dh.LogNewAnimal(animalModel);
+        
         //Debug.Log(agent.autoBraking);
         tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
         EventSubscribe();
-
+        
         SetPhenotype();
-
         startVector = transform.position;
         StartCoroutine(UpdateStatesLogicLoop());
     }
@@ -367,7 +363,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         
         matingState.onMate -= Mate;
 
-        animationController.EventUnsubscribe();
+        animationController?.EventUnsubscribe();
     }
 
 
@@ -490,11 +486,9 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     
     IEnumerator GiveBirth(float childEnergy, float childHydration, float laborTime, AnimalController otherParentAnimalController) 
     {
-        
         yield return new WaitForSeconds(laborTime / Time.timeScale);
         AnimalModel childModel = animalModel.Mate(otherParentAnimalController.animalModel);
         SpawnNew?.Invoke(childModel, transform.position, childEnergy, childHydration);
-        Debug.Log(laborTime / Time.timeScale);
         // invoke only once when birthing multiple children
         if (animalModel.isPregnant) ActionPregnant?.Invoke(false);
         animalModel.isPregnant = false;
