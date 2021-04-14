@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using DataCollection;
 using DefaultNamespace;
 using Menus;
 using UnityEngine;
@@ -40,6 +41,7 @@ public class ObjectPooler : MonoBehaviour
     public Dictionary<string, Stack<GameObject>> stackDictionary;
     private bool showCanvasForAll;
     private bool isFinishedPlacing;
+    private DataHandler dh;
 
     private void Awake()
     {
@@ -55,6 +57,11 @@ public class ObjectPooler : MonoBehaviour
         }
         showCanvasForAll = OptionsMenu.alwaysShowParameterUI;
         isFinishedPlacing = false;
+    }
+
+    private void Start()
+    {
+        dh = FindObjectOfType<DataHandler>();
     }
 
     /// <summary>
@@ -98,10 +105,9 @@ public class ObjectPooler : MonoBehaviour
         {
             objectToSpawn.SetActive(true);
             objectToSpawn.GetComponent<IPooledObject>()?.onObjectSpawn();
-
             if (objectToSpawn.TryGetComponent(out AnimalController animalController))
             {
-
+                dh.LogNewAnimal(animalController.animalModel);
                 animalController.deadState.onDeath += HandleDeadAnimal;
                 animalController.SpawnNew += HandleBirthAnimal;
                 animalController.parameterUI.gameObject.SetActive(showCanvasForAll);
@@ -136,6 +142,13 @@ public class ObjectPooler : MonoBehaviour
         {
             GameObject animalObj;
             (animalObj = animalController.gameObject).SetActive(false);
+            AnimalModel.CauseOfDeath cause;
+            AnimalModel am = animalController.animalModel;
+            if (am.currentEnergy == 0) cause = AnimalModel.CauseOfDeath.Hunger;
+            if (am.currentHealth == 0) cause = AnimalModel.CauseOfDeath.Health;
+            if (am.currentHydration == 0) cause = AnimalModel.CauseOfDeath.Hydration;
+            else cause = AnimalModel.CauseOfDeath.Eaten;
+            dh.LogDeadAnimal(am, cause, (transform.position - animalController.startVector).magnitude);
 
             switch (animalController.animalModel)
             {
@@ -186,12 +199,14 @@ public class ObjectPooler : MonoBehaviour
         {
             AnimalController childController = child.GetComponent<AnimalController>();
             childController.animalModel = childModel;
+            Debug.Log(childController.animalModel.generation);
             childController.animalModel.currentEnergy = energy;
             childController.animalModel.currentHydration = hydration;
             childController.parameterUI.gameObject.SetActive(showCanvasForAll);
 
             // update the childs speed (in case of mutation).
             childController.animalModel.traits.maxSpeed = 1;
+            dh.LogNewAnimal(childModel);
         }
     }
 

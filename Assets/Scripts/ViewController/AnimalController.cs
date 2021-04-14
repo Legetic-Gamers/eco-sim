@@ -4,15 +4,11 @@ using System.Collections.Generic;
 using AnimalsV2;
 using AnimalsV2.States;
 using AnimalsV2.States.AnimalsV2.States;
-using DataCollection;
 using DefaultNamespace;
 using Model;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.UIElements;
 using ViewController;
-using ViewController.Senses;
 using Debug = UnityEngine.Debug;
 using Random = System.Random;
 using UnityRandom = UnityEngine.Random;
@@ -33,7 +29,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     public Action<AnimalModel, Vector3, float, float> SpawnNew;
 
     // Start vector for the animal, used in datahandler distance travelled
-    private Vector3 startVector;
+    public Vector3 startVector;
 
     // AnimalParticleManager is subscribed to these
     public event Action<bool> ActionPregnant;
@@ -50,9 +46,6 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
 
     public FiniteStateMachine fsm;
     private AnimationController animationController;
-
-    // Add a data handler
-    private DataHandler dh;
 
     //States
     public FleeingState fleeingState;
@@ -117,9 +110,6 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         goToMate = new GoToMate(this, fsm);
         waitingState = new Waiting(this, fsm);
         
-        fsm.Initialize(wanderState);
-
-        animationController = new AnimationController(this);
         agent = GetComponent<NavMeshAgent>();
         
         
@@ -151,26 +141,24 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     /// </summary>
     public void onObjectSpawn()
     {
+        animationController = new AnimationController(this);
         // Init the NavMesh agent
         agent.autoBraking = true;
-
         animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
 
         //Can be used later.
         baseAngularSpeed = agent.angularSpeed;
         baseAcceleration = agent.acceleration;
-        
+        fsm.Initialize(wanderState);
         agent.speed = animalModel.currentSpeed * Time.timeScale;
         agent.acceleration *= Time.timeScale;
         agent.angularSpeed *= Time.timeScale;
-        dh = FindObjectOfType<DataHandler>();
-        dh.LogNewAnimal(animalModel);
+
         //Debug.Log(agent.autoBraking);
         tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
         EventSubscribe();
-
+        
         SetPhenotype();
-
         startVector = transform.position;
         StartCoroutine(UpdateStatesLogicLoop());
     }
@@ -367,7 +355,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         
         matingState.onMate -= Mate;
 
-        animationController.EventUnsubscribe();
+        animationController?.EventUnsubscribe();
     }
 
 
@@ -488,13 +476,11 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         }
     }
     
-    IEnumerator GiveBirth(float childEnergy, float childHydration, float laborTime,
-        AnimalController otherParentAnimalController)
+    IEnumerator GiveBirth(float childEnergy, float childHydration, float laborTime, AnimalController otherParentAnimalController) 
     {
         yield return new WaitForSeconds(laborTime / Time.timeScale);
         AnimalModel childModel = animalModel.Mate(otherParentAnimalController.animalModel);
         SpawnNew?.Invoke(childModel, transform.position, childEnergy, childHydration);
-        
         // invoke only once when birthing multiple children
         if (animalModel.isPregnant) ActionPregnant?.Invoke(false);
         animalModel.isPregnant = false;
@@ -507,13 +493,6 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     //should be refactored so that this logic is in AnimalModel
     private void HandleDeathStatus(AnimalController animalController)
     {
-        AnimalModel.CauseOfDeath cause;
-        if (animalModel.currentEnergy == 0) cause = AnimalModel.CauseOfDeath.Hunger;
-        if (animalModel.currentHealth == 0) cause = AnimalModel.CauseOfDeath.Health;
-        if (animalModel.currentHydration == 0) cause = AnimalModel.CauseOfDeath.Hydration;
-        else cause = AnimalModel.CauseOfDeath.Eaten;
-        dh.LogDeadAnimal(animalModel, cause, (transform.position - startVector).magnitude);
-
         //Stop animal from giving birth once dead.
         StopCoroutine("GiveBirth");
         StopAllCoroutines();
