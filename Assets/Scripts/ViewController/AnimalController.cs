@@ -488,13 +488,13 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         }
     }
     
-    IEnumerator GiveBirth(float childEnergy, float childHydration, float laborTime,
-        AnimalController otherParentAnimalController)
+    IEnumerator GiveBirth(float childEnergy, float childHydration, float laborTime, AnimalController otherParentAnimalController) 
     {
+        
         yield return new WaitForSeconds(laborTime / Time.timeScale);
         AnimalModel childModel = animalModel.Mate(otherParentAnimalController.animalModel);
         SpawnNew?.Invoke(childModel, transform.position, childEnergy, childHydration);
-        
+        Debug.Log(laborTime / Time.timeScale);
         // invoke only once when birthing multiple children
         if (animalModel.isPregnant) ActionPregnant?.Invoke(false);
         animalModel.isPregnant = false;

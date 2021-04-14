@@ -26,7 +26,7 @@ public class WolfModel : AnimalModel, IEdible
         Traits childTraits = traits.Crossover(otherParent.traits, age, otherParent.age);
         childTraits.Mutation();
         
-        return new WolfModel(childTraits,(int) Math.Max(age, otherParent.age) + 1);
+        return new WolfModel(childTraits,Math.Max(generation, otherParent.generation) + 1);
     }
     
     

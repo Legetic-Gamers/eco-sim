@@ -221,6 +221,8 @@ namespace DataCollection
         /// Update the age statistics when animals die. 
         /// </summary>
         /// <param name="am"> Animal Model of killed animal. </param>
+        /// <param name="cause"> Type of death </param>
+        /// <param name="distanceTravelled"> Distance travelled to log </param>
         public void CollectDeath(AnimalModel am, AnimalModel.CauseOfDeath cause, float distanceTravelled)
         {
             int gen = am.generation;
@@ -237,7 +239,7 @@ namespace DataCollection
                 
             for (int i = animalMean[11].Count - 1; i < gen; i++) animalMean[11].Add(0);
             for (int i = animalMean[11].Count - 1; i < gen; i++) animalVar[11].Add(0);
-
+            
             (float meanAge, float varAge) =
                 GetNewMeanVariance(animalMean[12][gen], animalVar[12][gen], am.age, totalDeadAnimals[gen]);
             
