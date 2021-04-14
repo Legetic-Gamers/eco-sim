@@ -15,6 +15,7 @@ using ViewController;
 using ViewController.Senses;
 using Debug = UnityEngine.Debug;
 using Random = System.Random;
+using UnityRandom = UnityEngine.Random;
 
 
 public abstract class AnimalController : MonoBehaviour, IPooledObject
@@ -171,6 +172,17 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         SetPhenotype();
 
         startVector = transform.position;
+        StartCoroutine(UpdateStatesLogicLoop());
+    }
+    
+    private IEnumerator UpdateStatesLogicLoop()
+    {
+        while (true)
+        {
+            fsm.UpdateStatesLogic();
+            yield return new WaitForSeconds(UnityRandom.Range(0.5f, 1f)/Time.timeScale);
+            
+        }
     }
 
     /* /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\ */
@@ -310,7 +322,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
             tickEventPublisher.onParamTickEvent += UpdateParameters;
             tickEventPublisher.onParamTickEvent += CheckDeath;
             // every 0.5 sec
-            tickEventPublisher.onSenseTickEvent += fsm.UpdateStatesLogic;
+            //tickEventPublisher.onSenseTickEvent += fsm.UpdateStatesLogic;
             
         }
 
@@ -337,7 +349,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
             tickEventPublisher.onParamTickEvent -= UpdateParameters;
             tickEventPublisher.onParamTickEvent -= CheckDeath;
             // every 0.5 sec
-            tickEventPublisher.onSenseTickEvent -= fsm.UpdateStatesLogic;
+            //tickEventPublisher.onSenseTickEvent -= fsm.UpdateStatesLogic;
             
         }
 
@@ -479,7 +491,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     IEnumerator GiveBirth(float childEnergy, float childHydration, float laborTime,
         AnimalController otherParentAnimalController)
     {
-        yield return new WaitForSeconds(laborTime);
+        yield return new WaitForSeconds(laborTime / Time.timeScale);
         AnimalModel childModel = animalModel.Mate(otherParentAnimalController.animalModel);
         SpawnNew?.Invoke(childModel, transform.position, childEnergy, childHydration);
         

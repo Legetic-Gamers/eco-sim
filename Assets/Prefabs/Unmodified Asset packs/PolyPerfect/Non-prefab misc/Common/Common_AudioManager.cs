@@ -12,7 +12,7 @@ public class Common_AudioManager : MonoBehaviour
 
     [SerializeField] private int objectPoolLength = 20;
 
-    [SerializeField] private float soundDistance = 7f;
+    [SerializeField] private float soundDistance;
 
     [SerializeField] private bool logSounds = false;
 
@@ -66,6 +66,7 @@ public class Common_AudioManager : MonoBehaviour
                 instance.pool[i].clip = clip;
                 instance.pool[i].transform.position = pos;
                 instance.pool[i].gameObject.SetActive(true);
+                if (instance.pool[i].clip.name.Equals("deer-walk")) instance.pool[i].loop = true;
                 instance.pool[i].Play();
                 instance.StartCoroutine(instance.ReturnToPool(instance.pool[i].gameObject, clip.length));
                 return;
@@ -88,6 +89,6 @@ public class Common_AudioManager : MonoBehaviour
     private IEnumerator ReturnToPool(GameObject obj, float delay)
     {
         yield return new WaitForSeconds(delay);
-        obj.SetActive(false);
+        if(!obj.gameObject.GetComponent<AudioSource>().loop) obj.SetActive(false);
     }
 }

@@ -10,50 +10,46 @@ public class AnimalPlaySound : Common_PlaySound
 {
     private AnimalController animalController;
     private FiniteStateMachine fsm;
-
-    // private void Awake()
-    // {
-    //     animalController = GetComponent<AnimalController>();
-    //     
-    // }
-    //
-    // void Start()
-    // {
-    //     fsm = animalController.fsm;
-    //
-    //     EventSubscribe();
-    // }
-    //
-    // private void EventSubscribe()
-    // {
-    //     animalController.fsm.OnStateEnter += MakeStateSound;
-    //     
-    // }
-    // private void EventUnsubscribe()
-    // {
-    //     animalController.fsm.OnStateEnter -= MakeStateSound;
-    //    
-    // }
+    
+    void Start()
+    {
+        animalController = GetComponent<AnimalController>();
+        fsm = animalController.fsm;
+    
+        EventSubscribe();
+    }
+    
+    private void EventSubscribe()
+    {
+        animalController.fsm.OnStateEnter += MakeStateSound;
+        
+    }
+    private void EventUnsubscribe()
+    {
+        if(animalController != null) animalController.fsm.OnStateEnter -= MakeStateSound;
+    }
     
     private void MakeStateSound(State state)
     {
-
-        // if (state is Mating)
-        // {
-        //     AnimalSound();
-        // }
-        // else if (state is GoToState)
-        // {
-        //     Walking();
-        //     
-        // }else if (state is Eating)
-        // {
-        //     Eating();
-        // }
+        switch (state)
+        {
+            case Wander _ :
+                Walking();
+                break;
+            case EatingState _ :
+                Eating();
+                break;
+            case FleeingState _ :
+                Running();
+                break;
+            case Dead _ :
+                Death();
+                break;
+        }
     }
     
-    // private void OnDestroy()
-    // {
-    //     EventUnsubscribe();
-    // }
+    private void OnDestroy()
+    {
+        EventUnsubscribe();
+    }
 }
