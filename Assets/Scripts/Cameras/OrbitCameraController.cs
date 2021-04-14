@@ -16,7 +16,9 @@ public class OrbitCameraController : MonoBehaviour
     public MeshRenderer boundsOfWorld;
     public bool restrictToBounds;
 
+    // collision detection
     public LayerMask collisionMask;
+    private const float HitThreshold = 1.5f;
     
     public bool cameraMovementEnable;
     public bool navigateWithKeyboard;
@@ -34,22 +36,22 @@ public class OrbitCameraController : MonoBehaviour
     // camera transform
     public Vector3 newPosition;
     public Vector3 newZoom;
-    private Quaternion _newRotation;
+    private Quaternion newRotation;
 
     // mouse interaction
-    private Vector3 _dragStartPosition;
-    private Vector3 _dragCurrentPosition;
-    private Vector3 _rotateStartPosition;
-    private Vector3 _rotateCurrentPosition;
+    private Vector3 dragStartPosition;
+    private Vector3 dragCurrentPosition;
+    private Vector3 rotateStartPosition;
+    private Vector3 rotateCurrentPosition;
     
-    private bool _breakAwayFromLockOn;
+    private bool breakAwayFromLockOn;
     private bool showUI;
     // Start is called before the first frame update
     private void Start()
     {
         instance = this;
         newPosition = transform.position;
-        _newRotation = transform.rotation;
+        newRotation = transform.rotation;
         newZoom = camera.transform.localPosition;
         showUI = OptionsMenu.alwaysShowParameterUI;
     }
@@ -66,7 +68,7 @@ public class OrbitCameraController : MonoBehaviour
                 // breakaway input
                 if (Input.GetKeyDown(KeyCode.Escape) || 
                     Input.GetAxis("Vertical") != 0 || 
-                    Input.GetAxis("Horizontal") != 0) _breakAwayFromLockOn = true;
+                    Input.GetAxis("Horizontal") != 0) breakAwayFromLockOn = true;
             }
             else
             {
@@ -79,57 +81,115 @@ public class OrbitCameraController : MonoBehaviour
         HandleZoom();
         CheckCollision();
         
-        if (_breakAwayFromLockOn)
+        if (breakAwayFromLockOn)
         {
-            if (followTransform != null && followTransform.gameObject.TryGetComponent(out AnimalController animalController))
+            if (followTransform && followTransform.gameObject.TryGetComponent(out AnimalController animalController))
             {
                 animalController.parameterUI.gameObject.SetActive(showUI);
             }
             followTransform = null;
-            _breakAwayFromLockOn = false;
+            breakAwayFromLockOn = false;
         }
     }
 
     private void CheckCollision()
     {
         var cameraTransform = camera.transform;
-        Vector3 rayDir = cameraTransform.forward;
+        var cameraWorldPos = cameraTransform.position;
+        var cameraLocalPos = cameraTransform.localPosition;
+        var cameraRigPos = transform.position;
         
+        RaycastHit hit;
+        
+        var diffVector = newZoom - cameraLocalPos;
+        var zoomDiff = diffVector.magnitude;
         // zoom collision
-        Ray zoomRay = new Ray(cameraTransform.position, rayDir);
-        if (Physics.Raycast(zoomRay, out var hit, collisionMask))
+        if(zoomDiff > 0)
         {
-            float hoverError = hit.distance;
+            // 1 if same dir, 0 if perpendicular, -1 if opposite dir
+            var dotProd = Vector3.Dot(diffVector.normalized, cameraTransform.forward);
 
-            if (hoverError < 5f || newZoom.z > maxZoom)
+            // dont check collisions if zooming out
+            if (dotProd > 0)
             {
-                newZoom -= new Vector3(0, rayDir.y, rayDir.z) * (zoomAmount.z * 0.2f);
+                var zoomRay = new Ray(cameraWorldPos, diffVector);
+                if (Physics.Raycast(zoomRay, out hit, 15, collisionMask))
+                {
+                    var hitError = hit.distance - zoomDiff;
+
+                    if (hitError < HitThreshold)
+                    {
+                        diffVector = (hit.point - cameraWorldPos).normalized * (hit.distance - HitThreshold);
+                        // don't zoom past the threshold
+                        newZoom = cameraLocalPos + diffVector;
+                    }
+                }
             }
+            // smoothing / set new zoom
+            cameraTransform.localPosition = Vector3.Lerp(cameraLocalPos, newZoom, Time.deltaTime * movementTime);
+        }
+
+        
+        
+        /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
+
+        // set to newRotation, but keep the original
+        var tempRotation = transform.rotation;
+        transform.rotation = newRotation;
+        
+        // get new position of camera after rotating the rig
+        var cameraRotated = cameraTransform.position;
+        diffVector = cameraRotated - cameraWorldPos;
+        
+        // restore original rotation
+        transform.rotation = tempRotation;
+        var rotationDiff = diffVector.magnitude;
+        // rotation collision
+        if(rotationDiff > 0)
+        {
+            var zoomRay = new Ray(cameraWorldPos, diffVector);
+            if (Physics.Raycast(zoomRay, out hit, 15, collisionMask))
+            {
+                var hitError = hit.distance - rotationDiff;
+
+                if (hitError < HitThreshold)
+                {
+                    // don't rotate (because I won't calculate where to put the rotation within the threshold)
+                    newRotation = transform.rotation;
+                }
+            }
+            // smoothing / set new rotation
+            transform.rotation = Quaternion.Lerp(transform.rotation, newRotation, Time.deltaTime * movementTime);
         }
         
+        
+        
+        /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
+
+
+
+        diffVector = newPosition - cameraRigPos;
+        var movementDiff = diffVector.magnitude;
         // movement collision
-        for (var i = 1; i <= 4; i++)
+        if (movementDiff > 0)
         {
-            rayDir = i switch
+            var moveRay = new Ray(cameraWorldPos + cameraTransform.forward * 0.5f, diffVector);
+            if (Physics.Raycast(moveRay, out hit, 15, collisionMask))
             {
-                1 => Vector3.back,
-                2 => Vector3.forward,
-                3 => Vector3.left,
-                4 => Vector3.right,
-                _ => rayDir
-            };
-            Ray ray = new Ray(cameraTransform.position, rayDir);
-            if (Physics.Raycast(ray, out hit, collisionMask))
-            {
-                float hoverError = hit.distance;
-                
-                if (!(hoverError < 5f)) continue;
-                
-                newPosition -= rayDir * 0.2f;
+                var hitError = hit.distance - movementDiff;
+
+                if (hitError < HitThreshold)
+                {
+                    diffVector = (hit.point - cameraWorldPos).normalized * (hit.distance - HitThreshold);
+                    // don't move past the threshold
+                    newPosition = cameraRigPos + diffVector;
+                }
             }
+            // don't move on the y-axis
+            newPosition = new Vector3(newPosition.x, 0, newPosition.z);
+            // smoothing / set new position
+            transform.position = Vector3.Lerp(cameraRigPos, newPosition, Time.deltaTime * movementTime);
         }
-        // smoothing
-        transform.position = Vector3.Lerp(transform.position, newPosition, Time.deltaTime * movementTime);
     }
 
     private void HandleRotation()
@@ -137,32 +197,29 @@ public class OrbitCameraController : MonoBehaviour
         // mouse rotation (right mouse button)
         if (Input.GetMouseButtonDown(1))
         {
-            _rotateStartPosition = Input.mousePosition;
+            rotateStartPosition = Input.mousePosition;
         }
         // apply rotation if button is still pressed
         if (Input.GetMouseButton(1))
         {
-            _rotateCurrentPosition = Input.mousePosition;
+            rotateCurrentPosition = Input.mousePosition;
 
-            Vector3 difference = _rotateStartPosition - _rotateCurrentPosition;
+            Vector3 difference = rotateStartPosition - rotateCurrentPosition;
 
-            _rotateStartPosition = _rotateCurrentPosition;
+            rotateStartPosition = rotateCurrentPosition;
 
-            _newRotation *= Quaternion.Euler(Vector3.up * (-difference.x / 5f));
+            newRotation *= Quaternion.Euler(Vector3.up * (-difference.x / 5f));
         }
         
         // keyboard rotation
         if (Input.GetKey(KeyCode.Q))
         {
-            _newRotation *= Quaternion.Euler(Vector3.up * rotationAmount);
+            newRotation *= Quaternion.Euler(Vector3.up * rotationAmount);
         }
         if (Input.GetKey(KeyCode.E))
         {
-            _newRotation *= Quaternion.Euler(Vector3.up * -rotationAmount);
+            newRotation *= Quaternion.Euler(Vector3.up * -rotationAmount);
         }
-        
-        // smoothing
-        transform.rotation = Quaternion.Lerp(transform.rotation, _newRotation, Time.deltaTime * movementTime);
     }
 
     private void HandleZoom()
@@ -190,9 +247,6 @@ public class OrbitCameraController : MonoBehaviour
         {
             newZoom -= zoomAmount * 0.5f;
         }
-        
-        // smoothing
-        camera.transform.localPosition = Vector3.Lerp(camera.transform.localPosition, newZoom, Time.deltaTime * movementTime);
     }
 
     private void HandleMouseMovement()
@@ -207,7 +261,7 @@ public class OrbitCameraController : MonoBehaviour
 
             if (plane.Raycast(ray, out var entry))
             {
-                _dragStartPosition = ray.GetPoint(entry);
+                dragStartPosition = ray.GetPoint(entry);
             }
         }
         // apply movement if button is still pressed
@@ -219,9 +273,9 @@ public class OrbitCameraController : MonoBehaviour
 
             if (plane.Raycast(ray, out var entry))
             {
-                _dragCurrentPosition = ray.GetPoint(entry);
+                dragCurrentPosition = ray.GetPoint(entry);
 
-                newPosition = transform.position + _dragStartPosition - _dragCurrentPosition;
+                newPosition = transform.position + dragStartPosition - dragCurrentPosition;
             }
         }
     }
@@ -242,7 +296,7 @@ public class OrbitCameraController : MonoBehaviour
             if (hDir != 0) 
                 newPosition += transform.right * (movementSpeed * hDir);
         }
-
+        
         if (!restrictToBounds) return;
         
         if (transform.position.x < -boundsOfWorld.bounds.size.x / 2.0f)
