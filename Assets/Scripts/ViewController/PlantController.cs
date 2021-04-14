@@ -23,28 +23,36 @@ namespace ViewController
                 Debug.LogWarning("Center not assigned, defaulting to transform");
                 centerTransform = transform;
             }
-        }
+        } 
 
         public void Start()
         {
+            tickEventPublisher = FindObjectOfType<TickEventPublisher>();
             plantModel = new PlantModel();
-            if (tickEventPublisher)
-            {
-                tickEventPublisher = FindObjectOfType<TickEventPublisher>();
-                tickEventPublisher.onParamTickEvent += HandleDeathStatus;    
-            }
+            EventSubscribe();
 
             dh = FindObjectOfType<DataHandler>();
             dh.LogNewPlant(plantModel);
         }
+        
 
         public void OnDestroy()
         {
             if (tickEventPublisher)
             {
                 tickEventPublisher.onParamTickEvent -= HandleDeathStatus;
-                tickEventPublisher.onParamTickEvent -= HandleEaten; //TODO this does not belong here.
+                tickEventPublisher.onParamTickEvent -= HandleEaten; 
                 tickEventPublisher.onParamTickEvent -= Grow;
+            }
+        }
+
+        private void EventSubscribe()
+        {
+            if (tickEventPublisher)
+            {
+                tickEventPublisher.onParamTickEvent += HandleDeathStatus;  
+                tickEventPublisher.onParamTickEvent += HandleEaten;  
+                tickEventPublisher.onParamTickEvent += Grow;  
             }
         }
         
@@ -56,7 +64,7 @@ namespace ViewController
         
         private void Grow()
         {
-            //TODO make not stupid increment value
+            
             plantModel.plantAge += 2;
             if (plantModel.nutritionValue > PlantModel.plantMaxsize)
             {
@@ -64,9 +72,7 @@ namespace ViewController
                 SetPhenotype();
             }
             else plantModel.nutritionValue += 2;
-            
 
-            
             // plant has regrown after being eaten
             if (plantModel.isEaten && plantModel.nutritionValue > 15)
             {
@@ -78,14 +84,14 @@ namespace ViewController
             float rx = Random.Range(-5f, 5f);
             float rz = Random.Range(-5f, 5f);
             // 5% chance of reproducing every 2 seconds if age and size restrictions are met.
-            if (plantModel.plantAge > 30 && plantModel.nutritionValue > 15 && !plantModel.isEaten && r > 0.95) 
+            if (plantModel.plantAge > 30 && plantModel.nutritionValue > 15 && !plantModel.isEaten && r > 0.95)
             {
                 float height = 0;
                 bool isHit = false;
-                
+
                 var position = gameObject.transform.position;
                 Vector3 newPosition = new Vector3(position.x + rx, position.y + 100, position.z + rz);
-                Ray ray = new Ray(newPosition, gameObject.transform.TransformDirection(Vector3.down));
+                Ray ray = new Ray(newPosition, Vector3.down);
                 RaycastHit hit;
                 if (Physics.Raycast(ray, out hit, float.MaxValue))
                 {
@@ -95,9 +101,7 @@ namespace ViewController
                         isHit = true;
                     }
                 }
-
                 if (!isHit) return;
-                //GameObject offspring = Instantiate(gameObject, gameObject.transform, true);
                 GameObject offspring = Instantiate(gameObject);
                 offspring.transform.position = new Vector3(position.x + rx, height, position.z + rz);
                 PlantModel offspringModel = new PlantModel();
@@ -113,13 +117,12 @@ namespace ViewController
         {
             if (!plantModel.isEaten) return;
             gameObject.SetActive(false);
-            
-            }
+        }
     
 
         private void HandleDeathStatus()
         {
-            if (plantModel != null && plantModel.isEaten)
+            if (plantModel != null && plantModel.plantAge > PlantModel.plantMaxAge)
             {
                 dh.LogDeadPlant(plantModel);
                 Destroy(gameObject);
