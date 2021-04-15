@@ -26,7 +26,7 @@ public class TickEventPublisher : MonoBehaviour
         while (true)
         {
             onParamTickEvent?.Invoke();
-            yield return new WaitForSeconds(2.0f / Time.timeScale);
+            yield return new WaitForSeconds(2.0f);
         }
     }
     private IEnumerator SenseTickEvent()
@@ -34,7 +34,7 @@ public class TickEventPublisher : MonoBehaviour
         while (true)
         {
             onSenseTickEvent?.Invoke();
-            yield return new WaitForSeconds(.5f / Time.timeScale);
+            yield return new WaitForSeconds(.5f);
         }
     }
 
@@ -42,8 +42,8 @@ public class TickEventPublisher : MonoBehaviour
     {
         while (true)
         {
-            yield return new WaitForSeconds(60f / Time.timeScale);
             onCollectorUpdate?.Invoke();
+            yield return new WaitForSeconds(60f);
         }
     }
     
@@ -51,8 +51,8 @@ public class TickEventPublisher : MonoBehaviour
     {
         while (true)
         {
-            yield return new WaitForSeconds(2f / Time.timeScale);
             onDataHandlerUpdate?.Invoke();
+            yield return new WaitForSeconds(2f);
         }
     }
 
