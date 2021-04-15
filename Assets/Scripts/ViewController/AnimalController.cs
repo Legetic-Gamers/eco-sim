@@ -479,7 +479,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     
     IEnumerator GiveBirth(float childEnergy, float childHydration, float laborTime, AnimalController otherParentAnimalController) 
     {
-        yield return new WaitForSeconds(laborTime / Time.timeScale);
+        yield return new WaitForSeconds(laborTime);
         AnimalModel childModel = animalModel.Mate(otherParentAnimalController.animalModel);
         bool isSmart = GetComponent<AnimalBrainAgent>();
         SpawnNew?.Invoke(childModel, transform.position, childEnergy, childHydration, isSmart);
