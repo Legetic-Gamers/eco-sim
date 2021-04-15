@@ -22,13 +22,16 @@ namespace Model
 
         public PlantModel()
         {
-            nutritionValue = 30f;
+            this.nutritionValue = 0;
+            this.plantAge = 0;
         }
        
         public float GetEaten()
         {
             isEaten = true;
-            return nutritionValue;
+            float tmp = nutritionValue;
+            nutritionValue = 0;
+            return tmp;
         }
 
     }
