@@ -123,9 +123,11 @@ namespace DataCollection
             causeOfDeath = new Dictionary<AnimalModel.CauseOfDeath, int>();
             causeOfDeath.Add(AnimalModel.CauseOfDeath.Eaten, 0);
             causeOfDeath.Add(AnimalModel.CauseOfDeath.Hydration, 0);
+            causeOfDeath.Add(AnimalModel.CauseOfDeath.Age, 0);
+            causeOfDeath.Add(AnimalModel.CauseOfDeath.Energy, 0);
             causeOfDeath.Add(AnimalModel.CauseOfDeath.Hunger, 0);
             causeOfDeath.Add(AnimalModel.CauseOfDeath.Health, 0);
-
+            
             totalDeadAnimals = new List<float>();
 
             totalAnimalsAlive = 0;
@@ -256,6 +258,7 @@ namespace DataCollection
             animalVar[11][gen] = varDist;
 
             causeOfDeath[cause] = causeOfDeath[cause] += 1;
+            Debug.Log(cause.ToString());
             
             switch (am)
             {
