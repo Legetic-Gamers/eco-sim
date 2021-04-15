@@ -22,7 +22,7 @@ namespace Menus
         public GameObject endMenu;
         public Text timerText;
         private float timer = 0f;
-        public bool showTimer = true;
+
 
         private float lastGameSpeed = 1f;
 
@@ -35,19 +35,7 @@ namespace Menus
             }
         }
 
-        private IEnumerator Timer()
-        {
-            while (showTimer)
-            {
-                yield return new WaitForSeconds(1f);
-                timer += 1;
-                var time = TimeSpan.FromSeconds(timer);
-                timerText.text = $"{time.Minutes:D2}:{time.Seconds:D2}";
-                
-            } 
-
-        }
-        /*private void FixedUpdate()
+        private void FixedUpdate()
         {
             // timer is relation of in-game time and real time, fixedDeltaTime adjusts for how often FixedUpdate is called
             timer += Time.fixedDeltaTime;
@@ -55,7 +43,7 @@ namespace Menus
             timerText.text = $"{time.Minutes:D2}:{time.Seconds:D2}";
             
             //timerText.text = $"{time.Hours:D2}:{time.Minutes:D2}:{time.Seconds:D2}";
-        } */
+        } 
 
         public void Resume()
         {
@@ -105,17 +93,12 @@ namespace Menus
 
         public void Start()
         {
-            //tickEventPublisher = FindObjectOfType<TickEventPublisher>();
-            //if (tickEventPublisher)
-            //    tickEventPublisher.onSenseTickEvent += ShowTime;
             DataHandler dh = FindObjectOfType<DataHandler>();
             if (dh)
             {
                 //Bind End to action that triggers when all animals are dead
                 dh.c.onAllExtinct += End;
             }
-
-            if (showTimer) StartCoroutine(Timer());
         }
     }
 }
