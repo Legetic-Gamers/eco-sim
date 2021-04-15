@@ -113,7 +113,7 @@ public class AnimalRayBrain : Agent, IAgent
     }
     
     
-    private void HandleDeath(AnimalController animalController)
+    private void HandleDeath(AnimalController animalController, bool gotEaten)
     {
         //Penalize for every year not lived.
         AddReward(- (1 - (animalModel.age / animalModel.traits.ageLimit)));

@@ -8,7 +8,7 @@ namespace AnimalsV2.States
         public class Dead : State
         {
 
-            public Action<AnimalController> onDeath;
+            public Action<AnimalController, bool> onDeath;
             
             public Dead(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal,
                 finiteStateMachine)
@@ -23,7 +23,7 @@ namespace AnimalsV2.States
                 if (animal.agent.isActiveAndEnabled && animal.agent.isOnNavMesh)
                 {
                     animal.agent.isStopped = true;
-                    onDeath?.Invoke(animal);
+                    onDeath?.Invoke(animal, false);
                 }
                 //animal.DestroyGameObject(20f);
                 // Set state so that it can't change

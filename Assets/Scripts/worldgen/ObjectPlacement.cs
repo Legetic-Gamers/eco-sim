@@ -15,7 +15,7 @@ public class ObjectPlacement : MonoBehaviour
     public List<GameObject> groups;
     public SimulationSettings simulationSettings;
     int size;
-    private List<string> pooledObjects = new List<string> { "Rabbits", "Wolfs", "Deers", "Bears", "SmartRabbits", "SmartWolves", "SmartDeer", "SmartBear" };
+    private List<string> pooledObjects = new List<string> { "Rabbit Brown", "Wolf Grey", "Deer", "Bear", "SmartRabbit", "SmartWolf", "SmartDeer", "SmartBear" };
 
     public void Awake()
     {
@@ -107,12 +107,10 @@ public class ObjectPlacement : MonoBehaviour
                             {
                                 agent.Warp(new Vector3(oldPosition.x, hit.point.y + objectType.yOffset, oldPosition.z));
                             }
-                            var animalName = objectType.Name;
+
+                            var animalName = objectType.GameObjectSettings[randomIndex].GameObject.name;
                             //Indirect logs animal as instantiated in collector
-                            if (pooledObjects.IndexOf(animalName) != -1)
-                            {
-                                ObjectPooler.Instance?.HandleAnimalInstantiated(gameObject, animalName);
-                            }
+                            if (pooledObjects.IndexOf(animalName) != -1) ObjectPooler.Instance?.HandleAnimalInstantiated(gameObject, animalName);
 
                             continue;
                         }

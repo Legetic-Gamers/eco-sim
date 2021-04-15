@@ -60,36 +60,36 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pools:
-  - tag: Rabbits
+  - tag: Rabbit Brown
     prefab: {fileID: 5945667779142240406, guid: 20038c4620a64ee45aaed9ddd2e5f10e,
       type: 3}
     size: 250
-  - tag: Wolfs
+  - tag: Wolf Grey
     prefab: {fileID: 4362939137640418624, guid: 9a3fc11558a4b4a4c97a046dc0bd6872,
       type: 3}
-    size: 100
-  - tag: Deers
+    size: 250
+  - tag: Deer
     prefab: {fileID: 1567582185033856, guid: 70e110c1886e4174e8c3ed315798a2f1, type: 3}
-    size: 150
-  - tag: Bears
+    size: 200
+  - tag: Bear
     prefab: {fileID: 8012323441774472881, guid: 51e551f1cef16d9488952707d8521940,
       type: 3}
-    size: 50
-  - tag: SmartRabbits
+    size: 150
+  - tag: SmartRabbit
     prefab: {fileID: 8505818697369016331, guid: d41c8705a05beb642a090f031a00299c,
       type: 3}
     size: 250
-  - tag: Wolves
+  - tag: SmartWolf
     prefab: {fileID: 2443608263682274251, guid: 36c50c1df400f6e47be4e48ed43c7155,
       type: 3}
-    size: 50
+    size: 250
   - tag: SmartDeer
     prefab: {fileID: 1472361199608738841, guid: bfeb36e4d17c8444f8e73db899f422c7,
       type: 3}
-    size: 50
-  - tag: SmartBears
+    size: 200
+  - tag: SmartBear
     prefab: {fileID: 695402115701391966, guid: fec6ae813464c314991b94cea274b3cc, type: 3}
-    size: 50
+    size: 150
 --- !u!114 &924481341116857174
 MonoBehaviour:
   m_ObjectHideFlags: 0

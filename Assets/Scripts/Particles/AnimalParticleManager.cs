@@ -160,10 +160,10 @@ public class AnimalParticleManager : MonoBehaviour
         {
             hitParticleSelfDestroyScript.SelfDestructAfterPlayAndDetach();
         }
-        StopOnDeath(null);
+        StopOnDeath(null, false);
     }
 
-    private void StopOnDeath(AnimalController _)
+    private void StopOnDeath(AnimalController am, bool gotEaten)
     {
         matingParticleSystem.Stop();
         bornParticleSystem.Stop();
@@ -173,7 +173,7 @@ public class AnimalParticleManager : MonoBehaviour
 
     private void OnDestroy()
     {
-        StopOnDeath(null);
+        StopOnDeath(null, false);
         EventUnsubscribe();
     }
 }

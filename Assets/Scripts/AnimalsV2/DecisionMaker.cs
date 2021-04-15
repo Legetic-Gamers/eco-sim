@@ -187,7 +187,7 @@ namespace AnimalsV2
             ChangeState(animalController.fleeingState);
         }
 
-        private void HandleDeath(AnimalController animalController)
+        private void HandleDeath(AnimalController animalController, bool gotEaten)
         {
             //Debug.Log("You dead!");
             //ChangeState(animalController.deadState);

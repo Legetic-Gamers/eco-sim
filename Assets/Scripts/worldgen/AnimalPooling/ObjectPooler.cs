@@ -71,13 +71,12 @@ public class ObjectPooler : MonoBehaviour
     {
         if (!isFinishedPlacing)
         {
+            GameObject groupObject = new GameObject("Pool");
             foreach (Pool pool in pools)
             {
                 string objTag = pool.tag;
                 if (stackDictionary[objTag].Count > 0)
                 {
-                    GameObject groupObject = GameObject.Find(pool.tag + " Group");
-                    
                     for (int i = stackDictionary[objTag].Count; i < pool.size; i++)
                     {
                         GameObject obj = Instantiate(pool.prefab, groupObject.transform, true);
@@ -103,6 +102,7 @@ public class ObjectPooler : MonoBehaviour
     {
         if (poolDictionary != null && poolDictionary.ContainsKey(tag))
         {
+            Debug.Log("Spawned");
             objectToSpawn.SetActive(true);
             objectToSpawn.GetComponent<IPooledObject>()?.onObjectSpawn();
             if (objectToSpawn.TryGetComponent(out AnimalController animalController))
@@ -111,10 +111,6 @@ public class ObjectPooler : MonoBehaviour
                 animalController.deadState.onDeath += HandleDeadAnimal;
                 animalController.SpawnNew += HandleBirthAnimal;
                 animalController.parameterUI.gameObject.SetActive(showCanvasForAll);
-            }
-            else
-            {
-                //Debug.Log("HandleAnimalInstantiated() did not succeed to bind methods to animalcontrollers action");
             }
 
             if (stackDictionary != null && stackDictionary.ContainsKey(tag))
@@ -129,40 +125,55 @@ public class ObjectPooler : MonoBehaviour
     /// Make more space in the queue and disable the animal.
     /// </summary>
     /// <param name="animalController"> Controller of the deceased animal. </param>
-    private void HandleDeadAnimal(AnimalController animalController)
+    /// <param name="gotEaten"></param>
+    public void HandleDeadAnimal(AnimalController animalController, bool gotEaten)
     {
-        StartCoroutine(HandleDeadAnimalDelay(animalController));
+        Debug.Log("Died");
+        AnimalModel.CauseOfDeath cause;
+        AnimalModel am = animalController.animalModel;
+        if (am.currentEnergy == 0) cause = AnimalModel.CauseOfDeath.Hunger;
+        if (am.currentHealth == 0) cause = AnimalModel.CauseOfDeath.Health;
+        if (am.currentHydration == 0) cause = AnimalModel.CauseOfDeath.Hydration;
+        else cause = AnimalModel.CauseOfDeath.Eaten;
+        dh.LogDeadAnimal(am, cause, (transform.position - animalController.startVector).magnitude);
+        if(gotEaten) StartCoroutine(HandleDeadAnimalDelay(animalController, 0f));
+        else StartCoroutine(HandleDeadAnimalDelay(animalController, 5f));
     }
 
-    private IEnumerator HandleDeadAnimalDelay(AnimalController animalController)
+    private IEnumerator HandleDeadAnimalDelay(AnimalController animalController, float delay)
     {
-        yield return new WaitForSeconds(5.0f / Time.timeScale);
+        yield return new WaitForSeconds(delay / Time.timeScale);
 
         if (animalController != null)
         {
             GameObject animalObj;
             (animalObj = animalController.gameObject).SetActive(false);
-            AnimalModel.CauseOfDeath cause;
-            AnimalModel am = animalController.animalModel;
-            if (am.currentEnergy == 0) cause = AnimalModel.CauseOfDeath.Hunger;
-            if (am.currentHealth == 0) cause = AnimalModel.CauseOfDeath.Health;
-            if (am.currentHydration == 0) cause = AnimalModel.CauseOfDeath.Hydration;
-            else cause = AnimalModel.CauseOfDeath.Eaten;
-            dh.LogDeadAnimal(am, cause, (transform.position - animalController.startVector).magnitude);
-
+            // AnimalModel.CauseOfDeath cause;
+            // AnimalModel am = animalController.animalModel;
+            // if (am.currentEnergy == 0) cause = AnimalModel.CauseOfDeath.Hunger;
+            // if (am.currentHealth == 0) cause = AnimalModel.CauseOfDeath.Health;
+            // if (am.currentHydration == 0) cause = AnimalModel.CauseOfDeath.Hydration;
+            // else cause = AnimalModel.CauseOfDeath.Eaten;
+            // dh.LogDeadAnimal(am, cause, (transform.position - animalController.startVector).magnitude);
+            bool isSmart = animalObj.GetComponent<AnimalBrainAgent>();
+            Debug.Log(isSmart);
             switch (animalController.animalModel)
             {
                 case RabbitModel _:
-                    poolDictionary["Rabbits"].Enqueue(animalObj);
+                    if(isSmart) poolDictionary["SmartRabbit"].Enqueue(animalObj);
+                    else poolDictionary["Rabbit Brown"].Enqueue(animalObj);
                     break;
                 case WolfModel _:
-                    poolDictionary["Wolfs"].Enqueue(animalObj);
+                    if(isSmart) poolDictionary["SmartWolf"].Enqueue(animalObj);
+                    else poolDictionary["Wolf Grey"].Enqueue(animalObj);
                     break;
                 case DeerModel _:
-                    poolDictionary["Deers"].Enqueue(animalObj);
+                    if(isSmart) poolDictionary["SmartDeer"].Enqueue(animalObj);
+                    else poolDictionary["Deer"].Enqueue(animalObj);
                     break;
                 case BearModel _:
-                    poolDictionary["Bears"].Enqueue(animalObj);
+                    if(isSmart) poolDictionary["SmartBear"].Enqueue(animalObj);
+                    else poolDictionary["Bear"].Enqueue(animalObj);
                     break;
             }
         }
@@ -176,22 +187,28 @@ public class ObjectPooler : MonoBehaviour
     /// <param name="pos"> Where the animal is to be spawned </param>
     /// <param name="energy"> The energy of the child </param>
     /// <param name="hydration"> The hydration of the child </param>
-    private void HandleBirthAnimal(AnimalModel childModel, Vector3 pos, float energy, float hydration)
+    /// <param name="isSmart"> If the animals has ML brain </param>
+    private void HandleBirthAnimal(AnimalModel childModel, Vector3 pos, float energy, float hydration, bool isSmart)
     {
         GameObject child = null;
+        
         switch (childModel)
         {
             case RabbitModel _:
-                child = SpawnFromPool("Rabbits", pos, Quaternion.identity);
+                if(isSmart) child = SpawnFromPool("SmartRabbit", pos, Quaternion.identity);
+                else child = SpawnFromPool("Rabbit Brown", pos, Quaternion.identity);
                 break;
             case WolfModel _:
-                child = SpawnFromPool("Wolfs", pos, Quaternion.identity);
+                if(isSmart) child = SpawnFromPool("SmartWolf", pos, Quaternion.identity);
+                else child = SpawnFromPool("Wolf Grey", pos, Quaternion.identity);
                 break;
             case DeerModel _:
-                child = SpawnFromPool("Bears", pos, Quaternion.identity);
+                if(isSmart) child = SpawnFromPool("SmartDeer", pos, Quaternion.identity);
+                else child = SpawnFromPool("Deer", pos, Quaternion.identity);
                 break;
             case BearModel _:
-                child = SpawnFromPool("Deers", pos, Quaternion.identity);
+                if(isSmart) child = SpawnFromPool("SmartBear", pos, Quaternion.identity);
+                else child = SpawnFromPool("Bear", pos, Quaternion.identity);
                 break;
         }
 
@@ -199,7 +216,7 @@ public class ObjectPooler : MonoBehaviour
         {
             AnimalController childController = child.GetComponent<AnimalController>();
             childController.animalModel = childModel;
-            Debug.Log(childController.animalModel.generation);
+            //Debug.Log(childController.animalModel.generation);
             childController.animalModel.currentEnergy = energy;
             childController.animalModel.currentHydration = hydration;
             childController.parameterUI.gameObject.SetActive(showCanvasForAll);
