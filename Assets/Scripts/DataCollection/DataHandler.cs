@@ -287,8 +287,6 @@ namespace DataCollection
         /// </summary>
         private void UpdateDataAndGraph()
         {
-            
-            
             // only call display if graph is activated from ShowGraphManager
             if (Window_Graph.IsGraphOne)
             {

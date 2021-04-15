@@ -4,8 +4,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Model;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 namespace DataCollection
 {
@@ -364,7 +366,7 @@ namespace DataCollection
 
         public void CollectNewFood(PlantModel plantModel)
         {
-            if (foodActivePerMinute.Count <= timeIndexFood) foodActivePerMinute.Add(1);
+            if (foodActivePerMinute.Count - 1 < timeIndexFood) foodActivePerMinute.Add(1);
             else foodActivePerMinute[timeIndexFood] += 1;
         }
         public void CollectDeadFood(PlantModel plantModel)
