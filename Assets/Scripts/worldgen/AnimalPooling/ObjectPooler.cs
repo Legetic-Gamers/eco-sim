@@ -102,7 +102,6 @@ public class ObjectPooler : MonoBehaviour
     {
         if (poolDictionary != null && poolDictionary.ContainsKey(tag))
         {
-            Debug.Log("Spawned");
             objectToSpawn.SetActive(true);
             objectToSpawn.GetComponent<IPooledObject>()?.onObjectSpawn();
             if (objectToSpawn.TryGetComponent(out AnimalController animalController))
@@ -128,14 +127,6 @@ public class ObjectPooler : MonoBehaviour
     /// <param name="gotEaten"></param>
     public void HandleDeadAnimal(AnimalController animalController, bool gotEaten)
     {
-        Debug.Log("Died");
-        AnimalModel.CauseOfDeath cause;
-        AnimalModel am = animalController.animalModel;
-        if (am.currentEnergy == 0) cause = AnimalModel.CauseOfDeath.Hunger;
-        if (am.currentHealth == 0) cause = AnimalModel.CauseOfDeath.Health;
-        if (am.currentHydration == 0) cause = AnimalModel.CauseOfDeath.Hydration;
-        else cause = AnimalModel.CauseOfDeath.Eaten;
-        dh.LogDeadAnimal(am, cause, (transform.position - animalController.startVector).magnitude);
         if(gotEaten) StartCoroutine(HandleDeadAnimalDelay(animalController, 0f));
         else StartCoroutine(HandleDeadAnimalDelay(animalController, 5f));
     }
@@ -143,7 +134,14 @@ public class ObjectPooler : MonoBehaviour
     private IEnumerator HandleDeadAnimalDelay(AnimalController animalController, float delay)
     {
         yield return new WaitForSeconds(delay / Time.timeScale);
-
+        
+        AnimalModel.CauseOfDeath cause;
+        AnimalModel am = animalController.animalModel;
+        if (am.currentEnergy == 0) cause = AnimalModel.CauseOfDeath.Hunger;
+        if (am.currentHealth == 0) cause = AnimalModel.CauseOfDeath.Health;
+        if (am.currentHydration == 0) cause = AnimalModel.CauseOfDeath.Hydration;
+        else cause = AnimalModel.CauseOfDeath.Eaten;
+        dh.LogDeadAnimal(am, cause, (transform.position - animalController.startVector).magnitude);
         if (animalController != null)
         {
             GameObject animalObj;
@@ -156,7 +154,7 @@ public class ObjectPooler : MonoBehaviour
             // else cause = AnimalModel.CauseOfDeath.Eaten;
             // dh.LogDeadAnimal(am, cause, (transform.position - animalController.startVector).magnitude);
             bool isSmart = animalObj.GetComponent<AnimalBrainAgent>();
-            Debug.Log(isSmart);
+            //Debug.Log(isSmart);
             switch (animalController.animalModel)
             {
                 case RabbitModel _:

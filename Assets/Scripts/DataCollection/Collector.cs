@@ -14,7 +14,7 @@ namespace DataCollection
         private int cap = 13;
         public Action onAllExtinct;
 
-        public static int totalAnimalsAlive = 0;
+        public int totalAnimalsAlive;
         
         // Index is generation
         public readonly List<int> totalAnimalsAlivePerGeneration;
@@ -125,6 +125,8 @@ namespace DataCollection
             causeOfDeath.Add(AnimalModel.CauseOfDeath.Health, 0);
 
             totalDeadAnimals = new List<float>();
+
+            totalAnimalsAlive = 0;
         }
         
         /// <summary>
@@ -187,7 +189,6 @@ namespace DataCollection
             else totalAnimalsAlivePerGeneration[gen] += 1;
 
             totalAnimalsAlive++;
-            Debug.Log(totalAnimalsAlive);
         }
 
         /// <summary>
@@ -271,7 +272,6 @@ namespace DataCollection
             }
 
             totalAnimalsAlive--;
-            Debug.Log(totalAnimalsAlive);
             if(totalAnimalsAlive <= 0) onAllExtinct?.Invoke();
         }
 
