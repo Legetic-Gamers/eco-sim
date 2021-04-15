@@ -5,6 +5,7 @@ using UnityEngine;
 
 [ExecuteInEditMode]
 [RequireComponent(typeof(MeshFilter))]
+[RequireComponent(typeof(MeshCollider))]
 public class SerializeMesh : MonoBehaviour
 {
     [SerializeField] Vector2[] uv;
@@ -17,6 +18,7 @@ public class SerializeMesh : MonoBehaviour
         if (uv != null && verticies != null && triangles != null && uv.Length > 0 && verticies.Length > 0 && triangles.Length > 0)
         {
             GetComponent<MeshFilter>().mesh = Rebuild();
+            GetComponent<MeshCollider>().sharedMesh = GetComponent<MeshFilter>().sharedMesh;
         }
     }
 

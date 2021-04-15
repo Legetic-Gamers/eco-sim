@@ -25,9 +25,9 @@ public class PresetBuilder : MonoBehaviour
 
     private GameObject world;
     private List<GameObject> worlds = new List<GameObject>();
-    private Action<GameObject, string> IsDoneCallback;
+    private Action<GameObject, string, NavMeshData> IsDoneCallback;
 
-    public void BuildPreset(Action<GameObject, string> IsDone)
+    public void BuildPreset(Action<GameObject, string, NavMeshData> IsDone)
     {
         loadedChunks = 0;
         Debug.Log("Started building prefab!");
@@ -41,6 +41,7 @@ public class PresetBuilder : MonoBehaviour
         this.navMeshSurface = navMeshSurface;
         this.navMeshSurface.useGeometry = NavMeshCollectGeometry.PhysicsColliders;
         worlds.Add(world);
+        simulationSettings.transform.parent = world.transform;
 
         for (int y = 0; y < simulationSettings.yFixedSize; y++)
         {
@@ -70,10 +71,16 @@ public class PresetBuilder : MonoBehaviour
 
     public void ClearWorlds()
     {
+        ResetTransformSettings();
         foreach (var world in worlds)
         {
             DestroyImmediate(world);
         }
+    }
+
+    public void ResetTransformSettings()
+    {
+        simulationSettings.transform.parent = null;
     }
 
     public void OnChunkLoaded()
@@ -83,7 +90,8 @@ public class PresetBuilder : MonoBehaviour
         if (loadedChunks >= simulationSettings.xFixedSize * simulationSettings.yFixedSize)
         {
             navMeshSurface.BuildNavMesh();
-            IsDoneCallback(world, prefabName);
+            Debug.Log("navMeshData: " + navMeshSurface.navMeshData);
+            IsDoneCallback(world, prefabName, navMeshSurface.navMeshData);
             //NavMesh.pathfindingIterationsPerFrame = (int)Math.Floor(500 * Time.timeScale);
         }
     }

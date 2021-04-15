@@ -4,15 +4,36 @@ using UnityEngine;
 
 public class SimulationManager : MonoBehaviour
 {
+    public PrefabSimulationManager prefabSimulationManager;
+    public TextureApplication textureApplication;
+    public TerrainGenerator terrainGenerator;
+
     public void StartSimulation()
     {
         SimulationSettings settings = FindObjectOfType<SimulationSettings>();
-        TerrainGenerator terrainGenerator = FindObjectOfType<TerrainGenerator>();
-        TextureApplication textureApplication = FindObjectOfType<TextureApplication>();
         terrainGenerator.StartSimulation(settings.MeshSettings, settings.HeightMapSettings, settings.TextureSettings, settings.WaterSettings, settings.ObjectPlacementSettings, textureApplication, settings.xFixedSize, settings.yFixedSize);
     }
+
+    public void StartSimulationFromPrefab(GeneralSettings generalSettings)
+    {
+
+        SimulationSettings settings = generalSettings.simulationSettings;
+
+        prefabSimulationManager.StartSimulation(settings.ObjectPlacementSettings, textureApplication, generalSettings.pathToString);
+    }
+
     private void Start()
     {
-        StartSimulation();
+        GeneralSettings generalSettings = FindObjectOfType<GeneralSettings>();
+
+        if (generalSettings.worldType == GeneralSettings.WorldType.GeneratedWorld)
+        {
+            StartSimulation();
+        }
+        else if (generalSettings.worldType == GeneralSettings.WorldType.PrefabWorld)
+        {
+            StartSimulationFromPrefab(generalSettings);
+        }
+
     }
 }

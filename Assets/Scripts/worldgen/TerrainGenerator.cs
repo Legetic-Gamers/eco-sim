@@ -25,7 +25,7 @@ public class TerrainGenerator : MonoBehaviour
     public Transform viewer;
 
 
-    public NavMeshSurface navMeshSurface;
+    private NavMeshSurface navMeshSurface;
 
     [Header("General")]
     public Material mapMaterial;
@@ -70,6 +70,12 @@ public class TerrainGenerator : MonoBehaviour
 
         textureApplication.ApplyToMaterial(mapMaterial);
         textureApplication.UpdateMeshHeights(mapMaterial, heightMapSettings.MinHeight, heightMapSettings.MaxHeight);
+
+        var navMeshSurfaceGO = new GameObject("NavMeshSurface");
+        navMeshSurfaceGO.transform.parent = transform;
+        NavMeshSurface navMeshSurface = navMeshSurfaceGO.AddComponent<NavMeshSurface>();
+        this.navMeshSurface = navMeshSurface;
+        this.navMeshSurface.useGeometry = NavMeshCollectGeometry.PhysicsColliders;
 
         if (terrainMode == TerrainMode.Endless)
         {

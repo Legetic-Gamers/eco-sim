@@ -52,11 +52,42 @@ public class ObjectPlacement : MonoBehaviour
 
         for (int i = 0; i < simulationSettings.ObjectPlacementSettings.ObjectTypes.Count; i++)
         {
-            PlaceObjectType(simulationSettings.ObjectPlacementSettings.GetObjectType(i), positionOffset);
+            PlaceObjectType(simulationSettings.ObjectPlacementSettings.GetObjectType(i), positionOffset, size, size);
+        }
+    }
+
+    public void PlaceObjects(MeshSettings meshSettings, ObjectPlacementSettings objectPlacementSettings, int fixedSizeX, int fixedSizeY)
+    {
+        int size;
+
+        if (meshSettings.UseFlatShading)
+        {
+            size = MeshSettings.supportedChunkSizes[meshSettings.FlatShadedChunkSizeIndex];
+        }
+        else
+        {
+            size = MeshSettings.supportedChunkSizes[meshSettings.ChunkSizeIndex];
+        }
+
+        size = Mathf.RoundToInt(size * meshSettings.MeshScale);
+        this.size = size;
+
+        groups = new List<GameObject>();
+
+        for (int i = 0; i < objectPlacementSettings.ObjectTypes.Count; i++)
+        {
+            Debug.Log("Placed object group: " + i);
+            // new Vector3(size * fixedSizeX / 2f, 0, size * fixedSizeY)
+            PlaceObjectType(objectPlacementSettings.GetObjectType(i), Vector3.zero, size * fixedSizeX, size * fixedSizeY);
         }
     }
 
     public void PlaceObjectType(ObjectType objectType, Vector2 positionOffset)
+    {
+        PlaceObjectType(objectType, positionOffset, size, size);
+    }
+
+    public void PlaceObjectType(ObjectType objectType, Vector2 positionOffset, int sizeX, int sizeY)
     {
         int deleted = 0;
         if (objectType.GameObjectSettings == null || objectType.GameObjectSettings.Count <= 0)
@@ -66,7 +97,8 @@ public class ObjectPlacement : MonoBehaviour
         GameObject groupObject = new GameObject(objectType.Name + " Group");
         groups.Add(groupObject);
         groupObject.transform.parent = this.transform;
-        List<Vector2> points = GeneratePlacementPoints(objectType, simulationSettings.MeshSettings.MeshScale, size);
+        List<Vector2> points = GeneratePlacementPoints(objectType, simulationSettings.MeshSettings.MeshScale, sizeX, sizeY);
+        Debug.Log("Amount of points: " + points.Count);
         foreach (var point in points)
         {
             float maxLength = 0;
@@ -91,14 +123,16 @@ public class ObjectPlacement : MonoBehaviour
             //Debug.Log("GameObjectSettings Count [" + objectType.GameObjectSettings.Count + "] Random index: " + randomIndex);
             if (objectType.GameObjectSettings[randomIndex].GameObject != null)
             {
-                GameObject gameObject = Instantiate(objectType.GameObjectSettings[randomIndex].GameObject, new Vector3(point.x - size / 2 + positionOffset.x, simulationSettings.HeightMapSettings.MaxHeight + 10, point.y - size / 2 + positionOffset.y), Quaternion.identity);
-
+                GameObject gameObject = Instantiate(objectType.GameObjectSettings[randomIndex].GameObject, new Vector3(point.x - sizeX / 2 + positionOffset.x, simulationSettings.HeightMapSettings.MaxHeight + 10, point.y - sizeY / 2 + positionOffset.y), Quaternion.identity);
+                Debug.DrawLine(new Vector3(point.x - sizeX / 2 + positionOffset.x, simulationSettings.HeightMapSettings.MaxHeight + 10, point.y - sizeY / 2 + positionOffset.y), new Vector3(point.x - sizeX / 2 + positionOffset.x, simulationSettings.HeightMapSettings.MinHeight - 10, point.y - sizeY / 2 + positionOffset.y), Color.red);
                 gameObject.transform.parent = groupObject.transform;
 
                 Ray ray = new Ray(gameObject.transform.position, gameObject.transform.TransformDirection(Vector3.down));
                 RaycastHit hit;
                 if (Physics.Raycast(ray, out hit, float.MaxValue))
                 {
+                    Debug.Log("Hit layer: " + LayerMask.LayerToName(hit.transform.gameObject.layer));
+                    Debug.Log("Name of the hit object: " + hit.transform.gameObject.name);
                     if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Ground"))
                     {
                         bool withinSpan = hit.point.y <= (simulationSettings.HeightMapSettings.MaxHeight - simulationSettings.HeightMapSettings.MinHeight) * objectType.MaxHeight
@@ -142,9 +176,9 @@ public class ObjectPlacement : MonoBehaviour
         ObjectPooler.Instance?.HandleFinishedSpawning();
     }
 
-    public static List<Vector2> GeneratePlacementPoints(ObjectType objectType, float meshScale, int size)
+    public static List<Vector2> GeneratePlacementPoints(ObjectType objectType, float meshScale, int sizeX, int sizeY)
     {
-        List<Vector2> points = PoissonDiskSampling.GeneratePoisson(size, size, objectType.MinimumDistance * meshScale, objectType.NewPointCount);
+        List<Vector2> points = PoissonDiskSampling.GeneratePoisson(sizeX, sizeY, objectType.MinimumDistance * meshScale, objectType.NewPointCount);
 
         return points;
     }
@@ -152,7 +186,7 @@ public class ObjectPlacement : MonoBehaviour
     public void UpdateObjectType(int index, Vector2 positionOffset)
     {
         DestoryGroupObjectWithIndex(index);
-        PlaceObjectType(simulationSettings.ObjectPlacementSettings.GetObjectType(index), positionOffset);
+        PlaceObjectType(simulationSettings.ObjectPlacementSettings.GetObjectType(index), positionOffset, size, size);
     }
 
     public void DestoryGroupObjectWithIndex(int index)
