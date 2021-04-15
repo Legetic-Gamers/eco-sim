@@ -278,7 +278,14 @@ namespace DataCollection
         /// <returns></returns>
         private async Task ExportDataToFile(int listNumber)
         {
-            await WriteToFile(c.rabbitStatsPerGenMean[listNumber], traitNames[listNumber]);
+            List<int> toPrint = new List<int>();
+            toPrint.Add(c.causeOfDeath[AnimalModel.CauseOfDeath.Hunger]);
+            toPrint.Add(c.causeOfDeath[AnimalModel.CauseOfDeath.Hydration]);
+            toPrint.Add(c.causeOfDeath[AnimalModel.CauseOfDeath.Age]);
+            toPrint.Add(c.causeOfDeath[AnimalModel.CauseOfDeath.Energy]);
+            toPrint.Add(c.causeOfDeath[AnimalModel.CauseOfDeath.Health]);
+            toPrint.Add(c.causeOfDeath[AnimalModel.CauseOfDeath.Eaten]);
+            await WriteToFile(toPrint, "CauseOfDeath");
         }
 
         // ReSharper disable Unity.PerformanceAnalysis
@@ -295,7 +302,7 @@ namespace DataCollection
             }
                 
             //if (ShowFrameRate) Display(ConvertFloatListToIntList(framerate));
-            //ExportDataToFile(0);
+            //ExportDataToFile(0); Now prints cause of death
         }
 
         private void CollectBirthRate()

@@ -252,6 +252,8 @@ public abstract class AnimalModel
         Eaten,
         Health,
         Hunger,
+        Age,
+        Energy
     };
 
     public Action actionKilled;
