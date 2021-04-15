@@ -134,27 +134,20 @@ public class ObjectPooler : MonoBehaviour
     private IEnumerator HandleDeadAnimalDelay(AnimalController animalController, float delay)
     {
         yield return new WaitForSeconds(delay / Time.timeScale);
-        
-        AnimalModel.CauseOfDeath cause;
-        AnimalModel am = animalController.animalModel;
-        if (am.currentEnergy == 0) cause = AnimalModel.CauseOfDeath.Hunger;
-        if (am.currentHealth == 0) cause = AnimalModel.CauseOfDeath.Health;
-        if (am.currentHydration == 0) cause = AnimalModel.CauseOfDeath.Hydration;
-        else cause = AnimalModel.CauseOfDeath.Eaten;
-        dh.LogDeadAnimal(am, cause, (transform.position - animalController.startVector).magnitude);
         if (animalController != null)
         {
             GameObject animalObj;
             (animalObj = animalController.gameObject).SetActive(false);
-            // AnimalModel.CauseOfDeath cause;
-            // AnimalModel am = animalController.animalModel;
-            // if (am.currentEnergy == 0) cause = AnimalModel.CauseOfDeath.Hunger;
-            // if (am.currentHealth == 0) cause = AnimalModel.CauseOfDeath.Health;
-            // if (am.currentHydration == 0) cause = AnimalModel.CauseOfDeath.Hydration;
-            // else cause = AnimalModel.CauseOfDeath.Eaten;
-            // dh.LogDeadAnimal(am, cause, (transform.position - animalController.startVector).magnitude);
+            AnimalModel.CauseOfDeath cause;
+            AnimalModel am = animalController.animalModel;
+            if (am.currentEnergy <= 0) cause = AnimalModel.CauseOfDeath.Energy;
+            else if (am.currentHydration <= 0) cause = AnimalModel.CauseOfDeath.Hydration;
+            else if (am.age >= am.traits.ageLimit) cause = AnimalModel.CauseOfDeath.Age;
+            else if (am.currentHealth <= 0) cause = AnimalModel.CauseOfDeath.Health;
+            else cause = AnimalModel.CauseOfDeath.Eaten;
+            dh.LogDeadAnimal(am, cause, (transform.position - animalController.startVector).magnitude);
             bool isSmart = animalObj.GetComponent<AnimalBrainAgent>();
-            //Debug.Log(isSmart);
+            
             switch (animalController.animalModel)
             {
                 case RabbitModel _:
