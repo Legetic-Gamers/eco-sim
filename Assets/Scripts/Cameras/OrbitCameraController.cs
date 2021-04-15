@@ -101,7 +101,20 @@ public class OrbitCameraController : MonoBehaviour
         
         RaycastHit hit;
         
-        var diffVector = newZoom - cameraLocalPos;
+        /* /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\ */
+        /*                     zooming                      */
+        /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
+
+        // temporarily set the newZoom to get the change in world space
+        cameraTransform.localPosition = newZoom;
+        var newZoomWPos = cameraTransform.position;
+        
+        // calculate the difference between current and new position (in world space)
+        var diffVector = newZoomWPos - cameraWorldPos;
+        
+        // restore the original zoom position
+        cameraTransform.localPosition = cameraLocalPos;
+        
         var zoomDiff = diffVector.magnitude;
         // zoom collision
         if(zoomDiff > 0)
@@ -112,14 +125,15 @@ public class OrbitCameraController : MonoBehaviour
             // dont check collisions if zooming out
             if (dotProd > 0)
             {
-                var zoomRay = new Ray(cameraWorldPos, diffVector);
-                if (Physics.Raycast(zoomRay, out hit, 15, collisionMask))
+                var ray = new Ray(cameraWorldPos, diffVector);
+                if (Physics.Raycast(ray, out hit, 15, collisionMask))
                 {
                     var hitError = hit.distance - zoomDiff;
 
+                    Debug.DrawLine(cameraWorldPos, hit.point, Color.red);
                     if (hitError < HitThreshold)
                     {
-                        diffVector = (hit.point - cameraWorldPos).normalized * (hit.distance - HitThreshold);
+                        diffVector = (newZoom - cameraLocalPos).normalized * (hit.distance - HitThreshold);
                         // don't zoom past the threshold
                         newZoom = cameraLocalPos + diffVector;
                     }
@@ -129,52 +143,64 @@ public class OrbitCameraController : MonoBehaviour
             cameraTransform.localPosition = Vector3.Lerp(cameraLocalPos, newZoom, Time.deltaTime * movementTime);
         }
 
-        
-        
-        /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
+        /* /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\ */
+        /*                     rotation                     */
+        /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
 
         // set to newRotation, but keep the original
         var tempRotation = transform.rotation;
         transform.rotation = newRotation;
         
-        // get new position of camera after rotating the rig
+        // get new position of camera after having rotated the rig
         var cameraRotated = cameraTransform.position;
         diffVector = cameraRotated - cameraWorldPos;
         
         // restore original rotation
         transform.rotation = tempRotation;
+        
         var rotationDiff = diffVector.magnitude;
         // rotation collision
         if(rotationDiff > 0)
         {
-            var zoomRay = new Ray(cameraWorldPos, diffVector);
-            if (Physics.Raycast(zoomRay, out hit, 15, collisionMask))
+            var ray = new Ray(cameraWorldPos, diffVector);
+            if (Physics.Raycast(ray, out hit, 15, collisionMask))
             {
                 var hitError = hit.distance - rotationDiff;
 
                 if (hitError < HitThreshold)
                 {
-                    // don't rotate (because I won't calculate where to put the rotation within the threshold)
-                    newRotation = transform.rotation;
+                    // jeebus
+                    
+                    var b = Mathf.Sqrt(Mathf.Pow(cameraRigPos.x - cameraWorldPos.x, 2) + Mathf.Pow(cameraRigPos.z - cameraWorldPos.z, 2));
+                    var c = Mathf.Sqrt(Mathf.Pow(cameraWorldPos.x + diffVector.x, 2) + Mathf.Pow(cameraWorldPos.z + diffVector.z, 2));
+                    var a = Mathf.Sqrt(Mathf.Pow(cameraRigPos.x - cameraWorldPos.x + diffVector.x, 2) + Mathf.Pow(cameraRigPos.z - cameraWorldPos.z + diffVector.z, 2));
+                    var aSq = Mathf.Pow(a, 2);
+                    var bSq = Mathf.Pow(b, 2);
+                    var cSq = Mathf.Pow(c, 2);
+                    var cosC = (-cSq - aSq + bSq) / (-2 * a * b);
+                    cosC = Mathf.Clamp(cosC, -1, 1);
+                    var angle = Mathf.Acos(cosC);
+                    angle *= Mathf.Rad2Deg;
+                    var rotation = Quaternion.Euler(Vector3.up * angle);
+                    
+                    newRotation = transform.rotation * rotation.normalized;
                 }
             }
             // smoothing / set new rotation
             transform.rotation = Quaternion.Lerp(transform.rotation, newRotation, Time.deltaTime * movementTime);
         }
-        
-        
-        
-        /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
 
-
+        /* /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\ */
+        /*                     movement                     */
+        /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
 
         diffVector = newPosition - cameraRigPos;
         var movementDiff = diffVector.magnitude;
         // movement collision
         if (movementDiff > 0)
         {
-            var moveRay = new Ray(cameraWorldPos + cameraTransform.forward * 0.5f, diffVector);
-            if (Physics.Raycast(moveRay, out hit, 15, collisionMask))
+            var ray = new Ray(cameraWorldPos + cameraTransform.forward * 0.5f, diffVector);
+            if (Physics.Raycast(ray, out hit, 15, collisionMask))
             {
                 var hitError = hit.distance - movementDiff;
 
