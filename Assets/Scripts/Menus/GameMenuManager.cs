@@ -3,19 +3,24 @@
  */
 
 using System;
+using System.Timers;
 using DataCollection;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 namespace Menus
 {
     public class GameMenuManager : MonoBehaviour
     {
+        private TickEventPublisher tickEventPublisher;
         public static bool isPaused;
         public static bool isEnded;
         
         public GameObject pauseMenu;
         public GameObject endMenu;
+        public Text timerText;
+        private float timer = 0f;
         
         private float lastGameSpeed = 1f;
 
@@ -26,6 +31,13 @@ namespace Menus
                 if (isPaused) Resume();
                 else Pause();
             }
+        }
+
+        private void ShowTime()
+        {
+            timer += 0.5f;
+            var time = TimeSpan.FromSeconds(timer);
+            timerText.text = $"{time.Minutes:D2}:{time.Seconds:D2}";
         }
 
         public void Resume()
@@ -76,6 +88,9 @@ namespace Menus
 
         public void Start()
         {
+            tickEventPublisher = FindObjectOfType<TickEventPublisher>();
+            if (tickEventPublisher)
+                tickEventPublisher.onSenseTickEvent += ShowTime;
             DataHandler dh = FindObjectOfType<DataHandler>();
             if (dh)
             {
