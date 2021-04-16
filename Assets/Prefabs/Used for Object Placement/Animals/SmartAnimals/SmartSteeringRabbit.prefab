@@ -2588,9 +2588,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0795e2e31cde64428dc997f642c4648, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  showNavMeshAgentPath: 1
+  showNavMeshAgentPath: 0
   allowNavigateWithClick: 0
-  showVisibleTargets: 1
+  showVisibleTargets: 0
   showFleeingVector: 0
   showPerceptionRange: 0
 --- !u!114 &-600961360408927680

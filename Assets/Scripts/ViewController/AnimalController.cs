@@ -26,7 +26,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
 
     // decisionMaker subscribes to these actions
     public Action<GameObject> actionPerceivedHostile;
-    public Action<AnimalModel, Vector3, float, float, bool> SpawnNew;
+    public Action<AnimalModel, Vector3, float, float, string> SpawnNew;
 
     // Start vector for the animal, used in datahandler distance travelled
     public Vector3 startVector;
@@ -485,7 +485,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         yield return new WaitForSeconds(laborTime);
         AnimalModel childModel = animalModel.Mate(otherParentAnimalController.animalModel);
         bool isSmart = GetComponent<AnimalBrainAgent>();
-        SpawnNew?.Invoke(childModel, transform.position, childEnergy, childHydration, isSmart);
+        SpawnNew?.Invoke(childModel, transform.position, childEnergy, childHydration, gameObject.name);
         // invoke only once when birthing multiple children
         if (animalModel.isPregnant) ActionPregnant?.Invoke(false);
         animalModel.isPregnant = false;

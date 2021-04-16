@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Collections;
 using System.Linq;
-using System.Security.Authentication.ExtendedProtection;
 using AnimalsV2;
 using AnimalsV2.States;
 using AnimalsV2.States.AnimalsV2.States;
@@ -12,15 +12,17 @@ using Unity.MLAgents.Sensors;
 using UnityEngine;
 using UnityEngine.AI;
 using ViewController;
+using ViewController.Senses;
 using Random = UnityEngine.Random;
 using Vector3 = UnityEngine.Vector3;
 
+[RequireComponent(typeof(MLAnimalController)), RequireComponent(typeof(Senses))]
 public class DumbAgent : Agent, IAgent
 {
     //ANIMAL RELATED THINGS
     private MLAnimalController animalController;
     private AnimalModel animalModel;
-    private TickEventPublisher eventPublisher;
+    private Senses senses;
     private FiniteStateMachine fsm;
     public Action<float> onEpisodeBegin { get; set; }
     public Action<float> onEpisodeEnd { get; set; }
@@ -28,6 +30,7 @@ public class DumbAgent : Agent, IAgent
     
     public void Awake()
     {
+        senses = GetComponent<Senses>();
         //init specific
         animalController = GetComponent<MLAnimalController>();
         if(animalController) animalController.OnStartML += Init;
@@ -37,7 +40,6 @@ public class DumbAgent : Agent, IAgent
     {
         animalModel = animalController.animalModel;
         fsm = animalController.fsm;
-        eventPublisher = FindObjectOfType<global::TickEventPublisher>();
         
         //Set the animal as sterile if we want to train/heuristic
         if (TryGetComponent(out BehaviorParameters bp))
@@ -240,11 +242,7 @@ public class DumbAgent : Agent, IAgent
     //Listen to when parameters or senses were updated.
     private void EventSubscribe()
     {
-        //Request decision on every sense tick
-        if (eventPublisher)
-        {
-            eventPublisher.onSenseTickEvent += PreRequestDecision;
-        }
+        StartCoroutine(SubscribeTickEvent());
 
         if (animalController)
         {
@@ -256,12 +254,35 @@ public class DumbAgent : Agent, IAgent
         }
     }
 
+    //method used to spread out when ticks happen, this is pretty crucial for performance in real simulation. 
+    IEnumerator SubscribeTickEvent()
+    {
+        float delaySeconds = Random.Range(0, 0.5f);
+            
+        if (TryGetComponent(out BehaviorParameters bp))
+        {
+            if(bp.BehaviorType == BehaviorType.Default || bp.BehaviorType == BehaviorType.HeuristicOnly)
+            {
+                Debug.Log("No delay on subscribing tick event");
+                delaySeconds = 0;
+            }
+        }
+        
+        // Wait a while then change state and resume walking
+        yield return new WaitForSeconds(delaySeconds/Time.timeScale);
+        //Request decision on every sense tick
+        if (senses)
+        {
+            senses.onSenseTick += PreRequestDecision;
+        }
+    }
+
 
     public void EventUnsubscribe()
     {
-        if (eventPublisher)
+        if (senses)
         {
-            eventPublisher.onSenseTickEvent -= PreRequestDecision;
+            senses.onSenseTick -= PreRequestDecision;
         }
 
         if (animalController)

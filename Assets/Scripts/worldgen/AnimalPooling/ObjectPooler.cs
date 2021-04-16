@@ -148,6 +148,7 @@ public class ObjectPooler : MonoBehaviour
             dh.LogDeadAnimal(am, cause, (transform.position - animalController.startVector).magnitude);
             bool isSmart = animalObj.GetComponent<AnimalBrainAgent>();
             
+            /*
             switch (animalController.animalModel)
             {
                 case RabbitModel _:
@@ -167,6 +168,10 @@ public class ObjectPooler : MonoBehaviour
                     else poolDictionary["Bear"].Enqueue(animalObj);
                     break;
             }
+            */
+            //Debug.Log(animalObj.name.Replace("(Clone)", "").Trim());
+            
+            poolDictionary[animalObj.name.Replace("(Clone)", "").Trim()].Enqueue(animalObj);
         }
         
     }
@@ -179,10 +184,11 @@ public class ObjectPooler : MonoBehaviour
     /// <param name="energy"> The energy of the child </param>
     /// <param name="hydration"> The hydration of the child </param>
     /// <param name="isSmart"> If the animals has ML brain </param>
-    private void HandleBirthAnimal(AnimalModel childModel, Vector3 pos, float energy, float hydration, bool isSmart)
+    private void HandleBirthAnimal(AnimalModel childModel, Vector3 pos, float energy, float hydration, string tag)
     {
         GameObject child = null;
         
+        /*
         switch (childModel)
         {
             case RabbitModel _:
@@ -202,7 +208,11 @@ public class ObjectPooler : MonoBehaviour
                 else child = SpawnFromPool("Bear", pos, Quaternion.identity);
                 break;
         }
+        */
+        Debug.Log(tag.Replace("(Clone)", "").Trim());
 
+        child = SpawnFromPool(tag.Replace("(Clone)", "").Trim(), pos, Quaternion.identity);
+        
         if (child != null)
         {
             AnimalController childController = child.GetComponent<AnimalController>();

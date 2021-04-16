@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace ViewController.Senses
 {
@@ -22,8 +24,8 @@ namespace ViewController.Senses
         private AnimalController animalController;
 
         private Transform thisTransform;
-
-        private TickEventPublisher tickEventPublisher;
+        
+        public Action onSenseTick;
         
 
         /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
@@ -201,23 +203,33 @@ namespace ViewController.Senses
             }
 
             //Used in ML
-            tickEventPublisher = FindObjectOfType<TickEventPublisher>() ;
-            if (useConstantTickInterval && tickEventPublisher)
+            if (useConstantTickInterval)
             {
                 Debug.Log("Using tickEventPublisher for senses");
-                tickEventPublisher.onSenseTickEvent += FindTargets;
+                StartCoroutine(ConstantSenseLoop());
             }
             else
             {
-                StartCoroutine(SensesLoop());
+                StartCoroutine(RandomSensesLoop());
             }
         }
-        
-        private IEnumerator SensesLoop()
+
+        private IEnumerator ConstantSenseLoop()
         {
             while (true)
             {
                 FindTargets();
+                onSenseTick?.Invoke();
+                yield return new WaitForSeconds(0.5f/Time.timeScale);
+            
+            }
+        }
+        private IEnumerator RandomSensesLoop()
+        {
+            while (true)
+            {
+                FindTargets();
+                onSenseTick?.Invoke();
                 yield return new WaitForSeconds(Random.Range(0.5f, 1f)/Time.timeScale);
             
             }
@@ -225,10 +237,7 @@ namespace ViewController.Senses
 
         private void OnDestroy()
         {
-            if (useConstantTickInterval && tickEventPublisher)
-            {
-                tickEventPublisher.onSenseTickEvent -= FindTargets;
-            }
+            
         }
     }
 }
