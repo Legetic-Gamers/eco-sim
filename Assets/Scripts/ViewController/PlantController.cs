@@ -125,7 +125,7 @@ namespace ViewController
         {
             if (plantModel != null && plantModel.plantAge > PlantModel.plantMaxAge)
             {
-                dh.LogDeadPlant(plantModel);
+                dh?.LogDeadPlant(plantModel);
                 Destroy(gameObject);
             }
         }
