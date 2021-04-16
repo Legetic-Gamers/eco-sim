@@ -90,6 +90,10 @@ MonoBehaviour:
   - tag: SmartBear
     prefab: {fileID: 695402115701391966, guid: fec6ae813464c314991b94cea274b3cc, type: 3}
     size: 150
+  - tag: Food
+    prefab: {fileID: 8585085198824190955, guid: faca9fdb3f703844aa60f6115d12e202,
+      type: 3}
+    size: 500
 --- !u!114 &924481341116857174
 MonoBehaviour:
   m_ObjectHideFlags: 0
