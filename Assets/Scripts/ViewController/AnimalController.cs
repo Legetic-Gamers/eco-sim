@@ -139,7 +139,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     /// <summary>
     /// "Start()" when using animal pooling, called when the animal is set to be active. 
     /// </summary>
-    public void onObjectSpawn()
+    public virtual void onObjectSpawn()
     {
         animationController = new AnimationController(this);
         // Init the NavMesh agent

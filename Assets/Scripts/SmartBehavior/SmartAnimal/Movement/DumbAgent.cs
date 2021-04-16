@@ -3,6 +3,7 @@ using System.Linq;
 using System.Security.Authentication.ExtendedProtection;
 using AnimalsV2;
 using AnimalsV2.States;
+using AnimalsV2.States.AnimalsV2.States;
 using Model;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
@@ -17,7 +18,7 @@ using Vector3 = UnityEngine.Vector3;
 public class DumbAgent : Agent, IAgent
 {
     //ANIMAL RELATED THINGS
-    private AnimalController animalController;
+    private MLAnimalController animalController;
     private AnimalModel animalModel;
     private TickEventPublisher eventPublisher;
     private FiniteStateMachine fsm;
@@ -25,10 +26,15 @@ public class DumbAgent : Agent, IAgent
     public Action<float> onEpisodeEnd { get; set; }
 
     
-    public void Start()
+    public void Awake()
     {
         //init specific
-        animalController = GetComponent<AnimalController>();
+        animalController = GetComponent<MLAnimalController>();
+        if(animalController) animalController.OnStartML += Init;
+    }
+
+    private void Init()
+    {
         animalModel = animalController.animalModel;
         fsm = animalController.fsm;
         eventPublisher = FindObjectOfType<global::TickEventPublisher>();
@@ -40,13 +46,6 @@ public class DumbAgent : Agent, IAgent
             animalController.isInfertile =
                 bp.BehaviorType == BehaviorType.Default || bp.BehaviorType == BehaviorType.HeuristicOnly;
         }
-        
-        //change to a state which does not navigate the agent. If no decisionmaker is present, it will stay at this state (if default state is also set).
-        MLState mlState = new MLState(animalController, animalController.fsm);
-        fsm.SetDefaultState(mlState);
-        fsm.ChangeState(mlState);
-        animalController.ChangeModifiers(mlState);
-        
         EventSubscribe();
     }
     
@@ -60,13 +59,14 @@ public class DumbAgent : Agent, IAgent
     //Choices based on https://github.com/Unity-Technologies/ml-agents/blob/release_2_verified_docs/docs/Learning-Environment-Design-Agents.md#vector-observations
     public override void CollectObservations(VectorSensor sensor)
     {
+        if (animalModel == null || animalController == null) return;
         //Position of the animal
         Vector3 thisPosition = transform.position;
         //Get the absolute vector for all targets
         Vector3 nearestFood = NavigationUtilities.GetNearestObject(animalController.visibleFoodTargets.Concat(animalController.heardPreyTargets).ToList(), thisPosition)?.transform.position ?? thisPosition;
         Vector3 nearestWater = NavigationUtilities.GetNearestObject(animalController.visibleWaterTargets, thisPosition)?.transform.position ?? thisPosition;
         //Get the absolute vector for a potential mate
-        Vector3 potentialMate = animalController.goToMate.GetFoundMate()?.transform.position ?? thisPosition;
+        Vector3 potentialMate = animalController?.goToMate.GetFoundMate()?.transform.position ?? thisPosition;
         
         //Get Vector between animal and targets
         nearestFood = transform.InverseTransformPoint(nearestFood);
@@ -107,8 +107,6 @@ public class DumbAgent : Agent, IAgent
         Vector3 velocity = transform.InverseTransformDirection(animalController.agent.velocity);
         sensor.AddObservation(velocity.x);
         sensor.AddObservation(velocity.z);
-
-
     }
 
     //Called Every time the ML agent decides to take an action.
@@ -233,7 +231,7 @@ public class DumbAgent : Agent, IAgent
     {
         //make sure no decision is taken when a blocking state is running
         if (!(fsm.currentState is EatingState) && !(fsm.currentState is DrinkingState) &&
-            !(fsm.currentState is MatingState) && !(fsm.currentState is FleeingState))
+            !(fsm.currentState is MatingState) && !(fsm.currentState is FleeingState) && animalController != null && !(fsm.currentState is Dead))
         {
             RequestDecision();
         }
@@ -243,27 +241,42 @@ public class DumbAgent : Agent, IAgent
     private void EventSubscribe()
     {
         //Request decision on every sense tick
-        eventPublisher.onSenseTickEvent += PreRequestDecision;
-        animalController.deadState.onDeath += HandleDeath;
-        animalController.eatingState.onEatFood += HandleEat;
-        animalController.matingState.onMate += HandleMate;
-        animalController.drinkingState.onDrinkWater += HandleDrink;
-        animalController.actionPerceivedHostile += HandleHostileTarget;
+        if (eventPublisher)
+        {
+            eventPublisher.onSenseTickEvent += PreRequestDecision;
+        }
+
+        if (animalController)
+        {
+            animalController.deadState.onDeath += HandleDeath;
+            animalController.eatingState.onEatFood += HandleEat;
+            animalController.matingState.onMate += HandleMate;
+            animalController.drinkingState.onDrinkWater += HandleDrink;
+            animalController.actionPerceivedHostile += HandleHostileTarget;    
+        }
     }
 
 
     public void EventUnsubscribe()
     {
-        eventPublisher.onSenseTickEvent -= PreRequestDecision;
-        animalController.deadState.onDeath -= HandleDeath;
-        animalController.eatingState.onEatFood -= HandleEat;
-        animalController.matingState.onMate -= HandleMate;
-        animalController.drinkingState.onDrinkWater -= HandleDrink;
-        animalController.actionPerceivedHostile -= HandleHostileTarget;
+        if (eventPublisher)
+        {
+            eventPublisher.onSenseTickEvent -= PreRequestDecision;
+        }
+
+        if (animalController)
+        {
+            animalController.deadState.onDeath -= HandleDeath;
+            animalController.eatingState.onEatFood -= HandleEat;
+            animalController.matingState.onMate -= HandleMate;
+            animalController.drinkingState.onDrinkWater -= HandleDrink;
+            animalController.actionPerceivedHostile -= HandleHostileTarget;    
+        }
     }
 
     private void OnDestroy()
     {
+        if(animalController) animalController.OnStartML -= Init;
         EventUnsubscribe();
     }
     
@@ -285,8 +298,8 @@ public class DumbAgent : Agent, IAgent
     // It is not guaranteed that the statechange will happen since meetrequirements has to be true for given statechange.
     public void Interact(GameObject target)
     {
-        //Dont stop to interact if we are fleeing.
-        if (fsm.currentState is FleeingState) return;
+        //Dont start to interact if we are fleeing.
+        if (fsm == null || fsm.currentState is FleeingState || fsm.currentState is Dead) return;
 
         //Debug.Log(gameObject.name);
         switch (target.tag)

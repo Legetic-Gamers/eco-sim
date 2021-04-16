@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using AnimalsV2;
@@ -7,6 +8,20 @@ using UnityEngine;
 
 public class MLAnimalController : AnimalController
 {
+    public Action OnStartML;
+
+    public override void onObjectSpawn()
+    {
+        base.onObjectSpawn();
+        
+        //change to a state which does not navigate the agent. If no decisionmaker is present, it will stay at this state (if default state is also set).
+        MLState mlState = new MLState(this, fsm);
+        fsm.SetDefaultState(mlState);
+        fsm.ChangeState(mlState);
+        ChangeModifiers(mlState);
+        OnStartML?.Invoke();
+    }
+
     new void Awake()
     {
         base.Awake();
@@ -102,6 +117,8 @@ public class MLAnimalController : AnimalController
         animalModel.reproductiveUrge += 0.01f * reproductiveUrgeModifier;
 
     }
+    
+    
 
     
 }
