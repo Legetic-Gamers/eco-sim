@@ -410,7 +410,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
             animalModel.CanEat(ediblePlant))
         {
             animalModel.currentEnergy += ediblePlant.GetEaten();
-            Destroy(food);
+            //Destroy(food);
         }
     }
 

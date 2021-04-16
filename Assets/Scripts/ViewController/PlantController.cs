@@ -109,16 +109,14 @@ namespace ViewController
             if (!plantModel.isEaten) return;
             if (gameObject != null && isActiveAndEnabled && this)
             {
-                Debug.Log("Eaten");
                 StartCoroutine(Regrow());
-                Debug.Log("Regrown");
             }
         }
 
         private IEnumerator Regrow()
         {
             gameObject.SetActive(false);
-            yield return new WaitForSeconds(5f);
+            yield return new WaitForSeconds(60f);
             gameObject.SetActive(true);
         }
 
