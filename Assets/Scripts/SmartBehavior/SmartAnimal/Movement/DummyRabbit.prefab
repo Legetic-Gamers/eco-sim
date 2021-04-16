@@ -440,36 +440,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!1 &1261490686461529040
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 7695058474050490900}
-  m_Layer: 0
-  m_Name: Center
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &7695058474050490900
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1261490686461529040}
-  m_LocalRotation: {x: -7.170046e-15, y: -2.1750566e-16, z: -0.010695808, w: 0.99994284}
-  m_LocalPosition: {x: 0, y: 0.037, z: 0}
-  m_LocalScale: {x: 1.9953845, y: 1.0011582, z: 2}
-  m_Children: []
-  m_Father: {fileID: 8505818698402629189}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1553859399245124638
 GameObject:
   m_ObjectHideFlags: 0
@@ -890,36 +860,6 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!1 &3822227004420899064
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 5475221242315044121}
-  m_Layer: 8
-  m_Name: Eyes
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &5475221242315044121
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3822227004420899064}
-  m_LocalRotation: {x: -4.4979974e-15, y: 4.671158e-15, z: 0.7071068, w: 0.70710677}
-  m_LocalPosition: {x: -0.007492009, y: 0.009231065, z: 0}
-  m_LocalScale: {x: 1.1275291, y: 1.6310413, z: 2}
-  m_Children: []
-  m_Father: {fileID: 8505818697866896600}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
 --- !u!1 &8505818696911463885
 GameObject:
   m_ObjectHideFlags: 0
@@ -1523,6 +1463,7 @@ GameObject:
   - component: {fileID: 8505818697369016332}
   - component: {fileID: 1389232664}
   - component: {fileID: 1389232662}
+  - component: {fileID: 3918154162833772615}
   - component: {fileID: 8983037899961157824}
   m_Layer: 8
   m_Name: DummyRabbit
@@ -1617,6 +1558,24 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.3, y: 0.3, z: 0.3}
   m_Center: {x: 0, y: 0.15, z: 0}
+--- !u!114 &3918154162833772615
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8505818697369016331}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07422175caeb4ae7abedf1488c86805e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetMask:
+    serializedVersion: 2
+    m_Bits: 256
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 1024
 --- !u!114 &8983037899961157824
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1643,8 +1602,6 @@ MonoBehaviour:
   heardFriendlyTargets: []
   heardPreyTargets: []
   isInfertile: 1
-  eyesTransform: {fileID: 5475221242315044121}
-  centerTransform: {fileID: 7695058474050490900}
 --- !u!1 &8505818697383472513
 GameObject:
   m_ObjectHideFlags: 0
@@ -1951,7 +1908,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 8505818698897031558}
-  - {fileID: 5475221242315044121}
   m_Father: {fileID: 8505818697474723934}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2294,7 +2250,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 8505818697637831651}
-  - {fileID: 7695058474050490900}
   m_Father: {fileID: 8505818698143427955}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

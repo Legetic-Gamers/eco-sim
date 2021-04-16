@@ -15,7 +15,7 @@ public class ObjectPlacement : MonoBehaviour
     public List<GameObject> groups;
     public SimulationSettings simulationSettings;
     int size;
-    private List<string> pooledObjects = new List<string> { "Rabbit Brown", "Wolf Grey", "Deer", "Bear", "SmartRabbit", "SmartWolf", "SmartDeer", "SmartBear", "SmartSteeringRabbit" };
+    private List<string> pooledObjects = new List<string> { "Rabbit Brown", "Wolf Grey", "Deer", "Bear", "SmartRabbit", "SmartWolf", "SmartDeer", "SmartBear" };
 
     public void Awake()
     {
