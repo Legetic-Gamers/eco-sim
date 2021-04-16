@@ -258,7 +258,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     {
         energyModifier = 1f;
         hydrationModifier = 1f;
-        reproductiveUrgeModifier = 2f;
+        reproductiveUrgeModifier = 0f;
         speedModifier = RunningSpeed;
     }
 
@@ -288,7 +288,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         agent.speed = animalModel.currentSpeed * Time.timeScale;
         
         // energy
-        animalModel.currentEnergy -= ((animalModel.age / 20 ) + animalModel.currentSpeed +
+        animalModel.currentEnergy -= (animalModel.age + animalModel.currentSpeed +
                                       animalModel.traits.viewRadius / 10 + animalModel.traits.hearingRadius / 10)
                                      * animalModel.traits.size * energyModifier;
 
@@ -299,7 +299,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
                                          hydrationModifier);
         
         // reproductive urge
-        animalModel.reproductiveUrge += reproductiveUrgeModifier;
+        animalModel.reproductiveUrge += 0.01f * reproductiveUrgeModifier;
         agent.acceleration = baseAcceleration * Time.timeScale;
         agent.angularSpeed = baseAngularSpeed * Time.timeScale;
     }

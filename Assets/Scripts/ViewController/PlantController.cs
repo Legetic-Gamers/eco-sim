@@ -1,13 +1,12 @@
 ﻿using System;
 using DataCollection;
-using DefaultNamespace;
 using Model;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace ViewController
 {
-    public class PlantController : MonoBehaviour, IPooledObject
+    public class PlantController : MonoBehaviour
     {
         private TickEventPublisher tickEventPublisher;
         
@@ -16,9 +15,6 @@ namespace ViewController
         private DataHandler dh;
         
         public Transform centerTransform;
-        
-        public Action<Vector3> SpawnNewPlant;
-        public Action<PlantController> onDeadPlant;
 
         public void Awake()
         {
@@ -27,17 +23,16 @@ namespace ViewController
                 Debug.LogWarning("Center not assigned, defaulting to transform");
                 centerTransform = transform;
             }
-            plantModel = new PlantModel();
         } 
 
         public void Start()
         {
-        
-            //If there is no object pooler present, we need to call onObjectSpawn through start
-            if (FindObjectOfType<ObjectPooler>() == null)
-            {
-                onObjectSpawn();
-            }
+            tickEventPublisher = FindObjectOfType<TickEventPublisher>();
+            plantModel = new PlantModel();
+            EventSubscribe();
+
+            dh = FindObjectOfType<DataHandler>();
+            dh?.LogNewPlant(plantModel);
         }
         
 
@@ -108,12 +103,17 @@ namespace ViewController
                     }
                 }
                 if (!isHit) return;
-                SpawnNewPlant?.Invoke(new Vector3(position.x + rx, height, position.z + rz));
+                GameObject offspring = Instantiate(gameObject);
+                offspring.transform.position = new Vector3(position.x + rx, height, position.z + rz);
+                PlantModel offspringModel = new PlantModel();
+                offspring.GetComponent<PlantController>().plantModel = offspringModel;
             }
 
 
         }
-        
+
+
+
         private void HandleEaten()
         {
             if (!plantModel.isEaten) return;
@@ -125,14 +125,9 @@ namespace ViewController
         {
             if (plantModel != null && plantModel.plantAge > PlantModel.plantMaxAge)
             {
-                onDeadPlant?.Invoke(this);
+                dh?.LogDeadPlant(plantModel);
+                Destroy(gameObject);
             }
-        }
-
-        public void onObjectSpawn()
-        {
-            tickEventPublisher = FindObjectOfType<TickEventPublisher>();
-            EventSubscribe();
         }
     }
 }
