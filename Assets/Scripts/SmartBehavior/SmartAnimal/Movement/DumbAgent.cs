@@ -78,28 +78,35 @@ public class DumbAgent : Agent, IAgent
         float nearestFoodDistance = nearestFood.magnitude / maxPercievableDistance;
         float nearestWaterDistance = nearestWater.magnitude / maxPercievableDistance;
         float potentialMateDistance = potentialMate.magnitude / maxPercievableDistance;
-        
-        
+
+        //normalize some of the observations
+        if (nearestFood != Vector3.zero) nearestFood = nearestFood.normalized;
+        if (nearestWater != Vector3.zero) nearestWater = nearestWater.normalized;
+        if (potentialMate != Vector3.zero) potentialMate = potentialMate.normalized;
         
         //Add observations for food
         sensor.AddObservation(nearestFoodDistance);
-        sensor.AddObservation(nearestFood.normalized);
+        sensor.AddObservation(nearestFood.x);
+        sensor.AddObservation(nearestFood.z);
         sensor.AddObservation(animalModel.GetEnergyPercentage);
         
         //Add observations for water
         sensor.AddObservation(nearestWaterDistance);
-        sensor.AddObservation(nearestWater.normalized);
+        sensor.AddObservation(nearestWater.x);
+        sensor.AddObservation(nearestWater.z);
         sensor.AddObservation(animalModel.GetHydrationPercentage);
         
         //Add observations for mate
         sensor.AddObservation(potentialMateDistance);
-        sensor.AddObservation(potentialMate.normalized);
+        sensor.AddObservation(potentialMate.x);
+        sensor.AddObservation(potentialMate.z);
         sensor.AddObservation(animalModel.WantingOffspring);
         
         
         //Add agents velocity (as a direction) to observations
         Vector3 velocity = transform.InverseTransformDirection(animalController.agent.velocity);
-        sensor.AddObservation(velocity);
+        sensor.AddObservation(velocity.x);
+        sensor.AddObservation(velocity.z);
 
 
     }
@@ -127,10 +134,8 @@ public class DumbAgent : Agent, IAgent
         //Give reward for moving forward
         AddReward(speedModifier * 0.005f);
 
-
-        //Handle speed
-        animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier;
-        animalController.agent.speed = animalModel.currentSpeed * Time.timeScale;
+        //Set speed
+        animalController.SetSpeed(speedModifier);
         
         NavigationUtilities.NavigateRelative(animalController, dirToGo, 1 << NavMesh.GetAreaFromName("Walkable"));
     }
@@ -227,8 +232,8 @@ public class DumbAgent : Agent, IAgent
     private void PreRequestDecision()
     {
         //make sure no decision is taken when a blocking state is running
-        if (!(fsm.currentState is EatingState) || !(fsm.currentState is DrinkingState) ||
-            !(fsm.currentState is MatingState))
+        if (!(fsm.currentState is EatingState) && !(fsm.currentState is DrinkingState) &&
+            !(fsm.currentState is MatingState) && !(fsm.currentState is FleeingState))
         {
             RequestDecision();
         }
@@ -243,6 +248,7 @@ public class DumbAgent : Agent, IAgent
         animalController.eatingState.onEatFood += HandleEat;
         animalController.matingState.onMate += HandleMate;
         animalController.drinkingState.onDrinkWater += HandleDrink;
+        animalController.actionPerceivedHostile += HandleHostileTarget;
     }
 
 
@@ -253,6 +259,7 @@ public class DumbAgent : Agent, IAgent
         animalController.eatingState.onEatFood -= HandleEat;
         animalController.matingState.onMate -= HandleMate;
         animalController.drinkingState.onDrinkWater -= HandleDrink;
+        animalController.actionPerceivedHostile -= HandleHostileTarget;
     }
 
     private void OnDestroy()
@@ -264,8 +271,59 @@ public class DumbAgent : Agent, IAgent
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Target"))
         {
-            animalController.Interact(other.gameObject);
+            Interact(other.gameObject);
         }
+    }
+    
+    private void HandleHostileTarget(GameObject target)
+    {
+        animalController.SetSpeed(animalController.speedModifier);
+        fsm.ChangeState(animalController.fleeingState);
+    }
+    
+    //General method that takes unknown gameobject as input and interacts with the given gameobject depending on what it is. It can be to e.g. consume or to mate
+    // It is not guaranteed that the statechange will happen since meetrequirements has to be true for given statechange.
+    public void Interact(GameObject target)
+    {
+        //Dont stop to interact if we are fleeing.
+        if (fsm.currentState is FleeingState) return;
+
+        //Debug.Log(gameObject.name);
+        switch (target.tag)
+        {
+            case "Water":
+                animalController.drinkingState.SetTarget(target);
+                fsm.ChangeState(animalController.drinkingState);
+                break;
+            case "Plant":
+                if (target.TryGetComponent(out PlantController plantController) &&
+                    animalModel.CanEat(plantController.plantModel))
+                {
+                    animalController.eatingState.SetTarget(target);
+                    fsm.ChangeState(animalController.eatingState);
+                }
+
+                break;
+            case "Animal":
+                if (target.TryGetComponent(out AnimalController otherAnimalController))
+                {
+                    AnimalModel otherAnimalModel = otherAnimalController.animalModel;
+                    //if we can eat the other animal we try to do so
+                    if (animalModel.CanEat(otherAnimalModel))
+                    {
+                        animalController.eatingState.SetTarget(target);
+                        fsm.ChangeState(animalController.eatingState);
+                    }
+                    else if (animalModel.IsSameSpecies(otherAnimalModel))
+                    {
+                        animalController.matingState.SetTarget(target);
+                        fsm.ChangeState(animalController.matingState);
+                    }
+                }
+
+                break;
+        }
+
     }
     
 }

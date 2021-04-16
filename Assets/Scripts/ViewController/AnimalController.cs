@@ -237,18 +237,15 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
                 //Debug.Log("varying parameters depending on state: Wander");
                 break;
         }
-        
         //This is to make sure that the speed is set directly after State change.
+        SetSpeed(speedModifier);
+    }
+    
+    public void SetSpeed(float speedModifier)
+    {
         animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier;
         agent.speed = animalModel.currentSpeed * Time.timeScale;
     }
-    
-    
-    
-    // if (animalModel is WolfModel)
-    // {
-    //     Debug.Log(speedModifier);
-    // }
 
     protected void HighEnergyState()
     {
@@ -480,52 +477,6 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     {
         StopAllCoroutines();
         EventUnsubscribe();
-    }
-
-
-    //General method that takes unknown gameobject as input and interacts with the given gameobject depending on what it is. It can be to e.g. consume or to mate
-    // It is not guaranteed that the statechange will happen since meetrequirements has to be true for given statechange.
-    public void Interact(GameObject target)
-    {
-        //Dont stop to interact if we are fleeing.
-        if (fsm.currentState is FleeingState) return;
-
-        //Debug.Log(gameObject.name);
-        switch (target.tag)
-        {
-            case "Water":
-                drinkingState.SetTarget(target);
-                fsm.ChangeState(drinkingState);
-                break;
-            case "Plant":
-                if (target.TryGetComponent(out PlantController plantController) &&
-                    animalModel.CanEat(plantController.plantModel))
-                {
-                    eatingState.SetTarget(target);
-                    fsm.ChangeState(eatingState);
-                }
-
-                break;
-            case "Animal":
-                if (target.TryGetComponent(out AnimalController otherAnimalController))
-                {
-                    AnimalModel otherAnimalModel = otherAnimalController.animalModel;
-                    //if we can eat the other animal we try to do so
-                    if (animalModel.CanEat(otherAnimalModel))
-                    {
-                        eatingState.SetTarget(target);
-                        fsm.ChangeState(eatingState);
-                    }
-                    else if (animalModel.IsSameSpecies(otherAnimalModel))
-                    {
-                        matingState.SetTarget(target);
-                        fsm.ChangeState(matingState);
-                    }
-                }
-
-                break;
-        }
-
     }
 
     public abstract Vector3 getNormalizedScale();

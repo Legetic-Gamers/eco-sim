@@ -97,10 +97,7 @@ public class SteeringAcademy : MonoBehaviour
             GameObject obj = Instantiate(environmentObject.prefab, transform, false);
             obj.transform.position = obj.transform.position +
                                      new Vector3(Random.Range(-rangeX, rangeX), 0, Random.Range(-rangeZ, rangeZ));
-            
-            //make sure 
-            obj.transform.localScale = new Vector3(obj.transform.localScale.x / transform.localScale.x, 1,
-                obj.transform.localScale.z / transform.localScale.z);
+
             environmentObject.instances.Add(obj);
         }
     }

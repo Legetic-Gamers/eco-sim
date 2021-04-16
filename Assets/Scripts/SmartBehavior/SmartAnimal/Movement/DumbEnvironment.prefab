@@ -181,12 +181,12 @@ MonoBehaviour:
     prefab: {fileID: 5707813131339405077, guid: b7aede90df860184e82d1ea8292b5123,
       type: 3}
     instances: []
-    amountPerRound: 7
+    amountPerRound: 4
   - tag: 1
     prefab: {fileID: 2493576781110911613, guid: 98b2e4f4f56370343b10b456a0c255a5,
       type: 3}
     instances: []
-    amountPerRound: 4
+    amountPerRound: 2
   - tag: 0
     prefab: {fileID: 8505818697369016331, guid: 1e7d4452968795d4f8f7171874c05578,
       type: 3}
