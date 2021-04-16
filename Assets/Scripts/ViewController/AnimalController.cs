@@ -262,16 +262,16 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     private void MediumEnergyState()
     {
         energyModifier = 0.35f;
-        hydrationModifier = 0.3f;
-        reproductiveUrgeModifier = 1.5f;
+        hydrationModifier = 0.5f;
+        reproductiveUrgeModifier = 1f;
         speedModifier = JoggingSpeed;
     }
 
     private void LowEnergyState()
     {
         energyModifier = 0.15f;
-        hydrationModifier = 0.15f;
-        reproductiveUrgeModifier = 2f;
+        hydrationModifier = 0.25f;
+        reproductiveUrgeModifier = 1f;
         speedModifier = WalkingSpeed;
     }
 

@@ -214,8 +214,9 @@ public class ObjectPooler : MonoBehaviour
             childController.animalModel = childModel;
             childController.animalModel.currentEnergy = energy;
             childController.animalModel.currentHydration = hydration;
+            
             childController.parameterUI.gameObject.SetActive(showCanvasForAll);
-
+            
             // update the childs speed (in case of mutation).
             childController.animalModel.traits.maxSpeed = 1;
             dh.LogNewAnimal(childModel);

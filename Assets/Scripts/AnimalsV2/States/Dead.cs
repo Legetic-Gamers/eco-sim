@@ -20,10 +20,10 @@ namespace AnimalsV2.States
             {
                 //when entering state dead,
                 base.Enter();
+                onDeath?.Invoke(animal, false);
                 if (animal.agent.isActiveAndEnabled && animal.agent.isOnNavMesh)
                 {
                     animal.agent.isStopped = true;
-                    onDeath?.Invoke(animal, false);
                 }
                 //animal.DestroyGameObject(20f);
                 // Set state so that it can't change
