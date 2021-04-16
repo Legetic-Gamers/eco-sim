@@ -170,7 +170,7 @@ public class OrbitCameraController : MonoBehaviour
                 if (hitError < HitThreshold)
                 {
                     // jeebus
-                    
+                    // https://stackoverflow.com/questions/1211212/how-to-calculate-an-angle-from-three-points
                     var b = Mathf.Sqrt(Mathf.Pow(cameraRigPos.x - cameraWorldPos.x, 2) + Mathf.Pow(cameraRigPos.z - cameraWorldPos.z, 2));
                     var c = Mathf.Sqrt(Mathf.Pow(cameraWorldPos.x + diffVector.x, 2) + Mathf.Pow(cameraWorldPos.z + diffVector.z, 2));
                     var a = Mathf.Sqrt(Mathf.Pow(cameraRigPos.x - cameraWorldPos.x + diffVector.x, 2) + Mathf.Pow(cameraRigPos.z - cameraWorldPos.z + diffVector.z, 2));
@@ -324,17 +324,17 @@ public class OrbitCameraController : MonoBehaviour
         }
         
         if (!restrictToBounds) return;
-        
+        float bump = 1.5f;
         if (transform.position.x < -boundsOfWorld.bounds.size.x / 2.0f)
-            transform.position = new Vector3(-boundsOfWorld.bounds.size.x / 2.0f, transform.position.y, transform.position.z);
+            newPosition = new Vector3(bump -boundsOfWorld.bounds.size.x / 2.0f, transform.position.y, transform.position.z);
             
         if (transform.position.x > boundsOfWorld.bounds.size.x / 2.0f)
-            transform.position = new Vector3(boundsOfWorld.bounds.size.x / 2.0f, transform.position.y, transform.position.z);
+            newPosition = new Vector3(-bump + boundsOfWorld.bounds.size.x / 2.0f, transform.position.y, transform.position.z);
             
         if (transform.position.z < -boundsOfWorld.bounds.size.z / 2.0f)
-            transform.position = new Vector3(transform.position.x, transform.position.y, -boundsOfWorld.bounds.size.z / 2.0f);
+            newPosition = new Vector3(transform.position.x, transform.position.y, bump -boundsOfWorld.bounds.size.z / 2.0f);
             
         if (transform.position.z > boundsOfWorld.bounds.size.z / 2.0f)
-            transform.position = new Vector3(transform.position.x, transform.position.y, boundsOfWorld.bounds.size.z / 2.0f);
+            newPosition = new Vector3(transform.position.x, transform.position.y, -bump + boundsOfWorld.bounds.size.z / 2.0f);
     }
 }
