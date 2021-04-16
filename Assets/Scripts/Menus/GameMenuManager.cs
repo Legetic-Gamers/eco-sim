@@ -35,7 +35,7 @@ namespace Menus
             }
         }
 
-        private void FixedUpdate()
+       /* private void FixedUpdate()
         {
             // timer is relation of in-game time and real time, fixedDeltaTime adjusts for how often FixedUpdate is called
             timer += Time.fixedDeltaTime;
@@ -43,7 +43,13 @@ namespace Menus
             timerText.text = $"{time.Minutes:D2}:{time.Seconds:D2}";
             
             //timerText.text = $"{time.Hours:D2}:{time.Minutes:D2}:{time.Seconds:D2}";
-        } 
+        } */
+       private void TimerUpdate()
+       {
+           timer++;
+           var time = TimeSpan.FromSeconds(timer);
+           timerText.text = $"{time.Minutes:D2}:{time.Seconds:D2}";
+       }
 
         public void Resume()
         {
@@ -93,6 +99,9 @@ namespace Menus
 
         public void Start()
         {
+            tickEventPublisher = FindObjectOfType<TickEventPublisher>();
+            if (tickEventPublisher)
+                tickEventPublisher.OnTimerUpdate += TimerUpdate;
             DataHandler dh = FindObjectOfType<DataHandler>();
             if (dh)
             {
