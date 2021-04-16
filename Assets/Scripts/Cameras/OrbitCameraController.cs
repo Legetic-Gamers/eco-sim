@@ -325,16 +325,14 @@ public class OrbitCameraController : MonoBehaviour
         
         if (!restrictToBounds) return;
         float bump = 1.5f;
-        if (transform.position.x < -boundsOfWorld.bounds.size.x / 2.0f)
-            newPosition = new Vector3(bump -boundsOfWorld.bounds.size.x / 2.0f, transform.position.y, transform.position.z);
+        if (newPosition.x < -boundsOfWorld.bounds.size.x / 2.0f)
+            newPosition = new Vector3(bump -boundsOfWorld.bounds.size.x / 2.0f, newPosition.y, newPosition.z);
+        else if (newPosition.x > boundsOfWorld.bounds.size.x / 2.0f)
+            newPosition = new Vector3(-bump + boundsOfWorld.bounds.size.x / 2.0f, newPosition.y, newPosition.z);
             
-        if (transform.position.x > boundsOfWorld.bounds.size.x / 2.0f)
-            newPosition = new Vector3(-bump + boundsOfWorld.bounds.size.x / 2.0f, transform.position.y, transform.position.z);
-            
-        if (transform.position.z < -boundsOfWorld.bounds.size.z / 2.0f)
-            newPosition = new Vector3(transform.position.x, transform.position.y, bump -boundsOfWorld.bounds.size.z / 2.0f);
-            
-        if (transform.position.z > boundsOfWorld.bounds.size.z / 2.0f)
-            newPosition = new Vector3(transform.position.x, transform.position.y, -bump + boundsOfWorld.bounds.size.z / 2.0f);
+        if (newPosition.z < -boundsOfWorld.bounds.size.z / 2.0f)
+            newPosition = new Vector3(newPosition.x, newPosition.y, bump -boundsOfWorld.bounds.size.z / 2.0f);
+        else if (newPosition.z > boundsOfWorld.bounds.size.z / 2.0f)
+            newPosition = new Vector3(newPosition.x, newPosition.y, -bump + boundsOfWorld.bounds.size.z / 2.0f);
     }
 }
