@@ -15,11 +15,20 @@ public class ObjectPooler : MonoBehaviour
     /// A Pool has a tag for the contained element, rabbit. A prefab and an amount of that object to start with (size)
     /// </summary>
     [Serializable]
-    public class Pool
+    public class Pool : ISerializationCallbackReceiver
     {
         public string tag;
         public GameObject prefab;
         public int size;
+        public void OnBeforeSerialize()
+        {
+            tag = prefab.name.Replace("(Clone)", "").Trim();
+        }
+
+        public void OnAfterDeserialize()
+        {
+            //do nothing
+        }
     }
 
     public static ObjectPooler Instance
@@ -146,7 +155,6 @@ public class ObjectPooler : MonoBehaviour
             else if (am.currentHealth <= 0) cause = AnimalModel.CauseOfDeath.Health;
             else cause = AnimalModel.CauseOfDeath.Eaten;
             dh.LogDeadAnimal(am, cause, (transform.position - animalController.startVector).magnitude);
-            bool isSmart = animalObj.GetComponent<AnimalBrainAgent>();
             
             /*
             switch (animalController.animalModel)
@@ -209,8 +217,6 @@ public class ObjectPooler : MonoBehaviour
                 break;
         }
         */
-        Debug.Log(tag.Replace("(Clone)", "").Trim());
-
         child = SpawnFromPool(tag.Replace("(Clone)", "").Trim(), pos, Quaternion.identity);
         
         if (child != null)

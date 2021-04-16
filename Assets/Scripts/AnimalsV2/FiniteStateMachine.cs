@@ -36,7 +36,7 @@ namespace AnimalsV2
         public void Initialize(State startingState)
         {
             defaultState = startingState;
-            ChangeState(startingState);
+            ForceDefaultState();
         }
 
         /// <summary>

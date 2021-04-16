@@ -407,7 +407,11 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
             animalModel.CanEat(edibleAnimal))
         {
             animalModel.currentEnergy += edibleAnimal.GetEaten();
-            ObjectPooler.instance?.HandleDeadAnimal(this, true);
+            
+            if(food.TryGetComponent(out AnimalController eatenAnimalController))
+            {
+                ObjectPooler.instance?.HandleDeadAnimal(eatenAnimalController, true);
+            }
             //Destroy(food);
         }
 
@@ -484,7 +488,6 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     {
         yield return new WaitForSeconds(laborTime);
         AnimalModel childModel = animalModel.Mate(otherParentAnimalController.animalModel);
-        bool isSmart = GetComponent<AnimalBrainAgent>();
         SpawnNew?.Invoke(childModel, transform.position, childEnergy, childHydration, gameObject.name);
         // invoke only once when birthing multiple children
         if (animalModel.isPregnant) ActionPregnant?.Invoke(false);
