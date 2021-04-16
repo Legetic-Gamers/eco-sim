@@ -75,7 +75,7 @@ namespace AnimalsV2.States
                 // Wait a while then change state and resume walking
                 yield return new WaitForSeconds(matingTime/Time.timeScale);
                 onMate?.Invoke(target);
-                //Debug.Log("Succesfully mated.");
+                Debug.Log("Succesfully mated.");
 
             }
 

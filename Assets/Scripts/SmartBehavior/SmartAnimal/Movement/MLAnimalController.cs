@@ -11,40 +11,52 @@ public class MLAnimalController : AnimalController
 {
     public Action OnStartML;
 
+    public bool isTraining;
+
     public override void onObjectSpawn()
     {
         base.onObjectSpawn();
         
         //change to a state which does not navigate the agent. If no decisionmaker is present, it will stay at this state (if default state is also set).
-        MLState mlState = new MLState(this, fsm);
-        fsm.SetDefaultState(mlState);
-        fsm.ChangeState(mlState);
-        ChangeModifiers(mlState);
+        State defaultState;
+
+        if (isTraining)
+        {
+            defaultState = new MLTrainingState(this, fsm);
+        }
+        else
+        {
+            defaultState = new MLInferenceState(this, fsm);
+        }
+
+        
+        fsm.SetDefaultState(defaultState);
+        fsm.ChangeState(defaultState);
+        ChangeModifiers(defaultState);
         OnStartML?.Invoke();
     }
 
     new void Awake()
     {
         base.Awake();
-        
         if (TryGetComponent(out BehaviorParameters bp))
         {
-            if(bp.BehaviorType == BehaviorType.Default || bp.BehaviorType == BehaviorType.HeuristicOnly)
-            {
-                animalModel = new RabbitModel(new Traits(1f, 100, 100, 
-                    100, 6.65f, 5f, 
-                    1,2000, 10, 
-                    160, 13, 7), 0);
-            }
-            else
-            {
-                animalModel = new RabbitModel();
-            }
+            isTraining = bp.BehaviorType == BehaviorType.Default || bp.BehaviorType == BehaviorType.HeuristicOnly;
+        }
+
+        if (isTraining)
+        {
+            animalModel = new RabbitModel(new Traits(1f, 100, 100, 
+                100, 6.65f, 5f, 
+                1,2000, 10, 
+                160, 13, 7), 0);
+            Debug.Log("Setting a feasable rabbitmodel for training!");
         }
         else
         {
             animalModel = new RabbitModel();
         }
+        
         
         agent.acceleration *= Time.timeScale;
         agent.angularSpeed *= Time.timeScale; 
@@ -97,10 +109,16 @@ public class MLAnimalController : AnimalController
                 reproductiveUrgeModifier = 0f;
                 speedModifier = 0f;
                 break;
+            case MLTrainingState _:
+                energyModifier = 0.7f;
+                hydrationModifier = 1f;
+                reproductiveUrgeModifier = 20f;
+                speedModifier = JoggingSpeed;
+                break;
             default:
                 energyModifier = 0.35f;
                 hydrationModifier = 0.5f;
-                reproductiveUrgeModifier = 20f;
+                reproductiveUrgeModifier = 1f;
                 speedModifier = JoggingSpeed;
                 break;
         }

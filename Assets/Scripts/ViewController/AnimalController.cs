@@ -229,7 +229,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
                 reproductiveUrgeModifier = 0f;
                 speedModifier = 0f;
                 break;
-            case MLState _:
+            case MLInferenceState _:
                 energyModifier = 0.5f;
                 hydrationModifier = 0.5f;
                 reproductiveUrgeModifier = 20f;
@@ -412,14 +412,12 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
             {
                 ObjectPooler.instance?.HandleDeadAnimal(eatenAnimalController, true);
             }
-            //Destroy(food);
         }
 
-        if (food != null && food.GetComponent<PlantController>()?.plantModel is IEdible ediblePlant &&
+        if (food != null && food.TryGetComponent(out PlantController plantController) && plantController.plantModel is IEdible ediblePlant &&
             animalModel.CanEat(ediblePlant))
         {
-            animalModel.currentEnergy += ediblePlant.GetEaten();
-            Destroy(food);
+            animalModel.currentEnergy += plantController.GetEaten();
         }
     }
 
