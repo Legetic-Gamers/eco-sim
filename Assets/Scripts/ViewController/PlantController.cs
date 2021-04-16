@@ -32,7 +32,7 @@ namespace ViewController
 
         public void Start()
         {
-        
+            
             //If there is no object pooler present, we need to call onObjectSpawn through start
             if (FindObjectOfType<ObjectPooler>() == null)
             {

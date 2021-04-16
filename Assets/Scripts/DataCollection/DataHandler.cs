@@ -82,13 +82,10 @@ namespace DataCollection
         public void Start()
         {
             ButtonClick bc = FindObjectOfType<ButtonClick>();
-            if (bc)
-            {
-                bc.GetListTrait += SetTrait;
-                bc.GetListPopulation += SetPopulation;
-                bc.GetListBirthRate += SetBirthRate;
-                bc.GetListFoodAvailable += SetFoodAvailable;    
-            }
+            bc.GetListTrait += SetTrait;
+            bc.GetListPopulation += SetPopulation;
+            bc.GetListBirthRate += SetBirthRate;
+            bc.GetListFoodAvailable += SetFoodAvailable;
         }
             
         /// <summary>

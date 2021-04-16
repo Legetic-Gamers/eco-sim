@@ -167,15 +167,7 @@ namespace AnimalsV2
                 }
             }
 
-            //I know this is very redundant but Unity gives error if we return a null caused by a destroyed object
-            if (nearbyObj != null)
-            {
-                return nearbyObj;
-            }
-            else
-            {
-                return null;
-            }
+            return nearbyObj ?? null;
 
         }
 
@@ -242,14 +234,7 @@ namespace AnimalsV2
             if (NavMesh.SamplePosition(destination, out hit, Vector3.Distance(origin, relativeVector), layerMask) &&
                 !animal.agent.isStopped)
             {
-                //animal.agent.SetDestination(destination);
-                //To avoid async path calculation we do this
-                NavMeshPath path = new NavMeshPath();
-                animal.agent.CalculatePath(hit.position, path);
-                if (path.status != NavMeshPathStatus.PathInvalid)
-                {
-                    animal.agent.SetPath(path);
-                }
+                animal.agent.SetDestination(destination);
             }
         }
     }

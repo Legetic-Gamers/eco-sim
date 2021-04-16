@@ -17,20 +17,11 @@ public class ObjectPooler : MonoBehaviour
     /// A Pool has a tag for the contained element, rabbit. A prefab and an amount of that object to start with (size)
     /// </summary>
     [Serializable]
-    public class Pool : ISerializationCallbackReceiver
+    public class Pool
     {
         public string tag;
         public GameObject prefab;
         public int size;
-        public void OnBeforeSerialize()
-        {
-            tag = prefab.name.Replace("(Clone)", "").Trim();
-        }
-
-        public void OnAfterDeserialize()
-        {
-            //do nothing
-        }
     }
 
     public static ObjectPooler Instance
@@ -157,8 +148,8 @@ public class ObjectPooler : MonoBehaviour
             else if (am.currentHealth <= 0) cause = AnimalModel.CauseOfDeath.Health;
             else cause = AnimalModel.CauseOfDeath.Eaten;
             dh.LogDeadAnimal(am, cause, (transform.position - animalController.startVector).magnitude);
+            bool isSmart = animalObj.GetComponent<AnimalBrainAgent>();
             
-            /*
             switch (animalController.animalModel)
             {
                 case RabbitModel _:
@@ -178,11 +169,6 @@ public class ObjectPooler : MonoBehaviour
                     else poolDictionary["Bear"].Enqueue(animalObj);
                     break;
             }
-            */
-            //Debug.Log(animalObj.name.Replace("(Clone)", "").Trim());
-            
-            poolDictionary[animalObj.name.Replace("(Clone)", "").Trim()].Enqueue(animalObj);
-            
             animalController.deadState.onDeath -= HandleDeadAnimal;
             animalController.SpawnNew -= HandleBirthAnimal;
         }
@@ -197,11 +183,10 @@ public class ObjectPooler : MonoBehaviour
     /// <param name="energy"> The energy of the child </param>
     /// <param name="hydration"> The hydration of the child </param>
     /// <param name="isSmart"> If the animals has ML brain </param>
-    private void HandleBirthAnimal(AnimalModel childModel, Vector3 pos, float energy, float hydration, string tag)
+    private void HandleBirthAnimal(AnimalModel childModel, Vector3 pos, float energy, float hydration, bool isSmart)
     {
         GameObject child = null;
         
-        /*
         switch (childModel)
         {
             case RabbitModel _:
@@ -221,9 +206,7 @@ public class ObjectPooler : MonoBehaviour
                 else child = SpawnFromPool("Bear", pos, Quaternion.identity);
                 break;
         }
-        */
-        child = SpawnFromPool(tag.Replace("(Clone)", "").Trim(), pos, Quaternion.identity);
-        
+
         if (child != null)
         {
             AnimalController childController = child.GetComponent<AnimalController>();

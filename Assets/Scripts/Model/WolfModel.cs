@@ -24,7 +24,7 @@ public class WolfModel : AnimalModel, IEdible
     public override AnimalModel Mate(AnimalModel otherParent)
     {
         Traits childTraits = traits.Crossover(otherParent.traits, age, otherParent.age);
-        childTraits.Mutation(0.05f);
+        childTraits.Mutation();
         
         return new WolfModel(childTraits,Math.Max(generation, otherParent.generation) + 1);
     }

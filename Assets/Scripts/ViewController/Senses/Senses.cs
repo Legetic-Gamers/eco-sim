@@ -1,7 +1,5 @@
-using System;
 using System.Collections;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace ViewController.Senses
 {
@@ -18,15 +16,10 @@ namespace ViewController.Senses
         private LayerMask targetMask;
         [SerializeField]
         private LayerMask obstacleMask;
-
-        [SerializeField] private bool useConstantTickInterval;
-        
+    
         private AnimalController animalController;
 
         private Transform thisTransform;
-        
-        public Action onSenseTick;
-        
 
         /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
 
@@ -202,34 +195,14 @@ namespace ViewController.Senses
                 thisTransform = transform;
             }
 
-            //Used in ML
-            if (useConstantTickInterval)
-            {
-                Debug.Log("Using tickEventPublisher for senses");
-                StartCoroutine(ConstantSenseLoop());
-            }
-            else
-            {
-                StartCoroutine(RandomSensesLoop());
-            }
+            StartCoroutine(SensesLoop());
         }
-
-        private IEnumerator ConstantSenseLoop()
+        
+        private IEnumerator SensesLoop()
         {
             while (true)
             {
                 FindTargets();
-                onSenseTick?.Invoke();
-                yield return new WaitForSeconds(0.5f/Time.timeScale);
-            
-            }
-        }
-        private IEnumerator RandomSensesLoop()
-        {
-            while (true)
-            {
-                FindTargets();
-                onSenseTick?.Invoke();
                 yield return new WaitForSeconds(Random.Range(0.5f, 1f)/Time.timeScale);
             
             }
