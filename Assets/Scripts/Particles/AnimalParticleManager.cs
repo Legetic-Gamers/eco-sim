@@ -15,6 +15,8 @@ public class AnimalParticleManager : MonoBehaviour
     public ParticleSystem matingParticleSystem;
     public ParticleSystem bornParticleSystem;
     public ParticleSystem pregnancyParticleSystem;
+
+    private DestroyParticle hitParticleSelfDestroyScript;
     
     private AnimalController animalController;
     private FiniteStateMachine fsm;
@@ -53,6 +55,7 @@ public class AnimalParticleManager : MonoBehaviour
         {
             hitParticleSystem = Instantiate(hitParticleSystem, transform.position, Quaternion.identity);
             hitParticleSystem.transform.parent = gameObject.transform;
+            hitParticleSelfDestroyScript = hitParticleSystem.GetComponent<DestroyParticle>();
         }
 
         if (matingParticleSystem)
@@ -63,30 +66,13 @@ public class AnimalParticleManager : MonoBehaviour
 
         if (pregnancyParticleSystem)
         {
-            Sprite spriteName = Resources.Load<Sprite>("Sprites/rabbit-sprite");
-            switch (animalController.animalModel)
-            {
-                case BearModel _:
-                    spriteName = Resources.Load<Sprite>("Sprites/bear-sprite");
-                    break;
-                case WolfModel _:
-                    spriteName = Resources.Load<Sprite>("Sprites/wolf-sprite");
-                    break;
-                case DeerModel _:
-                    spriteName = Resources.Load<Sprite>("Sprites/deer-sprite");
-                    break;
-                case RabbitModel _:
-                    spriteName = Resources.Load<Sprite>("Sprites/rabbit-sprite");
-                    break;
-            }
-            pregnancyParticleSystem.textureSheetAnimation.SetSprite(0, spriteName);
             pregnancyParticleSystem = Instantiate(pregnancyParticleSystem, transform.position, upRotation);
             pregnancyParticleSystem.transform.parent = gameObject.transform;
         }
 
         if (bornParticleSystem)
         {
-            bornParticleSystem = Instantiate(bornParticleSystem, transform.position, Quaternion.identity);
+            bornParticleSystem = Instantiate(bornParticleSystem, transform.position, upRotation);
             bornParticleSystem.transform.parent = gameObject.transform;
         }
     }
@@ -95,7 +81,8 @@ public class AnimalParticleManager : MonoBehaviour
     {
         animalController.fsm.OnStateEnter += ShowStateParticles;
         animalController.ActionPregnant += ShowPregnancyParticles;
-        animalController.ActionBirth += ShowBirthParticles;
+        animalController.deadState.onDeath += StopOnDeath;
+        animalController.animalModel.actionKilled += ShowHitParticles;
     }
     private void EventUnsubscribe()
     {
@@ -105,13 +92,16 @@ public class AnimalParticleManager : MonoBehaviour
         }
 
         animalController.ActionPregnant -= ShowPregnancyParticles;
-        animalController.ActionBirth -= ShowBirthParticles;
+        
+        animalController.deadState.onDeath -= StopOnDeath;
+        animalController.animalModel.actionKilled -= ShowHitParticles;
     }
 
     private void ShowStateParticles(State state)
     {
         //Reset particle systems.
         smokeTrailParticleSystem.Stop();
+        matingParticleSystem.Stop();
 
         switch (state)
         {
@@ -154,7 +144,7 @@ public class AnimalParticleManager : MonoBehaviour
         {
             if (isPregnant)
             {
-                matingParticleSystem.Stop();
+                
                 pregnancyParticleSystem.Play();
             }
             else
@@ -164,24 +154,26 @@ public class AnimalParticleManager : MonoBehaviour
         }
     }
 
-    private void ShowBirthParticles()
-    {
-        if (bornParticleSystem)
-        {
-            bornParticleSystem.Play();
-        }
-    }
-
     private void ShowHitParticles()
     {
-        if (hitParticleSystem)
+        if (hitParticleSystem && hitParticleSelfDestroyScript != null)
         {
-            hitParticleSystem.Play();
+            hitParticleSelfDestroyScript.SelfDestructAfterPlayAndDetach();
         }
+        StopOnDeath(null, false);
+    }
+
+    private void StopOnDeath(AnimalController am, bool gotEaten)
+    {
+        matingParticleSystem.Stop();
+        bornParticleSystem.Stop();
+        pregnancyParticleSystem.Stop();
+        smokeTrailParticleSystem.Stop();
     }
 
     private void OnDestroy()
     {
+        StopOnDeath(null, false);
         EventUnsubscribe();
     }
 }

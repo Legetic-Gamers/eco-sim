@@ -8,7 +8,7 @@ namespace AnimalsV2.States
         public class Dead : State
         {
 
-            public Action<AnimalController> onDeath;
+            public Action<AnimalController, bool> onDeath;
             
             public Dead(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal,
                 finiteStateMachine)
@@ -25,7 +25,8 @@ namespace AnimalsV2.States
                     animal.agent.isStopped = true;
                     // Set state so that it can't change
                     finiteStateMachine.absorbingState = true;
-                    onDeath?.Invoke(animal);
+                    onDeath?.Invoke(animal, false);
+
                 }
             }
 

@@ -29,11 +29,12 @@ public class RabbitModel : AnimalModel,IEdible
         Traits childTraits = traits.Crossover(otherParent.traits, age, otherParent.age);
         childTraits.Mutation(0.05f);
         
-        return new RabbitModel(childTraits, (int) Math.Max(age, otherParent.age) + 1);
+        return new RabbitModel(childTraits, Math.Max(generation, otherParent.generation) + 1);
     }
 
     public float GetEaten()
     {
+        actionKilled?.Invoke();
         return nutritionValue;
     }
 

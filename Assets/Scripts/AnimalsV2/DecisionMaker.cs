@@ -3,12 +3,14 @@
  */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using AnimalsV2.States;
 using AnimalsV2.States.AnimalsV2.States;
 using UnityEngine;
 using static AnimalsV2.Priorities;
+using Random = UnityEngine.Random;
 
 namespace AnimalsV2
 {
@@ -27,10 +29,19 @@ namespace AnimalsV2
             fsm = animalController.fsm;
             animalModel = animalController.animalModel;
             eventPublisher = FindObjectOfType<global::TickEventPublisher>();
-
+            StartCoroutine(MakeDecisionLoop());
             EventSubscribe();
         }
         
+        private IEnumerator MakeDecisionLoop()
+        {
+            while (true)
+            {
+                MakeDecision();
+                yield return new WaitForSeconds(Random.Range(0.5f, 1f)/Time.timeScale);
+            
+            }
+        }
 
         private void MakeDecision()
         {
@@ -150,7 +161,7 @@ namespace AnimalsV2
         private void EventSubscribe()
         {
             //eventPublisher.onParamTickEvent += MakeDecision;
-            eventPublisher.onSenseTickEvent += MakeDecision;
+            //eventPublisher.onSenseTickEvent += MakeDecision;
 
             animalController.actionPerceivedHostile += HandleHostileTarget;
             animalController.deadState.onDeath += HandleDeath;
@@ -160,7 +171,7 @@ namespace AnimalsV2
         public void EventUnsubscribe()
         {
             //eventPublisher.onParamTickEvent -= MakeDecision;
-            eventPublisher.onSenseTickEvent -= MakeDecision;
+            //eventPublisher.onSenseTickEvent -= MakeDecision;
 
             animalController.actionPerceivedHostile -= HandleHostileTarget;
             animalController.deadState.onDeath -= HandleDeath;
@@ -176,7 +187,7 @@ namespace AnimalsV2
             ChangeState(animalController.fleeingState);
         }
 
-        private void HandleDeath(AnimalController animalController)
+        private void HandleDeath(AnimalController animalController, bool gotEaten)
         {
             //Debug.Log("You dead!");
             //ChangeState(animalController.deadState);

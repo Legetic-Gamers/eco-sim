@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using AnimalsV2;
 using AnimalsV2.States;
 using AnimalsV2.States.AnimalsV2.States;
-using DataCollection;
 using DefaultNamespace;
 using Model;
 using UnityEngine;
@@ -12,12 +11,14 @@ using UnityEngine.AI;
 using ViewController;
 using Debug = UnityEngine.Debug;
 using Random = System.Random;
+using UnityRandom = UnityEngine.Random;
 
 
 public abstract class AnimalController : MonoBehaviour, IPooledObject
 {
 
     public AnimalModel animalModel;
+    public Canvas parameterUI;
 
     [HideInInspector] public TickEventPublisher tickEventPublisher;
 
@@ -25,11 +26,13 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
 
     // decisionMaker subscribes to these actions
     public Action<GameObject> actionPerceivedHostile;
-    public Action<AnimalModel, Vector3, float, float> SpawnNew;
+    public Action<AnimalModel, Vector3, float, float, bool> SpawnNew;
+
+    // Start vector for the animal, used in datahandler distance travelled
+    public Vector3 startVector;
 
     // AnimalParticleManager is subscribed to these
     public event Action<bool> ActionPregnant;
-    public event Action ActionBirth;
 
     //Subscribed to by animalBrainAgent.
     public event EventHandler<OnBirthEventArgs> OnBirth;
@@ -43,9 +46,6 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
 
     public FiniteStateMachine fsm;
     public AnimationController animationController;
-
-    // Add a data handler
-    private DataHandler dh;
 
     //States
     public FleeingState fleeingState;
@@ -110,9 +110,6 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         goToMate = new GoToMate(this, fsm);
         waitingState = new Waiting(this, fsm);
         
-        fsm.Initialize(wanderState);
-
-        animationController = new AnimationController(this);
         agent = GetComponent<NavMeshAgent>();
         
         
@@ -144,25 +141,35 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     /// </summary>
     public void onObjectSpawn()
     {
+        animationController = new AnimationController(this);
         // Init the NavMesh agent
         agent.autoBraking = true;
-
         animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
 
         //Can be used later.
         baseAngularSpeed = agent.angularSpeed;
         baseAcceleration = agent.acceleration;
-        
+        fsm.Initialize(wanderState);
         agent.speed = animalModel.currentSpeed * Time.timeScale;
         agent.acceleration *= Time.timeScale;
         agent.angularSpeed *= Time.timeScale;
-        dh = FindObjectOfType<DataHandler>();
-        dh?.LogNewAnimal(animalModel);
         //Debug.Log(agent.autoBraking);
         tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
         EventSubscribe();
-
+        
         SetPhenotype();
+        startVector = transform.position;
+        StartCoroutine(UpdateStatesLogicLoop());
+    }
+    
+    private IEnumerator UpdateStatesLogicLoop()
+    {
+        while (true)
+        {
+            fsm.UpdateStatesLogic();
+            yield return new WaitForSeconds(UnityRandom.Range(0.5f, 1f)/Time.timeScale);
+            
+        }
     }
 
     /* /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\ */
@@ -279,7 +286,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         // speed
         animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier;
         agent.speed = animalModel.currentSpeed * Time.timeScale;
-
+        
         // energy
         animalModel.currentEnergy -= (animalModel.age + animalModel.currentSpeed +
                                       animalModel.traits.viewRadius / 10 + animalModel.traits.hearingRadius / 10)
@@ -290,11 +297,9 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
                                         (1 +
                                          animalModel.currentSpeed / animalModel.traits.endurance *
                                          hydrationModifier);
-
+        
         // reproductive urge
         animalModel.reproductiveUrge += 0.01f * reproductiveUrgeModifier;
-        // animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
-        // agent.speed = animalModel.currentSpeed * Time.timeScale;
         agent.acceleration = baseAcceleration * Time.timeScale;
         agent.angularSpeed = baseAngularSpeed * Time.timeScale;
     }
@@ -308,7 +313,8 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
             tickEventPublisher.onParamTickEvent += UpdateParameters;
             tickEventPublisher.onParamTickEvent += CheckDeath;
             // every 0.5 sec
-            tickEventPublisher.onSenseTickEvent += fsm.UpdateStatesLogic;
+            //tickEventPublisher.onSenseTickEvent += fsm.UpdateStatesLogic;
+            
         }
 
         fsm.OnStateEnter += ChangeModifiers;
@@ -324,6 +330,8 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         animationController.EventSubscribe();
     }
 
+    
+
     protected void EventUnsubscribe()
     {
         if (tickEventPublisher)
@@ -332,7 +340,8 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
             tickEventPublisher.onParamTickEvent -= UpdateParameters;
             tickEventPublisher.onParamTickEvent -= CheckDeath;
             // every 0.5 sec
-            tickEventPublisher.onSenseTickEvent -= fsm.UpdateStatesLogic;
+            //tickEventPublisher.onSenseTickEvent -= fsm.UpdateStatesLogic;
+            
         }
 
 
@@ -349,9 +358,43 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         
         matingState.onMate -= Mate;
 
-        animationController.EventUnsubscribe();
+        animationController?.EventUnsubscribe();
     }
 
+
+    private void Update()
+    {
+        rotateToTerrain();
+    }
+
+    //This could be used as an alternative to rotateToTerrain to avoid updating rotation every frame.
+    // IEnumerator MoveObject(Vector3 source, Vector3 target, float overTime)
+    // {
+    //     float startTime = Time.time;
+    //     while(Time.time < startTime + overTime)
+    //     {
+    //         transform.position = Vector3.Lerp(source, target, (Time.time - startTime)/overTime);
+    //         yield return null;
+    //     }
+    //     transform.position = target;
+    // }
+    private void rotateToTerrain()
+    {
+        RaycastHit hit;
+        Vector3 direction = transform.TransformDirection(Vector3.down);
+        Quaternion targetRotation = transform.rotation;
+
+        if (Physics.Raycast(transform.position, direction, out hit, 50f, LayerMask.GetMask("Ground")))
+        {
+            Quaternion surfaceRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
+            targetRotation = surfaceRotation * transform.rotation;
+            //Dont rotate around Z.
+            targetRotation = Quaternion.Euler(targetRotation.eulerAngles.x,targetRotation.eulerAngles.y,0);
+        }
+
+        transform.GetChild(0).rotation = Quaternion.Lerp(transform.GetChild(0).rotation, targetRotation,  2 * Time.deltaTime);
+    }
+    
     //Set animals size based on traits.
     protected virtual void SetPhenotype()
     {
@@ -364,7 +407,8 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
             animalModel.CanEat(edibleAnimal))
         {
             animalModel.currentEnergy += edibleAnimal.GetEaten();
-            Destroy(food);
+            ObjectPooler.instance?.HandleDeadAnimal(this, true);
+            //Destroy(food);
         }
 
         if (food != null && food.GetComponent<PlantController>()?.plantModel is IEdible ediblePlant &&
@@ -429,19 +473,21 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
 
             animalModel.isPregnant = true;
             ActionPregnant?.Invoke(true);
+            
             for (int i = 1; i <= offspringCount; i++)
                 // Wait some time before giving birth
                 StartCoroutine(GiveBirth(childEnergy, childHydration, gestationTime, targetAnimalController));
         }
     }
-
-
-    IEnumerator GiveBirth(float childEnergy, float childHydration, float laborTime,
-        AnimalController otherParentAnimalController)
+    
+    IEnumerator GiveBirth(float childEnergy, float childHydration, float laborTime, AnimalController otherParentAnimalController) 
     {
         yield return new WaitForSeconds(laborTime);
         AnimalModel childModel = animalModel.Mate(otherParentAnimalController.animalModel);
-        SpawnNew?.Invoke(childModel, transform.position, childEnergy, childHydration);
+        bool isSmart = GetComponent<AnimalBrainAgent>();
+        SpawnNew?.Invoke(childModel, transform.position, childEnergy, childHydration, isSmart);
+        // invoke only once when birthing multiple children
+        if (animalModel.isPregnant) ActionPregnant?.Invoke(false);
         animalModel.isPregnant = false;
     }
 
@@ -450,15 +496,8 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     
 
     //should be refactored so that this logic is in AnimalModel
-    private void HandleDeathStatus(AnimalController animalController)
+    private void HandleDeathStatus(AnimalController animalController, bool gotEaten)
     {
-        AnimalModel.CauseOfDeath cause;
-        if (animalModel.currentEnergy == 0) cause = AnimalModel.CauseOfDeath.Hunger;
-        if (animalModel.currentHealth == 0) cause = AnimalModel.CauseOfDeath.Health;
-        if (animalModel.currentHydration == 0) cause = AnimalModel.CauseOfDeath.Hydration;
-        else cause = AnimalModel.CauseOfDeath.Eaten;
-        dh?.LogDeadAnimal(animalModel, cause);
-
         //Stop animal from giving birth once dead.
         StopCoroutine("GiveBirth");
         StopAllCoroutines();

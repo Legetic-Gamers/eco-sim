@@ -173,7 +173,7 @@ public class DumbAgent : Agent, IAgent
     }
     
     
-    private void HandleDeath(AnimalController animalController)
+    private void HandleDeath(AnimalController animalController, bool gotEaten)
     {
         AddReward(-1);
         onEpisodeEnd?.Invoke(100f);

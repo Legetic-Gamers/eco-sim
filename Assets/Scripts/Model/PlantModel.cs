@@ -5,8 +5,15 @@ namespace Model
     public class PlantModel : IEdible
     {
         public bool isEaten = false;
-        
+
         public float nutritionValue { get; set; }
+        public float plantAge;
+
+        public const float plantMaxAge = 60;
+        public const float plantMaxsize = 30;
+
+
+
 
         public PlantModel(float nutritionValue)
         {
@@ -15,13 +22,16 @@ namespace Model
 
         public PlantModel()
         {
-            nutritionValue = 30f;
+            this.nutritionValue = 0;
+            this.plantAge = 0;
         }
        
         public float GetEaten()
         {
             isEaten = true;
-            return nutritionValue;
+            float tmp = nutritionValue;
+            nutritionValue = 0;
+            return tmp;
         }
 
     }

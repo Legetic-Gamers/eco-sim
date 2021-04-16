@@ -22,17 +22,14 @@ public class Window_Graph : MonoBehaviour
     
     [SerializeField] private float yBufferTop = 1.2f;
     [SerializeField] private Sprite circleSprite;
-    [SerializeField] private float windowGraphSizeX = 1000;
-    [SerializeField] private float windowGraphSizeY = 700;
-    [SerializeField] private float graphContainerSizeX = 720;
-    [SerializeField] private float graphContainerSizeY = 405;
+
 
     private static List<float> _list1 = new List<float>() {0};
     private static List<float> _list2 = new List<float>() {0};
     private static int _truncateFactor = 1;
     private static int _gridCountY = 12;
     private int firstX = 1;
-    private static bool _isGraphOne = true;
+    private static bool _isGraphOne = false;
     private static bool _isGraphTwo = false;
     
 
@@ -87,24 +84,23 @@ public class Window_Graph : MonoBehaviour
 
     private void Awake()
     {
-        window_graph = GetComponent<RectTransform>();
-        graphContainer = window_graph.Find("graphContainer").GetComponent<RectTransform>();
+        window_graph = this.GetComponent<RectTransform>();
+        gameObjectList = new List<GameObject>();
+        graphContainer = GameObject.Find("graphContainer").GetComponent<RectTransform>();
+        //graphContainer = window_graph.Find("graphContainer").GetComponent<RectTransform>();
         labelTemplateX = graphContainer.Find("labelTemplateX").GetComponent<RectTransform>();
         labelTemplateY = graphContainer.Find("labelTemplateY").GetComponent<RectTransform>();
         dashTemplateX = graphContainer.Find("dashTemplateX").GetComponent<RectTransform>();
         dashTemplateY = graphContainer.Find("dashTemplateY").GetComponent<RectTransform>();
-        gameObjectList = new List<GameObject>();
+        
         DataHandler dh = FindObjectOfType<DataHandler>();
-
-        window_graph.sizeDelta = new Vector2(windowGraphSizeX, windowGraphSizeY);
-        graphContainer.sizeDelta = new Vector2(graphContainerSizeX, graphContainerSizeY);
-        dashTemplateX.sizeDelta = new Vector2(graphContainerSizeY + 2, 1);
-        dashTemplateY.sizeDelta = new Vector2(graphContainerSizeX + 2, 1); 
         dh.Display += Draw;
         ButtonClick.OnButtonReDraw += ReDraw;
     }
+    
 
-private void Draw(List<float> list1, List<float> list2)
+
+    private void Draw(List<float> list1, List<float> list2)
 {
     _list1 = list1;
     _list2 = list2;
@@ -211,11 +207,13 @@ private void ReDraw(object sender, EventArgs e)
     // Draws the grid and labels of the X-axis.
     protected void AddGridX(List<float> valueList)
     {
+        dashTemplateX.sizeDelta = new Vector2(graphContainer.sizeDelta.y, 1f);
         float graphWidth = graphContainer.sizeDelta.x;
-        //int separatorCount = _gridCountX;
         int numberOfValues = valueList.Count;
         float xDelta = graphWidth / numberOfValues;
         int count = firstX;
+        
+        
 
         foreach (int value in valueList)
         {
@@ -224,15 +222,15 @@ private void ReDraw(object sender, EventArgs e)
             if (xPosition > graphWidth)
                 break;
             
-            RectTransform labelX = Instantiate(labelTemplateX);
-            labelX.SetParent(graphContainer);
+            RectTransform labelX = Instantiate(labelTemplateX, graphContainer, false);
+            //labelX.SetParent(graphContainer);
             labelX.gameObject.SetActive(true); 
             labelX.anchoredPosition = new Vector2(xPosition, -7f); 
             labelX.GetComponent<Text>().text = count.ToString();
             gameObjectList.Add(labelX.gameObject); 
 
-            RectTransform dashX = Instantiate(dashTemplateX);
-            dashX.SetParent(graphContainer);
+            RectTransform dashX = Instantiate(dashTemplateX, graphContainer, false);
+            //dashX.SetParent(graphContainer);
             dashX.gameObject.SetActive(true); 
             dashX.anchoredPosition = new Vector2(xPosition, -2f);
             gameObjectList.Add(dashX.gameObject); 
@@ -245,6 +243,7 @@ private void ReDraw(object sender, EventArgs e)
     // Draws the grid of the Y-axis, as well as the labels of the Y-axis.
     private void AddGridY(List<float> valueList)
     {
+        dashTemplateY.sizeDelta = new Vector2(graphContainer.sizeDelta.x, 1f);
         float graphHeight = graphContainer.sizeDelta.y;
         float yMax = valueList.Max() * yBufferTop;
         int separatorCount = _gridCountY;
@@ -252,8 +251,8 @@ private void ReDraw(object sender, EventArgs e)
             yMax = Mathf.Max(_list1.Max(), _list2.Max())*yBufferTop;
         for (int i = 0; i <= separatorCount; i++)
         {
-            RectTransform labelY = Instantiate(labelTemplateY);
-            labelY.SetParent(graphContainer);
+            RectTransform labelY = Instantiate(labelTemplateY, graphContainer, false);
+            //labelY.SetParent(graphContainer);
             labelY.gameObject.SetActive(true); 
             float normalizedValue = (i * 1f) / separatorCount;
             labelY.anchoredPosition = (new Vector2(-10f, normalizedValue * graphHeight));
@@ -261,8 +260,8 @@ private void ReDraw(object sender, EventArgs e)
             gameObjectList.Add(labelY.gameObject); 
 
 
-            RectTransform dashY = Instantiate(dashTemplateY);
-            dashY.SetParent(graphContainer);
+            RectTransform dashY = Instantiate(dashTemplateY, graphContainer, false);
+            //dashY.SetParent(graphContainer);
             dashY.gameObject.SetActive(true); 
             dashY.anchoredPosition = new Vector2(-2f, normalizedValue * graphHeight);
             gameObjectList.Add(dashY.gameObject); 

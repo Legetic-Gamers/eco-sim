@@ -325,7 +325,7 @@ public class AnimalBrainAgent : Agent,IAgent
     }
 
 
-    private void HandleDeath(AnimalController animalController)
+    private void HandleDeath(AnimalController animalController, bool gotEaten)
     {
         //Penalize for every year not lived. (mating gives more than death)
         // AddReward( (animalModel.age / animalModel.traits.ageLimit)/2);
