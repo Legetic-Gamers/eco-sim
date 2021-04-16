@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using AnimalsV2;
 using AnimalsV2.States;
 using AnimalsV2.States.AnimalsV2.States;
+using Unity.MLAgents.Policies;
 using UnityEngine;
 
 public class MLAnimalController : AnimalController
@@ -25,12 +26,30 @@ public class MLAnimalController : AnimalController
     new void Awake()
     {
         base.Awake();
-        animalModel = new RabbitModel(new Traits(1f, 100, 100, 
-            100, 6.65f, 5f, 
-            1,2000, 10, 
-            160, 13, 7), 0);
+        
+        if (TryGetComponent(out BehaviorParameters bp))
+        {
+            if(bp.BehaviorType == BehaviorType.Default || bp.BehaviorType == BehaviorType.HeuristicOnly)
+            {
+                animalModel = new RabbitModel(new Traits(1f, 100, 100, 
+                    100, 6.65f, 5f, 
+                    1,2000, 10, 
+                    160, 13, 7), 0);
+            }
+            else
+            {
+                animalModel = new RabbitModel();
+            }
+        }
+        else
+        {
+            animalModel = new RabbitModel();
+        }
+        
         agent.acceleration *= Time.timeScale;
-        agent.angularSpeed *= Time.timeScale;
+        agent.angularSpeed *= Time.timeScale; 
+        
+        
     }
 
     public override void ChangeModifiers(State state)

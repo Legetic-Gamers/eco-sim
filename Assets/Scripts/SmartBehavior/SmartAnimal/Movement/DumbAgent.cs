@@ -44,9 +44,9 @@ public class DumbAgent : Agent, IAgent
         //Set the animal as sterile if we want to train/heuristic
         if (TryGetComponent(out BehaviorParameters bp))
         {
-            Debug.Log("Agent is infertile!");
             animalController.isInfertile =
                 bp.BehaviorType == BehaviorType.Default || bp.BehaviorType == BehaviorType.HeuristicOnly;
+            if(animalController.isInfertile) Debug.Log("Agent is infertile!");
         }
         EventSubscribe();
     }
