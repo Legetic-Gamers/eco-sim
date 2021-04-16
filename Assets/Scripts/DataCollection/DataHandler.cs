@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Model;
 using UnityEngine;
+using ViewController;
 using static DataCollection.Formatter;
 using Debug = UnityEngine.Debug;
 
@@ -136,9 +137,9 @@ namespace DataCollection
         /// Called when plants are activated
         /// </summary>
         /// <param name="plantModel"> The model of the plant </param>
-        public void LogNewPlant(PlantModel plantModel)
+        public void LogNewPlant()
         {
-            c.CollectNewFood(plantModel);
+            c.CollectNewFood();
         }
         
         /// <summary>
