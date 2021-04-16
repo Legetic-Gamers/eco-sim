@@ -26,7 +26,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
 
     // decisionMaker subscribes to these actions
     public Action<GameObject> actionPerceivedHostile;
-    public Action<AnimalModel, Vector3, float, float, bool> SpawnNew;
+    public Action<AnimalModel, Vector3, float, float, string> SpawnNew;
 
     // Start vector for the animal, used in datahandler distance travelled
     public Vector3 startVector;
@@ -45,7 +45,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     [HideInInspector] public NavMeshAgent agent;
 
     public FiniteStateMachine fsm;
-    private AnimationController animationController;
+    public AnimationController animationController;
 
     //States
     public FleeingState fleeingState;
@@ -61,9 +61,9 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     public Waiting waitingState;
 
     //Constants
-    private const float WalkingSpeed = 0.3f;
-    private const float JoggingSpeed = 0.5f;
-    private const float RunningSpeed = 1f;
+    protected const float WalkingSpeed = 0.3f;
+    protected const float JoggingSpeed = 0.5f;
+    protected const float RunningSpeed = 1f;
 
     //Modifiers
     [HideInInspector] public float energyModifier;
@@ -72,8 +72,8 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     [HideInInspector] public float speedModifier = JoggingSpeed; //100% of maxSpeed in model
 
     //Timescale stuff
-    private float baseAcceleration;
-    private float baseAngularSpeed;
+    protected float baseAcceleration;
+    protected float baseAngularSpeed;
 
     //target lists
     public List<GameObject> visibleHostileTargets = new List<GameObject>();
@@ -139,7 +139,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     /// <summary>
     /// "Start()" when using animal pooling, called when the animal is set to be active. 
     /// </summary>
-    public void onObjectSpawn()
+    public virtual void onObjectSpawn()
     {
         animationController = new AnimationController(this);
         // Init the NavMesh agent
@@ -153,7 +153,6 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         agent.speed = animalModel.currentSpeed * Time.timeScale;
         agent.acceleration *= Time.timeScale;
         agent.angularSpeed *= Time.timeScale;
-
         //Debug.Log(agent.autoBraking);
         tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
         EventSubscribe();
@@ -187,6 +186,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     /// </summary>
     public virtual void ChangeModifiers(State state)
     {
+        //Debug.Log("Changing modifiers for state: " + state.ToString());
         switch (state)
         {
             case GoToFood _:
@@ -229,6 +229,12 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
                 reproductiveUrgeModifier = 0f;
                 speedModifier = 0f;
                 break;
+            case MLState _:
+                energyModifier = 0.5f;
+                hydrationModifier = 0.5f;
+                reproductiveUrgeModifier = 20f;
+                speedModifier = JoggingSpeed;
+                break;
             default:
                 energyModifier = 0.1f;
                 hydrationModifier = 0.05f;
@@ -238,20 +244,17 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
                 //Debug.Log("varying parameters depending on state: Wander");
                 break;
         }
-        
         //This is to make sure that the speed is set directly after State change.
+        SetSpeed(speedModifier);
+    }
+    
+    public void SetSpeed(float speedModifier)
+    {
         animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier;
         agent.speed = animalModel.currentSpeed * Time.timeScale;
     }
-    
-    
-    
-    // if (animalModel is WolfModel)
-    // {
-    //     Debug.Log(speedModifier);
-    // }
 
-    private void HighEnergyState()
+    protected void HighEnergyState()
     {
         energyModifier = 1f;
         hydrationModifier = 1f;
@@ -259,7 +262,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         speedModifier = RunningSpeed;
     }
 
-    private void MediumEnergyState()
+    protected void MediumEnergyState()
     {
         energyModifier = 0.35f;
         hydrationModifier = 0.5f;
@@ -267,7 +270,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         speedModifier = JoggingSpeed;
     }
 
-    private void LowEnergyState()
+    protected void LowEnergyState()
     {
         energyModifier = 0.15f;
         hydrationModifier = 0.25f;
@@ -393,7 +396,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     }
     
     //Set animals size based on traits.
-    private void SetPhenotype()
+    protected virtual void SetPhenotype()
     {
         gameObject.transform.localScale = getNormalizedScale() * animalModel.traits.size;
     }
@@ -404,7 +407,11 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
             animalModel.CanEat(edibleAnimal))
         {
             animalModel.currentEnergy += edibleAnimal.GetEaten();
-            ObjectPooler.instance?.HandleDeadAnimal(this, true);
+            
+            if(food.TryGetComponent(out AnimalController eatenAnimalController))
+            {
+                ObjectPooler.instance?.HandleDeadAnimal(eatenAnimalController, true);
+            }
             //Destroy(food);
         }
 
@@ -481,8 +488,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     {
         yield return new WaitForSeconds(laborTime);
         AnimalModel childModel = animalModel.Mate(otherParentAnimalController.animalModel);
-        bool isSmart = GetComponent<AnimalBrainAgent>();
-        SpawnNew?.Invoke(childModel, transform.position, childEnergy, childHydration, isSmart);
+        SpawnNew?.Invoke(childModel, transform.position, childEnergy, childHydration, gameObject.name);
         // invoke only once when birthing multiple children
         if (animalModel.isPregnant) ActionPregnant?.Invoke(false);
         animalModel.isPregnant = false;
@@ -513,52 +519,6 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     {
         StopAllCoroutines();
         EventUnsubscribe();
-    }
-
-
-    //General method that takes unknown gameobject as input and interacts with the given gameobject depending on what it is. It can be to e.g. consume or to mate
-    // It is not guaranteed that the statechange will happen since meetrequirements has to be true for given statechange.
-    public void Interact(GameObject target)
-    {
-        //Dont stop to interact if we are fleeing.
-        if (fsm.currentState is FleeingState) return;
-
-        //Debug.Log(gameObject.name);
-        switch (target.tag)
-        {
-            case "Water":
-                drinkingState.SetTarget(target);
-                fsm.ChangeState(drinkingState);
-                break;
-            case "Plant":
-                if (target.TryGetComponent(out PlantController plantController) &&
-                    animalModel.CanEat(plantController.plantModel))
-                {
-                    eatingState.SetTarget(target);
-                    fsm.ChangeState(eatingState);
-                }
-
-                break;
-            case "Animal":
-                if (target.TryGetComponent(out AnimalController otherAnimalController))
-                {
-                    AnimalModel otherAnimalModel = otherAnimalController.animalModel;
-                    //if we can eat the other animal we try to do so
-                    if (animalModel.CanEat(otherAnimalModel))
-                    {
-                        eatingState.SetTarget(target);
-                        fsm.ChangeState(eatingState);
-                    }
-                    else if (animalModel.IsSameSpecies(otherAnimalModel))
-                    {
-                        matingState.SetTarget(target);
-                        fsm.ChangeState(matingState);
-                    }
-                }
-
-                break;
-        }
-
     }
 
     public abstract Vector3 getNormalizedScale();

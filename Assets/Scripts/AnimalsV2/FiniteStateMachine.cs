@@ -36,7 +36,7 @@ namespace AnimalsV2
         public void Initialize(State startingState)
         {
             defaultState = startingState;
-            ChangeState(startingState);
+            ForceDefaultState();
         }
 
         /// <summary>
@@ -45,17 +45,12 @@ namespace AnimalsV2
         /// <param name="newState"> State to change into. </param>
         public bool ChangeState(State newState)
         {
-            // if (newState is MatingState)
-            // {
-            //     Debug.Log("absorbingstate:" + absorbingState + " Meetrequirements: " + newState.MeetRequirements());
-            // }
-            
-
             // if the state is absorbing, meaning that state change is not possible or newState == CurrentState or newState does not meet requirements, we return
             if( absorbingState || !newState.MeetRequirements()) return false;
             //If we try to enter same state, don't do anything but essentially the state change was good.
             if (newState == currentState) return true;
             
+
             if (currentState != null)
             {
                 //Exit old state
@@ -95,6 +90,12 @@ namespace AnimalsV2
 
         public void GoToDefaultState()
         {
+            ChangeState(defaultState);
+        }
+
+        public void ForceDefaultState()
+        {
+            absorbingState = false;
             ChangeState(defaultState);
         }
 

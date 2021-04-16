@@ -1742,6 +1742,7 @@ MonoBehaviour:
   obstacleMask:
     serializedVersion: 2
     m_Bits: 3072
+  useConstantTickInterval: 0
 --- !u!114 &1968797970220886526
 MonoBehaviour:
   m_ObjectHideFlags: 0

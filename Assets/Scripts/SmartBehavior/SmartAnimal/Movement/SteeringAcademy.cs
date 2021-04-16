@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using AnimalsV2;
 using AnimalsV2.States.AnimalsV2.States;
 using Unity.MLAgents;
 using UnityEditor;
@@ -96,6 +97,7 @@ public class SteeringAcademy : MonoBehaviour
             GameObject obj = Instantiate(environmentObject.prefab, transform, false);
             obj.transform.position = obj.transform.position +
                                      new Vector3(Random.Range(-rangeX, rangeX), 0, Random.Range(-rangeZ, rangeZ));
+
             environmentObject.instances.Add(obj);
         }
     }
@@ -124,13 +126,13 @@ public class SteeringAcademy : MonoBehaviour
             
             animalModel.currentHealth = animalModel.traits.maxHealth;
 
-            animalModel.currentEnergy = 0.5f * animalModel.traits.maxEnergy;
-            animalModel.currentHydration = 0.5f * animalModel.traits.maxHydration;
-            animalModel.reproductiveUrge = 0.5f;
+            animalModel.currentEnergy = 0.6f * animalModel.traits.maxEnergy;
+            animalModel.currentHydration = 0.6f * animalModel.traits.maxHydration;
             animalModel.reproductiveUrge = 0.2f;
             animalModel.age = 0;
-            animalController.fsm.absorbingState = false;
-            animalController.fsm.GoToDefaultState();
+            //Ugly solution to stop agent from entering dead animation and not resetting
+            animalController.deadState.currentStateAnimation = StateAnimation.Walking;
+            animalController.fsm.ForceDefaultState();
             if(animalController.agent.isActiveAndEnabled && animalController.agent.isOnNavMesh) animalController.agent.ResetPath();
         }
     }

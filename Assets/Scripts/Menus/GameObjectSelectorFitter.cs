@@ -17,7 +17,6 @@ public class GameObjectSelectorFitter : MonoBehaviour
     public void Populate(ObjectType objectType)
     {
         Clear();
-        Debug.Log("Populate the gameobjectlist");
         var gameObjectSettings = objectType.GameObjectSettings;
         Debug.Log("Name was " + objectType.Name + " and length was " + gameObjectSettings.Count);
         for (int i = 0; i < gameObjectSettings.Count; i++)

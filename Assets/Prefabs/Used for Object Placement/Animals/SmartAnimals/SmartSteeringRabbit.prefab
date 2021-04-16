@@ -92,7 +92,7 @@ GameObject:
   - component: {fileID: 2076542593631984909}
   - component: {fileID: 2076542593631984910}
   m_Layer: 8
-  m_Name: Canvas
+  m_Name: ParameterUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2289,8 +2289,9 @@ GameObject:
   - component: {fileID: 5514137693859962826}
   - component: {fileID: 2495113230471018666}
   - component: {fileID: 45032740508211837}
+  - component: {fileID: -600961360408927680}
   m_Layer: 8
-  m_Name: DumbVectorRabbit
+  m_Name: SmartSteeringRabbit
   m_TagString: Animal
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2502,9 +2503,9 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 1
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 5022602860645237092, guid: 2444ca8ea9b3aa64b9874abf3243495b, type: 3}
+  m_Model: {fileID: 5022602860645237092, guid: 05168d7b9b372f8468d1d9f0126f5ab8, type: 3}
   m_InferenceDevice: 2
-  m_BehaviorType: 0
+  m_BehaviorType: 2
   m_BehaviorName: Movement
   TeamId: 0
   m_UseChildSensors: 0
@@ -2522,7 +2523,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 300a418ddcbd7854198141dec4589afd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  parameterUI: {fileID: 2076542593631984908}
   tickEventPublisher: {fileID: 0}
+  startVector: {x: 0, y: 0, z: 0}
   agent: {fileID: 0}
   energyModifier: 0
   hydrationModifier: 0
@@ -2535,7 +2538,7 @@ MonoBehaviour:
   heardHostileTargets: []
   heardFriendlyTargets: []
   heardPreyTargets: []
-  isInfertile: 1
+  isInfertile: 0
   eyesTransform: {fileID: 7144086159933997272}
   centerTransform: {fileID: 6554643367461361501}
 --- !u!114 &5514137693859962826
@@ -2585,11 +2588,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0795e2e31cde64428dc997f642c4648, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  showNavMeshAgentPath: 1
+  showNavMeshAgentPath: 0
   allowNavigateWithClick: 0
-  showVisibleTargets: 1
+  showVisibleTargets: 0
   showFleeingVector: 0
   showPerceptionRange: 0
+--- !u!114 &-600961360408927680
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4793952549922607340}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8bf4adb19bbc0654a85ae2e21b189726, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  deathParticleSystem: {fileID: 19800004, guid: cd83dd6d156d3e24d8d134f5c2a142ab,
+    type: 3}
+  smokeTrailParticleSystem: {fileID: 6545145587975673058, guid: 49b5bdb0935ed584e9b0550a3f66db97,
+    type: 3}
+  hitParticleSystem: {fileID: 198381239668097408, guid: 8592e667e07bd3848843966df9cc1079,
+    type: 3}
+  matingParticleSystem: {fileID: 19800004, guid: 92aaabfe08d50fa43b36214095279955,
+    type: 3}
+  bornParticleSystem: {fileID: 19800018, guid: 0fab5cbd8d8cb444199901f840ef0347, type: 3}
+  pregnancyParticleSystem: {fileID: 19800004, guid: fb667f08336441b4fa2b6369a17fe4e5,
+    type: 3}
 --- !u!1 &4793952549949646182
 GameObject:
   m_ObjectHideFlags: 0
