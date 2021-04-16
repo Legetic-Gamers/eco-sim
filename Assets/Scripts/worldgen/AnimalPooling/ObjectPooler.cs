@@ -135,7 +135,7 @@ public class ObjectPooler : MonoBehaviour
 
     private IEnumerator HandleDeadAnimalDelay(AnimalController animalController, float delay)
     {
-        yield return new WaitForSeconds(delay / Time.timeScale);
+        yield return new WaitForSeconds(delay);
         if (animalController != null)
         {
             GameObject animalObj;
@@ -278,7 +278,7 @@ public class ObjectPooler : MonoBehaviour
 
     private void HandleDeadPlant(PlantController plantController)
     {
-        dh.LogDeadPlant(plantController.plantModel);
+        dh.LogDeadPlant();
         GameObject plantObj;
         (plantObj = plantController.gameObject).SetActive(false);
         poolDictionary["Food"].Enqueue(plantObj);
@@ -307,7 +307,14 @@ public class ObjectPooler : MonoBehaviour
     
     private void HandleGrowPlant(Vector3 pos)
     {
-        GameObject _ = SpawnFromPool("Food", pos, Quaternion.identity);
-        dh.LogNewPlant();
+        GameObject newPlant = SpawnFromPool("Food", pos, Quaternion.identity);
+        if (newPlant != null)
+        {
+            PlantController plantModel = newPlant.GetComponent<PlantController>();
+            plantModel.plantModel.isEaten = false;
+            plantModel.plantModel.plantAge = 0;
+            plantModel.plantModel.nutritionValue = 0;
+            dh.LogNewPlant();
+        } else Debug.Log("Failed to spawn");
     }
 }

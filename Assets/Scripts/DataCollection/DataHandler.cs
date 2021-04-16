@@ -143,9 +143,9 @@ namespace DataCollection
         /// Called when a plant is eaten
         /// </summary>
         /// <param name="plantModel"> The model of the eaten plant </param>
-        public void LogDeadPlant(PlantModel plantModel)
+        public void LogDeadPlant()
         {
-            c.CollectDeadFood(plantModel);
+            c.CollectDeadFood();
         }
 
         private void SetPopulation(int speciesNumberPopulation)

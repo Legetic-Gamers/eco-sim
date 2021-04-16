@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using DataCollection;
 using DefaultNamespace;
 using Model;
@@ -13,8 +14,6 @@ namespace ViewController
         
         public PlantModel plantModel;
 
-        private DataHandler dh;
-        
         public Transform centerTransform;
         
         public Action<Vector3> SpawnNewPlant;
@@ -74,16 +73,9 @@ namespace ViewController
             if (plantModel.nutritionValue > PlantModel.plantMaxsize)
             {
                 plantModel.nutritionValue = PlantModel.plantMaxsize;
-                SetPhenotype();
+                //SetPhenotype();
             }
             else plantModel.nutritionValue += 2;
-
-            // plant has regrown after being eaten
-            if (plantModel.isEaten && plantModel.nutritionValue > 15)
-            {
-                gameObject.SetActive(true);
-                SetPhenotype();
-            }
 
             float r = Random.Range(0, 1f);
             float rx = Random.Range(-10f, 10f);
@@ -110,22 +102,38 @@ namespace ViewController
                 if (!isHit) return;
                 SpawnNewPlant?.Invoke(new Vector3(position.x + rx, height, position.z + rz));
             }
-
-
         }
         
         private void HandleEaten()
         {
             if (!plantModel.isEaten) return;
-            gameObject.SetActive(false);
+            if (gameObject != null && isActiveAndEnabled && this)
+            {
+                Debug.Log("Eaten");
+                StartCoroutine(Regrow());
+                Debug.Log("Regrown");
+            }
         }
-    
+
+        private IEnumerator Regrow()
+        {
+            gameObject.SetActive(false);
+            yield return new WaitForSeconds(5f);
+            gameObject.SetActive(true);
+        }
+
 
         private void HandleDeathStatus()
         {
-            if (plantModel != null && plantModel.plantAge > PlantModel.plantMaxAge)
+            if (plantModel.plantAge > PlantModel.plantMaxAge)
             {
-                onDeadPlant?.Invoke(this);
+                if (plantModel != null && gameObject.activeSelf)
+                {
+                    onDeadPlant?.Invoke(this);
+                    tickEventPublisher.onParamTickEvent -= HandleDeathStatus;
+                    tickEventPublisher.onParamTickEvent -= HandleEaten; 
+                    tickEventPublisher.onParamTickEvent -= Grow;
+                }
             }
         }
 

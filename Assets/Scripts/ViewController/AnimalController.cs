@@ -68,7 +68,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     //Modifiers
     [HideInInspector] public float energyModifier;
     [HideInInspector] public float hydrationModifier;
-    [HideInInspector] public float reproductiveUrgeModifier = 0.3f;
+    [HideInInspector] public float reproductiveUrgeModifier = 0.5f;
     [HideInInspector] public float speedModifier = JoggingSpeed; //100% of maxSpeed in model
 
     //Timescale stuff
@@ -168,7 +168,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         while (true)
         {
             fsm.UpdateStatesLogic();
-            yield return new WaitForSeconds(UnityRandom.Range(0.5f, 1f)/Time.timeScale);
+            yield return new WaitForSeconds(UnityRandom.Range(0.5f, 1f));
             
         }
     }
@@ -255,23 +255,23 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     {
         energyModifier = 1f;
         hydrationModifier = 1f;
-        reproductiveUrgeModifier = 2f;
+        reproductiveUrgeModifier = 0f;
         speedModifier = RunningSpeed;
     }
 
     private void MediumEnergyState()
     {
         energyModifier = 0.35f;
-        hydrationModifier = 0.5f;
-        reproductiveUrgeModifier = 1f;
+        hydrationModifier = 0.3f;
+        reproductiveUrgeModifier = 1.5f;
         speedModifier = JoggingSpeed;
     }
 
     private void LowEnergyState()
     {
         energyModifier = 0.15f;
-        hydrationModifier = 0.25f;
-        reproductiveUrgeModifier = 1f;
+        hydrationModifier = 0.15f;
+        reproductiveUrgeModifier = 2f;
         speedModifier = WalkingSpeed;
     }
 
@@ -290,9 +290,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
                                      * animalModel.traits.size * energyModifier;
 
         // hydration
-        animalModel.currentHydration -= animalModel.traits.size *
-                                        (1 +
-                                         animalModel.currentSpeed / animalModel.traits.endurance *
+        animalModel.currentHydration -= animalModel.traits.size * (1 + animalModel.currentSpeed / animalModel.traits.endurance *
                                          hydrationModifier);
         
         // reproductive urge

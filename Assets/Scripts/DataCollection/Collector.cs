@@ -373,7 +373,7 @@ namespace DataCollection
             if (foodActivePerMinute.Count - 1 < timeIndexFood) foodActivePerMinute.Add(1);
             else foodActivePerMinute[timeIndexFood] += 1;
         }
-        public void CollectDeadFood(PlantModel plantModel)
+        public void CollectDeadFood()
         {
             foodActivePerMinute[timeIndexFood] -= 1;
         }

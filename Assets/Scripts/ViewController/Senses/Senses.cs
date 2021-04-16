@@ -203,7 +203,7 @@ namespace ViewController.Senses
             while (true)
             {
                 FindTargets();
-                yield return new WaitForSeconds(Random.Range(0.5f, 1f)/Time.timeScale);
+                yield return new WaitForSeconds(Random.Range(0.5f, 1f));
             
             }
         }
