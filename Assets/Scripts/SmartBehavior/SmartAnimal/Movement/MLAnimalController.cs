@@ -110,8 +110,8 @@ public class MLAnimalController : AnimalController
                 speedModifier = 0f;
                 break;
             case MLTrainingState _:
-                energyModifier = 0.7f;
-                hydrationModifier = 1f;
+                energyModifier = 0.35f;
+                hydrationModifier = 0.5f;
                 reproductiveUrgeModifier = 20f;
                 speedModifier = JoggingSpeed;
                 break;
