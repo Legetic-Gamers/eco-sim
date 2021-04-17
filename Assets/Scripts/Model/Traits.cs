@@ -97,7 +97,14 @@ public class Traits
     public float desirability { get; set; }
     public Color furColor = new Color(0.5f, 0.2f, 0.2f, 1.0f); // example
 
-    [Range(0, 360)] public float viewAngle; // affects width of FoV
+    public float _viewAngle; // affects width of FoV
+    
+    public float viewAngle
+    {
+        get => _viewAngle; 
+        set => _viewAngle = Mathf.Clamp(value, 0, 360f);
+    }
+    
     private float _viewRadius; // distance
     public float viewRadius
     {
@@ -187,29 +194,30 @@ public class Traits
         return childTraits;
     }
 
-    public void Mutation()
+    public void Mutation(float mutationProbability)
     {
         try
         {
             Random rng = new Random();
-            // probability of mutating a trait
-            const float mutationRate = 0.95f;
-            
-            // factor to determine what max value (depending on currentValue) is allowed.
-            const float mutationFactor = 2f;
-            
-            // Get type and iterate through all the traits as properties, this solution does not depend on which or how many properties there is
+
+            // Get type and iterate through all the traits as properties, this solution does not depend on which or how many properties there is (only that properties are encoded as floats)
             Type type = GetType();
+            //GetProperties gives pulbic properties without arguments https://stackoverflow.com/questions/1544979/using-getproperties-with-bindingflags-declaredonly-in-net-reflection
             foreach (PropertyInfo info in type.GetProperties())
             {
                 // randomize a number between 0 and 1 
                 double rnd = rng.NextDouble();
 
                 // if rng value is within the threshold for mutation, we want to mutate the current trait
-                if (rnd < mutationRate)
+                if (rnd <= mutationProbability)
                 {
                     float currentValue = (float) info.GetValue(this);
-                    float mutatedValue = (float) rng.NextDouble() * currentValue * mutationFactor;
+                    
+                    //Use a sample of a gaussian distribution to determine how many percent a gene should change
+                    float mutationPercentage = Mathf.Clamp((float) SampleGaussian(rng, 0, 5) / 100f, -0.10f, 0.10f);
+
+                    // change the gene's value
+                    float mutatedValue = mutationPercentage * currentValue + currentValue;
                     info.SetValue(this, mutatedValue);
                 }
             }
@@ -218,8 +226,17 @@ public class Traits
         {
             Debug.Log(e.Message);
         }
-        
     }
     
-    
+    // Use Box-Muller method to generate a sample from a Gaussian distribution;
+    public double SampleGaussian(Random random, double mean, double stddev)
+    {
+        // The method requires sampling from a uniform random of (0,1)
+        // but Random.NextDouble() returns a sample of [0,1)
+        double u1 = 1 - random.NextDouble();
+        double u2 = 1 - random.NextDouble();
+
+        double xNorm = Math.Sqrt(-2.0 * Math.Log(u1)) * Math.Cos(2.0 * Math.PI * u2);
+        return xNorm * stddev + mean;
+    }
 }

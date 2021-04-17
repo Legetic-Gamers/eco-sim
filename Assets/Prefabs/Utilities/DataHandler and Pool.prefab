@@ -94,6 +94,10 @@ MonoBehaviour:
     prefab: {fileID: 8585085198824190955, guid: faca9fdb3f703844aa60f6115d12e202,
       type: 3}
     size: 500
+  - tag: SmartSteeringRabbit
+    prefab: {fileID: 4793952549922607340, guid: 8ae284639f5d56e4191ae62e80024e39,
+      type: 3}
+    size: 250
 --- !u!114 &924481341116857174
 MonoBehaviour:
   m_ObjectHideFlags: 0

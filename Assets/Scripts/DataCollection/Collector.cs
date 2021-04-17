@@ -87,15 +87,15 @@ namespace DataCollection
             deerStatsPerGenVar = new List<List<float>>();
             bearStatsPerGenVar = new List<List<float>>();
             
-            for (int i = 0; i < cap; i++) rabbitStatsPerGenMean.Add(new List<float>{0, 0, 0, 0});
-            for (int i = 0; i < cap; i++) wolfStatsPerGenMean.Add(new List<float>{0, 0, 0, 0});
-            for (int i = 0; i < cap; i++) deerStatsPerGenMean.Add(new List<float>{0, 0, 0, 0});
-            for (int i = 0; i < cap; i++) bearStatsPerGenMean.Add(new List<float>{0, 0, 0, 0});
+            for (int i = 0; i < cap; i++) rabbitStatsPerGenMean.Add(new List<float>{0, 0});
+            for (int i = 0; i < cap; i++) wolfStatsPerGenMean.Add(new List<float>{0, 0});
+            for (int i = 0; i < cap; i++) deerStatsPerGenMean.Add(new List<float>{0, 0});
+            for (int i = 0; i < cap; i++) bearStatsPerGenMean.Add(new List<float>{0, 0});
             
-            for (int i = 0; i < cap; i++) rabbitStatsPerGenVar.Add(new List<float>{0, 0, 0, 0});
-            for (int i = 0; i < cap; i++) wolfStatsPerGenVar.Add(new List<float>{0, 0, 0, 0});
-            for (int i = 0; i < cap; i++) deerStatsPerGenVar.Add(new List<float>{0, 0, 0, 0});
-            for (int i = 0; i < cap; i++) bearStatsPerGenVar.Add(new List<float>{0, 0, 0, 0});
+            for (int i = 0; i < cap; i++) rabbitStatsPerGenVar.Add(new List<float>{0, 0});
+            for (int i = 0; i < cap; i++) wolfStatsPerGenVar.Add(new List<float>{0, 0});
+            for (int i = 0; i < cap; i++) deerStatsPerGenVar.Add(new List<float>{0, 0});
+            for (int i = 0; i < cap; i++) bearStatsPerGenVar.Add(new List<float>{0, 0});
 
             totalAnimalsAlivePerGeneration = new List<int> {0};
 
@@ -231,21 +231,28 @@ namespace DataCollection
         public void CollectDeath(AnimalModel am, AnimalModel.CauseOfDeath cause, float distanceTravelled)
         {
             int gen = am.generation;
-
+            
             for (int i = totalDeadAnimals.Count - 1; i <= gen; i++) totalDeadAnimals.Add(0);
 
             totalDeadAnimals[gen] += 1;
-            
+
             // Changes the referenced lists depending on the species of the animal. 
             (List<List<float>> animalMean, List<List<float>> animalVar, _) = GetAnimalList(am);
             
-            for (int i = animalMean[12].Count - 1; i <= gen; i++) animalMean[12].Add(0);
-            for (int i = animalVar[12].Count - 1; i <= gen; i++) animalVar[12].Add(0);
-                
-            for (int i = animalMean[11].Count - 1; i <= gen; i++) animalMean[11].Add(0);
-            for (int i = animalVar[11].Count - 1; i <= gen; i++) animalVar[11].Add(0);
-
-
+            if (gen > animalMean[12].Count - 1)
+            {
+                //Debug.Log("generation is: " + gen + " and list length is: " + animalMean[12].Count);
+                int difference = gen + 1 - animalMean[12].Count;
+                for (int i = 0; i < difference; i++)
+                {
+                    //Debug.Log("Adding: " + i);
+                    animalMean[12].Add(0);
+                    animalVar[12].Add(0);
+                    animalMean[11].Add(0);
+                    animalVar[11].Add(0);
+                }
+            }
+            
             (float meanAge, float varAge) =
                 GetNewMeanVariance(animalMean[12][gen], animalVar[12][gen], am.age, totalDeadAnimals[gen]);
             
@@ -259,7 +266,7 @@ namespace DataCollection
             animalVar[11][gen] = varDist;
 
             causeOfDeath[cause] = causeOfDeath[cause] += 1;
-            Debug.Log(cause.ToString());
+            Debug.Log("cause of death: " + cause.ToString());
             
             switch (am)
             {
@@ -278,6 +285,7 @@ namespace DataCollection
             }
 
             totalAnimalsAlive--;
+            //Debug.Log("totalanimalsalive: " + totalAnimalsAlive);
             if(totalAnimalsAlive <= 0) onAllExtinct?.Invoke();
         }
 
@@ -314,7 +322,6 @@ namespace DataCollection
                         totalList = bearTotalAlivePerGen;
                         break;
                 }
-
             return (meanList, varList, totalList);
         }
 

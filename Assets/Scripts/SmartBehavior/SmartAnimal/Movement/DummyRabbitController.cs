@@ -22,7 +22,12 @@ public class DummyRabbitController : AnimalController
     {
         //do nothing
     }
-    
+
+    protected override void SetPhenotype()
+    {
+        //do nothing
+    }
+
     public override Vector3 getNormalizedScale()
     {
         return new Vector3(1f, 1f, 1f);

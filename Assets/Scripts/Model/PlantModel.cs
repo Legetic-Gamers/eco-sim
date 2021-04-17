@@ -4,7 +4,7 @@ namespace Model
 {
     public class PlantModel : IEdible
     {
-        public bool isEaten = false;
+        public bool isEaten;
 
         public float nutritionValue { get; set; }
         public float plantAge;
@@ -21,6 +21,7 @@ namespace Model
         {
             nutritionValue = 0;
             plantAge = 0;
+            isEaten = false;
         }
        
         public float GetEaten()

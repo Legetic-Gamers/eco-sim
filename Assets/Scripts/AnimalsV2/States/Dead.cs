@@ -25,9 +25,9 @@ namespace AnimalsV2.States
                 {
                     animal.agent.isStopped = true;
                 }
-                //animal.DestroyGameObject(20f);
                 // Set state so that it can't change
                 finiteStateMachine.absorbingState = true;
+                onDeath?.Invoke(animal, false);
             }
 
             public override void HandleInput()

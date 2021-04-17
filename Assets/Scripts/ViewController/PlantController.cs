@@ -31,7 +31,6 @@ namespace ViewController
 
         public void Start()
         {
-            
             //If there is no object pooler present, we need to call onObjectSpawn through start
             if (FindObjectOfType<ObjectPooler>() == null)
             {
@@ -107,7 +106,7 @@ namespace ViewController
         private void HandleEaten()
         {
             if (!plantModel.isEaten) return;
-            if (gameObject != null && isActiveAndEnabled && this)
+            if (gameObject.activeSelf)
             {
                 StartCoroutine(Regrow());
             }
@@ -116,14 +115,14 @@ namespace ViewController
         private IEnumerator Regrow()
         {
             gameObject.SetActive(false);
-            yield return new WaitForSeconds(60f);
+            yield return new WaitForSeconds(30f);
             gameObject.SetActive(true);
         }
-
+    
 
         private void HandleDeathStatus()
         {
-            if (plantModel.plantAge > PlantModel.plantMaxAge)
+            if (plantModel != null && plantModel.plantAge > PlantModel.plantMaxAge)
             {
                 if (plantModel != null && gameObject.activeSelf)
                 {
