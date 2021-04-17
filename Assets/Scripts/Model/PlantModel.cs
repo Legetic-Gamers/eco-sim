@@ -8,6 +8,7 @@ namespace Model
 
         public float nutritionValue { get; set; }
         public float plantAge;
+        public bool isRegrowing;
 
         public const float plantMaxAge = 60;
         public const float plantMaxsize = 60;
@@ -22,6 +23,7 @@ namespace Model
             nutritionValue = 0;
             plantAge = 0;
             isEaten = false;
+            isRegrowing = false;
         }
        
         public float GetEaten()

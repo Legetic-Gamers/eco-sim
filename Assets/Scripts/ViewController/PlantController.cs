@@ -14,6 +14,9 @@ namespace ViewController
         
         public PlantModel plantModel;
 
+        public CapsuleCollider capsuleCollider;
+        public MeshRenderer meshRenderer;
+
         private DataHandler dh;
 
         public Transform centerTransform;
@@ -69,73 +72,73 @@ namespace ViewController
         
         private void Grow()
         {
-            
             plantModel.plantAge += 2;
-            if (plantModel.nutritionValue > PlantModel.plantMaxsize)
-            {
-                plantModel.nutritionValue = PlantModel.plantMaxsize;
-                //SetPhenotype();
-            }
-            else plantModel.nutritionValue += 4;
-
-            float r = Random.Range(0, 1f);
-            float rx = Random.Range(-10f, 10f);
-            float rz = Random.Range(-10f, 10f);
-            // chance of reproducing every 2 seconds if age and size restrictions are met.
-            //if (plantModel.nutritionValue > 15 && !plantModel.isEaten && r > 0.95) 
-            if (plantModel.plantAge > 15 && plantModel.nutritionValue > 15 && !plantModel.isEaten && r > 0.95)
-            {
-                float height = 0;
-                bool isHit = false;
-
-                var position = gameObject.transform.position;
-                Vector3 newPosition = new Vector3(position.x + rx, position.y + 100, position.z + rz);
-                Ray ray = new Ray(newPosition, Vector3.down);
-                RaycastHit hit;
-                if (Physics.Raycast(ray, out hit, float.MaxValue))
+                if (plantModel.nutritionValue > PlantModel.plantMaxsize)
                 {
-                    if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Ground"))
-                    {
-                        height = hit.point.y;
-                        isHit = true;
-                    }
+                    plantModel.nutritionValue = PlantModel.plantMaxsize;
+                    //SetPhenotype();
                 }
-                if (!isHit) return;
-                SpawnNewPlant?.Invoke(new Vector3(position.x + rx, height, position.z + rz));
-            }
+                else plantModel.nutritionValue += 4;
+
+                float r = Random.Range(0, 1f);
+                float rx = Random.Range(-10f, 10f);
+                float rz = Random.Range(-10f, 10f);
+                // chance of reproducing every 2 seconds if age and size restrictions are met.
+                //if (plantModel.nutritionValue > 15 && !plantModel.isEaten && r > 0.95) 
+                if (plantModel.plantAge > 15 && plantModel.nutritionValue > 15 && !plantModel.isEaten && r > 0.95)
+                {
+                    float height = 0;
+                    bool isHit = false;
+
+                    var position = gameObject.transform.position;
+                    Vector3 newPosition = new Vector3(position.x + rx, position.y + 100, position.z + rz);
+                    Ray ray = new Ray(newPosition, Vector3.down);
+                    RaycastHit hit;
+                    if (Physics.Raycast(ray, out hit, float.MaxValue))
+                    {
+                        if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Ground"))
+                        {
+                            height = hit.point.y;
+                            isHit = true;
+                        }
+                    }
+
+                    if (!isHit) return;
+                    SpawnNewPlant?.Invoke(new Vector3(position.x + rx, height, position.z + rz));
+                }
         }
         
         private void HandleEaten()
         {
-            if (!plantModel.isEaten) return;
-            if (gameObject.activeSelf)
+            if (plantModel.isEaten && gameObject.activeInHierarchy && !plantModel.isRegrowing)
             {
+                plantModel.isRegrowing = true;
                 StartCoroutine(Regrow());
+                plantModel.isEaten = false;
+                plantModel.isRegrowing = false;
             }
         }
 
         private IEnumerator Regrow()
         {
-            gameObject.SetActive(false);
-            plantModel.nutritionValue = 0;
-            dh.LogDeadPlant();
+            meshRenderer.enabled = false;
+            capsuleCollider.enabled = false;
+            //dh.LogDeadPlant();
             yield return new WaitForSeconds(15f);
-            gameObject.SetActive(true);
-            dh.LogNewPlant();
+            meshRenderer.enabled = true;
+            capsuleCollider.enabled = true;
+            //dh.LogNewPlant();
         }
     
 
         private void HandleDeathStatus()
         {
-            if (plantModel != null && plantModel.plantAge > PlantModel.plantMaxAge)
+            if (gameObject.activeSelf && plantModel.plantAge > PlantModel.plantMaxAge && !plantModel.isEaten)
             {
-                if (plantModel != null && gameObject.activeSelf)
-                {
-                    onDeadPlant?.Invoke(this);
-                    tickEventPublisher.onParamTickEvent -= HandleDeathStatus;
-                    tickEventPublisher.onParamTickEvent -= HandleEaten; 
-                    tickEventPublisher.onParamTickEvent -= Grow;
-                }
+                onDeadPlant?.Invoke(this);
+                tickEventPublisher.onParamTickEvent -= HandleDeathStatus;
+                tickEventPublisher.onParamTickEvent -= HandleEaten; 
+                tickEventPublisher.onParamTickEvent -= Grow;
             }
         }
 

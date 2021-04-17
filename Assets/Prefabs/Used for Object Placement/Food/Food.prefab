@@ -126,6 +126,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51d4a3e797174bb2a5f88de66a8f8da3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  capsuleCollider: {fileID: 8952843899339316023}
+  meshRenderer: {fileID: 8585085198824190952}
   centerTransform: {fileID: 5789599837850399107}
 --- !u!136 &8952843899339316023
 CapsuleCollider:
