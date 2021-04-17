@@ -123,8 +123,7 @@ public class DumbAgent : Agent, IAgent
         float rotationAngle = actions.ContinuousActions[0] * 110; //90
         
         //Give reward based on how much rotation is made. 0 is no rotation and 1 (or -1) is max rotation.
-        //positive reward is better for shaping desired behavior
-        AddReward(0.005f - Math.Abs(actions.ContinuousActions[0]) * 0.005f);
+        AddReward(- Math.Abs(actions.ContinuousActions[0]) * 0.0025f);
         
         //Rotate vector based on rotation from the action
         dirToGo = Quaternion.AngleAxis(rotationAngle, Vector3.up) * dirToGo;
@@ -133,8 +132,8 @@ public class DumbAgent : Agent, IAgent
         float speedModifier = actions.ContinuousActions[1];
         speedModifier = 0.5f * speedModifier + 0.5f; //make sure that function of interval [-1,1] maps to [0,1]
         
-        //Give reward for moving forward
-        AddReward(speedModifier * 0.005f);
+        //Give penalty: more speed => less penalty
+        AddReward(speedModifier * 0.0025f - 0.0025f);
 
         //Set speed
         animalController.SetSpeed(speedModifier);
