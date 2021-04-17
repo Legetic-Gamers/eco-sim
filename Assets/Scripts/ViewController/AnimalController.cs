@@ -323,7 +323,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
 
         drinkingState.onDrinkWater += DrinkWater;
 
-        deadState.onDeath += HandleDeathStatus;
+        //deadState.onDeath += HandleDeathStatus;
 
         matingState.onMate += Mate;
 
