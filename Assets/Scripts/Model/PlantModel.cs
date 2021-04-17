@@ -10,7 +10,7 @@ namespace Model
         public float plantAge;
 
         public const float plantMaxAge = 60;
-        public const float plantMaxsize = 30;
+        public const float plantMaxsize = 60;
         
         public PlantModel(float nutritionValue)
         {

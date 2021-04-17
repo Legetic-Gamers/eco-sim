@@ -14,6 +14,8 @@ namespace ViewController
         
         public PlantModel plantModel;
 
+        private DataHandler dh;
+
         public Transform centerTransform;
         
         public Action<Vector3> SpawnNewPlant;
@@ -74,7 +76,7 @@ namespace ViewController
                 plantModel.nutritionValue = PlantModel.plantMaxsize;
                 //SetPhenotype();
             }
-            else plantModel.nutritionValue += 2;
+            else plantModel.nutritionValue += 4;
 
             float r = Random.Range(0, 1f);
             float rx = Random.Range(-10f, 10f);
@@ -115,8 +117,11 @@ namespace ViewController
         private IEnumerator Regrow()
         {
             gameObject.SetActive(false);
-            yield return new WaitForSeconds(30f);
+            plantModel.nutritionValue = 0;
+            dh.LogDeadPlant();
+            yield return new WaitForSeconds(15f);
             gameObject.SetActive(true);
+            dh.LogNewPlant();
         }
     
 
@@ -137,6 +142,7 @@ namespace ViewController
         public void onObjectSpawn()
         {
             tickEventPublisher = FindObjectOfType<TickEventPublisher>();
+            dh = FindObjectOfType<DataHandler>();
             EventSubscribe();
         }
     }

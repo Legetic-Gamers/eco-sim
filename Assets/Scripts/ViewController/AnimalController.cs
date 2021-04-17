@@ -68,7 +68,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     //Modifiers
     [HideInInspector] public float energyModifier;
     [HideInInspector] public float hydrationModifier;
-    [HideInInspector] public float reproductiveUrgeModifier = 0.5f;
+    [HideInInspector] public float reproductiveUrgeModifier = 1f;
     [HideInInspector] public float speedModifier = JoggingSpeed; //100% of maxSpeed in model
 
     //Timescale stuff
@@ -149,10 +149,12 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         //Can be used later.
         baseAngularSpeed = agent.angularSpeed;
         baseAcceleration = agent.acceleration;
-        fsm.Initialize(wanderState);
+        
         agent.speed = animalModel.currentSpeed * Time.timeScale;
         agent.acceleration *= Time.timeScale;
         agent.angularSpeed *= Time.timeScale;
+        agent.isStopped = false;
+        fsm.Initialize(wanderState);
         //Debug.Log(agent.autoBraking);
         tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
         EventSubscribe();
@@ -281,23 +283,23 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     public virtual void UpdateParameters()
     {
         //The age will increase 2 per 2 seconds.
-        animalModel.age += 1;
+        animalModel.age += 0.5f;
 
         // speed
         animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier;
         agent.speed = animalModel.currentSpeed * Time.timeScale;
         
         // energy
-        animalModel.currentEnergy -= (animalModel.age + animalModel.currentSpeed +
+        animalModel.currentEnergy -= (animalModel.age / 20 + animalModel.currentSpeed +
                                       animalModel.traits.viewRadius / 10 + animalModel.traits.hearingRadius / 10)
                                      * animalModel.traits.size * energyModifier;
 
         // hydration
-        animalModel.currentHydration -= animalModel.traits.size * (1 + animalModel.currentSpeed / animalModel.traits.endurance *
+        animalModel.currentHydration -= (animalModel.traits.size / 10) * (1 + animalModel.currentSpeed / animalModel.traits.endurance *
                                          hydrationModifier);
         
         // reproductive urge
-        animalModel.reproductiveUrge += 0.01f * reproductiveUrgeModifier;
+        animalModel.reproductiveUrge += 0.7f * reproductiveUrgeModifier;
         agent.acceleration = baseAcceleration * Time.timeScale;
         agent.angularSpeed = baseAngularSpeed * Time.timeScale;
     }

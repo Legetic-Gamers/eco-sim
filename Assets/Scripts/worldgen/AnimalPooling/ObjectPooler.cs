@@ -139,6 +139,8 @@ public class ObjectPooler : MonoBehaviour
     /// <param name="gotEaten"></param>
     public void HandleDeadAnimal(AnimalController animalController, bool gotEaten)
     {
+        animalController.deadState.onDeath -= HandleDeadAnimal;
+        animalController.SpawnNew -= HandleBirthAnimal;
         if(gotEaten) StartCoroutine(HandleDeadAnimalDelay(animalController, 0f));
         else StartCoroutine(HandleDeadAnimalDelay(animalController, 5f));
     }
@@ -156,34 +158,16 @@ public class ObjectPooler : MonoBehaviour
             else if (am.currentHydration <= 0) cause = AnimalModel.CauseOfDeath.Hydration;
             else if (am.age >= am.traits.ageLimit) cause = AnimalModel.CauseOfDeath.Age;
             else if (am.currentHealth <= 0) cause = AnimalModel.CauseOfDeath.Health;
-            else cause = AnimalModel.CauseOfDeath.Eaten;
+            else
+            {
+                cause = AnimalModel.CauseOfDeath.Eaten;
+            }
             dh.LogDeadAnimal(am, cause, (transform.position - animalController.startVector).magnitude);
             
-            /*
-            switch (animalController.animalModel)
-            {
-                case RabbitModel _:
-                    if(isSmart) poolDictionary["SmartRabbit"].Enqueue(animalObj);
-                    else poolDictionary["Rabbit Brown"].Enqueue(animalObj);
-                    break;
-                case WolfModel _:
-                    if(isSmart) poolDictionary["SmartWolf"].Enqueue(animalObj);
-                    else poolDictionary["Wolf Grey"].Enqueue(animalObj);
-                    break;
-                case DeerModel _:
-                    if(isSmart) poolDictionary["SmartDeer"].Enqueue(animalObj);
-                    else poolDictionary["Deer"].Enqueue(animalObj);
-                    break;
-                case BearModel _:
-                    if(isSmart) poolDictionary["SmartBear"].Enqueue(animalObj);
-                    else poolDictionary["Bear"].Enqueue(animalObj);
-                    break;
-            }
-            */
             //Debug.Log(animalObj.name.Replace("(Clone)", "").Trim());
             
             poolDictionary[animalObj.name.Replace("(Clone)", "").Trim()].Enqueue(animalObj);
-        }
+        } else Debug.Log("Controller null");
         
     }
 
@@ -197,29 +181,8 @@ public class ObjectPooler : MonoBehaviour
     /// <param name="isSmart"> If the animals has ML brain </param>
     private void HandleBirthAnimal(AnimalModel childModel, Vector3 pos, float energy, float hydration, string tag)
     {
-        GameObject child = null;
-        
-        /*
-        switch (childModel)
-        {
-            case RabbitModel _:
-                if(isSmart) child = SpawnFromPool("SmartRabbit", pos, Quaternion.identity);
-                else child = SpawnFromPool("Rabbit Brown", pos, Quaternion.identity);
-                break;
-            case WolfModel _:
-                if(isSmart) child = SpawnFromPool("SmartWolf", pos, Quaternion.identity);
-                else child = SpawnFromPool("Wolf Grey", pos, Quaternion.identity);
-                break;
-            case DeerModel _:
-                if(isSmart) child = SpawnFromPool("SmartDeer", pos, Quaternion.identity);
-                else child = SpawnFromPool("Deer", pos, Quaternion.identity);
-                break;
-            case BearModel _:
-                if(isSmart) child = SpawnFromPool("SmartBear", pos, Quaternion.identity);
-                else child = SpawnFromPool("Bear", pos, Quaternion.identity);
-                break;
-        }
-        */
+        GameObject child;
+
         child = SpawnFromPool(tag.Replace("(Clone)", "").Trim(), pos, Quaternion.identity);
         
         if (child != null)
@@ -264,7 +227,7 @@ public class ObjectPooler : MonoBehaviour
                 }
             }
         }
-
+        
         if (poolDictionary != null && poolDictionary.ContainsKey(tag))
         {
             GameObject objectToSpawn = poolDictionary[tag].Dequeue();
@@ -277,15 +240,17 @@ public class ObjectPooler : MonoBehaviour
                 //TODO Maintain list of all components for more performance
                 objectToSpawn.GetComponent<IPooledObject>()?.onObjectSpawn();
                 
-                if(tag.Equals("Animal")){
-                    objectToSpawn.GetComponent<AnimalController>().deadState.onDeath += HandleDeadAnimal;
-                    objectToSpawn.GetComponent<AnimalController>().SpawnNew += HandleBirthAnimal;
-                }
-                else if (tag.Equals("Food"))
+                if(objectToSpawn.TryGetComponent(out AnimalController animalController))
                 {
-                    objectToSpawn.GetComponent<PlantController>().SpawnNewPlant += HandleGrowPlant;
-                    objectToSpawn.GetComponent<PlantController>().onDeadPlant += HandleDeadPlant;
+                    animalController.deadState.onDeath += HandleDeadAnimal;
+                    animalController.SpawnNew += HandleBirthAnimal;
                 }
+                else if (objectToSpawn.TryGetComponent(out PlantController plantController))
+                {
+                    plantController.SpawnNewPlant += HandleGrowPlant;
+                    plantController.onDeadPlant += HandleDeadPlant;
+                }
+                
                 return objectToSpawn;
             }
         }

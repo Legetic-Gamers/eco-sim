@@ -20,7 +20,6 @@ namespace AnimalsV2.States
             {
                 //when entering state dead,
                 base.Enter();
-                onDeath?.Invoke(animal, false);
                 if (animal.agent.isActiveAndEnabled && animal.agent.isOnNavMesh)
                 {
                     animal.agent.isStopped = true;
