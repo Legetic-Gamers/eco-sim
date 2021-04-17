@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Linq.Expressions;
 using DataCollection;
 using DefaultNamespace;
 using Model;
@@ -48,9 +49,9 @@ namespace ViewController
         {
             if (tickEventPublisher)
             {
-                tickEventPublisher.onParamTickEvent -= HandleDeathStatus;
-                tickEventPublisher.onParamTickEvent -= HandleEaten; 
-                tickEventPublisher.onParamTickEvent -= Grow;
+                //tickEventPublisher.onParamTickEvent -= HandleDeathStatus;
+                //tickEventPublisher.onParamTickEvent -= HandleEaten; 
+                //tickEventPublisher.onParamTickEvent -= Grow;
             }
         }
 
@@ -58,9 +59,9 @@ namespace ViewController
         {
             if (tickEventPublisher)
             {
-                tickEventPublisher.onParamTickEvent += HandleDeathStatus;  
-                tickEventPublisher.onParamTickEvent += HandleEaten;  
-                tickEventPublisher.onParamTickEvent += Grow;  
+                //tickEventPublisher.onParamTickEvent += HandleDeathStatus;  
+                //tickEventPublisher.onParamTickEvent += HandleEaten;  
+                //tickEventPublisher.onParamTickEvent += Grow;  
             }
         }
         
@@ -85,7 +86,7 @@ namespace ViewController
                 float rz = Random.Range(-10f, 10f);
                 // chance of reproducing every 2 seconds if age and size restrictions are met.
                 //if (plantModel.nutritionValue > 15 && !plantModel.isEaten && r > 0.95) 
-                if (plantModel.plantAge > 15 && plantModel.nutritionValue > 15 && !plantModel.isEaten && r > 0.95)
+                if (plantModel.plantAge > 15 && plantModel.nutritionValue > 20 && !plantModel.isEaten && r > 0.95)
                 {
                     float height = 0;
                     bool isHit = false;
@@ -124,7 +125,7 @@ namespace ViewController
             meshRenderer.enabled = false;
             capsuleCollider.enabled = false;
             //dh.LogDeadPlant();
-            yield return new WaitForSeconds(15f);
+            yield return new WaitForSeconds(10f);
             meshRenderer.enabled = true;
             capsuleCollider.enabled = true;
             //dh.LogNewPlant();
@@ -147,6 +148,18 @@ namespace ViewController
             tickEventPublisher = FindObjectOfType<TickEventPublisher>();
             dh = FindObjectOfType<DataHandler>();
             EventSubscribe();
+            StartCoroutine(PlantControllerUpdate());
+        }
+
+        private IEnumerator PlantControllerUpdate()
+        {
+            while (true)
+            {
+                yield return new WaitForSeconds(Random.Range(1f, 2f));
+                HandleDeathStatus();
+                HandleEaten();
+                Grow();
+            }
         }
     }
 }

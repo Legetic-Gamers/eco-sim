@@ -153,7 +153,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         agent.speed = animalModel.currentSpeed * Time.timeScale;
         agent.acceleration *= Time.timeScale;
         agent.angularSpeed *= Time.timeScale;
-        agent.isStopped = false;
+        //agent.isStopped = false;
         fsm.Initialize(wanderState);
         //Debug.Log(agent.autoBraking);
         tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
@@ -287,19 +287,22 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
 
         // speed
         animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier;
-        agent.speed = animalModel.currentSpeed * Time.timeScale;
-        
+        if (agent != null)
+        {
+            agent.speed = animalModel.currentSpeed * Time.timeScale;   
+        }
+
         // energy
         animalModel.currentEnergy -= (animalModel.age / 20 + animalModel.currentSpeed +
                                       animalModel.traits.viewRadius / 10 + animalModel.traits.hearingRadius / 10)
-                                     * animalModel.traits.size * energyModifier;
+                                     * animalModel.traits.size * energyModifier * 0.5f;
 
         // hydration
         animalModel.currentHydration -= (animalModel.traits.size / 10) * (1 + animalModel.currentSpeed / animalModel.traits.endurance *
                                          hydrationModifier);
         
         // reproductive urge
-        animalModel.reproductiveUrge += 0.7f * reproductiveUrgeModifier;
+        animalModel.reproductiveUrge += 0.4f * reproductiveUrgeModifier;
         agent.acceleration = baseAcceleration * Time.timeScale;
         agent.angularSpeed = baseAngularSpeed * Time.timeScale;
     }
@@ -511,6 +514,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     {
         if (!animalModel.IsAlive)
         {
+            EventUnsubscribe();
             fsm.ChangeState(deadState);
         }
     }

@@ -140,12 +140,14 @@ namespace DataCollection
         {
             // Calculate birthRate
             // Birth rate := new births during last minute divided by the already existing animals - the new animals 
+           
             for (int i = 0; i < 4; i++)
             {
+                birthRatePerMinute[i].Add(0);
+                float birthRate = 0;
                 if(currentAnimalsTotalAlivePerSpecies[i] == 0 || newBirths[i] == 0) continue;
-                
-                float birthRate = newBirths[i] / (currentAnimalsTotalAlivePerSpecies[i]);
-                birthRatePerMinute[i].Add(birthRate);
+                if (currentAnimalsTotalAlivePerSpecies[i] - newBirths[i] > 0f ) birthRate = newBirths[i] / (currentAnimalsTotalAlivePerSpecies[i] - newBirths[i]);
+                birthRatePerMinute[i][timeIndexBirth] = birthRate;
                 newBirths[i] = 0;
             }
             timeIndexBirth++;
