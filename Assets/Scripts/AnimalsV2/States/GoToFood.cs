@@ -73,6 +73,15 @@ namespace AnimalsV2.States
                 {
 
                     Vector3 pointToRunTo = closestFood.transform.position;
+                    
+                    //Overshoot if we are chasing another animal.
+                    //TODO CHANGE TO SOMETHING BETTER.
+                    if (closestFood.TryGetComponent(out AnimalController a))
+                    {
+                        Vector3 diffVec = (pointToRunTo - animal.transform.position).normalized;
+                        pointToRunTo = pointToRunTo + diffVec * 3f;
+                    }
+
                     //Move the animal using the navmeshagent.
                     NavigationUtilities.NavigateToPoint(animal, pointToRunTo);
                     
