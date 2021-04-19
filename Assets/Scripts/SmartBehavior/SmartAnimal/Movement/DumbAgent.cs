@@ -189,7 +189,7 @@ public class DumbAgent : Agent, IAgent
         // normalize reward as a percentage
         reward /= animalModel.traits.maxHydration;
         //AddReward(reward * 0.1f);
-        AddReward(reward * 0.1f);
+        AddReward(0.1f);
     }
 
     //The reason to why I have curentEnergy as an in-parameter is because currentEnergy is updated through EatFood before reward gets computed in AnimalMovementBrain
@@ -218,7 +218,8 @@ public class DumbAgent : Agent, IAgent
             reward /= animalModel.traits.maxEnergy;
         }
 
-        AddReward(reward * 0.1f);
+        //AddReward(reward * 0.1f);
+        AddReward(0.1f);
     }
     
     private void HandleMate(GameObject obj)
