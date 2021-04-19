@@ -4,26 +4,26 @@ namespace Model
 {
     public class PlantModel : IEdible
     {
-        public bool isEaten = false;
+        public bool isEaten;
 
         public float nutritionValue { get; set; }
         public float plantAge;
+        public bool isRegrowing;
 
         public const float plantMaxAge = 60;
-        public const float plantMaxsize = 30;
-
-
-
-
+        public const float plantMaxsize = 40;
+        
         public PlantModel(float nutritionValue)
         {
-            nutritionValue = nutritionValue;
+            this.nutritionValue = nutritionValue;
         }
 
         public PlantModel()
         {
-            this.nutritionValue = 0;
-            this.plantAge = 0;
+            nutritionValue = 0;
+            plantAge = 0;
+            isEaten = false;
+            isRegrowing = false;
         }
        
         public float GetEaten()

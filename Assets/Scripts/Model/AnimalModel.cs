@@ -251,7 +251,7 @@ public abstract class AnimalModel
         Hydration,
         Eaten,
         Health,
-        Hunger,
+        Hunger, // Same as energy
         Age,
         Energy
     };

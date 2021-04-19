@@ -19,7 +19,7 @@ namespace ViewController.Senses
         [SerializeField]
         private LayerMask obstacleMask;
 
-        [SerializeField] private bool useConstantTickInterval;
+        [SerializeField] public bool useConstantTickInterval;
         
         private AnimalController animalController;
 
@@ -230,7 +230,7 @@ namespace ViewController.Senses
             {
                 FindTargets();
                 onSenseTick?.Invoke();
-                yield return new WaitForSeconds(Random.Range(0.5f, 1f)/Time.timeScale);
+                yield return new WaitForSeconds(Random.Range(0.5f, 1f));
             
             }
         }

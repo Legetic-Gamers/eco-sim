@@ -33,7 +33,7 @@ public class TickEventPublisher : MonoBehaviour
     {
         while (enabled)
         {
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(0.5f/Time.timeScale);
             StartCoroutine(SenseTickEvent());
             tick++;
             if (tick % 2 == 1) OnTimerUpdate?.Invoke();

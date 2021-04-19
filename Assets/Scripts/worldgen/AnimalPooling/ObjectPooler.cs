@@ -5,8 +5,11 @@ using System.Linq;
 using DataCollection;
 using DefaultNamespace;
 using Menus;
+using Model;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.UIElements;
+using ViewController;
 using Object = UnityEngine.Object;
 
 public class ObjectPooler : MonoBehaviour
@@ -136,51 +139,34 @@ public class ObjectPooler : MonoBehaviour
     /// <param name="gotEaten"></param>
     public void HandleDeadAnimal(AnimalController animalController, bool gotEaten)
     {
+        animalController.deadState.onDeath -= HandleDeadAnimal;
+        animalController.SpawnNew -= HandleBirthAnimal;
         if(gotEaten) StartCoroutine(HandleDeadAnimalDelay(animalController, 0f));
         else StartCoroutine(HandleDeadAnimalDelay(animalController, 5f));
     }
 
     private IEnumerator HandleDeadAnimalDelay(AnimalController animalController, float delay)
     {
-        yield return new WaitForSeconds(delay / Time.timeScale);
+        AnimalModel.CauseOfDeath cause;
+        AnimalModel am = animalController.animalModel;
+        if (am.currentEnergy <= 0) cause = AnimalModel.CauseOfDeath.Energy;
+        else if (am.currentHydration <= 0) cause = AnimalModel.CauseOfDeath.Hydration;
+        else if (am.age >= am.traits.ageLimit) cause = AnimalModel.CauseOfDeath.Age;
+        else if (am.currentHealth <= 0) cause = AnimalModel.CauseOfDeath.Health;
+        else cause = AnimalModel.CauseOfDeath.Eaten;
+        
+        yield return new WaitForSeconds(delay);
         if (animalController != null)
         {
             GameObject animalObj;
             (animalObj = animalController.gameObject).SetActive(false);
-            AnimalModel.CauseOfDeath cause;
-            AnimalModel am = animalController.animalModel;
-            if (am.currentEnergy <= 0) cause = AnimalModel.CauseOfDeath.Energy;
-            else if (am.currentHydration <= 0) cause = AnimalModel.CauseOfDeath.Hydration;
-            else if (am.age >= am.traits.ageLimit) cause = AnimalModel.CauseOfDeath.Age;
-            else if (am.currentHealth <= 0) cause = AnimalModel.CauseOfDeath.Health;
-            else cause = AnimalModel.CauseOfDeath.Eaten;
+            
             dh.LogDeadAnimal(am, cause, (transform.position - animalController.startVector).magnitude);
             
-            /*
-            switch (animalController.animalModel)
-            {
-                case RabbitModel _:
-                    if(isSmart) poolDictionary["SmartRabbit"].Enqueue(animalObj);
-                    else poolDictionary["Rabbit Brown"].Enqueue(animalObj);
-                    break;
-                case WolfModel _:
-                    if(isSmart) poolDictionary["SmartWolf"].Enqueue(animalObj);
-                    else poolDictionary["Wolf Grey"].Enqueue(animalObj);
-                    break;
-                case DeerModel _:
-                    if(isSmart) poolDictionary["SmartDeer"].Enqueue(animalObj);
-                    else poolDictionary["Deer"].Enqueue(animalObj);
-                    break;
-                case BearModel _:
-                    if(isSmart) poolDictionary["SmartBear"].Enqueue(animalObj);
-                    else poolDictionary["Bear"].Enqueue(animalObj);
-                    break;
-            }
-            */
             //Debug.Log(animalObj.name.Replace("(Clone)", "").Trim());
             
             poolDictionary[animalObj.name.Replace("(Clone)", "").Trim()].Enqueue(animalObj);
-        }
+        } else Debug.Log("Controller null");
         
     }
 
@@ -194,29 +180,8 @@ public class ObjectPooler : MonoBehaviour
     /// <param name="isSmart"> If the animals has ML brain </param>
     private void HandleBirthAnimal(AnimalModel childModel, Vector3 pos, float energy, float hydration, string tag)
     {
-        GameObject child = null;
-        
-        /*
-        switch (childModel)
-        {
-            case RabbitModel _:
-                if(isSmart) child = SpawnFromPool("SmartRabbit", pos, Quaternion.identity);
-                else child = SpawnFromPool("Rabbit Brown", pos, Quaternion.identity);
-                break;
-            case WolfModel _:
-                if(isSmart) child = SpawnFromPool("SmartWolf", pos, Quaternion.identity);
-                else child = SpawnFromPool("Wolf Grey", pos, Quaternion.identity);
-                break;
-            case DeerModel _:
-                if(isSmart) child = SpawnFromPool("SmartDeer", pos, Quaternion.identity);
-                else child = SpawnFromPool("Deer", pos, Quaternion.identity);
-                break;
-            case BearModel _:
-                if(isSmart) child = SpawnFromPool("SmartBear", pos, Quaternion.identity);
-                else child = SpawnFromPool("Bear", pos, Quaternion.identity);
-                break;
-        }
-        */
+        GameObject child;
+
         child = SpawnFromPool(tag.Replace("(Clone)", "").Trim(), pos, Quaternion.identity);
         
         if (child != null)
@@ -226,8 +191,9 @@ public class ObjectPooler : MonoBehaviour
             //Debug.Log(childController.animalModel.generation);
             childController.animalModel.currentEnergy = energy;
             childController.animalModel.currentHydration = hydration;
+            
             childController.parameterUI.gameObject.SetActive(showCanvasForAll);
-
+            
             // update the childs speed (in case of mutation).
             childController.animalModel.traits.maxSpeed = 1;
             dh.LogNewAnimal(childModel);
@@ -260,7 +226,7 @@ public class ObjectPooler : MonoBehaviour
                 }
             }
         }
-
+        
         if (poolDictionary != null && poolDictionary.ContainsKey(tag))
         {
             GameObject objectToSpawn = poolDictionary[tag].Dequeue();
@@ -272,14 +238,64 @@ public class ObjectPooler : MonoBehaviour
                 objectToSpawn.SetActive(true);
                 //TODO Maintain list of all components for more performance
                 objectToSpawn.GetComponent<IPooledObject>()?.onObjectSpawn();
-
-                objectToSpawn.GetComponent<AnimalController>().deadState.onDeath += HandleDeadAnimal;
-                objectToSpawn.GetComponent<AnimalController>().SpawnNew += HandleBirthAnimal;
-
+                
+                if(objectToSpawn.TryGetComponent(out AnimalController animalController))
+                {
+                    animalController.deadState.onDeath += HandleDeadAnimal;
+                    animalController.SpawnNew += HandleBirthAnimal;
+                }
+                else if (objectToSpawn.TryGetComponent(out PlantController plantController))
+                {
+                    plantController.SpawnNewPlant += HandleGrowPlant;
+                    plantController.onDeadPlant += HandleDeadPlant;
+                }
+                
                 return objectToSpawn;
             }
         }
 
         return null;
+    }
+
+    private void HandleDeadPlant(PlantController plantController)
+    {
+        dh.LogDeadPlant();
+        GameObject plantObj;
+        (plantObj = plantController.gameObject).SetActive(false);
+        poolDictionary["Food"].Enqueue(plantObj);
+        plantController.SpawnNewPlant -= HandleGrowPlant;
+        plantController.onDeadPlant -= HandleDeadPlant;
+    }
+
+    public void HandleFoodInstantiated(GameObject o, string tag)
+    {
+        if (poolDictionary != null && poolDictionary.ContainsKey(tag))
+        {
+            o.SetActive(true);
+            o.GetComponent<IPooledObject>()?.onObjectSpawn();
+            dh.LogNewPlant();
+            if (o.TryGetComponent(out PlantController plantController))
+            {
+                plantController.onDeadPlant += HandleDeadPlant;
+                plantController.SpawnNewPlant += HandleGrowPlant;
+            }
+            if (stackDictionary != null && stackDictionary.ContainsKey(tag))
+            {
+                stackDictionary[tag].Push(o);
+            }
+        }
+    }
+    
+    private void HandleGrowPlant(Vector3 pos)
+    {
+        GameObject newPlant = SpawnFromPool("Food", pos, Quaternion.identity);
+        if (newPlant != null)
+        {
+            PlantController plantModel = newPlant.GetComponent<PlantController>();
+            plantModel.plantModel.isEaten = false;
+            plantModel.plantModel.plantAge = 0;
+            plantModel.plantModel.nutritionValue = 0;
+            dh.LogNewPlant();
+        } else Debug.Log("Failed to spawn");
     }
 }

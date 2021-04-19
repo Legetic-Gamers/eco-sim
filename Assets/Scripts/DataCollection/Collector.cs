@@ -140,10 +140,13 @@ namespace DataCollection
         {
             // Calculate birthRate
             // Birth rate := new births during last minute divided by the already existing animals - the new animals 
+           
             for (int i = 0; i < 4; i++)
             {
-                float birthRate = newBirths[i] / (currentAnimalsTotalAlivePerSpecies[i] - newBirths[i]);
-                if(birthRatePerMinute[i].Count <= timeIndexBirth) birthRatePerMinute[i].Add(birthRate);
+                birthRatePerMinute[i].Add(0);
+                float birthRate = 0;
+                if(currentAnimalsTotalAlivePerSpecies[i] == 0 || newBirths[i] == 0) continue;
+                if (currentAnimalsTotalAlivePerSpecies[i] - newBirths[i] > 0f ) birthRate = newBirths[i] / (currentAnimalsTotalAlivePerSpecies[i] - newBirths[i]);
                 birthRatePerMinute[i][timeIndexBirth] = birthRate;
                 newBirths[i] = 0;
             }
@@ -230,10 +233,6 @@ namespace DataCollection
         /// <param name="distanceTravelled"> Distance travelled to log </param>
         public void CollectDeath(AnimalModel am, AnimalModel.CauseOfDeath cause, float distanceTravelled)
         {
-            totalAnimalsAlive--;
-            Debug.Log("totalanimalsalive: " + totalAnimalsAlive);
-            if(totalAnimalsAlive <= 0) onAllExtinct?.Invoke();
-            
             int gen = am.generation;
             
             for (int i = totalDeadAnimals.Count - 1; i <= gen; i++) totalDeadAnimals.Add(0);
@@ -243,20 +242,13 @@ namespace DataCollection
             // Changes the referenced lists depending on the species of the animal. 
             (List<List<float>> animalMean, List<List<float>> animalVar, _) = GetAnimalList(am);
             
-            /*
-            for (int i = animalMean[12].Count - 1; i <= gen; i++) animalMean[12].Add(0);
-            for (int i = animalMean[12].Count - 1; i <= gen; i++) animalVar[12].Add(0);
-                
-            for (int i = animalMean[11].Count - 1; i <= gen; i++) animalMean[11].Add(0);
-            for (int i = animalMean[11].Count - 1; i <= gen; i++) animalVar[11].Add(0);
-            */
             if (gen > animalMean[12].Count - 1)
             {
-                Debug.Log("generation is: " + gen + " and list length is: " + animalMean[12].Count);
+                //Debug.Log("generation is: " + gen + " and list length is: " + animalMean[12].Count);
                 int difference = gen + 1 - animalMean[12].Count;
                 for (int i = 0; i < difference; i++)
                 {
-                    Debug.Log("Adding: " + i);
+                    //Debug.Log("Adding: " + i);
                     animalMean[12].Add(0);
                     animalVar[12].Add(0);
                     animalMean[11].Add(0);
@@ -277,7 +269,7 @@ namespace DataCollection
             animalVar[11][gen] = varDist;
 
             causeOfDeath[cause] = causeOfDeath[cause] += 1;
-            //Debug.Log("cause of death: " + cause.ToString());
+            Debug.Log("cause of death: " + cause.ToString());
             
             switch (am)
             {
@@ -294,6 +286,10 @@ namespace DataCollection
                     currentAnimalsTotalAlivePerSpecies[3] -= 1;
                     break;
             }
+
+            totalAnimalsAlive--;
+            //Debug.Log("totalanimalsalive: " + totalAnimalsAlive);
+            if(totalAnimalsAlive <= 0) onAllExtinct?.Invoke();
         }
 
         /// <summary>
@@ -382,12 +378,12 @@ namespace DataCollection
             return (populationSize > 1) ? (m, s / (populationSize - 1f)) : (m, 0);
         }
 
-        public void CollectNewFood(PlantModel plantModel)
+        public void CollectNewFood()
         {
             if (foodActivePerMinute.Count - 1 < timeIndexFood) foodActivePerMinute.Add(1);
             else foodActivePerMinute[timeIndexFood] += 1;
         }
-        public void CollectDeadFood(PlantModel plantModel)
+        public void CollectDeadFood()
         {
             foodActivePerMinute[timeIndexFood] -= 1;
         }

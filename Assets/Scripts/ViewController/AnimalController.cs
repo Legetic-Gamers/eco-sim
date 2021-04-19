@@ -149,10 +149,12 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         //Can be used later.
         baseAngularSpeed = agent.angularSpeed;
         baseAcceleration = agent.acceleration;
-        fsm.Initialize(wanderState);
+        
         agent.speed = animalModel.currentSpeed * Time.timeScale;
         agent.acceleration *= Time.timeScale;
         agent.angularSpeed *= Time.timeScale;
+        //agent.isStopped = false;
+        fsm.Initialize(wanderState);
         //Debug.Log(agent.autoBraking);
         tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
         EventSubscribe();
@@ -167,7 +169,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         while (true)
         {
             fsm.UpdateStatesLogic();
-            yield return new WaitForSeconds(UnityRandom.Range(0.5f, 1f)/Time.timeScale);
+            yield return new WaitForSeconds(UnityRandom.Range(0.5f, 1f));
             
         }
     }
@@ -229,7 +231,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
                 reproductiveUrgeModifier = 0f;
                 speedModifier = 0f;
                 break;
-            case MLState _:
+            case MLInferenceState _:
                 energyModifier = 0.5f;
                 hydrationModifier = 0.5f;
                 reproductiveUrgeModifier = 20f;
@@ -281,25 +283,26 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     public virtual void UpdateParameters()
     {
         //The age will increase 2 per 2 seconds.
-        animalModel.age += 1;
+        animalModel.age += 0.25f;
 
         // speed
         animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier;
-        agent.speed = animalModel.currentSpeed * Time.timeScale;
-        
+        if (agent != null)
+        {
+            agent.speed = animalModel.currentSpeed * Time.timeScale;   
+        }
+
         // energy
-        animalModel.currentEnergy -= (animalModel.age + animalModel.currentSpeed +
+        animalModel.currentEnergy -= (animalModel.age / 20 + animalModel.currentSpeed +
                                       animalModel.traits.viewRadius / 10 + animalModel.traits.hearingRadius / 10)
                                      * animalModel.traits.size * energyModifier;
 
         // hydration
-        animalModel.currentHydration -= animalModel.traits.size *
-                                        (1 +
-                                         animalModel.currentSpeed / animalModel.traits.endurance *
+        animalModel.currentHydration -= (animalModel.traits.size / 2.5f) * (1 + animalModel.currentSpeed / animalModel.traits.endurance *
                                          hydrationModifier);
         
         // reproductive urge
-        animalModel.reproductiveUrge += 0.01f * reproductiveUrgeModifier;
+        animalModel.reproductiveUrge += 0.02f * reproductiveUrgeModifier;
         agent.acceleration = baseAcceleration * Time.timeScale;
         agent.angularSpeed = baseAngularSpeed * Time.timeScale;
     }
@@ -323,7 +326,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
 
         drinkingState.onDrinkWater += DrinkWater;
 
-        deadState.onDeath += HandleDeathStatus;
+        //deadState.onDeath += HandleDeathStatus;
 
         matingState.onMate += Mate;
 
@@ -412,14 +415,12 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
             {
                 ObjectPooler.instance?.HandleDeadAnimal(eatenAnimalController, true);
             }
-            //Destroy(food);
         }
 
-        if (food != null && food.GetComponent<PlantController>()?.plantModel is IEdible ediblePlant &&
+        if (food != null && food.TryGetComponent(out PlantController plantController) && plantController.plantModel is IEdible ediblePlant &&
             animalModel.CanEat(ediblePlant))
         {
-            animalModel.currentEnergy += ediblePlant.GetEaten();
-            Destroy(food);
+            animalModel.currentEnergy += plantController.GetEaten();
         }
     }
 
@@ -486,7 +487,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     
     IEnumerator GiveBirth(float childEnergy, float childHydration, float laborTime, AnimalController otherParentAnimalController) 
     {
-        yield return new WaitForSeconds(laborTime);
+        yield return new WaitForSeconds(laborTime*0.6f);
         AnimalModel childModel = animalModel.Mate(otherParentAnimalController.animalModel);
         SpawnNew?.Invoke(childModel, transform.position, childEnergy, childHydration, gameObject.name);
         // invoke only once when birthing multiple children
@@ -511,6 +512,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     {
         if (!animalModel.IsAlive)
         {
+            EventUnsubscribe();
             fsm.ChangeState(deadState);
         }
     }
