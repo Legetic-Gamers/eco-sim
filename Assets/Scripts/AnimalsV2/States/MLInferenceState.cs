@@ -1,8 +1,8 @@
 ﻿namespace AnimalsV2.States
 {
-    public class MLState : State
+    public class MLInferenceState : State
     {
-        public MLState(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine)
+        public MLInferenceState(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine)
         {
             //currentStateAnimation = StateAnimation.Idle;
             currentStateAnimation = StateAnimation.Walking;
@@ -27,7 +27,7 @@
         
         public override string ToString()
         {
-            return "MLState";
+            return "ML Inference";
         }
 
         public override bool MeetRequirements()

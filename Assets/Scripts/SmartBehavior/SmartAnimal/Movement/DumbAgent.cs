@@ -30,7 +30,10 @@ public class DumbAgent : Agent, IAgent
     
     public void Awake()
     {
+        //make sure sensetick is using constant tick interval
         senses = GetComponent<Senses>();
+        senses.useConstantTickInterval = true;
+        
         //init specific
         animalController = GetComponent<MLAnimalController>();
         if(animalController) animalController.OnStartML += Init;
@@ -41,13 +44,10 @@ public class DumbAgent : Agent, IAgent
         animalModel = animalController.animalModel;
         fsm = animalController.fsm;
         
-        //Set the animal as sterile if we want to train/heuristic
-        if (TryGetComponent(out BehaviorParameters bp))
-        {
-            animalController.isInfertile =
-                bp.BehaviorType == BehaviorType.Default || bp.BehaviorType == BehaviorType.HeuristicOnly;
-            if(animalController.isInfertile) Debug.Log("Agent is infertile!");
-        }
+        //set infertile if training
+        animalController.isInfertile = animalController.isTraining;
+        if(animalController.isInfertile) Debug.Log("Agent is infertile!");
+        
         EventSubscribe();
     }
     
@@ -106,7 +106,9 @@ public class DumbAgent : Agent, IAgent
         
         
         //Add agents velocity (as a direction) to observations
-        Vector3 velocity = transform.InverseTransformDirection(animalController.agent.velocity);
+        //Vector3 velocity = transform.InverseTransformDirection(animalController.agent.velocity);
+        
+        Vector3 velocity = transform.InverseTransformVector(animalController.agent.velocity);
         sensor.AddObservation(velocity.x);
         sensor.AddObservation(velocity.z);
     }
@@ -121,18 +123,17 @@ public class DumbAgent : Agent, IAgent
         float rotationAngle = actions.ContinuousActions[0] * 110; //90
         
         //Give reward based on how much rotation is made. 0 is no rotation and 1 (or -1) is max rotation.
-        //positive reward is better for shaping desired behavior
-        AddReward(0.005f - Math.Abs(actions.ContinuousActions[0]) * 0.005f);
+        AddReward(- Math.Abs(actions.ContinuousActions[0]) * 0.0025f);
         
         //Rotate vector based on rotation from the action
         dirToGo = Quaternion.AngleAxis(rotationAngle, Vector3.up) * dirToGo;
-        dirToGo *= 3;
+        dirToGo *= 4;
 
         float speedModifier = actions.ContinuousActions[1];
         speedModifier = 0.5f * speedModifier + 0.5f; //make sure that function of interval [-1,1] maps to [0,1]
         
-        //Give reward for moving forward
-        AddReward(speedModifier * 0.005f);
+        //Give penalty: more speed => less penalty
+        AddReward(speedModifier * 0.0025f - 0.0025f);
 
         //Set speed
         animalController.SetSpeed(speedModifier);
@@ -188,7 +189,7 @@ public class DumbAgent : Agent, IAgent
         // normalize reward as a percentage
         reward /= animalModel.traits.maxHydration;
         //AddReward(reward * 0.1f);
-        AddReward(reward * 0.1f);
+        AddReward(0.1f);
     }
 
     //The reason to why I have curentEnergy as an in-parameter is because currentEnergy is updated through EatFood before reward gets computed in AnimalMovementBrain
@@ -217,13 +218,15 @@ public class DumbAgent : Agent, IAgent
             reward /= animalModel.traits.maxEnergy;
         }
 
-        AddReward(reward * 0.1f);
+        //AddReward(reward * 0.1f);
+        AddReward(0.1f);
     }
     
     private void HandleMate(GameObject obj)
     {
         //SetReward(1f);
         AddReward(2f);
+        //Task achieved
         //Task achieved
         onEpisodeEnd?.Invoke(100f);
         EndEpisode();
@@ -258,19 +261,17 @@ public class DumbAgent : Agent, IAgent
     IEnumerator SubscribeTickEvent()
     {
         float delaySeconds = Random.Range(0, 0.5f);
-            
-        if (TryGetComponent(out BehaviorParameters bp))
+
+        if (animalController.isTraining)
         {
-            if(bp.BehaviorType == BehaviorType.Default || bp.BehaviorType == BehaviorType.HeuristicOnly)
-            {
-                Debug.Log("No delay on subscribing tick event");
-                delaySeconds = 0;
-            }
+            Debug.Log("No delay on subscribing tick event");
+            delaySeconds = 0;
         }
         
         // Wait a while then change state and resume walking
         yield return new WaitForSeconds(delaySeconds/Time.timeScale);
-        //Request decision on every sense tick
+        
+        //subscribe to own onSenseTick
         if (senses)
         {
             senses.onSenseTick += PreRequestDecision;

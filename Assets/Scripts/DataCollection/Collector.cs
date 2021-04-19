@@ -243,10 +243,16 @@ namespace DataCollection
             // Changes the referenced lists depending on the species of the animal. 
             (List<List<float>> animalMean, List<List<float>> animalVar, _) = GetAnimalList(am);
             
-            // Update length of lists to accomodate for new generations
+            /*
+            for (int i = animalMean[12].Count - 1; i <= gen; i++) animalMean[12].Add(0);
+            for (int i = animalMean[12].Count - 1; i <= gen; i++) animalVar[12].Add(0);
+                
+            for (int i = animalMean[11].Count - 1; i <= gen; i++) animalMean[11].Add(0);
+            for (int i = animalMean[11].Count - 1; i <= gen; i++) animalVar[11].Add(0);
+            */
             if (gen > animalMean[12].Count - 1)
             {
-                Debug.Log("generation is: " + gen + " (+1 because it starts at 0) and list length is: " + animalMean[12].Count);
+                Debug.Log("generation is: " + gen + " and list length is: " + animalMean[12].Count);
                 int difference = gen + 1 - animalMean[12].Count;
                 for (int i = 0; i < difference; i++)
                 {
@@ -376,7 +382,7 @@ namespace DataCollection
             return (populationSize > 1) ? (m, s / (populationSize - 1f)) : (m, 0);
         }
 
-        public void CollectNewFood()
+        public void CollectNewFood(PlantModel plantModel)
         {
             if (foodActivePerMinute.Count - 1 < timeIndexFood) foodActivePerMinute.Add(1);
             else foodActivePerMinute[timeIndexFood] += 1;

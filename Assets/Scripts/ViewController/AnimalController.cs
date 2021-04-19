@@ -229,7 +229,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
                 reproductiveUrgeModifier = 0f;
                 speedModifier = 0f;
                 break;
-            case MLState _:
+            case MLInferenceState _:
                 energyModifier = 0.5f;
                 hydrationModifier = 0.5f;
                 reproductiveUrgeModifier = 20f;
@@ -258,7 +258,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     {
         energyModifier = 1f;
         hydrationModifier = 1f;
-        reproductiveUrgeModifier = 2f;
+        reproductiveUrgeModifier = 0f;
         speedModifier = RunningSpeed;
     }
 
@@ -288,7 +288,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         agent.speed = animalModel.currentSpeed * Time.timeScale;
         
         // energy
-        animalModel.currentEnergy -= ((animalModel.age / 20 ) + animalModel.currentSpeed +
+        animalModel.currentEnergy -= (animalModel.age + animalModel.currentSpeed +
                                       animalModel.traits.viewRadius / 10 + animalModel.traits.hearingRadius / 10)
                                      * animalModel.traits.size * energyModifier;
 
@@ -299,7 +299,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
                                          hydrationModifier);
         
         // reproductive urge
-        animalModel.reproductiveUrge += reproductiveUrgeModifier;
+        animalModel.reproductiveUrge += 0.01f * reproductiveUrgeModifier;
         agent.acceleration = baseAcceleration * Time.timeScale;
         agent.angularSpeed = baseAngularSpeed * Time.timeScale;
     }
@@ -412,14 +412,12 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
             {
                 ObjectPooler.instance?.HandleDeadAnimal(eatenAnimalController, true);
             }
-            //Destroy(food);
         }
 
-        if (food != null && food.GetComponent<PlantController>()?.plantModel is IEdible ediblePlant &&
+        if (food != null && food.TryGetComponent(out PlantController plantController) && plantController.plantModel is IEdible ediblePlant &&
             animalModel.CanEat(ediblePlant))
         {
-            animalModel.currentEnergy += ediblePlant.GetEaten();
-            Destroy(food);
+            animalModel.currentEnergy += plantController.GetEaten();
         }
     }
 

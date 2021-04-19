@@ -5,10 +5,8 @@ using System.Linq;
 using DataCollection;
 using DefaultNamespace;
 using Menus;
-using Model;
 using UnityEngine;
 using UnityEngine.UIElements;
-using ViewController;
 using Object = UnityEngine.Object;
 
 public class ObjectPooler : MonoBehaviour
@@ -182,9 +180,6 @@ public class ObjectPooler : MonoBehaviour
             //Debug.Log(animalObj.name.Replace("(Clone)", "").Trim());
             
             poolDictionary[animalObj.name.Replace("(Clone)", "").Trim()].Enqueue(animalObj);
-            
-            animalController.deadState.onDeath -= HandleDeadAnimal;
-            animalController.SpawnNew -= HandleBirthAnimal;
         }
         
     }
@@ -228,6 +223,7 @@ public class ObjectPooler : MonoBehaviour
         {
             AnimalController childController = child.GetComponent<AnimalController>();
             childController.animalModel = childModel;
+            //Debug.Log(childController.animalModel.generation);
             childController.animalModel.currentEnergy = energy;
             childController.animalModel.currentHydration = hydration;
             childController.parameterUI.gameObject.SetActive(showCanvasForAll);
@@ -264,7 +260,7 @@ public class ObjectPooler : MonoBehaviour
                 }
             }
         }
-        
+
         if (poolDictionary != null && poolDictionary.ContainsKey(tag))
         {
             GameObject objectToSpawn = poolDictionary[tag].Dequeue();
@@ -276,55 +272,14 @@ public class ObjectPooler : MonoBehaviour
                 objectToSpawn.SetActive(true);
                 //TODO Maintain list of all components for more performance
                 objectToSpawn.GetComponent<IPooledObject>()?.onObjectSpawn();
-                
-                if(tag.Equals("Animal")){
-                    objectToSpawn.GetComponent<AnimalController>().deadState.onDeath += HandleDeadAnimal;
-                    objectToSpawn.GetComponent<AnimalController>().SpawnNew += HandleBirthAnimal;
-                }
-                else if (tag.Equals("Food"))
-                {
-                    objectToSpawn.GetComponent<PlantController>().SpawnNewPlant += HandleGrowPlant;
-                    objectToSpawn.GetComponent<PlantController>().onDeadPlant += HandleDeadPlant;
-                }
+
+                objectToSpawn.GetComponent<AnimalController>().deadState.onDeath += HandleDeadAnimal;
+                objectToSpawn.GetComponent<AnimalController>().SpawnNew += HandleBirthAnimal;
+
                 return objectToSpawn;
             }
         }
 
         return null;
-    }
-
-    private void HandleDeadPlant(PlantController plantController)
-    {
-        dh.LogDeadPlant(plantController.plantModel);
-        GameObject plantObj;
-        (plantObj = plantController.gameObject).SetActive(false);
-        poolDictionary["Food"].Enqueue(plantObj);
-        plantController.SpawnNewPlant -= HandleGrowPlant;
-        plantController.onDeadPlant -= HandleDeadPlant;
-    }
-
-    public void HandleFoodInstantiated(GameObject o, string tag)
-    {
-        if (poolDictionary != null && poolDictionary.ContainsKey(tag))
-        {
-            o.SetActive(true);
-            o.GetComponent<IPooledObject>()?.onObjectSpawn();
-            dh.LogNewPlant();
-            if (o.TryGetComponent(out PlantController plantController))
-            {
-                plantController.onDeadPlant += HandleDeadPlant;
-                plantController.SpawnNewPlant += HandleGrowPlant;
-            }
-            if (stackDictionary != null && stackDictionary.ContainsKey(tag))
-            {
-                stackDictionary[tag].Push(o);
-            }
-        }
-    }
-    
-    private void HandleGrowPlant(Vector3 pos)
-    {
-        GameObject _ = SpawnFromPool("Food", pos, Quaternion.identity);
-        dh.LogNewPlant();
     }
 }

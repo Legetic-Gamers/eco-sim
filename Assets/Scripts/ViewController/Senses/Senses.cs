@@ -19,7 +19,7 @@ namespace ViewController.Senses
         [SerializeField]
         private LayerMask obstacleMask;
 
-        [SerializeField] private bool useConstantTickInterval;
+        [SerializeField] public bool useConstantTickInterval;
         
         private AnimalController animalController;
 
