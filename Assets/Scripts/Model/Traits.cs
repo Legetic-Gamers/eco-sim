@@ -72,8 +72,7 @@ public class Traits
             float c = 1.5f; // h = c * f
             float ePow = 1 - Mathf.Pow(2.71828f, -c * massI);
 
-            float sizeLimiter = Mathf.Pow(size, i);
-            float speed = bodymassAccel * ePow - sizeLimiter;
+            float speed = bodymassAccel * ePow - massI;
             _maxSpeed = Mathf.Clamp(speed,0.4f,25); // actual limit is ~15
         }
     }
