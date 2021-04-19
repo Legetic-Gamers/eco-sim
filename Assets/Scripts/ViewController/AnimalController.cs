@@ -155,6 +155,9 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         agent.angularSpeed *= Time.timeScale;
         //agent.isStopped = false;
         fsm.Initialize(wanderState);
+        //Set modifiers
+        ChangeModifiers(wanderState);
+        
         //Debug.Log(agent.autoBraking);
         tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
         EventSubscribe();
