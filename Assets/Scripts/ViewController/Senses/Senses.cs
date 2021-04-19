@@ -184,6 +184,11 @@ namespace ViewController.Senses
         /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
         private void Start()
         {
+            Init();
+        }
+
+        public void Init()
+        {
 
             animalController = GetComponent<AnimalController>();
             
@@ -230,7 +235,7 @@ namespace ViewController.Senses
             {
                 FindTargets();
                 onSenseTick?.Invoke();
-                yield return new WaitForSeconds(Random.Range(0.5f, 1f)/Time.timeScale);
+                yield return new WaitForSeconds(Random.Range(0.5f, 1f));
             
             }
         }

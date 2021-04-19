@@ -141,3 +141,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   centerTransform: {fileID: 5789599837850399107}
+  capsuleCollider: {fileID: 8952843899339316023}
+  meshRenderer: {fileID: 8585085198824190952}

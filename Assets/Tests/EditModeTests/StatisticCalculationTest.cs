@@ -97,16 +97,16 @@ namespace Tests.EditModeTests
         public void TotalFoodPerMinuteWorking()
         {
             Collector c = new Collector();
-            c.CollectNewFood(pl1);
-            c.CollectNewFood(pl2);
-            c.CollectNewFood(pl3);
-            c.CollectNewFood(pl4);
-            c.CollectNewFood(pl5);
+            c.CollectNewFood();
+            c.CollectNewFood();
+            c.CollectNewFood();
+            c.CollectNewFood();
+            c.CollectNewFood();
             c.Collect();
             Assert.AreEqual(5f, c.foodActivePerMinute[0], 0.0001f);
-            c.CollectDeadFood(pl1);
-            c.CollectDeadFood(pl2);
-            c.CollectDeadFood(pl3);
+            c.CollectDeadFood();
+            c.CollectDeadFood();
+            c.CollectDeadFood();
             c.Collect();
             Assert.AreEqual(2f, c.foodActivePerMinute[1], 0.0001f);
         }

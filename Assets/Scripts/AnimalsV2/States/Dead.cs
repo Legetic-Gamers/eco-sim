@@ -13,13 +13,17 @@ namespace AnimalsV2.States
             public Dead(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal,
                 finiteStateMachine)
             {
-                currentStateAnimation = StateAnimation.Dead;
+                
             }
 
             public override void Enter()
             {
+                
                 //when entering state dead,
                 base.Enter();
+                
+                currentStateAnimation = StateAnimation.Dead;
+                
                 if (animal.agent.isActiveAndEnabled && animal.agent.isOnNavMesh)
                 {
                     animal.agent.isStopped = true;

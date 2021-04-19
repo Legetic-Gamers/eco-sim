@@ -1,18 +1,20 @@
-﻿using Model;
+﻿using DataCollection;
+using Model;
 
 namespace ViewController
 {
     public class BasicPlantController : PlantController
     {
-
-        private void Start()
+        public override void onObjectSpawn()
         {
             plantModel = new PlantModel(35f);
+            dh?.LogNewPlant();
         }
+
         public override float GetEaten()
         {
             float nutrition = plantModel.GetEaten();
-            Destroy(gameObject);
+            onDeadPlant?.Invoke(this);
             return nutrition;
         }
     }

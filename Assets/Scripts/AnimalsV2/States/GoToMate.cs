@@ -19,8 +19,18 @@ namespace AnimalsV2.States
             base.Enter();
             currentStateAnimation = StateAnimation.Walking;
             
+            //Dont slow down when chasing.
+            animal.agent.autoBraking = false;
+            
             //Make an update instantly
             LogicUpdate();
+        }
+        
+        public override void Exit()
+        {
+            base.Exit();
+            
+            animal.agent.autoBraking = true;
         }
 
         public override void HandleInput()
@@ -49,8 +59,15 @@ namespace AnimalsV2.States
                     //Move the animal using the navmeshagent.
                     NavigationUtilities.NavigateToPoint(animal,pointToRunTo);
                     
-                    
-                    if (Vector3.Distance(animal.transform.position, foundMate.transform.position) <= animal.agent.stoppingDistance + 0.3)
+                    //Stop the other rabbit
+                    // if (foundMate.TryGetComponent(out AnimalController targetAnimalController))
+                    // {
+                    //     targetAnimalController.waitingState.SetWaitTime(2);
+                    //     targetAnimalController.fsm.ChangeState(targetAnimalController.waitingState);
+                    // }
+
+
+                    if (Vector3.Distance(animal.transform.position, foundMate.transform.position) <= animal.agent.stoppingDistance + 0.5f)
                     {
                         animal.matingState.SetTarget(foundMate);
                         //Try to change state, else go to default state
@@ -68,8 +85,9 @@ namespace AnimalsV2.States
                 finiteStateMachine.GoToDefaultState();
             }
         }
+
         
-        
+
 
         public override string ToString()
         {
@@ -87,7 +105,8 @@ namespace AnimalsV2.States
             //Debug.Log("Nfriendly" + allNearbyFriendly.Count);
             foreach(GameObject potentialMate in allNearbyFriendly)
             {
-                if (potentialMate != null && potentialMate.TryGetComponent(out AnimalController potentialMateAnimalController) && potentialMateAnimalController.animalModel.IsAlive && !potentialMateAnimalController.animalModel.isPregnant)
+                if (potentialMate != null && potentialMate.TryGetComponent(out AnimalController potentialMateAnimalController) && potentialMateAnimalController.animalModel.IsAlive && !potentialMateAnimalController.animalModel.isPregnant && potentialMateAnimalController.animalModel.WantingOffspring 
+                    && !(potentialMateAnimalController.fsm.currentState is MatingState) && !(potentialMateAnimalController.fsm.currentState is Waiting))
                 {
                     
                     return potentialMateAnimalController.gameObject;

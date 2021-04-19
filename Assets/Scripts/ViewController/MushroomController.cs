@@ -1,32 +1,25 @@
+using System;
+using System.Collections;
 using DataCollection;
 using Model;
 using UnityEngine;
 using ViewController;
+using Random = UnityEngine.Random;
 
 public class MushroomController : PlantController
 {
     
     private TickEventPublisher tickEventPublisher;
     
-    private DataHandler dh;
-    
+    public CapsuleCollider capsuleCollider;
+    public MeshRenderer meshRenderer;
+
     public void Start()
     {
-        tickEventPublisher = FindObjectOfType<TickEventPublisher>();
-        plantModel = new PlantModel();
-        EventSubscribe();
-
-        dh = FindObjectOfType<DataHandler>();
-        dh?.LogNewPlant(plantModel);
-    }
-    
-
-    public void OnDestroy()
-    {
-        if (tickEventPublisher)
+        //If there is no object pooler present, we need to call onObjectSpawn through start
+        if (FindObjectOfType<ObjectPooler>() == null)
         {
-            tickEventPublisher.onParamTickEvent -= HandleDeathStatus;
-            tickEventPublisher.onParamTickEvent -= Grow;
+            onObjectSpawn();
         }
     }
 
@@ -56,28 +49,20 @@ public class MushroomController : PlantController
     
     private void Grow()
     {
-        
         plantModel.plantAge += 2;
         if (plantModel.nutritionValue > PlantModel.plantMaxsize)
         {
             plantModel.nutritionValue = PlantModel.plantMaxsize;
             SetPhenotype();
         }
-        else plantModel.nutritionValue += 2;
-
-        // plant has regrown after being eaten
-        if (plantModel.isEaten && plantModel.nutritionValue > 15)
-        {
-            gameObject.SetActive(true);
-            SetPhenotype();
-        }
+        else plantModel.nutritionValue += 3f;
 
         float r = Random.Range(0, 1f);
         float rx = Random.Range(-10f, 10f);
         float rz = Random.Range(-10f, 10f);
         // chance of reproducing every 2 seconds if age and size restrictions are met.
         //if (plantModel.nutritionValue > 15 && !plantModel.isEaten && r > 0.95) 
-        if (plantModel.plantAge > 15 && plantModel.nutritionValue > 15 && !plantModel.isEaten && r > 0.95)
+        if (plantModel.plantAge > 15 && plantModel.nutritionValue > 30 && !plantModel.isEaten && r > 0.95)
         {
             float height = 0;
             bool isHit = false;
@@ -94,28 +79,65 @@ public class MushroomController : PlantController
                     isHit = true;
                 }
             }
+
             if (!isHit) return;
-            GameObject offspring = Instantiate(gameObject);
-            offspring.transform.position = new Vector3(position.x + rx, height, position.z + rz);
-            PlantModel offspringModel = new PlantModel();
-            offspring.GetComponent<PlantController>().plantModel = offspringModel;
+            SpawnNewPlant?.Invoke(new Vector3(position.x + rx, height, position.z + rz));
         }
     }
     
     public override float GetEaten()
     {
-        gameObject.SetActive(false);
+        if (plantModel.isEaten && gameObject.activeInHierarchy && !plantModel.isRegrowing)
+        {
+            plantModel.isRegrowing = true;
+            StartCoroutine(Regrow());
+            plantModel.isEaten = false;
+            plantModel.isRegrowing = false;
+        }
         return plantModel.GetEaten();
+    }
+    
+    private IEnumerator Regrow()
+    {
+        meshRenderer.enabled = false;
+        capsuleCollider.enabled = false;
+        dh.LogDeadPlant();
+        yield return new WaitForSeconds(10f);
+        meshRenderer.enabled = true;
+        capsuleCollider.enabled = true;
+        dh.LogNewPlant();
     }
 
 
     private void HandleDeathStatus()
     {
-        if (plantModel != null && plantModel.plantAge > PlantModel.plantMaxAge)
+        if (gameObject.activeSelf && plantModel.plantAge > PlantModel.plantMaxAge && !plantModel.isEaten)
         {
-            dh?.LogDeadPlant(plantModel);
+            onDeadPlant?.Invoke(this);
             EventUnSubscribe();
-            Destroy(gameObject);
+        }
+    }
+    
+    public override void onObjectSpawn()
+    {
+        tickEventPublisher = FindObjectOfType<TickEventPublisher>();
+        dh = FindObjectOfType<DataHandler>();
+        dh?.LogNewPlant();
+        
+        EventSubscribe();
+        
+        StartCoroutine(PlantControllerUpdate());
+        
+        plantModel = new PlantModel();
+    }
+    
+    private IEnumerator PlantControllerUpdate()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(Random.Range(1f, 2f));
+            HandleDeathStatus();
+            Grow();
         }
     }
 }
