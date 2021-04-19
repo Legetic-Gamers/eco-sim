@@ -68,7 +68,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     //Modifiers
     [HideInInspector] public float energyModifier;
     [HideInInspector] public float hydrationModifier;
-    [HideInInspector] public float reproductiveUrgeModifier = 0.3f;
+    [HideInInspector] public float reproductiveUrgeModifier = 1f;
     [HideInInspector] public float speedModifier = JoggingSpeed; //100% of maxSpeed in model
 
     //Timescale stuff
@@ -240,7 +240,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
             default:
                 energyModifier = 0.1f;
                 hydrationModifier = 0.05f;
-                reproductiveUrgeModifier = 0.2f;
+                reproductiveUrgeModifier = 1f;
 
                 speedModifier = JoggingSpeed;
                 //Debug.Log("varying parameters depending on state: Wander");
@@ -276,7 +276,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     {
         energyModifier = 0.15f;
         hydrationModifier = 0.25f;
-        reproductiveUrgeModifier = 1f;
+        reproductiveUrgeModifier = 1.5f;
         speedModifier = WalkingSpeed;
     }
 

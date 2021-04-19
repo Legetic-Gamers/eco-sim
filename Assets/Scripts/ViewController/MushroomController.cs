@@ -55,7 +55,7 @@ public class MushroomController : PlantController
             plantModel.nutritionValue = PlantModel.plantMaxsize;
             SetPhenotype();
         }
-        else plantModel.nutritionValue += 4;
+        else plantModel.nutritionValue += 3f;
 
         float r = Random.Range(0, 1f);
         float rx = Random.Range(-10f, 10f);
