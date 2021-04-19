@@ -19,8 +19,18 @@ namespace AnimalsV2.States
             base.Enter();
             currentStateAnimation = StateAnimation.Walking;
             
+            //Dont slow down when chasing.
+            animal.agent.autoBraking = false;
+            
             //Make an update instantly
             LogicUpdate();
+        }
+        
+        public override void Exit()
+        {
+            base.Exit();
+            
+            animal.agent.autoBraking = true;
         }
 
         public override void HandleInput()
@@ -50,7 +60,7 @@ namespace AnimalsV2.States
                     NavigationUtilities.NavigateToPoint(animal,pointToRunTo);
                     
                     
-                    if (Vector3.Distance(animal.transform.position, foundMate.transform.position) <= animal.agent.stoppingDistance + 0.3)
+                    if (Vector3.Distance(animal.transform.position, foundMate.transform.position) <= animal.agent.stoppingDistance + 0.5)
                     {
                         animal.matingState.SetTarget(foundMate);
                         //Try to change state, else go to default state
@@ -68,8 +78,9 @@ namespace AnimalsV2.States
                 finiteStateMachine.GoToDefaultState();
             }
         }
+
         
-        
+
 
         public override string ToString()
         {
