@@ -76,7 +76,7 @@ namespace AnimalsV2.States
                     
                     //Overshoot if we are chasing another animal.
                     //TODO CHANGE TO SOMETHING BETTER.
-                    if (closestFood.TryGetComponent(out AnimalController a))
+                    if (closestFood.TryGetComponent(out AnimalController _))
                     {
                         Vector3 diffVec = (pointToRunTo - animal.transform.position).normalized;
                         pointToRunTo = pointToRunTo + diffVec * 3f;
@@ -86,9 +86,9 @@ namespace AnimalsV2.States
                     NavigationUtilities.NavigateToPoint(animal, pointToRunTo);
                     
                     
-                    if (Vector3.Distance(animal.transform.position, closestFood.transform.position) <=
-                    animal.agent.stoppingDistance + 0.3)
-                    {
+                    Vector3 a = new Vector3(animal.transform.position.x, 0, animal.transform.position.z);
+                    Vector3 b = new Vector3(closestFood.transform.position.x, 0, closestFood.transform.position.z);
+                    if(Vector3.Distance(a, b) <= animal.agent.stoppingDistance + 0.5f){
                         animal.eatingState.SetTarget(closestFood);
                         finiteStateMachine.ChangeState(animal.eatingState);
                     }

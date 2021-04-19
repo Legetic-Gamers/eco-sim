@@ -9,6 +9,7 @@ using System.Linq;
 using AnimalsV2.States;
 using AnimalsV2.States.AnimalsV2.States;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 using static AnimalsV2.Priorities;
 using Random = UnityEngine.Random;
 
@@ -24,6 +25,11 @@ namespace AnimalsV2
 
 
         public void Start()
+        {
+            Init();
+        }
+
+        public void Init()
         {
             animalController = GetComponent<AnimalController>();
             fsm = animalController.fsm;
@@ -190,7 +196,7 @@ namespace AnimalsV2
         private void HandleDeath(AnimalController animalController, bool gotEaten)
         {
             //Debug.Log("You dead!");
-            //ChangeState(animalController.deadState);
+            ChangeState(animalController.deadState);
         }
     }
 }

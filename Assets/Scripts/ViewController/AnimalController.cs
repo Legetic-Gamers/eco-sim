@@ -146,9 +146,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
 
         if (gameObject.TryGetComponent(out DecisionMaker dm))
         {
-            dm.fsm = fsm;
-            dm.animalModel = animalModel;
-            Debug.Log("Got it");
+            dm.Init();
         }
         
         // Init the NavMesh agent
