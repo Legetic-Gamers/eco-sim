@@ -86,7 +86,7 @@ namespace ViewController
                 float rz = Random.Range(-10f, 10f);
                 // chance of reproducing every 2 seconds if age and size restrictions are met.
                 //if (plantModel.nutritionValue > 15 && !plantModel.isEaten && r > 0.95) 
-                if (plantModel.plantAge > 15 && plantModel.nutritionValue > 20 && !plantModel.isEaten && r > 0.95)
+                if (plantModel.plantAge > 15 && plantModel.nutritionValue > 30 && !plantModel.isEaten && r > 0.95)
                 {
                     float height = 0;
                     bool isHit = false;

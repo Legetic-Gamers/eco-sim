@@ -283,7 +283,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     public virtual void UpdateParameters()
     {
         //The age will increase 2 per 2 seconds.
-        animalModel.age += 0.2f;
+        animalModel.age += 0.25f;
 
         // speed
         animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier;
@@ -298,11 +298,11 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
                                      * animalModel.traits.size * energyModifier;
 
         // hydration
-        animalModel.currentHydration -= (animalModel.traits.size / 10) * (1 + animalModel.currentSpeed / animalModel.traits.endurance *
+        animalModel.currentHydration -= (animalModel.traits.size / 2.5f) * (1 + animalModel.currentSpeed / animalModel.traits.endurance *
                                          hydrationModifier);
         
         // reproductive urge
-        animalModel.reproductiveUrge += 0.01f * reproductiveUrgeModifier;
+        animalModel.reproductiveUrge += 0.02f * reproductiveUrgeModifier;
         agent.acceleration = baseAcceleration * Time.timeScale;
         agent.angularSpeed = baseAngularSpeed * Time.timeScale;
     }
