@@ -15,7 +15,7 @@ namespace Model
         
         public PlantModel(float nutritionValue)
         {
-            nutritionValue = nutritionValue;
+            this.nutritionValue = nutritionValue;
         }
 
         public PlantModel()

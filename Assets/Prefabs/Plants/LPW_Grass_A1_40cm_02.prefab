@@ -41,8 +41,8 @@ GameObject:
   - component: {fileID: 5707813131339434805}
   - component: {fileID: 5707813131342334741}
   - component: {fileID: 5707813131341334997}
-  - component: {fileID: -7758512039907303201}
   - component: {fileID: 737246947}
+  - component: {fileID: 1793534949908345020}
   m_Layer: 8
   m_Name: LPW_Grass_A1_40cm_02
   m_TagString: Plant
@@ -114,19 +114,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &-7758512039907303201
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5707813131339405077}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 51d4a3e797174bb2a5f88de66a8f8da3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  centerTransform: {fileID: 6895614413006411862}
 --- !u!65 &737246947
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -140,3 +127,16 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.18157633, y: 0.39108574, z: 0.20932758}
   m_Center: {x: 0.06822165, y: 0.1910747, z: -0.042280603}
+--- !u!114 &1793534949908345020
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5707813131339405077}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72df326110bf4bbcb3794b3276daf57d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  centerTransform: {fileID: 6895614413006411862}
