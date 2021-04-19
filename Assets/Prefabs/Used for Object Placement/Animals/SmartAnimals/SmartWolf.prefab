@@ -3892,7 +3892,7 @@ NavMeshAgent:
   m_Height: 1.7
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 1
 --- !u!114 &2443608263682274250
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3907,6 +3907,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   parameterUI: {fileID: 5678236449309674315}
   tickEventPublisher: {fileID: 0}
+  startVector: {x: 0, y: 0, z: 0}
   agent: {fileID: 0}
   energyModifier: 0
   hydrationModifier: 0
@@ -4070,6 +4071,7 @@ MonoBehaviour:
   obstacleMask:
     serializedVersion: 2
     m_Bits: 3072
+  useConstantTickInterval: 0
 --- !u!114 &6526752046021234922
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4082,7 +4084,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0795e2e31cde64428dc997f642c4648, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  showNavMeshAgentPath: 0
+  showNavMeshAgentPath: 1
   allowNavigateWithClick: 0
   showVisibleTargets: 1
   showFleeingVector: 1
