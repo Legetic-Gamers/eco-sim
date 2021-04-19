@@ -73,6 +73,7 @@ namespace AnimalsV2.States
         {
             
             // Wait a while then drink, change state and resume walking
+            // yield return new WaitForSeconds(1/Time.timeScale);
             yield return new WaitForSeconds(1/Time.timeScale);
 
             

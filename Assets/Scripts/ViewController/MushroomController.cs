@@ -94,7 +94,6 @@ public class MushroomController : PlantController
             plantModel.isEaten = false;
             plantModel.isRegrowing = false;
         }
-        Debug.Log("Returning from GetEaten()");
         return plantModel.GetEaten();
     }
     

@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections;
-
 using UnityEngine;
 
 namespace AnimalsV2.States
@@ -20,7 +19,6 @@ namespace AnimalsV2.States
         public MatingState(AnimalController animalController, FiniteStateMachine finiteStateMachine) : base(
             animalController, finiteStateMachine)
         {
-            
         }
 
         public override void Enter()
@@ -49,6 +47,7 @@ namespace AnimalsV2.States
             {
                 animal.agent.isStopped = false;
             }
+
             animal.StopCoroutine(Mate());
         }
 
@@ -57,6 +56,24 @@ namespace AnimalsV2.States
             base.LogicUpdate();
         }
 
+        // private void rotateToMate(Transform target)
+        // {
+        //     RaycastHit hit;
+        //     Vector3 direction = target.position - animal.transform.position;
+        //     Quaternion targetRotation = transform.rotation;
+        //
+        //
+        //     Quaternion surfaceRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
+        //     targetRotation = surfaceRotation * transform.rotation;
+        //     //Dont rotate around Z.
+        //     targetRotation = Quaternion.Euler(targetRotation.eulerAngles.x, targetRotation.eulerAngles.y, 0);
+        //
+        //
+        //     transform.GetChild(0).rotation =
+        //         Quaternion.Lerp(transform.GetChild(0).rotation, targetRotation, 2 * Time.deltaTime);
+        // }
+
+
         public void SetTarget(GameObject target)
         {
             this.target = target;
@@ -64,19 +81,17 @@ namespace AnimalsV2.States
 
         public IEnumerator Mate()
         {
-
             if (target.TryGetComponent(out AnimalController targetAnimalController))
             {
                 //Stop target
-                targetAnimalController.waitingState.SetWaitTime(targetAnimalController.matingState.matingTime);
+                targetAnimalController.waitingState.SetWaitTime(matingTime);
                 targetAnimalController.fsm.ChangeState(targetAnimalController.waitingState);
 
 
                 // Wait a while then change state and resume walking
-                yield return new WaitForSeconds(matingTime/Time.timeScale);
+                yield return new WaitForSeconds(matingTime / Time.timeScale);
                 onMate?.Invoke(target);
-                Debug.Log("Succesfully mated.");
-
+                //Debug.Log("Succesfully mated.");
             }
 
             finiteStateMachine.GoToDefaultState();
@@ -93,18 +108,16 @@ namespace AnimalsV2.States
         {
             return "Mating";
         }
-        
+
         public override bool MeetRequirements()
         {
             if (!animal.animalModel.WantingOffspring || !animal.animalModel.IsAlive) return false;
-            
-            return target != null  && target.TryGetComponent(out AnimalController potentialMateAnimalController) &&
-                   potentialMateAnimalController.animalModel.WantingOffspring &&
-                   potentialMateAnimalController.animalModel.IsAlive && !(potentialMateAnimalController.fsm.currentState is MatingState) && !(potentialMateAnimalController.fsm.currentState is Waiting);
-        }
 
-        
-        
-        
+            return target != null && target.TryGetComponent(out AnimalController potentialMateAnimalController) &&
+                   potentialMateAnimalController.animalModel.WantingOffspring &&
+                   potentialMateAnimalController.animalModel.IsAlive &&
+                   !(potentialMateAnimalController.fsm.currentState is MatingState) &&
+                   !(potentialMateAnimalController.fsm.currentState is Waiting);
+        }
     }
 }
