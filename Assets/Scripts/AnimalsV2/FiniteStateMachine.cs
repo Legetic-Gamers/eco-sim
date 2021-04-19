@@ -35,6 +35,7 @@ namespace AnimalsV2
         /// <param name="startingState"> State to start in (Idle) </param>
         public void Initialize(State startingState)
         {
+            absorbingState = false;
             defaultState = startingState;
             ForceDefaultState();
         }

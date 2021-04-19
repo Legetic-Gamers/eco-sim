@@ -67,7 +67,7 @@ namespace AnimalsV2.States
                     // }
 
 
-                    if (Vector3.Distance(animal.transform.position, foundMate.transform.position) <= animal.agent.stoppingDistance + 0.5f)
+                    if (Vector3.Distance(animal.transform.position, foundMate.transform.position) <= animal.agent.stoppingDistance + 1f)
                     {
                         animal.matingState.SetTarget(foundMate);
                         //Try to change state, else go to default state

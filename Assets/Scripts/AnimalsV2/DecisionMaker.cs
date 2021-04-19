@@ -18,9 +18,9 @@ namespace AnimalsV2
     {
         //TODO REDUCE DEPENDENCIES.
         private AnimalController animalController;
-        private AnimalModel animalModel;
+        public AnimalModel animalModel;
         private TickEventPublisher eventPublisher;
-        private FiniteStateMachine fsm;
+        public FiniteStateMachine fsm;
 
 
         public void Start()

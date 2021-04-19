@@ -11,7 +11,7 @@ namespace Model
         public bool isRegrowing;
 
         public const float plantMaxAge = 60;
-        public const float plantMaxsize = 40;
+        public const float plantMaxsize = 50;
         
         public PlantModel(float nutritionValue)
         {
