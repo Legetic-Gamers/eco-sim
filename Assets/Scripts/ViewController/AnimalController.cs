@@ -9,6 +9,7 @@ using Model;
 using UnityEngine;
 using UnityEngine.AI;
 using ViewController;
+using ViewController.Senses;
 using Debug = UnityEngine.Debug;
 using Random = System.Random;
 using UnityRandom = UnityEngine.Random;
@@ -165,6 +166,13 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         SetPhenotype();
         startVector = transform.position;
         StartCoroutine(UpdateStatesLogicLoop());
+        
+        //We need to restart sense again.
+
+        if (TryGetComponent(out Senses s))
+        {
+            s.Init();
+        }
     }
     
     private IEnumerator UpdateStatesLogicLoop()

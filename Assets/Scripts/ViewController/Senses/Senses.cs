@@ -184,6 +184,11 @@ namespace ViewController.Senses
         /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
         private void Start()
         {
+            Init();
+        }
+
+        public void Init()
+        {
 
             animalController = GetComponent<AnimalController>();
             
