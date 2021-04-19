@@ -188,8 +188,7 @@ public class DumbAgent : Agent, IAgent
         float reward = animalModel.traits.maxHydration - currentHydration;
         // normalize reward as a percentage
         reward /= animalModel.traits.maxHydration;
-        //AddReward(reward * 0.1f);
-        AddReward(0.1f);
+        AddReward((1 - reward) * 0.1f);
     }
 
     //The reason to why I have curentEnergy as an in-parameter is because currentEnergy is updated through EatFood before reward gets computed in AnimalMovementBrain
@@ -217,9 +216,7 @@ public class DumbAgent : Agent, IAgent
             reward = Math.Min(nutritionReward, hunger);
             reward /= animalModel.traits.maxEnergy;
         }
-
-        //AddReward(reward * 0.1f);
-        AddReward(0.1f);
+        AddReward((1 - reward) * 0.1f);
     }
     
     private void HandleMate(GameObject obj)
