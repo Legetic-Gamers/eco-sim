@@ -19,7 +19,7 @@ namespace Menus
         
         void Awake()
         {
-            alwaysShowParameterUI = false;
+            alwaysShowParameterUI = true;
         }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]

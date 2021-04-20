@@ -529,15 +529,18 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     {
         if (!animalModel.IsAlive)
         {
-            EventUnsubscribe();
-            StopAllCoroutines();
-            if (TryGetComponent(out Senses s))
+            if (FindObjectOfType<ObjectPooler>())
             {
-                s.StopAllCoroutines();
-            }
-            if (TryGetComponent(out DecisionMaker dm))
-            {
-                dm.StopAllCoroutines();
+                EventUnsubscribe();
+                StopAllCoroutines();
+                if (TryGetComponent(out Senses s))
+                {
+                    s.StopAllCoroutines();
+                }
+                if (TryGetComponent(out DecisionMaker dm))
+                {
+                    dm.StopAllCoroutines();
+                }    
             }
             fsm.ChangeState(deadState);
         }

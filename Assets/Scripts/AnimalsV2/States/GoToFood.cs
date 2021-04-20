@@ -83,10 +83,12 @@ namespace AnimalsV2.States
 
                     //Move the animal using the navmeshagent.
                     NavigationUtilities.NavigateToPoint(animal, pointToRunTo);
-                    
-                    
-                    if (Vector3.Distance(animal.transform.position, closestFood.transform.position) <=
-                    animal.agent.stoppingDistance + 0.3)
+
+                    Vector3 a = new Vector3(animal.transform.position.x, 0, animal.transform.position.z);
+                    Vector3 b = new Vector3(closestFood.transform.position.x, 0, closestFood.transform.position.z);
+
+
+                    if (Vector3.Distance(a, b) <= animal.agent.stoppingDistance + 0.75)
                     {
                         animal.eatingState.SetTarget(closestFood);
                         finiteStateMachine.ChangeState(animal.eatingState);

@@ -81,11 +81,17 @@ namespace Menus
             if (!isEnded)
             {
                 isEnded = true;
-                //make sure pause menu is inactive
-                pauseMenu.SetActive(false);
-                endMenu.SetActive(true);
-                Time.timeScale = 0f;    
+                Time.timeScale = 0f;
+                StartCoroutine(DelayEndPopUp());
             }
+        }
+
+        IEnumerator DelayEndPopUp()
+        {
+            yield return new WaitForSeconds(2f);
+            //make sure pause menu is inactive
+            pauseMenu.SetActive(false);
+            endMenu.SetActive(true);
         }
 
         public void Restart()
