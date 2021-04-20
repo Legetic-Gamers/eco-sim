@@ -175,7 +175,7 @@ namespace ViewController.Senses
         private void HandlePlantTarget(GameObject target)
         {
             PlantController targetPlantController = target.GetComponent<PlantController>();
-            if (animalController.animalModel.CanEat(targetPlantController.plantModel))
+            if (animalController.animalModel.CanEat(targetPlantController.plantModel) && !targetPlantController.plantModel.isRegrowing)
             {
                 animalController.visibleFoodTargets.Add(target);
             }

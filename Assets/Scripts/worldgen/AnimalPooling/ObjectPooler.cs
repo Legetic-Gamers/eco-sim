@@ -292,7 +292,7 @@ public class ObjectPooler : MonoBehaviour
         if (newPlant != null)
         {
             PlantController plantModel = newPlant.GetComponent<PlantController>();
-            plantModel.plantModel.isEaten = false;
+            plantModel.plantModel.isRegrowing = false;
             plantModel.plantModel.plantAge = 0;
             plantModel.plantModel.nutritionValue = 0;
             dh.LogNewPlant();

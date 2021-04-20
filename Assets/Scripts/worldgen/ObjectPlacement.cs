@@ -15,7 +15,7 @@ public class ObjectPlacement : MonoBehaviour
     public List<GameObject> groups;
     public SimulationSettings simulationSettings;
     int size;
-    private List<string> pooledObjects = new List<string> { "Rabbit Brown", "Wolf Grey", "Deer", "Bear", "SmartRabbit", "SmartWolf", "SmartDeer", "SmartBear", "SmartSteeringRabbit" };
+    private List<string> pooledObjects = new List<string> { "Rabbit Brown", "Wolf Grey", "Deer", "Bear", "SmartRabbit", "SmartWolf", "SmartDeer", "SmartBear", "SmartSteeringRabbit", "Food" };
 
     public void Awake()
     {
@@ -109,6 +109,7 @@ public class ObjectPlacement : MonoBehaviour
                             }
 
                             var animalName = objectType.GameObjectSettings[randomIndex].GameObject.name;
+
                             //Indirect logs animal as instantiated in collector
                             if (pooledObjects.IndexOf(animalName) != -1) ObjectPooler.Instance?.HandleAnimalInstantiated(gameObject, animalName);
                             if (animalName.Equals("Food")) ObjectPooler.Instance?.HandleFoodInstantiated(gameObject, animalName);
