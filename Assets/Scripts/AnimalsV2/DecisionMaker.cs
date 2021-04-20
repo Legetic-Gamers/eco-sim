@@ -22,7 +22,8 @@ namespace AnimalsV2
         public AnimalModel animalModel;
         private TickEventPublisher eventPublisher;
         public FiniteStateMachine fsm;
-
+        
+        private List<Priorities> prio = new List<Priorities>();
 
         public void Start()
         {
@@ -63,7 +64,7 @@ namespace AnimalsV2
         /// </summary>
         private void Prioritize()
         {
-            List<Priorities> prio = new List<Priorities>();
+            prio.Clear();
 
 
             if (!animalModel.HighHydration && !animalModel.HighEnergy)

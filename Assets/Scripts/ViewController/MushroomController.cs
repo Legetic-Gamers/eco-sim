@@ -55,6 +55,8 @@ public class MushroomController : PlantController
             plantModel.nutritionValue = PlantModel.plantMaxsize;
             SetPhenotype();
         }
+        if(plantModel.plantAge > PlantModel.plantMaxAge) HandleDeathStatus();
+        
         else plantModel.nutritionValue += 3f;
 
         float r = Random.Range(0, 1f);
@@ -136,7 +138,6 @@ public class MushroomController : PlantController
         while (true)
         {
             yield return new WaitForSeconds(Random.Range(1f, 1.5f));
-            HandleDeathStatus();
             Grow();
         }
     }

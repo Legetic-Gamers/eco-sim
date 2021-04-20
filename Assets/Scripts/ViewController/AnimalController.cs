@@ -284,7 +284,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     protected void MediumEnergyState()
     {
         energyModifier = 0.35f;
-        hydrationModifier = 0.5f;
+        hydrationModifier = 0.4f;
         reproductiveUrgeModifier = 1f;
         speedModifier = JoggingSpeed;
     }
@@ -292,7 +292,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     protected void LowEnergyState()
     {
         energyModifier = 0.15f;
-        hydrationModifier = 0.25f;
+        hydrationModifier = 0.15f;
         reproductiveUrgeModifier = 1.5f;
         speedModifier = WalkingSpeed;
     }
@@ -531,6 +531,14 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         {
             EventUnsubscribe();
             StopAllCoroutines();
+            if (TryGetComponent(out Senses s))
+            {
+                s.StopAllCoroutines();
+            }
+            if (TryGetComponent(out DecisionMaker dm))
+            {
+                dm.StopAllCoroutines();
+            }
             fsm.ChangeState(deadState);
         }
     }
