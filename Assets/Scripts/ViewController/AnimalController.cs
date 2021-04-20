@@ -143,6 +143,12 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     public virtual void onObjectSpawn()
     {
         animationController = new AnimationController(this);
+
+        if (gameObject.TryGetComponent(out DecisionMaker dm))
+        {
+            dm.Init();
+        }
+        
         // Init the NavMesh agent
         agent.autoBraking = true;
         animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
@@ -278,7 +284,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     protected void MediumEnergyState()
     {
         energyModifier = 0.35f;
-        hydrationModifier = 0.5f;
+        hydrationModifier = 0.4f;
         reproductiveUrgeModifier = 1f;
         speedModifier = JoggingSpeed;
     }
@@ -286,7 +292,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     protected void LowEnergyState()
     {
         energyModifier = 0.15f;
-        hydrationModifier = 0.25f;
+        hydrationModifier = 0.15f;
         reproductiveUrgeModifier = 1.5f;
         speedModifier = WalkingSpeed;
     }
@@ -294,7 +300,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     public virtual void UpdateParameters()
     {
         //The age will increase 2 per 2 seconds.
-        animalModel.age += 0.25f;
+        animalModel.age += 0.2f;
 
         // speed
         animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier;
@@ -304,7 +310,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         }
 
         // energy
-        animalModel.currentEnergy -= (animalModel.age / 20 + animalModel.currentSpeed +
+        animalModel.currentEnergy -= (animalModel.age / 20 + animalModel.currentSpeed / 10 +
                                       animalModel.traits.viewRadius / 10 + animalModel.traits.hearingRadius / 10)
                                      * animalModel.traits.size * energyModifier;
 
@@ -477,10 +483,10 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
 
 
             // Expend energy and give it to child(ren)
-            animalModel.currentEnergy *= 0.7f;
-            targetAnimalController.animalModel.currentEnergy *= 0.7f;
-            animalModel.currentHydration *= 0.7f;
-            targetAnimalController.animalModel.currentHydration *= 0.7f;
+            animalModel.currentEnergy *= 0.9f;
+            targetAnimalController.animalModel.currentEnergy *= 0.9f;
+            animalModel.currentHydration *= 0.9f;
+            targetAnimalController.animalModel.currentHydration *= 0.9f;
 
             // Reset both reproductive urges. 
             animalModel.reproductiveUrge = 0f;
@@ -523,6 +529,16 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     {
         if (!animalModel.IsAlive)
         {
+            EventUnsubscribe();
+            StopAllCoroutines();
+            if (TryGetComponent(out Senses s))
+            {
+                s.StopAllCoroutines();
+            }
+            if (TryGetComponent(out DecisionMaker dm))
+            {
+                dm.StopAllCoroutines();
+            }
             fsm.ChangeState(deadState);
         }
     }

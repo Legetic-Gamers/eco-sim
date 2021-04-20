@@ -9,6 +9,7 @@ using System.Linq;
 using AnimalsV2.States;
 using AnimalsV2.States.AnimalsV2.States;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 using static AnimalsV2.Priorities;
 using Random = UnityEngine.Random;
 
@@ -18,12 +19,18 @@ namespace AnimalsV2
     {
         //TODO REDUCE DEPENDENCIES.
         private AnimalController animalController;
-        private AnimalModel animalModel;
+        public AnimalModel animalModel;
         private TickEventPublisher eventPublisher;
-        private FiniteStateMachine fsm;
-
+        public FiniteStateMachine fsm;
+        
+        private List<Priorities> prio = new List<Priorities>();
 
         public void Start()
+        {
+            Init();
+        }
+
+        public void Init()
         {
             animalController = GetComponent<AnimalController>();
             fsm = animalController.fsm;
@@ -57,7 +64,7 @@ namespace AnimalsV2
         /// </summary>
         private void Prioritize()
         {
-            List<Priorities> prio = new List<Priorities>();
+            prio.Clear();
 
 
             if (!animalModel.HighHydration && !animalModel.HighEnergy)
@@ -190,7 +197,7 @@ namespace AnimalsV2
         private void HandleDeath(AnimalController animalController, bool gotEaten)
         {
             //Debug.Log("You dead!");
-            //ChangeState(animalController.deadState);
+            ChangeState(animalController.deadState);
         }
     }
 }

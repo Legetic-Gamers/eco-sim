@@ -48,7 +48,7 @@ namespace AnimalsV2.States
                 if (foundMate != null && animal.agent.isActiveAndEnabled)
                 {
                     Vector3 pointToRunTo = foundMate.transform.position;
-                    
+
                     // if(foundMate.TryGetComponent(out AnimalController otherAnimalController))
                     // {
                     //     if (otherAnimalController.fsm.currentState is Wander)
@@ -57,8 +57,8 @@ namespace AnimalsV2.States
                     //     }
                     // }
                     //Move the animal using the navmeshagent.
-                    NavigationUtilities.NavigateToPoint(animal,pointToRunTo);
-                    
+                    NavigationUtilities.NavigateToPoint(animal, pointToRunTo);
+
                     //Stop the other rabbit
                     // if (foundMate.TryGetComponent(out AnimalController targetAnimalController))
                     // {
@@ -67,7 +67,9 @@ namespace AnimalsV2.States
                     // }
 
 
-                    if (Vector3.Distance(animal.transform.position, foundMate.transform.position) <= animal.agent.stoppingDistance + 0.5f)
+                    Vector3 a = new Vector3(animal.transform.position.x, 0, animal.transform.position.z);
+                    Vector3 b = new Vector3(foundMate.transform.position.x, 0, foundMate.transform.position.z);
+                    if (Vector3.Distance(a, b) <= animal.agent.stoppingDistance + 1.2f)
                     {
                         animal.matingState.SetTarget(foundMate);
                         //Try to change state, else go to default state
@@ -75,10 +77,9 @@ namespace AnimalsV2.States
                         {
                             finiteStateMachine.GoToDefaultState();
                         }
-                        
-                    }    
+
+                    }
                 }
-                
             }
             else
             {

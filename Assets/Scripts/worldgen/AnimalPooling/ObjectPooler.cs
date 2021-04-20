@@ -155,7 +155,7 @@ public class ObjectPooler : MonoBehaviour
         else if (am.currentHealth <= 0) cause = AnimalModel.CauseOfDeath.Health;
         else cause = AnimalModel.CauseOfDeath.Eaten;
         
-        yield return new WaitForSeconds(delay);
+        yield return new WaitForSeconds(delay / Time.timeScale);
         if (animalController != null)
         {
             GameObject animalObj;
@@ -166,7 +166,7 @@ public class ObjectPooler : MonoBehaviour
             //Debug.Log(animalObj.name.Replace("(Clone)", "").Trim());
             
             poolDictionary[animalObj.name.Replace("(Clone)", "").Trim()].Enqueue(animalObj);
-        } else Debug.Log("Controller null");
+        } 
         
     }
 

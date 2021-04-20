@@ -55,6 +55,8 @@ public class MushroomController : PlantController
             plantModel.nutritionValue = PlantModel.plantMaxsize;
             SetPhenotype();
         }
+        if(plantModel.plantAge > PlantModel.plantMaxAge) HandleDeathStatus();
+        
         else plantModel.nutritionValue += 3f;
 
         float r = Random.Range(0, 1f);
@@ -102,7 +104,7 @@ public class MushroomController : PlantController
         meshRenderer.enabled = false;
         capsuleCollider.enabled = false;
         dh.LogDeadPlant();
-        yield return new WaitForSeconds(10f);
+        yield return new WaitForSeconds(10f / Time.timeScale);
         meshRenderer.enabled = true;
         capsuleCollider.enabled = true;
         dh.LogNewPlant();
@@ -135,8 +137,7 @@ public class MushroomController : PlantController
     {
         while (true)
         {
-            yield return new WaitForSeconds(Random.Range(1f, 2f));
-            HandleDeathStatus();
+            yield return new WaitForSeconds(Random.Range(1f, 1.5f));
             Grow();
         }
     }
