@@ -12,6 +12,7 @@ public class OrbitCameraController : MonoBehaviour
     public new Camera camera;
 
     public Transform followTransform;
+    public AnimalController animalController;
 
     public MeshRenderer boundsOfWorld;
     public bool restrictToBounds;
@@ -324,15 +325,14 @@ public class OrbitCameraController : MonoBehaviour
         }
         
         if (!restrictToBounds) return;
-        float bump = 1.5f;
         if (newPosition.x < -boundsOfWorld.bounds.size.x / 2.0f)
-            newPosition = new Vector3(bump -boundsOfWorld.bounds.size.x / 2.0f, newPosition.y, newPosition.z);
+            newPosition = new Vector3(HitThreshold -boundsOfWorld.bounds.size.x / 2.0f, newPosition.y, newPosition.z);
         else if (newPosition.x > boundsOfWorld.bounds.size.x / 2.0f)
-            newPosition = new Vector3(-bump + boundsOfWorld.bounds.size.x / 2.0f, newPosition.y, newPosition.z);
+            newPosition = new Vector3(-HitThreshold + boundsOfWorld.bounds.size.x / 2.0f, newPosition.y, newPosition.z);
             
         if (newPosition.z < -boundsOfWorld.bounds.size.z / 2.0f)
-            newPosition = new Vector3(newPosition.x, newPosition.y, bump -boundsOfWorld.bounds.size.z / 2.0f);
+            newPosition = new Vector3(newPosition.x, newPosition.y, HitThreshold -boundsOfWorld.bounds.size.z / 2.0f);
         else if (newPosition.z > boundsOfWorld.bounds.size.z / 2.0f)
-            newPosition = new Vector3(newPosition.x, newPosition.y, -bump + boundsOfWorld.bounds.size.z / 2.0f);
+            newPosition = new Vector3(newPosition.x, newPosition.y, -HitThreshold + boundsOfWorld.bounds.size.z / 2.0f);
     }
 }
