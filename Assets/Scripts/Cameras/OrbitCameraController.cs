@@ -12,6 +12,7 @@ public class OrbitCameraController : MonoBehaviour
     public new Camera camera;
 
     public Transform followTransform;
+    public AnimalController animalController;
 
     public MeshRenderer boundsOfWorld;
     public bool restrictToBounds;
@@ -169,7 +170,6 @@ public class OrbitCameraController : MonoBehaviour
 
                 if (hitError < HitThreshold)
                 {
-                    // jeebus
                     // https://stackoverflow.com/questions/1211212/how-to-calculate-an-angle-from-three-points
                     var b = Mathf.Sqrt(Mathf.Pow(cameraRigPos.x - cameraWorldPos.x, 2) + Mathf.Pow(cameraRigPos.z - cameraWorldPos.z, 2));
                     var c = Mathf.Sqrt(Mathf.Pow(cameraWorldPos.x + diffVector.x, 2) + Mathf.Pow(cameraWorldPos.z + diffVector.z, 2));
@@ -211,8 +211,16 @@ public class OrbitCameraController : MonoBehaviour
                     newPosition = cameraRigPos + diffVector;
                 }
             }
-            // don't move on the y-axis
-            newPosition = new Vector3(newPosition.x, 0, newPosition.z);
+            // follow the terrain on the y-axis, except when following an animal
+            if (!followTransform)
+            {
+                var downRay = new Ray(cameraRigPos + new Vector3(0,50,0), Vector3.down);
+                if (Physics.Raycast(downRay, out hit, 100, collisionMask))
+                {
+                    newPosition = new Vector3(newPosition.x, hit.point.y, newPosition.z);
+                }
+                else newPosition = new Vector3(newPosition.x, 0, newPosition.z);
+            }
             // smoothing / set new position
             transform.position = Vector3.Lerp(cameraRigPos, newPosition, Time.deltaTime * movementTime);
         }
@@ -324,15 +332,14 @@ public class OrbitCameraController : MonoBehaviour
         }
         
         if (!restrictToBounds) return;
-        float bump = 1.5f;
         if (newPosition.x < -boundsOfWorld.bounds.size.x / 2.0f)
-            newPosition = new Vector3(bump -boundsOfWorld.bounds.size.x / 2.0f, newPosition.y, newPosition.z);
+            newPosition = new Vector3(HitThreshold -boundsOfWorld.bounds.size.x / 2.0f, newPosition.y, newPosition.z);
         else if (newPosition.x > boundsOfWorld.bounds.size.x / 2.0f)
-            newPosition = new Vector3(-bump + boundsOfWorld.bounds.size.x / 2.0f, newPosition.y, newPosition.z);
+            newPosition = new Vector3(-HitThreshold + boundsOfWorld.bounds.size.x / 2.0f, newPosition.y, newPosition.z);
             
         if (newPosition.z < -boundsOfWorld.bounds.size.z / 2.0f)
-            newPosition = new Vector3(newPosition.x, newPosition.y, bump -boundsOfWorld.bounds.size.z / 2.0f);
+            newPosition = new Vector3(newPosition.x, newPosition.y, HitThreshold -boundsOfWorld.bounds.size.z / 2.0f);
         else if (newPosition.z > boundsOfWorld.bounds.size.z / 2.0f)
-            newPosition = new Vector3(newPosition.x, newPosition.y, -bump + boundsOfWorld.bounds.size.z / 2.0f);
+            newPosition = new Vector3(newPosition.x, newPosition.y, -HitThreshold + boundsOfWorld.bounds.size.z / 2.0f);
     }
 }
