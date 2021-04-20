@@ -170,7 +170,6 @@ public class OrbitCameraController : MonoBehaviour
 
                 if (hitError < HitThreshold)
                 {
-                    // jeebus
                     // https://stackoverflow.com/questions/1211212/how-to-calculate-an-angle-from-three-points
                     var b = Mathf.Sqrt(Mathf.Pow(cameraRigPos.x - cameraWorldPos.x, 2) + Mathf.Pow(cameraRigPos.z - cameraWorldPos.z, 2));
                     var c = Mathf.Sqrt(Mathf.Pow(cameraWorldPos.x + diffVector.x, 2) + Mathf.Pow(cameraWorldPos.z + diffVector.z, 2));
@@ -212,8 +211,16 @@ public class OrbitCameraController : MonoBehaviour
                     newPosition = cameraRigPos + diffVector;
                 }
             }
-            // don't move on the y-axis
-            newPosition = new Vector3(newPosition.x, 0, newPosition.z);
+            // follow the terrain on the y-axis, except when following an animal
+            if (!followTransform)
+            {
+                var downRay = new Ray(cameraRigPos + new Vector3(0,50,0), Vector3.down);
+                if (Physics.Raycast(downRay, out hit, 100, collisionMask))
+                {
+                    newPosition = new Vector3(newPosition.x, hit.point.y, newPosition.z);
+                }
+                else newPosition = new Vector3(newPosition.x, 0, newPosition.z);
+            }
             // smoothing / set new position
             transform.position = Vector3.Lerp(cameraRigPos, newPosition, Time.deltaTime * movementTime);
         }
