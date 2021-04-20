@@ -8,9 +8,6 @@ using Random = UnityEngine.Random;
 
 public class MushroomController : PlantController
 {
-    
-    private TickEventPublisher tickEventPublisher;
-    
     public CapsuleCollider capsuleCollider;
     public MeshRenderer meshRenderer;
 
@@ -25,20 +22,12 @@ public class MushroomController : PlantController
 
     private void EventSubscribe()
     {
-        if (tickEventPublisher)
-        {
-            tickEventPublisher.onParamTickEvent += HandleDeathStatus;  
-            tickEventPublisher.onParamTickEvent += Grow;  
-        }
+        
     }
     
     private void EventUnSubscribe()
     {
-        if (tickEventPublisher)
-        {
-            tickEventPublisher.onParamTickEvent -= HandleDeathStatus;  
-            tickEventPublisher.onParamTickEvent -= Grow;  
-        }
+        
     }
     
     private void SetPhenotype()
@@ -89,8 +78,9 @@ public class MushroomController : PlantController
     
     public override float GetEaten()
     {
-        if (plantModel.isEaten && gameObject.activeInHierarchy && !plantModel.isRegrowing)
+        if (gameObject.activeInHierarchy && !plantModel.isRegrowing)
         {
+            plantModel.isEaten = true;
             plantModel.isRegrowing = true;
             StartCoroutine(Regrow());
             plantModel.isEaten = false;
@@ -122,22 +112,21 @@ public class MushroomController : PlantController
     
     public override void onObjectSpawn()
     {
-        tickEventPublisher = FindObjectOfType<TickEventPublisher>();
+        plantModel = new PlantModel();
+        
         dh = FindObjectOfType<DataHandler>();
         dh?.LogNewPlant();
         
         EventSubscribe();
         
         StartCoroutine(PlantControllerUpdate());
-        
-        plantModel = new PlantModel();
     }
     
     private IEnumerator PlantControllerUpdate()
     {
         while (true)
         {
-            yield return new WaitForSeconds(Random.Range(1f, 1.5f));
+            yield return new WaitForSeconds(Random.Range(1f, 1.5f)/Time.timeScale);
             Grow();
         }
     }

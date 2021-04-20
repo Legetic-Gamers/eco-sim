@@ -36,7 +36,6 @@ namespace AnimalsV2.States
                 currentStateAnimation = StateAnimation.Running;
                 //Dont slow down when chasing.
                 animal.agent.autoBraking = false;
-
             }
             
             //Make an update instantly
@@ -58,24 +57,27 @@ namespace AnimalsV2.States
         {
             base.LogicUpdate();
 
+            if (closestFood != null)
+            {
+                Vector3 a = new Vector3(animal.transform.position.x, 0, animal.transform.position.z);
+                Vector3 b = new Vector3(closestFood.transform.position.x, 0, closestFood.transform.position.z);
 
-            nearbyFood.Clear();
-            //Get all potential food
-            if (animal.visibleFoodTargets != null) // first list may be null
-                nearbyFood = nearbyFood.Concat(animal.visibleFoodTargets).ToList();
-            if (animal.heardPreyTargets != null) // second list may be null
-                nearbyFood = nearbyFood.Concat(animal.heardPreyTargets).ToList();
-            
+
+                if (Vector3.Distance(a, b) <= animal.agent.stoppingDistance + 0.75)
+                {
+                    animal.eatingState.SetTarget(closestFood);
+                    finiteStateMachine.ChangeState(animal.eatingState);
+                }   
+            }
+
             if (MeetRequirements())
             {
-                closestFood = NavigationUtilities.GetNearestObject(nearbyFood, animal.transform.position);
-                if (closestFood != null && animal.agent.isActiveAndEnabled)
+                if (animal.agent.isActiveAndEnabled)
                 {
 
                     Vector3 pointToRunTo = closestFood.transform.position;
                     
                     //Overshoot if we are chasing another animal.
-                    //TODO CHANGE TO SOMETHING BETTER.
                     if (closestFood.TryGetComponent(out NavMeshAgent otherAgent))
                     {
                         pointToRunTo = pointToRunTo + otherAgent.velocity;
@@ -84,17 +86,6 @@ namespace AnimalsV2.States
                     //Move the animal using the navmeshagent.
                     NavigationUtilities.NavigateToPoint(animal, pointToRunTo);
 
-                    Vector3 a = new Vector3(animal.transform.position.x, 0, animal.transform.position.z);
-                    Vector3 b = new Vector3(closestFood.transform.position.x, 0, closestFood.transform.position.z);
-
-
-                    if (Vector3.Distance(a, b) <= animal.agent.stoppingDistance + 0.75)
-                    {
-                        animal.eatingState.SetTarget(closestFood);
-                        finiteStateMachine.ChangeState(animal.eatingState);
-                    }
-                    
-                    
                 }else
                 {
                     finiteStateMachine.GoToDefaultState();
@@ -116,7 +107,7 @@ namespace AnimalsV2.States
 
         public override bool MeetRequirements()
         {
-            
+            nearbyFood.Clear();
             nearbyFood = animal.heardPreyTargets.Concat(animal.visibleFoodTargets).ToList();
             
 

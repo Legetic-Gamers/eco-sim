@@ -81,7 +81,7 @@ namespace Menus
             if (!isEnded)
             {
                 isEnded = true;
-                Time.timeScale = 0f;
+                Time.timeScale = 1f;
                 StartCoroutine(DelayEndPopUp());
             }
         }
@@ -92,6 +92,7 @@ namespace Menus
             //make sure pause menu is inactive
             pauseMenu.SetActive(false);
             endMenu.SetActive(true);
+            Time.timeScale = 0f;
         }
 
         public void Restart()

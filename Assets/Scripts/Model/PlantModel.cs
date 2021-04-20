@@ -28,8 +28,9 @@ namespace Model
        
         public float GetEaten()
         {
+            float tmp = 0;
             isEaten = true;
-            float tmp = nutritionValue;
+            tmp = nutritionValue;
             nutritionValue = 0;
             return tmp;
         }
