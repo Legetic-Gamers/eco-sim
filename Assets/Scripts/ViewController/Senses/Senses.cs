@@ -242,7 +242,7 @@ namespace ViewController.Senses
 
         private void OnDestroy()
         {
-            
+            StopAllCoroutines();
         }
     }
 }

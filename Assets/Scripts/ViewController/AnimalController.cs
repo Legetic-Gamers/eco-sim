@@ -523,7 +523,6 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     {
         if (!animalModel.IsAlive)
         {
-            EventUnsubscribe();
             fsm.ChangeState(deadState);
         }
     }

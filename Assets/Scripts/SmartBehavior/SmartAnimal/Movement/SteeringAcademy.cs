@@ -126,8 +126,8 @@ public class SteeringAcademy : MonoBehaviour
             
             animalModel.currentHealth = animalModel.traits.maxHealth;
 
-            animalModel.currentEnergy = 0.6f * animalModel.traits.maxEnergy;
-            animalModel.currentHydration = 0.6f * animalModel.traits.maxHydration;
+            animalModel.currentEnergy = 0.5f * animalModel.traits.maxEnergy;
+            animalModel.currentHydration = 0.5f * animalModel.traits.maxHydration;
             animalModel.reproductiveUrge = 0.2f;
             animalModel.age = 0;
             //Ugly solution to stop agent from entering dead animation and not resetting
