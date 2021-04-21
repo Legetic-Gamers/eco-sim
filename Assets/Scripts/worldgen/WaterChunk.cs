@@ -50,16 +50,19 @@ public class WaterChunk : MonoBehaviour
             stylizedObject.name = "Water Stylized";
             stylizedObject.transform.parent = waterObject.transform;
             stylizedObject.transform.localScale = collider.size;
+            var stylizedCollider = stylizedObject.AddComponent<BoxCollider>();
+            stylizedCollider.size = new Vector3(1, realWaterLevel, 1);
+            stylizedCollider.center -= new Vector3(0, 0.5f * realWaterLevel, 0);
 
             if (Application.isEditor)
             {
-                DestroyImmediate(stylizedObject.GetComponent<BoxCollider>());
+                DestroyImmediate(waterObject.GetComponent<BoxCollider>());
                 DestroyImmediate(waterObject.GetComponent<MeshRenderer>());
                 DestroyImmediate(waterObject.GetComponent<MeshFilter>());
             }
             else
             {
-                Destroy(stylizedObject.GetComponent<BoxCollider>());
+                Destroy(waterObject.GetComponent<BoxCollider>());
                 Destroy(waterObject.GetComponent<MeshRenderer>());
                 Destroy(waterObject.GetComponent<MeshFilter>());
             }
