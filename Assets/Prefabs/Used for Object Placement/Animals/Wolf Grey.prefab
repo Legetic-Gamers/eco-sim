@@ -2058,7 +2058,7 @@ GameObject:
   - component: {fileID: 1436649500468928932}
   - component: {fileID: 4662286151415663155}
   - component: {fileID: -3621604539398353252}
-  - component: {fileID: 2046909389592570941}
+  - component: {fileID: 1605038380450024778}
   m_Layer: 8
   m_Name: Wolf Grey
   m_TagString: Animal
@@ -2352,7 +2352,7 @@ LineRenderer:
     generateLightingData: 0
   m_UseWorldSpace: 1
   m_Loop: 0
---- !u!114 &2046909389592570941
+--- !u!114 &1605038380450024778
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2361,7 +2361,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4362939137640418624}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f5c745ce5edc4ccc85d4949f6f20d11d, type: 3}
+  m_Script: {fileID: 11500000, guid: 83f7b0fd8a5be3343b6635d2e91a2840, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   parameterUI: {fileID: 6028089216142816704}

@@ -157,7 +157,7 @@ public class MLRabbitSteeringController : AnimalController
     
     public override string GetObjectLabel()
     {
-        return "RabbitSteeringController";
+        return "MLSteeringRabbit";
     }
     
     

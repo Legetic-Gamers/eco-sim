@@ -5256,7 +5256,7 @@ GameObject:
   - component: {fileID: 2773130711886286214}
   - component: {fileID: 7234598156811670218}
   - component: {fileID: -5890278897349778856}
-  - component: {fileID: 4718578478402721281}
+  - component: {fileID: 5520464903123953793}
   m_Layer: 8
   m_Name: Deer
   m_TagString: Animal
@@ -5550,7 +5550,7 @@ LineRenderer:
     generateLightingData: 0
   m_UseWorldSpace: 1
   m_Loop: 0
---- !u!114 &4718578478402721281
+--- !u!114 &5520464903123953793
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -5559,7 +5559,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1567582185033856}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8bbc9d758f5141cab963c1f552b47cbd, type: 3}
+  m_Script: {fileID: 11500000, guid: 88de382ffe14e194aa20383352640f2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   parameterUI: {fileID: 7648655987314339766}

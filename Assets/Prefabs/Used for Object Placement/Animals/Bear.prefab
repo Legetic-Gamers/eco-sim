@@ -793,7 +793,7 @@ GameObject:
   - component: {fileID: 2783512026882503087}
   - component: {fileID: 6677636363384454888}
   - component: {fileID: -4386118196100813045}
-  - component: {fileID: 3260590641899837403}
+  - component: {fileID: 565654066241137368}
   m_Layer: 8
   m_Name: Bear
   m_TagString: Animal
@@ -1086,7 +1086,7 @@ LineRenderer:
     generateLightingData: 0
   m_UseWorldSpace: 1
   m_Loop: 0
---- !u!114 &3260590641899837403
+--- !u!114 &565654066241137368
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1095,7 +1095,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8012323441774472881}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1f3ae3463eb249c3bebdd7fa23331d48, type: 3}
+  m_Script: {fileID: 11500000, guid: 8f61a5d1bce1b8b4cbc2bd7ec9dba648, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   parameterUI: {fileID: 7887285860858495033}

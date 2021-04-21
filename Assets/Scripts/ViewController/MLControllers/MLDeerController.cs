@@ -5,7 +5,7 @@
     {
         public override string GetObjectLabel()
         {
-            return "MLDeerController";
+            return "MLDeer";
         }
     }
 }

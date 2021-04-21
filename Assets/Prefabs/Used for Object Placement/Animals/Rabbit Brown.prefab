@@ -2599,7 +2599,7 @@ GameObject:
   - component: {fileID: 5506011368490316984}
   - component: {fileID: 9185665264343821648}
   - component: {fileID: -2764591342635862510}
-  - component: {fileID: 2765273911921014811}
+  - component: {fileID: 4070453221509366237}
   m_Layer: 8
   m_Name: Rabbit Brown
   m_TagString: Animal
@@ -2794,7 +2794,7 @@ MonoBehaviour:
   showVisibleTargets: 1
   showFleeingVector: 0
   showPerceptionRange: 0
---- !u!114 &2765273911921014811
+--- !u!114 &4070453221509366237
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2803,7 +2803,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5945667779142240406}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f7b8f9aec18d40fbb16b465f01d80009, type: 3}
+  m_Script: {fileID: 11500000, guid: bdd6549df376c1a4b9199e25eb73a7a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   parameterUI: {fileID: 924811713546700150}
