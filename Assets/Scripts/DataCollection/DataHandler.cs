@@ -242,7 +242,7 @@ namespace DataCollection
             }
 
             sendList1 = tmplist;
-            _speciesNumberPopulation = speciesNumberBirthRate;
+            _speciesNumberBirthRate = speciesNumberBirthRate;
             _listNumber = 2;
             Display?.Invoke(sendList1, sendList2);
 
