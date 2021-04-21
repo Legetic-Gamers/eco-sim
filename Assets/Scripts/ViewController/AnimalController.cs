@@ -96,6 +96,8 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     
     public void Awake()
     {
+        animationController = new AnimationController(this);
+
         //Create the FSM.
         fsm = new FiniteStateMachine();
         
@@ -110,10 +112,13 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         eatingState = new EatingState(this, fsm);
         goToMate = new GoToMate(this, fsm);
         waitingState = new Waiting(this, fsm);
+        StateEventSubscribe();
+        
         
         agent = GetComponent<NavMeshAgent>();
         
         tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
+        
         
         if (eyesTransform == null)
         {
@@ -143,8 +148,6 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     /// </summary>
     public virtual void onObjectSpawn()
     {
-        animationController = new AnimationController(this);
-
         if (gameObject.TryGetComponent(out DecisionMaker dm))
         {
             dm.Init();
@@ -166,14 +169,12 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         //Set modifiers
         ChangeModifiers(wanderState);
         
-        EventSubscribe();
+        TickEventSubscribe();
         
         SetPhenotype();
         startVector = transform.position;
         StartCoroutine(UpdateStatesLogicLoop());
         
-        //We need to restart sense again.
-
         if (TryGetComponent(out Senses s))
         {
             s.Init();
@@ -324,65 +325,6 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         agent.acceleration = baseAcceleration * Time.timeScale;
         agent.angularSpeed = baseAngularSpeed * Time.timeScale;
     }
-
-
-    protected void EventSubscribe()
-    {
-        if (tickEventPublisher)
-        {
-            // every 2 sec
-            tickEventPublisher.onParamTickEvent += UpdateParameters;
-            tickEventPublisher.onParamTickEvent += CheckDeath;
-            // every 0.5 sec
-            //tickEventPublisher.onSenseTickEvent += fsm.UpdateStatesLogic;
-            
-        }
-
-        fsm.OnStateEnter += ChangeModifiers;
-
-        eatingState.onEatFood += EatFood;
-
-        drinkingState.onDrinkWater += DrinkWater;
-
-        //deadState.onDeath += HandleDeathStatus;
-
-        matingState.onMate += Mate;
-
-        animationController.EventSubscribe();
-    }
-
-    
-
-    protected void EventUnsubscribe()
-    {
-        if (tickEventPublisher)
-        {
-            // every 2 sec
-            tickEventPublisher.onParamTickEvent -= UpdateParameters;
-            tickEventPublisher.onParamTickEvent -= CheckDeath;
-            // every 0.5 sec
-            //tickEventPublisher.onSenseTickEvent -= fsm.UpdateStatesLogic;
-            
-        }
-
-
-        if (fsm != null)
-        {
-            fsm.OnStateEnter -= ChangeModifiers;
-        }
-
-        eatingState.onEatFood -= EatFood;
-
-        drinkingState.onDrinkWater -= DrinkWater;
-
-        deadState.onDeath -= HandleDeathStatus;
-        
-        matingState.onMate -= Mate;
-
-        animationController?.EventUnsubscribe();
-    }
-
-
     private void Update()
     {
         rotateToTerrain();
@@ -525,8 +467,9 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         {
             if (FindObjectOfType<ObjectPooler>())
             {
-                EventUnsubscribe();
+                TickEventUnsubscribe();
                 StopAllCoroutines();
+                
                 if (TryGetComponent(out Senses s))
                 {
                     s.StopAllCoroutines();
@@ -543,9 +486,45 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     public void OnDestroy()
     {
         StopAllCoroutines();
-        EventUnsubscribe();
+        StateEventUnSubscribe();
+    }
+    
+    protected void TickEventSubscribe()
+    {
+        if (tickEventPublisher)
+        {
+            tickEventPublisher.onParamTickEvent += UpdateParameters;
+            tickEventPublisher.onParamTickEvent += CheckDeath;
+
+        }
+    }
+    
+    protected void TickEventUnsubscribe()
+    {
+        if (tickEventPublisher)
+        {
+            tickEventPublisher.onParamTickEvent -= UpdateParameters;
+            tickEventPublisher.onParamTickEvent -= CheckDeath;
+        }
     }
 
+    private void StateEventSubscribe()
+    {
+        fsm.OnStateEnter += ChangeModifiers;
+        eatingState.onEatFood += EatFood;
+        drinkingState.onDrinkWater += DrinkWater;
+        matingState.onMate += Mate;
+        animationController.EventSubscribe();
+    }
+    private void StateEventUnSubscribe()
+    {
+        fsm.OnStateEnter -= ChangeModifiers;
+        eatingState.onEatFood -= EatFood;
+        drinkingState.onDrinkWater -= DrinkWater;
+        matingState.onMate -= Mate; 
+        animationController.EventUnsubscribe();
+    }
+    
     public abstract Vector3 getNormalizedScale();
     
 }

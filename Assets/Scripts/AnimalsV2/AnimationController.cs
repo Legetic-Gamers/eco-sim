@@ -22,7 +22,6 @@ namespace AnimalsV2
             //Get access to Animator to animate the animal.
             animator = this.animal.GetComponent<Animator>();
             animator.Play("Base Layer." + StateAnimation.Walking,0);
-            //Debug.Log("AnimationController listening to FSM");
         }
 
         public void EventSubscribe()
@@ -43,10 +42,10 @@ namespace AnimalsV2
         //Animation parameters which need updating on state enter.
         private void FSM_OnStateEnter(State state)
         {
-            //Debug.Log("Enter " + state.GetStateAnimation() +" Animation");
+            Debug.Log("Enter " + state.GetStateAnimation() +" Animation");
             
             //animator.SetFloat("runningSpeed",animal.animalModel.GetSpeedPercentage);
-            animator?.CrossFade("Base Layer." + state.GetStateAnimation(), transitionSpeed, 0);
+            animator.CrossFade("Base Layer." + state.GetStateAnimation(), transitionSpeed, 0);
         }
 
         //Animation parameters which need updating every frame

@@ -69,12 +69,7 @@ public class MushroomController : PlantController
             if (NavMesh.SamplePosition(newPosition, out hit, 1f,
                 1 << NavMesh.GetAreaFromName("Walkable")))
             {
-                Debug.Log("found position");
                 SpawnNewPlant?.Invoke(GetObjectLabel(),hit.position);
-            }
-            else
-            {
-                Debug.Log("Could not find position");
             }
 
         }
