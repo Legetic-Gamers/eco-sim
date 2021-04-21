@@ -7,9 +7,9 @@ public class RabbitModel : AnimalModel,IEdible
 {
     public float nutritionValue { get; set; }
 
-    public RabbitModel() : base(new Traits(1f, 100, 100, 
+    public RabbitModel() : base(new Traits(1f, 100, 50, 
                                     100, 6.65f, 5f, 
-                                    10,50, 10, 
+                                    10,30, 10, 
                                     160, 13, 7), 0)
 
     {

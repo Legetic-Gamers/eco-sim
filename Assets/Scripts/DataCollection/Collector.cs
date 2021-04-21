@@ -159,12 +159,16 @@ namespace DataCollection
             foodDelta = 0;
         }
         
+        
         /// <summary>
         /// Collect each animal model containing its traits. 
         /// </summary>
         /// <param name="am"> Animal Model containing traits.</param>
         public void CollectBirth(AnimalModel am)
         {
+            totalAnimalsAlive++;
+            
+
             int gen = am.generation;
 
             // Changes the referenced lists depending on the species of the animal. 
@@ -199,7 +203,7 @@ namespace DataCollection
             if (totalAnimalsAlivePerGeneration.Count <= gen) totalAnimalsAlivePerGeneration.Add(1);
             else totalAnimalsAlivePerGeneration[gen] += 1;
 
-            totalAnimalsAlive++;
+            
         }
 
         /// <summary>
@@ -237,6 +241,10 @@ namespace DataCollection
         /// <param name="distanceTravelled"> Distance travelled to log </param>
         public void CollectDeath(AnimalModel am, AnimalModel.CauseOfDeath cause, float distanceTravelled)
         {
+            totalAnimalsAlive--;
+            // Debug.Log("totalanimalsalive: " + totalAnimalsAlive);
+            if(totalAnimalsAlive <= 0) onAllExtinct?.Invoke();
+
             int gen = am.generation;
             
             for (int i = totalDeadAnimals.Count - 1; i <= gen; i++) totalDeadAnimals.Add(0);
@@ -291,9 +299,7 @@ namespace DataCollection
                     break;
             }
 
-            totalAnimalsAlive--;
-            //Debug.Log("totalanimalsalive: " + totalAnimalsAlive);
-            if(totalAnimalsAlive <= 0) onAllExtinct?.Invoke();
+            
         }
 
         /// <summary>
