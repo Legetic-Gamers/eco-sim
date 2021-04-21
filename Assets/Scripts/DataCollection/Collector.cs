@@ -16,7 +16,7 @@ namespace DataCollection
         private int cap = 13;
         public Action onAllExtinct;
 
-        public int totalAnimalsAlive;
+        public static int totalAnimalsAlive;
         
         // Index is generation
         public readonly List<int> totalAnimalsAlivePerGeneration;
@@ -167,8 +167,6 @@ namespace DataCollection
         public void CollectBirth(AnimalModel am)
         {
             totalAnimalsAlive++;
-            
-
             int gen = am.generation;
 
             // Changes the referenced lists depending on the species of the animal. 

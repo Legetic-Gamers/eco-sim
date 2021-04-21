@@ -321,7 +321,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
                                          hydrationModifier);
         
         // reproductive urge
-        animalModel.reproductiveUrge += 0.01f * reproductiveUrgeModifier;
+        animalModel.reproductiveUrge += 0.04f * reproductiveUrgeModifier;
         agent.acceleration = baseAcceleration * Time.timeScale;
         agent.angularSpeed = baseAngularSpeed * Time.timeScale;
     }
@@ -430,10 +430,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         {
             animalModel.currentEnergy += edibleAnimal.GetEaten();
             
-            if(food.TryGetComponent(out AnimalController eatenAnimalController))
-            {
-                ObjectPooler.instance?.HandleDeadAnimal(eatenAnimalController, true);
-            }
+            if(food.TryGetComponent(out AnimalController eatenAnimalController)) eatenAnimalController.deadState.onDeath?.Invoke(eatenAnimalController, true);
         }
 
         if (food != null && food.TryGetComponent(out PlantController plantController) && plantController.plantModel is IEdible ediblePlant &&
