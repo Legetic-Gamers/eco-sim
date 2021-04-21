@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 using UnityEngine.UI;
 
 public class ParameterUI : MonoBehaviour
@@ -78,6 +80,9 @@ public class ParameterUI : MonoBehaviour
         {
             UpdateRenderParameterUI();
         }
+
+        if (!isCloseToCamera() && gameObject.activeSelf) gameObject.SetActive(false);
+        else if(isCloseToCamera() && !gameObject.activeSelf) gameObject.SetActive(true);
     }
 
     void UpdateRenderParameterUI()
