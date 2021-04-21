@@ -25,7 +25,7 @@ namespace AnimalsV2.States
 
         public Wander(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine)
         {
-            currentStateAnimation = StateAnimation.Walking;
+            stateAnimation = StateAnimation.Walking;
         }
 
         public override void Enter()
@@ -82,7 +82,6 @@ namespace AnimalsV2.States
                         Debug.Log("Agent stuck, Dist: " + Vector3.Distance(animal.transform.position, nextPosition)+ " Stopping: " + animal.agent.stoppingDistance + 0.2);
                     }
                 }
-                
             }
         }
         

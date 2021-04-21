@@ -25,7 +25,7 @@ namespace AnimalsV2.States
         {
             base.Enter();
 
-            currentStateAnimation = StateAnimation.Attack;
+            stateAnimation = StateAnimation.Attack;
 
             if (animal.agent.isActiveAndEnabled && animal.agent.isOnNavMesh)
             {

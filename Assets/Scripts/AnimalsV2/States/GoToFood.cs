@@ -28,12 +28,12 @@ namespace AnimalsV2.States
         public override void Enter()
         {
             base.Enter();
-            currentStateAnimation = StateAnimation.Walking;
+            stateAnimation = StateAnimation.Walking;
             
             if (closestFood != null && closestFood.TryGetComponent(out AnimalController a))
             {
                 //If we are going to eat an animal
-                currentStateAnimation = StateAnimation.Running;
+                stateAnimation = StateAnimation.Running;
                 //Dont slow down when chasing.
                 animal.agent.autoBraking = false;
             }
@@ -67,6 +67,7 @@ namespace AnimalsV2.States
                 {
                     animal.eatingState.SetTarget(closestFood);
                     finiteStateMachine.ChangeState(animal.eatingState);
+                    return;
                 }   
             }
 

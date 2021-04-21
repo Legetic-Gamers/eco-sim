@@ -16,7 +16,7 @@ namespace AnimalsV2.States
         public EatingState(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal,
             finiteStateMachine)
         {
-            currentStateAnimation = StateAnimation.Attack;
+            stateAnimation = StateAnimation.Attack;
         }
 
         public override void Enter()
@@ -28,13 +28,13 @@ namespace AnimalsV2.States
                 animal.agent.isStopped = true;
             }
 
-            //GetNearestFood();
             animal.StartCoroutine(EatFood());
         }
 
         public override void Exit()
         {
             base.Exit();
+            
             if (animal.agent.isActiveAndEnabled && animal.agent.isOnNavMesh)
             {
                 animal.agent.isStopped = false;
@@ -73,9 +73,8 @@ namespace AnimalsV2.States
             //Debug.Log("Succesfully ate.");
             
             finiteStateMachine.GoToDefaultState();
-
-            // Very important, this tells Unity to move onto next frame. Everything crashes without this
             yield return null;
+
         }
 
         public override string ToString()

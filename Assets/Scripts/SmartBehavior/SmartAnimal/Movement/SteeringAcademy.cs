@@ -131,7 +131,7 @@ public class SteeringAcademy : MonoBehaviour
             animalModel.reproductiveUrge = 0.2f;
             animalModel.age = 0;
             //Ugly solution to stop agent from entering dead animation and not resetting
-            animalController.deadState.currentStateAnimation = StateAnimation.Walking;
+            animalController.deadState.stateAnimation = StateAnimation.Walking;
             animalController.fsm.ForceDefaultState();
             if(animalController.agent.isActiveAndEnabled && animalController.agent.isOnNavMesh) animalController.agent.ResetPath();
         }

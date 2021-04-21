@@ -10,13 +10,12 @@ using UnityEngine;
 
         public GoToWater(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine)
         {
-            
+            stateAnimation = StateAnimation.Walking;
         }
 
         public override void Enter()
         {
             base.Enter();
-            currentStateAnimation = StateAnimation.Walking;
             
             //Make an update instantly
             LogicUpdate();
@@ -45,7 +44,6 @@ using UnityEngine;
                         animal.drinkingState.SetTarget(closestWater);
                         finiteStateMachine.ChangeState(animal.drinkingState);
                     }
-                    
                 }
                 
             }

@@ -5,13 +5,12 @@
         public MLInferenceState(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine)
         {
             //currentStateAnimation = StateAnimation.Idle;
-            currentStateAnimation = StateAnimation.Walking;
+            stateAnimation = StateAnimation.Walking;
         }
 
         public override void Enter()
         {
             base.Enter();
-            currentStateAnimation = StateAnimation.Walking;
         }
 
         public override void HandleInput()

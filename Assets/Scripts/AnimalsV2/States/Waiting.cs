@@ -9,13 +9,12 @@ namespace AnimalsV2.States
         private float waitTime = 3f;
         public Waiting(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine)
         {
-            currentStateAnimation = StateAnimation.Idle;
+            stateAnimation = StateAnimation.Idle;
         }
 
         public override void Enter()
         {
             base.Enter();
-            currentStateAnimation = StateAnimation.Idle;
             
             if (animal.agent.isActiveAndEnabled && animal.agent.isOnNavMesh)
             {

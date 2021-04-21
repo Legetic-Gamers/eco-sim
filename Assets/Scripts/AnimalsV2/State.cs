@@ -32,7 +32,7 @@ namespace AnimalsV2
         /// <summary>
         /// Sates have an owner (Animal) and a stateMachine to control them. 
         /// </summary>
-        public StateAnimation currentStateAnimation = StateAnimation.Idle;
+        public StateAnimation stateAnimation = StateAnimation.Idle;
 
         protected AnimalController animal;
         protected FiniteStateMachine finiteStateMachine;
@@ -72,7 +72,7 @@ namespace AnimalsV2
         
         public string GetStateAnimation()
         {
-            return currentStateAnimation.ToString();
+            return stateAnimation.ToString();
         }
 
         // used to display state in the UI

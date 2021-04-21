@@ -11,7 +11,6 @@ public class DummyRabbitController : AnimalController
         animalModel.reproductiveUrge = 100f;
         fsm.SetDefaultState(idleState);
         fsm.ChangeState(idleState);
-        fsm.currentState.currentStateAnimation = StateAnimation.Idle;
     }
     public override void ChangeModifiers(State state)
     {

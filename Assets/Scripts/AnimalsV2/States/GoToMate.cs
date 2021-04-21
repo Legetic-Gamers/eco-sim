@@ -11,13 +11,12 @@ namespace AnimalsV2.States
         
         public GoToMate(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine)
         {
-            
+            stateAnimation = StateAnimation.Walking;
         }
 
         public override void Enter()
         {
             base.Enter();
-            currentStateAnimation = StateAnimation.Walking;
             
             //Dont slow down when chasing.
             animal.agent.autoBraking = false;

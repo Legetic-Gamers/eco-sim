@@ -17,7 +17,7 @@ namespace AnimalsV2.States
         public FleeingState(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal,
             finiteStateMachine)
         {
-            
+            stateAnimation = Running;
         }
 
         // own timer (note it's unit is number of LogicalUpdate ticks. This is the number of ticks in which the state will hold after MeetRequirements becomes false. We want the animal to run a little more than just outside of percieved predators space
@@ -28,8 +28,6 @@ namespace AnimalsV2.States
         {
             base.Enter();
             timer = startTimerValue;
-            
-            currentStateAnimation = Running;
             
             //Make an update instantly
             LogicUpdate();
