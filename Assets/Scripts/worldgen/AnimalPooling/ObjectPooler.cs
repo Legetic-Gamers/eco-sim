@@ -79,8 +79,33 @@ public class ObjectPooler : MonoBehaviour
     private void Start()
     {
         dh = FindObjectOfType<DataHandler>();
+        
+        //If there are no object placer
+        if (!FindObjectOfType<ObjectPlacement>())
+        {
+            InitWithoutObjectPlacer();
+        }
     }
 
+    public void InitWithoutObjectPlacer()
+    {
+        AnimalController[] animals = FindObjectsOfType<AnimalController>();
+        PlantController[] plants = FindObjectsOfType<PlantController>();
+        
+        Debug.Log(animals.Length);
+        Debug.Log(plants.Length);
+        
+        foreach(AnimalController animalController in animals)
+        {
+            HandleAnimalInstantiated(animalController.gameObject, animalController.GetObjectLabel());
+        }
+
+        foreach (PlantController plant in plants)
+        {
+            HandleFoodInstantiated(plant.gameObject, plant.GetObjectLabel());
+        }
+    }
+    
     /// <summary>
     /// Called when the terrain generator is finished placing all animals and object. 
     /// </summary>
@@ -185,7 +210,7 @@ public class ObjectPooler : MonoBehaviour
     {
         GameObject child;
 
-        child = SpawnFromPool(label.Replace("(Clone)", "").Trim(), pos, Quaternion.identity);
+        child = SpawnFromPool(label, pos, Quaternion.identity);
         
         if (child != null)
         {
