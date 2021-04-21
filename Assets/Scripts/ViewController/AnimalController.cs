@@ -22,9 +22,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     public Canvas parameterUI;
 
     [HideInInspector] public TickEventPublisher tickEventPublisher;
-
-    public Action<State> stateChange;
-
+    
     // decisionMaker subscribes to these actions
     public Action<GameObject> actionPerceivedHostile;
     public Action<AnimalModel, Vector3, float, float, string> SpawnNew;
