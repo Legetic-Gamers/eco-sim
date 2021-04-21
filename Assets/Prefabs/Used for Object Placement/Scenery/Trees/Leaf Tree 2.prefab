@@ -106,8 +106,8 @@ NavMeshObstacle:
   m_GameObject: {fileID: 6941765000743290380}
   m_Enabled: 1
   serializedVersion: 3
-  m_Shape: 1
-  m_Extents: {x: 1.8900001, y: 2.4750001, z: 1.567}
+  m_Shape: 0
+  m_Extents: {x: 0.21, y: 2.4750001, z: 0.21}
   m_MoveThreshold: 0.1
   m_Carve: 1
   m_CarveOnlyStationary: 0

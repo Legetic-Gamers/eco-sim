@@ -41,6 +41,8 @@ public class WaterChunk : MonoBehaviour
         collider.center -= new Vector3(0, 0.5f * realWaterLevel, 0);
 
         obstacle = waterObject.AddComponent<NavMeshObstacle>();
+        obstacle.size = collider.size;
+        obstacle.center = collider.center - new Vector3(0,0.1f,0);
         obstacle.carving = true;
 
 
@@ -48,8 +50,12 @@ public class WaterChunk : MonoBehaviour
         {
             var stylizedObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
             stylizedObject.name = "Water Stylized";
+            stylizedObject.layer = LayerMask.NameToLayer("Water");
             stylizedObject.transform.parent = waterObject.transform;
             stylizedObject.transform.localScale = collider.size;
+            // var stylizedCollider = stylizedObject.AddComponent<BoxCollider>();
+            // stylizedCollider.size = new Vector3(1, realWaterLevel, 1);
+            // stylizedCollider.center -= new Vector3(0, 0.5f * realWaterLevel, 0);
 
             if (Application.isEditor)
             {

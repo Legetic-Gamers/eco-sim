@@ -87,7 +87,7 @@ MonoBehaviour:
     generateWater: 1
     stylizedWater: 1
     waterLevel: 0.205
-    waterVertexDiff: 0.112
+    waterVertexDiff: 0.197
     size: 1
     gridSize: 16
     material: {fileID: 2100000, guid: 7d15e8e57b643694a8665fc53363315c, type: 2}
@@ -105,40 +105,32 @@ MonoBehaviour:
     - 1
   objectPlacementSettings:
     objectTypes:
-    - name: Trees
+    - name: Rabbits
       gameObjectSettings:
-      - gameObjectIndex: 0
-        probability: 0.126
-      - gameObjectIndex: 1
-        probability: 0.228
-      - gameObjectIndex: 2
-        probability: 0.24
-      - gameObjectIndex: 3
-        probability: 0.24
-      - gameObjectIndex: 4
-        probability: 0.24
+      - gameObjectIndex: 14
+        probability: 1
+      - gameObjectIndex: 17
+        probability: 1
       minimumDistance: 7.06
       newPointCount: 20
       scale: 1
       _yOffset: 0
       minHeight: 0.181
       maxHeight: 0.843
-    - name: Rocks
+    - name: Trees
       gameObjectSettings:
-      - gameObjectIndex: 6
-        probability: 0.132
-      - gameObjectIndex: 7
-        probability: 0.162
-      - gameObjectIndex: 8
-        probability: 0.162
-      - gameObjectIndex: 9
-        probability: 0.162
-      minimumDistance: 12
-      newPointCount: 10
+      - gameObjectIndex: 4
+        probability: 1
+      - gameObjectIndex: 3
+        probability: 1
+      - gameObjectIndex: 2
+        probability: 1
+      minimumDistance: 7.06
+      newPointCount: 20
       scale: 1
       _yOffset: 0
-      minHeight: 0
-      maxHeight: 1
+      minHeight: 0.181
+      maxHeight: 0.843
   preview: 1
   availableGameObjects:
   - simulationObject: {fileID: 1069101916615702, guid: fff1095f568a7964c8c455e72f096fe7,
@@ -210,6 +202,22 @@ MonoBehaviour:
     previewObject: {fileID: 6101972966518227433, guid: b343a143aed6e934fa74d552587a9669,
       type: 3}
   - simulationObject: {fileID: 8012323441774472881, guid: 51e551f1cef16d9488952707d8521940,
+      type: 3}
+    previewObject: {fileID: 8707029122432189503, guid: 1e5656598aba98b429ef77df7012c598,
+      type: 3}
+  - simulationObject: {fileID: 8505818697369016331, guid: d41c8705a05beb642a090f031a00299c,
+      type: 3}
+    previewObject: {fileID: 1971363165378548586, guid: 3ff25ae09fa3c8e47bc18643f60840f4,
+      type: 3}
+  - simulationObject: {fileID: 2443608263682274251, guid: 36c50c1df400f6e47be4e48ed43c7155,
+      type: 3}
+    previewObject: {fileID: 2443035894578729959, guid: a7afe39ab1be159428ad2dbbf6162fe3,
+      type: 3}
+  - simulationObject: {fileID: 1472361199608738841, guid: bfeb36e4d17c8444f8e73db899f422c7,
+      type: 3}
+    previewObject: {fileID: 6101972966518227433, guid: b343a143aed6e934fa74d552587a9669,
+      type: 3}
+  - simulationObject: {fileID: 695402115701391966, guid: fec6ae813464c314991b94cea274b3cc,
       type: 3}
     previewObject: {fileID: 8707029122432189503, guid: 1e5656598aba98b429ef77df7012c598,
       type: 3}

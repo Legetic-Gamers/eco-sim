@@ -7,5 +7,15 @@
         {
             return "MLBear";
         }
+        
+        public override void onObjectSpawn()
+        {
+            base.onObjectSpawn();
+            
+            if (gameObject.TryGetComponent(out AnimalBrainAgent brainAgent))
+            {
+                brainAgent.Init();
+            }
+        }
     }
 }
