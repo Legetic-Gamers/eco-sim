@@ -27,7 +27,7 @@ public class AnimalBrainAgent : Agent,IAgent
     public World world;
 
     
-    public void Start()
+    public void Init()
     {
         //Debug.Log("Brain Awake");
 

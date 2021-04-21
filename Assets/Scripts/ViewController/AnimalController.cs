@@ -148,7 +148,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         {
             dm.Init();
         }
-        
+
         // Init the NavMesh agent
         agent.autoBraking = true;
         animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
