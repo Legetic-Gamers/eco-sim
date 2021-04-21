@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using DataCollection;
 using DefaultNamespace;
 using Menus;
@@ -99,7 +100,6 @@ public class ObjectPooler : MonoBehaviour
                     for (int i = 0; i < stackDictionary[objTag].Count - 1; i++) poolDictionary[objTag].Enqueue(stackDictionary[objTag].Pop());
                 }
             }
-
             isFinishedPlacing = true;
         }
     }
