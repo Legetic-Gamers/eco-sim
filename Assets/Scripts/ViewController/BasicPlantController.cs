@@ -25,5 +25,10 @@ namespace ViewController
             return nutrition;
         }
         
+        
+        public override string GetObjectLabel()
+        {
+            return "BasicPlant";
+        }
     }
 }

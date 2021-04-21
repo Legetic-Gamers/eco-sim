@@ -16,11 +16,11 @@ using ViewController.Senses;
 using Random = UnityEngine.Random;
 using Vector3 = UnityEngine.Vector3;
 
-[RequireComponent(typeof(MLAnimalController)), RequireComponent(typeof(Senses))]
+[RequireComponent(typeof(MLRabbitSteeringController)), RequireComponent(typeof(Senses))]
 public class DumbAgent : Agent, IAgent
 {
     //ANIMAL RELATED THINGS
-    private MLAnimalController animalController;
+    private MLRabbitSteeringController animalController;
     private AnimalModel animalModel;
     private Senses senses;
     private FiniteStateMachine fsm;
@@ -35,7 +35,7 @@ public class DumbAgent : Agent, IAgent
         senses.useConstantTickInterval = true;
         
         //init specific
-        animalController = GetComponent<MLAnimalController>();
+        animalController = GetComponent<MLRabbitSteeringController>();
         if(animalController) animalController.OnStartML += Init;
     }
 

@@ -29,4 +29,9 @@ public class DummyWolfController : AnimalController
     {
         return new Vector3(0.25f, 0.5f, 0.25f);
     }
+    
+    public override string GetObjectLabel()
+    {
+        return "DummyWolf";
+    }
 }

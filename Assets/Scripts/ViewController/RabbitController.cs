@@ -12,4 +12,9 @@ public class RabbitController : AnimalController
         return new Vector3(1f, 1f, 1f);
     }
     
+    public override string GetObjectLabel()
+    {
+        return "Rabbit";
+    }
+    
 }

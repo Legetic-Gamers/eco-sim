@@ -784,7 +784,6 @@ GameObject:
   - component: {fileID: 8008928050148032983}
   - component: {fileID: 5137105469688404557}
   - component: {fileID: 7891165559137702023}
-  - component: {fileID: 2648009385296781676}
   - component: {fileID: -4273764703418341798}
   - component: {fileID: 8642883935400400780}
   - component: {fileID: 6500540738318742435}
@@ -794,6 +793,7 @@ GameObject:
   - component: {fileID: 2783512026882503087}
   - component: {fileID: 6677636363384454888}
   - component: {fileID: -4386118196100813045}
+  - component: {fileID: 3260590641899837403}
   m_Layer: 8
   m_Name: Bear
   m_TagString: Animal
@@ -858,36 +858,6 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &2648009385296781676
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8012323441774472881}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8f61a5d1bce1b8b4cbc2bd7ec9dba648, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  parameterUI: {fileID: 7887285860858495033}
-  tickEventPublisher: {fileID: 0}
-  startVector: {x: 0, y: 0, z: 0}
-  agent: {fileID: 0}
-  energyModifier: 0
-  hydrationModifier: 0
-  reproductiveUrgeModifier: 0.3
-  speedModifier: 0.5
-  visibleHostileTargets: []
-  visibleFriendlyTargets: []
-  visibleFoodTargets: []
-  visibleWaterTargets: []
-  heardHostileTargets: []
-  heardFriendlyTargets: []
-  heardPreyTargets: []
-  isInfertile: 0
-  eyesTransform: {fileID: 1981089418292623096}
-  centerTransform: {fileID: 4858690178368255393}
 --- !u!114 &-4273764703418341798
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1116,6 +1086,36 @@ LineRenderer:
     generateLightingData: 0
   m_UseWorldSpace: 1
   m_Loop: 0
+--- !u!114 &3260590641899837403
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8012323441774472881}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f3ae3463eb249c3bebdd7fa23331d48, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  parameterUI: {fileID: 7887285860858495033}
+  tickEventPublisher: {fileID: 0}
+  startVector: {x: 0, y: 0, z: 0}
+  agent: {fileID: 0}
+  energyModifier: 0
+  hydrationModifier: 0
+  reproductiveUrgeModifier: 1
+  speedModifier: 0.5
+  visibleHostileTargets: []
+  visibleFriendlyTargets: []
+  visibleFoodTargets: []
+  visibleWaterTargets: []
+  heardHostileTargets: []
+  heardFriendlyTargets: []
+  heardPreyTargets: []
+  isInfertile: 0
+  eyesTransform: {fileID: 1981089418292623096}
+  centerTransform: {fileID: 4858690178368255393}
 --- !u!1 &8012327310415541241
 GameObject:
   m_ObjectHideFlags: 0

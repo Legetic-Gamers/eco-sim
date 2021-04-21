@@ -2285,11 +2285,11 @@ GameObject:
   - component: {fileID: 3786743865633360625}
   - component: {fileID: 3786743865633360624}
   - component: {fileID: 3786743865633360618}
-  - component: {fileID: -7661412993964478210}
   - component: {fileID: 5514137693859962826}
   - component: {fileID: 2495113230471018666}
   - component: {fileID: 45032740508211837}
   - component: {fileID: -600961360408927680}
+  - component: {fileID: 4246883440997276041}
   m_Layer: 8
   m_Name: SmartSteeringRabbit
   m_TagString: Animal
@@ -2511,36 +2511,6 @@ MonoBehaviour:
   m_UseChildSensors: 0
   m_UseChildActuators: 1
   m_ObservableAttributeHandling: 0
---- !u!114 &-7661412993964478210
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4793952549922607340}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 300a418ddcbd7854198141dec4589afd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  parameterUI: {fileID: 2076542593631984908}
-  tickEventPublisher: {fileID: 0}
-  startVector: {x: 0, y: 0, z: 0}
-  agent: {fileID: 0}
-  energyModifier: 0
-  hydrationModifier: 0
-  reproductiveUrgeModifier: 0.3
-  speedModifier: 0.5
-  visibleHostileTargets: []
-  visibleFriendlyTargets: []
-  visibleFoodTargets: []
-  visibleWaterTargets: []
-  heardHostileTargets: []
-  heardFriendlyTargets: []
-  heardPreyTargets: []
-  isInfertile: 0
-  eyesTransform: {fileID: 7144086159933997272}
-  centerTransform: {fileID: 6554643367461361501}
 --- !u!114 &5514137693859962826
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2591,8 +2561,8 @@ MonoBehaviour:
   showNavMeshAgentPath: 0
   allowNavigateWithClick: 0
   showVisibleTargets: 0
-  showFleeingVector: 0
-  showPerceptionRange: 0
+  showFleeingVector: 1
+  showPerceptionRange: 1
 --- !u!114 &-600961360408927680
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2616,6 +2586,37 @@ MonoBehaviour:
   bornParticleSystem: {fileID: 19800018, guid: 0fab5cbd8d8cb444199901f840ef0347, type: 3}
   pregnancyParticleSystem: {fileID: 19800004, guid: fb667f08336441b4fa2b6369a17fe4e5,
     type: 3}
+--- !u!114 &4246883440997276041
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4793952549922607340}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 838c046e3cd04bc9a876a139690684d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  parameterUI: {fileID: 2076542593631984908}
+  tickEventPublisher: {fileID: 0}
+  startVector: {x: 0, y: 0, z: 0}
+  agent: {fileID: 0}
+  energyModifier: 0
+  hydrationModifier: 0
+  reproductiveUrgeModifier: 1
+  speedModifier: 0.5
+  visibleHostileTargets: []
+  visibleFriendlyTargets: []
+  visibleFoodTargets: []
+  visibleWaterTargets: []
+  heardHostileTargets: []
+  heardFriendlyTargets: []
+  heardPreyTargets: []
+  isInfertile: 0
+  eyesTransform: {fileID: 7144086159933997272}
+  centerTransform: {fileID: 6554643367461361501}
+  isTraining: 0
 --- !u!1 &4793952549949646182
 GameObject:
   m_ObjectHideFlags: 0

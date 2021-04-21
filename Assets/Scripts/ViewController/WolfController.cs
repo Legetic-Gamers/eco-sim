@@ -12,4 +12,9 @@ public class WolfController : AnimalController
     {
         return new Vector3(0.3f, 0.3f, 0.3f);
     }
+    
+    public override string GetObjectLabel()
+    {
+        return "Wolf";
+    }
 }

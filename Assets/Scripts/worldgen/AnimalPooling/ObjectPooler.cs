@@ -129,7 +129,6 @@ public class ObjectPooler : MonoBehaviour
                 stackDictionary[tag].Push(objectToSpawn);
             }
         }
-        
     }
 
     /// <summary>

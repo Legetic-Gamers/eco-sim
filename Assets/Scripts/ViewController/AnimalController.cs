@@ -180,7 +180,9 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
             s.Init();
         }
     }
-    
+
+    public abstract string GetObjectLabel();
+
     private IEnumerator UpdateStatesLogicLoop()
     {
         while (true)

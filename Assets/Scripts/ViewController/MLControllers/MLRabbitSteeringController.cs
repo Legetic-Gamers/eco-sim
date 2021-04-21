@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using AnimalsV2;
@@ -7,7 +7,7 @@ using AnimalsV2.States.AnimalsV2.States;
 using Unity.MLAgents.Policies;
 using UnityEngine;
 
-public class MLAnimalController : AnimalController
+public class MLRabbitSteeringController : AnimalController
 {
     public Action OnStartML;
 
@@ -153,6 +153,11 @@ public class MLAnimalController : AnimalController
         // reproductive urge
         animalModel.reproductiveUrge += 0.01f * reproductiveUrgeModifier;
 
+    }
+    
+    public override string GetObjectLabel()
+    {
+        return "RabbitSteeringController";
     }
     
     

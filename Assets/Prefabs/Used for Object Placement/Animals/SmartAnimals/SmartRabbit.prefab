@@ -1521,16 +1521,15 @@ GameObject:
   - component: {fileID: 8505818697369016337}
   - component: {fileID: 8505818697369016334}
   - component: {fileID: 8505818697369016332}
-  - component: {fileID: 6495063316997795289}
   - component: {fileID: 8505818697369016329}
   - component: {fileID: 8505818697369016330}
   - component: {fileID: -7438119251835923377}
   - component: {fileID: 293866762}
   - component: {fileID: 293866761}
   - component: {fileID: 3941532510480265602}
-  - component: {fileID: 1968797970220886526}
-  - component: {fileID: 4868796283930031300}
   - component: {fileID: 2192662214169086345}
+  - component: {fileID: 7907745548168772585}
+  - component: {fileID: 914188772}
   m_Layer: 8
   m_Name: SmartRabbit
   m_TagString: Animal
@@ -1595,36 +1594,6 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 1
---- !u!114 &6495063316997795289
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8505818697369016331}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bdd6549df376c1a4b9199e25eb73a7a2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  parameterUI: {fileID: 2908317138842179051}
-  tickEventPublisher: {fileID: 0}
-  startVector: {x: 0, y: 0, z: 0}
-  agent: {fileID: 0}
-  energyModifier: 0
-  hydrationModifier: 0
-  reproductiveUrgeModifier: 0.3
-  speedModifier: 0.4
-  visibleHostileTargets: []
-  visibleFriendlyTargets: []
-  visibleFoodTargets: []
-  visibleWaterTargets: []
-  heardHostileTargets: []
-  heardFriendlyTargets: []
-  heardPreyTargets: []
-  isInfertile: 0
-  eyesTransform: {fileID: 2774000837990908982}
-  centerTransform: {fileID: 7756829176591169648}
 --- !u!114 &8505818697369016329
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1743,7 +1712,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 3072
   useConstantTickInterval: 0
---- !u!114 &1968797970220886526
+--- !u!114 &2192662214169086345
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1752,15 +1721,40 @@ MonoBehaviour:
   m_GameObject: {fileID: 8505818697369016331}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0795e2e31cde64428dc997f642c4648, type: 3}
+  m_Script: {fileID: 11500000, guid: eeade2d59b355d445a3a8d5bdfc67fa4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  showNavMeshAgentPath: 1
-  allowNavigateWithClick: 0
-  showVisibleTargets: 1
-  showFleeingVector: 1
-  showPerceptionRange: 0
---- !u!120 &4868796283930031300
+--- !u!114 &7907745548168772585
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8505818697369016331}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7b8f9aec18d40fbb16b465f01d80009, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  parameterUI: {fileID: 2908317138842179051}
+  tickEventPublisher: {fileID: 0}
+  startVector: {x: 0, y: 0, z: 0}
+  agent: {fileID: 0}
+  energyModifier: 0
+  hydrationModifier: 0
+  reproductiveUrgeModifier: 1
+  speedModifier: 0.5
+  visibleHostileTargets: []
+  visibleFriendlyTargets: []
+  visibleFoodTargets: []
+  visibleWaterTargets: []
+  heardHostileTargets: []
+  heardFriendlyTargets: []
+  heardPreyTargets: []
+  isInfertile: 0
+  eyesTransform: {fileID: 2774000837990908982}
+  centerTransform: {fileID: 7756829176591169648}
+--- !u!120 &914188772
 LineRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1858,18 +1852,6 @@ LineRenderer:
     generateLightingData: 0
   m_UseWorldSpace: 1
   m_Loop: 0
---- !u!114 &2192662214169086345
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8505818697369016331}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eeade2d59b355d445a3a8d5bdfc67fa4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &8505818697383472513
 GameObject:
   m_ObjectHideFlags: 0

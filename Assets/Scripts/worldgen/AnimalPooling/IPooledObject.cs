@@ -4,6 +4,10 @@ namespace DefaultNamespace
 {
     public interface IPooledObject
     {
+        
+        
         void onObjectSpawn();
+
+        string GetObjectLabel();
     }
 }

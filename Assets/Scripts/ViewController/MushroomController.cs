@@ -120,6 +120,11 @@ public class MushroomController : PlantController
         }
     }
     
+    public override string GetObjectLabel()
+    {
+        return "Mushroom";
+    }
+    
 }
     
 

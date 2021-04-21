@@ -41,6 +41,8 @@ namespace ViewController
         public abstract void onObjectSpawn();
         
         public abstract float GetEaten();
-        
+
+        public abstract string GetObjectLabel();
+
     }
 }
