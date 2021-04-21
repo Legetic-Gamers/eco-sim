@@ -3,6 +3,7 @@ using System.Collections;
 using DataCollection;
 using Model;
 using UnityEngine;
+using UnityEngine.AI;
 using ViewController;
 using Random = UnityEngine.Random;
 
@@ -45,8 +46,11 @@ public class MushroomController : PlantController
         {
             float height = 0;
             bool isHit = false;
-
+            
             var position = gameObject.transform.position;
+            
+            
+            /*
             Vector3 newPosition = new Vector3(position.x + rx, position.y + 100, position.z + rz);
             Ray ray = new Ray(newPosition, Vector3.down);
             RaycastHit hit;
@@ -58,9 +62,21 @@ public class MushroomController : PlantController
                     isHit = true;
                 }
             }
+            */
+            
+            Vector3 newPosition = new Vector3(position.x + rx, position.y, position.z + rz);
+            NavMeshHit hit;
+            if (NavMesh.SamplePosition(newPosition, out hit, 1f,
+                1 << NavMesh.GetAreaFromName("Walkable")))
+            {
+                Debug.Log("found position");
+                SpawnNewPlant?.Invoke(GetObjectLabel(),hit.position);
+            }
+            else
+            {
+                Debug.Log("Could not find position");
+            }
 
-            if (!isHit) return;
-            SpawnNewPlant?.Invoke(GetObjectLabel(), new Vector3(position.x + rx, height, position.z + rz));
         }
     }
     
