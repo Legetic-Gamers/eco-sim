@@ -67,6 +67,13 @@ public class OrbitCameraController : MonoBehaviour
             if (followTransform)
             {
                 newPosition = followTransform.position;
+                
+                //rotate in animals direction
+                if (!Input.GetMouseButton(1))
+                {
+                    newRotation = followTransform.rotation;
+                }
+                
                 // breakaway input
                 if (Input.GetKeyDown(KeyCode.Escape) || 
                     Input.GetAxis("Vertical") != 0 || 

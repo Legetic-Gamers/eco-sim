@@ -113,6 +113,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         
         agent = GetComponent<NavMeshAgent>();
         
+        tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
         
         if (eyesTransform == null)
         {
@@ -165,8 +166,6 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         //Set modifiers
         ChangeModifiers(wanderState);
         
-        //Debug.Log(agent.autoBraking);
-        tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
         EventSubscribe();
         
         SetPhenotype();
@@ -397,7 +396,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     //     {
     //         transform.position = Vector3.Lerp(source, target, (Time.time - startTime)/overTime);
     //         yield return null;
-    //     }
+    //     }S
     //     transform.position = target;
     // }
     private void rotateToTerrain()
@@ -512,10 +511,6 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     }
 
     /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
-    
-    
-
-    //should be refactored so that this logic is in AnimalModel
     private void HandleDeathStatus(AnimalController animalController, bool gotEaten)
     {
         //Stop animal from giving birth once dead.
