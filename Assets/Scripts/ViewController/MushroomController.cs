@@ -60,7 +60,7 @@ public class MushroomController : PlantController
             }
 
             if (!isHit) return;
-            SpawnNewPlant?.Invoke(new Vector3(position.x + rx, height, position.z + rz));
+            SpawnNewPlant?.Invoke(GetObjectLabel(), new Vector3(position.x + rx, height, position.z + rz));
         }
     }
     

@@ -17,7 +17,7 @@ namespace ViewController
 
         public Transform centerTransform;
         
-        public Action<Vector3> SpawnNewPlant;
+        public Action<string, Vector3> SpawnNewPlant;
         public Action<PlantController> onDeadPlant;
 
         public void Awake()

@@ -15,17 +15,21 @@ using Object = UnityEngine.Object;
 public class ObjectPooler : MonoBehaviour
 {
     /// <summary>
-    /// A Pool has a tag for the contained element, rabbit. A prefab and an amount of that object to start with (size)
+    /// A Pool has a label for the contained element, rabbit. A prefab and an amount of that object to start with (size)
     /// </summary>
     [Serializable]
     public class Pool : ISerializationCallbackReceiver
     {
-        public string tag;
+        public string label;
         public GameObject prefab;
         public int size;
         public void OnBeforeSerialize()
         {
-            tag = prefab.name.Replace("(Clone)", "").Trim();
+            if (prefab.TryGetComponent(out IPooledObject pooledObject))
+            {
+                label = pooledObject.GetObjectLabel();
+            }
+            
         }
 
         public void OnAfterDeserialize()
@@ -64,8 +68,8 @@ public class ObjectPooler : MonoBehaviour
         {
             Queue<GameObject> objectPool = new Queue<GameObject>();
             Stack<GameObject> objectStack = new Stack<GameObject>();
-            poolDictionary.Add(pool.tag, objectPool);
-            stackDictionary.Add(pool.tag, objectStack);
+            poolDictionary.Add(pool.label, objectPool);
+            stackDictionary.Add(pool.label, objectStack);
         }
         showCanvasForAll = OptionsMenu.alwaysShowParameterUI;
         isFinishedPlacing = false;
@@ -86,17 +90,17 @@ public class ObjectPooler : MonoBehaviour
             GameObject groupObject = new GameObject("Pool");
             foreach (Pool pool in pools)
             {
-                string objTag = pool.tag;
-                if (stackDictionary[objTag].Count > 0)
+                string objlabel = pool.label;
+                if (stackDictionary[objlabel].Count > 0)
                 {
-                    for (int i = stackDictionary[objTag].Count; i < pool.size; i++)
+                    for (int i = stackDictionary[objlabel].Count; i < pool.size; i++)
                     {
                         GameObject obj = Instantiate(pool.prefab, groupObject.transform, true);
                         obj.SetActive(false);
-                        poolDictionary[objTag].Enqueue(obj);
+                        poolDictionary[objlabel].Enqueue(obj);
                     }
 
-                    for (int i = 0; i < stackDictionary[objTag].Count - 1; i++) poolDictionary[objTag].Enqueue(stackDictionary[objTag].Pop());
+                    for (int i = 0; i < stackDictionary[objlabel].Count - 1; i++) poolDictionary[objlabel].Enqueue(stackDictionary[objlabel].Pop());
                 }
             }
 
@@ -109,10 +113,10 @@ public class ObjectPooler : MonoBehaviour
     /// and subscribes to the animal mating and death. 
     /// </summary>
     /// <param name="objectToSpawn"> The pooled object the terrain generator will spawn. </param>
-    /// <param name="tag"> Tag of the animal, must match names in terrain generator. </param>
-    public void HandleAnimalInstantiated(GameObject objectToSpawn, string tag)
+    /// <param name="label"> label of the animal, must match names in terrain generator. </param>
+    public void HandleAnimalInstantiated(GameObject objectToSpawn, string label)
     {
-        if (poolDictionary != null && poolDictionary.ContainsKey(tag))
+        if (poolDictionary != null && poolDictionary.ContainsKey(label))
         {
             objectToSpawn.SetActive(true);
             objectToSpawn.GetComponent<IPooledObject>()?.onObjectSpawn();
@@ -124,9 +128,9 @@ public class ObjectPooler : MonoBehaviour
                 animalController.parameterUI.gameObject.SetActive(showCanvasForAll);
             }
 
-            if (stackDictionary != null && stackDictionary.ContainsKey(tag))
+            if (stackDictionary != null && stackDictionary.ContainsKey(label))
             {
-                stackDictionary[tag].Push(objectToSpawn);
+                stackDictionary[label].Push(objectToSpawn);
             }
         }
     }
@@ -157,14 +161,15 @@ public class ObjectPooler : MonoBehaviour
         yield return new WaitForSeconds(delay / Time.timeScale);
         if (animalController != null)
         {
-            GameObject animalObj;
-            (animalObj = animalController.gameObject).SetActive(false);
+            if (animalController.TryGetComponent(out IPooledObject pooledObject))
+            {
+                GameObject animalObj;
+                (animalObj = animalController.gameObject).SetActive(false);
             
-            dh.LogDeadAnimal(am, cause, (transform.position - animalController.startVector).magnitude);
-            
-            //Debug.Log(animalObj.name.Replace("(Clone)", "").Trim());
-            
-            poolDictionary[animalObj.name.Replace("(Clone)", "").Trim()].Enqueue(animalObj);
+                dh.LogDeadAnimal(am, cause, (transform.position - animalController.startVector).magnitude);
+                
+                poolDictionary[pooledObject.GetObjectLabel()].Enqueue(animalObj);    
+            } else Debug.Log("IpooledObject does not exist on: " + animalController.name);
         }
     }
 
@@ -176,11 +181,11 @@ public class ObjectPooler : MonoBehaviour
     /// <param name="energy"> The energy of the child </param>
     /// <param name="hydration"> The hydration of the child </param>
     /// <param name="isSmart"> If the animals has ML brain </param>
-    private void HandleBirthAnimal(AnimalModel childModel, Vector3 pos, float energy, float hydration, string tag)
+    private void HandleBirthAnimal(AnimalModel childModel, Vector3 pos, float energy, float hydration, string label)
     {
         GameObject child;
 
-        child = SpawnFromPool(tag.Replace("(Clone)", "").Trim(), pos, Quaternion.identity);
+        child = SpawnFromPool(label.Replace("(Clone)", "").Trim(), pos, Quaternion.identity);
         
         if (child != null)
         {
@@ -200,35 +205,35 @@ public class ObjectPooler : MonoBehaviour
     }
 
     /// <summary>
-    /// Activates an object from the given pool named "tag". 
+    /// Activates an object from the given pool named "label". 
     /// </summary>
-    /// <param name="tag"> Name of the pool to spawn from, ie Rabbits</param>
+    /// <param name="label"> Name of the pool to spawn from, ie Rabbits</param>
     /// <param name="position"> Where the object is to be spawned </param>
     /// <param name="rotation"> Rotation of the object</param>
     /// <returns></returns>
-    public GameObject SpawnFromPool(string tag, Vector3 position, Quaternion rotation)
+    public GameObject SpawnFromPool(string label, Vector3 position, Quaternion rotation)
     {
-        if (!poolDictionary[tag].Any())
+        if (!poolDictionary[label].Any())
         {
             // Empty queue, make more
             foreach (var pool in pools)
             {
-                if (pool.tag.Equals(tag))
+                if (pool.label.Equals(label))
                 {
                     pool.size += 20;
                     for (int i = 0; i < 20; i++)
                     {
                         GameObject obj = Instantiate(pool.prefab);
                         obj.SetActive(false);
-                        poolDictionary[tag].Enqueue(obj);
+                        poolDictionary[label].Enqueue(obj);
                     }
                 }
             }
         }
         
-        if (poolDictionary != null && poolDictionary.ContainsKey(tag))
+        if (poolDictionary != null && poolDictionary.ContainsKey(label))
         {
-            GameObject objectToSpawn = poolDictionary[tag].Dequeue();
+            GameObject objectToSpawn = poolDictionary[label].Dequeue();
 
             if (objectToSpawn != null)
             {
@@ -258,18 +263,21 @@ public class ObjectPooler : MonoBehaviour
 
     private void HandleDeadPlant(PlantController plantController)
     {
-        GameObject plantObj;
-        (plantObj = plantController.gameObject).SetActive(false);
-        poolDictionary[plantObj.name.Replace("(Clone)", "").Trim()].Enqueue(plantObj);
-        //oolDictionary["Food"].Enqueue(plantObj);
-        dh.LogDeadPlant();
-        plantController.SpawnNewPlant -= HandleGrowPlant;
-        plantController.onDeadPlant -= HandleDeadPlant;
+        if (plantController.TryGetComponent(out IPooledObject pooledObject))
+        {
+            GameObject plantObj;
+            (plantObj = plantController.gameObject).SetActive(false);
+            poolDictionary[pooledObject.GetObjectLabel()].Enqueue(plantObj);
+            //oolDictionary["Food"].Enqueue(plantObj);
+            dh.LogDeadPlant();
+            plantController.SpawnNewPlant -= HandleGrowPlant;
+            plantController.onDeadPlant -= HandleDeadPlant;    
+        } else Debug.Log("IpooledObject does not exist on: " + plantController.name);
     }
 
-    public void HandleFoodInstantiated(GameObject o, string tag)
+    public void HandleFoodInstantiated(GameObject o, string label)
     {
-        if (poolDictionary != null && poolDictionary.ContainsKey(tag))
+        if (poolDictionary != null && poolDictionary.ContainsKey(label))
         {
             o.SetActive(true);
             o.GetComponent<IPooledObject>()?.onObjectSpawn();
@@ -279,16 +287,17 @@ public class ObjectPooler : MonoBehaviour
                 plantController.onDeadPlant += HandleDeadPlant;
                 plantController.SpawnNewPlant += HandleGrowPlant;
             }
-            if (stackDictionary != null && stackDictionary.ContainsKey(tag))
+            if (stackDictionary != null && stackDictionary.ContainsKey(label))
             {
-                stackDictionary[tag].Push(o);
+                stackDictionary[label].Push(o);
             }
         }
     }
     
-    private void HandleGrowPlant(Vector3 pos)
+    private void HandleGrowPlant(string label, Vector3 pos)
     {
-        GameObject newPlant = SpawnFromPool("Food", pos, Quaternion.identity);
+        
+        GameObject newPlant = SpawnFromPool(label, pos, Quaternion.identity);
         if (newPlant != null)
         {
             PlantController plantModel = newPlant.GetComponent<PlantController>();

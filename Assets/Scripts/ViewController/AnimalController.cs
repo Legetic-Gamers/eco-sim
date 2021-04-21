@@ -508,7 +508,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     {
         yield return new WaitForSeconds(laborTime*0.6f);
         AnimalModel childModel = animalModel.Mate(otherParentAnimalController.animalModel);
-        SpawnNew?.Invoke(childModel, transform.position, childEnergy, childHydration, gameObject.name);
+        SpawnNew?.Invoke(childModel, transform.position, childEnergy, childHydration, GetObjectLabel());
         // invoke only once when birthing multiple children
         if (animalModel.isPregnant) ActionPregnant?.Invoke(false);
         animalModel.isPregnant = false;
