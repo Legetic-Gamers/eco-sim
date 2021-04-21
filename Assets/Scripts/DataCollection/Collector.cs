@@ -379,7 +379,7 @@ namespace DataCollection
             if(populationSize > 1) s = s * (populationSize - 2);
             m += (valueToAdd - m) / populationSize;
             s += (valueToAdd - m) * (valueToAdd - oldM);
-            return (populationSize > 1) ? (m, s / (populationSize - 1f)) : (m, 0);
+            return (populationSize > 1) ? (m, s / (populationSize - 1f)) : (valueToAdd, 0);
         }
 
         public void CollectNewFood()

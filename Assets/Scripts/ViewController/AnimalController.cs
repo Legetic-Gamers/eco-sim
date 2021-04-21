@@ -319,7 +319,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
                                          hydrationModifier);
         
         // reproductive urge
-        animalModel.reproductiveUrge += 0.02f * reproductiveUrgeModifier;
+        animalModel.reproductiveUrge += 0.01f * reproductiveUrgeModifier;
         agent.acceleration = baseAcceleration * Time.timeScale;
         agent.angularSpeed = baseAngularSpeed * Time.timeScale;
     }

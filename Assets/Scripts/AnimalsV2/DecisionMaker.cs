@@ -171,7 +171,7 @@ namespace AnimalsV2
             //eventPublisher.onSenseTickEvent += MakeDecision;
 
             animalController.actionPerceivedHostile += HandleHostileTarget;
-            animalController.deadState.onDeath += HandleDeath;
+            //animalController.deadState.onDeath += HandleDeath;
         }
 
 
@@ -181,7 +181,7 @@ namespace AnimalsV2
             //eventPublisher.onSenseTickEvent -= MakeDecision;
 
             animalController.actionPerceivedHostile -= HandleHostileTarget;
-            animalController.deadState.onDeath -= HandleDeath;
+            //animalController.deadState.onDeath -= HandleDeath;
         }
 
         /// <summary>
