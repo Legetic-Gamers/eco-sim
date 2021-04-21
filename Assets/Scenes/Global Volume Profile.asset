@@ -35,7 +35,7 @@ MonoBehaviour:
     m_Value: 0
   focusDistance:
     m_OverrideState: 1
-    m_Value: 3.48
+    m_Value: 4.18
     min: 0.1
   aperture:
     m_OverrideState: 1
@@ -78,7 +78,7 @@ MonoBehaviour:
   m_AdvancedMode: 0
   temperature:
     m_OverrideState: 1
-    m_Value: 25
+    m_Value: 3.5
     min: -100
     max: 100
   tint:
@@ -102,7 +102,7 @@ MonoBehaviour:
   m_AdvancedMode: 0
   distance:
     m_OverrideState: 1
-    m_Value: 0.3
+    m_Value: 0.2
     min: 0
     max: 1
   cropToFit:
@@ -135,12 +135,12 @@ MonoBehaviour:
     m_Value: {x: 0.5, y: 0.5}
   intensity:
     m_OverrideState: 1
-    m_Value: 0.15
+    m_Value: 0.141
     min: 0
     max: 1
   smoothness:
     m_OverrideState: 1
-    m_Value: 0.75
+    m_Value: 0.631
     min: 0.01
     max: 1
   rounded:
@@ -216,15 +216,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b2db86121404754db890f4c8dfe81b2, type: 3}
   m_Name: Bloom
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   m_AdvancedMode: 0
   threshold:
     m_OverrideState: 1
-    m_Value: 1.22
+    m_Value: 1.2
     min: 0
   intensity:
     m_OverrideState: 1
-    m_Value: 12
+    m_Value: 10
     min: 0
   scatter:
     m_OverrideState: 1
@@ -244,6 +244,11 @@ MonoBehaviour:
   highQualityFiltering:
     m_OverrideState: 1
     m_Value: 0
+  skipIterations:
+    m_OverrideState: 0
+    m_Value: 1
+    min: 0
+    max: 16
   dirtTexture:
     m_OverrideState: 1
     m_Value: {fileID: 0}
