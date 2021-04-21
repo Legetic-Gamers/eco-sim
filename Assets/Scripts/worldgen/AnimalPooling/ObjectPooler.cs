@@ -259,10 +259,11 @@ public class ObjectPooler : MonoBehaviour
 
     private void HandleDeadPlant(PlantController plantController)
     {
-        dh.LogDeadPlant();
         GameObject plantObj;
         (plantObj = plantController.gameObject).SetActive(false);
-        poolDictionary["Food"].Enqueue(plantObj);
+        poolDictionary[plantObj.name.Replace("(Clone)", "").Trim()].Enqueue(plantObj);
+        //oolDictionary["Food"].Enqueue(plantObj);
+        dh.LogDeadPlant();
         plantController.SpawnNewPlant -= HandleGrowPlant;
         plantController.onDeadPlant -= HandleDeadPlant;
     }

@@ -26,6 +26,7 @@ namespace DataCollection
         
         private int timeIndexBirth;
         private int timeIndexFood;
+        private int foodDelta;
 
         // Each index contains the mean of that generation, starting from 0. 
         public readonly List<List<float>> rabbitStatsPerGenMean;
@@ -100,7 +101,7 @@ namespace DataCollection
             totalAnimalsAlivePerGeneration = new List<int> {0};
 
             birthRatePerMinute = new List<List<float>>(4);
-            for (int i = 0; i < 4; i++) birthRatePerMinute.Add(new List<float>{0});
+            for (int i = 0; i < 4; i++) birthRatePerMinute.Add(new List<float>());
             
             rabbitTotalAlivePerGen = new List<float>();
             wolfTotalAlivePerGen = new List<float>();
@@ -119,6 +120,7 @@ namespace DataCollection
             newBirths = new List<float>{0,0,0,0};
             timeIndexBirth = 0;
             timeIndexFood = 0;
+            foodDelta = 0;
 
             causeOfDeath = new Dictionary<AnimalModel.CauseOfDeath, int>();
             causeOfDeath.Add(AnimalModel.CauseOfDeath.Eaten, 0);
@@ -143,16 +145,18 @@ namespace DataCollection
            
             for (int i = 0; i < 4; i++)
             {
-                birthRatePerMinute[i].Add(0);
+                //birthRatePerMinute[i].Add(0);
                 float birthRate = 0;
-                if(currentAnimalsTotalAlivePerSpecies[i] == 0 || newBirths[i] == 0) continue;
+                if(currentAnimalsTotalAlivePerSpecies[i] == 0) continue;
                 if (currentAnimalsTotalAlivePerSpecies[i] - newBirths[i] > 0f ) birthRate = newBirths[i] / (currentAnimalsTotalAlivePerSpecies[i] - newBirths[i]);
-                birthRatePerMinute[i][timeIndexBirth] = birthRate;
+                birthRatePerMinute[i].Add(birthRate);
                 newBirths[i] = 0;
             }
             timeIndexBirth++;
-            foodActivePerMinute.Add(foodActivePerMinute[timeIndexFood]);
+            if (timeIndexFood > 0) foodActivePerMinute.Add(foodActivePerMinute[timeIndexFood - 1] + foodDelta);
+            else foodActivePerMinute[0] = foodDelta;
             timeIndexFood++;
+            foodDelta = 0;
         }
         
         /// <summary>
@@ -380,12 +384,11 @@ namespace DataCollection
 
         public void CollectNewFood()
         {
-            if (foodActivePerMinute.Count - 1 < timeIndexFood) foodActivePerMinute.Add(1);
-            else foodActivePerMinute[timeIndexFood] += 1;
+            foodDelta += 1;
         }
         public void CollectDeadFood()
         {
-            foodActivePerMinute[timeIndexFood] -= 1;
+            foodDelta -= 1;
         }
     }
 }    

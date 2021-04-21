@@ -50,7 +50,7 @@ namespace Model
         public bool isRegrowing;
 
         public const float plantMaxAge = 60;
-        public const float plantMaxsize = 50;
+        public const float plantMaxsize = 40;
         
         public PlantModel(float nutritionValue)
         {
@@ -68,7 +68,7 @@ namespace Model
 
         public void Grow()
         {
-            plantAge += 2;
+            plantAge += 1f;
             nutritionValue += 4;
             if (plantAge >= plantMaxAge)
             {

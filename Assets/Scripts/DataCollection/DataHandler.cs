@@ -135,7 +135,6 @@ namespace DataCollection
         /// <summary>
         /// Called when plants are activated
         /// </summary>
-        /// <param name="plantModel"> The model of the plant </param>
         public void LogNewPlant()
         {
             c.CollectNewFood();
@@ -144,7 +143,6 @@ namespace DataCollection
         /// <summary>
         /// Called when a plant is eaten
         /// </summary>
-        /// <param name="plantModel"> The model of the eaten plant </param>
         public void LogDeadPlant()
         {
             c.CollectDeadFood();

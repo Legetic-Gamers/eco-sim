@@ -23,7 +23,7 @@ public class MushroomController : PlantController
     private void SetPhenotype()
     {
         float normalizedValue = 1f / PlantModel.plantMaxsize;
-        gameObject.transform.localScale = new Vector3(normalizedValue + 0.2f, normalizedValue + 0.2f,normalizedValue + 0.2f) * plantModel.nutritionValue;
+        gameObject.transform.localScale = new Vector3(normalizedValue + 0.1f, normalizedValue + 0.1f,normalizedValue + 0.1f) * plantModel.nutritionValue;
     }
     
     private void Grow()
@@ -41,7 +41,7 @@ public class MushroomController : PlantController
         float rz = Random.Range(-10f, 10f);
         
         // chance of reproducing every 2 seconds if age and size restrictions are met.
-        if (plantModel.plantAge > 15 && plantModel.nutritionValue > 30 && !plantModel.isRegrowing && r > 0.95)
+        if (plantModel.plantAge > 20 && plantModel.nutritionValue > 30 && !plantModel.isRegrowing && r > 0.97)
         {
             float height = 0;
             bool isHit = false;
@@ -77,13 +77,13 @@ public class MushroomController : PlantController
     {
         meshRenderer.enabled = false;
         capsuleCollider.enabled = false;
-        dh.LogDeadPlant();
+        //dh.LogDeadPlant();
         yield return new WaitForSeconds(10f / Time.timeScale);
         plantModel.isRegrowing = false; //reset isregrowing which is set to true when GetEaten() in plantmodel is called
         meshRenderer.enabled = true;
         capsuleCollider.enabled = true;
         SetPhenotype();
-        dh.LogNewPlant();
+        //dh.LogNewPlant();
     }
 
     //is triggered by an action in plantModel instead of checking every tick
@@ -92,6 +92,7 @@ public class MushroomController : PlantController
         
         if (gameObject.activeSelf)
         {
+            //dh.LogDeadPlant();
             onDeadPlant?.Invoke(this);
             StopAllCoroutines();
         }
@@ -100,11 +101,12 @@ public class MushroomController : PlantController
     public override void onObjectSpawn()
     {
         plantModel = new PlantModel();
-
+        plantModel._nutritionValue = 0;
+        plantModel._plantAge = 0;
         plantModel.onGrowOld += HandleDeathStatus;
-        
-        dh = FindObjectOfType<DataHandler>();
-        dh?.LogNewPlant();
+        SetPhenotype();
+        //dh = FindObjectOfType<DataHandler>();
+        //dh.LogNewPlant();
         
         StartCoroutine(PlantControllerUpdate());
     }
