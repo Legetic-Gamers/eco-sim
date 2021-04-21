@@ -5,6 +5,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
+using ViewController;
 using Object = System.Object;
 using Random = UnityEngine.Random;
 
@@ -15,8 +16,6 @@ public class ObjectPlacement : MonoBehaviour
     public List<GameObject> groups;
     public SimulationSettings simulationSettings;
     int size;
-    private List<string> pooledObjects = new List<string> { "Rabbit Brown", "Wolf Grey", "Deer", "Bear", "SmartRabbit", "SmartWolf", "SmartDeer", "SmartBear", "SmartSteeringRabbit", "Food" };
-
     public void Awake()
     {
         simulationSettings = FindObjectOfType<SimulationSettings>();
@@ -107,12 +106,18 @@ public class ObjectPlacement : MonoBehaviour
                             {
                                 agent.Warp(new Vector3(oldPosition.x, hit.point.y + objectType.yOffset, oldPosition.z));
                             }
-
-                            var animalName = objectType.GameObjectSettings[randomIndex].GameObject.name;
-
-                            //Indirect logs animal as instantiated in collector
-                            if (pooledObjects.IndexOf(animalName) != -1) ObjectPooler.Instance?.HandleAnimalInstantiated(gameObject, animalName);
-                            if (animalName.Equals("Food")) ObjectPooler.Instance?.HandleFoodInstantiated(gameObject, animalName);
+                            
+                            if (gameObject.TryGetComponent(out IPooledObject pooledObject))
+                            {
+                                if (gameObject.TryGetComponent(out AnimalController animalController))
+                                {
+                                    ObjectPooler.Instance?.HandleAnimalInstantiated(gameObject, pooledObject.GetObjectLabel());
+                                } else if (gameObject.TryGetComponent(out PlantController plantController))
+                                {
+                                    ObjectPooler.Instance?.HandleFoodInstantiated(gameObject, pooledObject.GetObjectLabel());
+                                }    
+                            }
+                            
 
                             continue;
                         }
