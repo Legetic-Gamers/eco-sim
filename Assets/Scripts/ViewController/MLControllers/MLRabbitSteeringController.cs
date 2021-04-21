@@ -139,16 +139,31 @@ public class MLRabbitSteeringController : AnimalController
         //The age will increase 2 per 2 seconds.
         animalModel.age += 1;
 
-        // energy
-        animalModel.currentEnergy -= (animalModel.age + animalModel.currentSpeed +
-                                      animalModel.traits.viewRadius / 10 + animalModel.traits.hearingRadius / 10)
-                                     * animalModel.traits.size * energyModifier;
+        if (isTraining)
+        {
+            // energy
+            animalModel.currentEnergy -= (animalModel.age + animalModel.currentSpeed +
+                                          animalModel.traits.viewRadius / 10 + animalModel.traits.hearingRadius / 10)
+                                         * animalModel.traits.size * energyModifier;
 
-        // hydration
-        animalModel.currentHydration -= animalModel.traits.size *
-                                        (1 +
-                                         animalModel.currentSpeed / animalModel.traits.endurance *
-                                         hydrationModifier);
+            // hydration
+            animalModel.currentHydration -= animalModel.traits.size *
+                                            (1 +
+                                             animalModel.currentSpeed / animalModel.traits.endurance *
+                                             hydrationModifier);    
+        }
+        else
+        {
+            // energy
+            animalModel.currentEnergy -= (animalModel.age / 20 + animalModel.currentSpeed / 10 +
+                                          animalModel.traits.viewRadius / 10 + animalModel.traits.hearingRadius / 10)
+                                         * animalModel.traits.size * energyModifier;
+
+            // hydration
+            animalModel.currentHydration -= (animalModel.traits.size / 2.5f) * (1 + animalModel.currentSpeed / animalModel.traits.endurance *
+                hydrationModifier);
+        }
+        
 
         // reproductive urge
         animalModel.reproductiveUrge += 0.01f * reproductiveUrgeModifier;

@@ -207,13 +207,13 @@ public abstract class AnimalModel
 
     public bool EnergyFull => currentEnergy == traits.maxEnergy;
 
-    public bool HighEnergy => currentEnergy / traits.maxEnergy > 0.9f;
+    public bool HighEnergy => currentEnergy / traits.maxEnergy > 0.8f;
 
     public bool LowEnergy => currentEnergy / traits.maxEnergy < 0.5f;
 
     public bool HydrationFull => currentHydration == traits.maxHydration;
 
-    public bool HighHydration => currentHydration / traits.maxHydration > 0.9f;
+    public bool HighHydration => currentHydration / traits.maxHydration > 0.8f;
 
     public bool LowHydration => currentHydration / traits.maxHydration < 0.5f;
 

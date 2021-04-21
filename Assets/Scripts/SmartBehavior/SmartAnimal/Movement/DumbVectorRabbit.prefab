@@ -2285,10 +2285,10 @@ GameObject:
   - component: {fileID: 3786743865633360625}
   - component: {fileID: 3786743865633360624}
   - component: {fileID: 3786743865633360618}
-  - component: {fileID: -7661412993964478210}
   - component: {fileID: 5514137693859962826}
   - component: {fileID: 2495113230471018666}
   - component: {fileID: 45032740508211837}
+  - component: {fileID: 1759933966862006105}
   m_Layer: 8
   m_Name: DumbVectorRabbit
   m_TagString: Animal
@@ -2510,34 +2510,6 @@ MonoBehaviour:
   m_UseChildSensors: 0
   m_UseChildActuators: 1
   m_ObservableAttributeHandling: 0
---- !u!114 &-7661412993964478210
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4793952549922607340}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 300a418ddcbd7854198141dec4589afd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tickEventPublisher: {fileID: 0}
-  agent: {fileID: 0}
-  energyModifier: 0
-  hydrationModifier: 0
-  reproductiveUrgeModifier: 0.3
-  speedModifier: 0.5
-  visibleHostileTargets: []
-  visibleFriendlyTargets: []
-  visibleFoodTargets: []
-  visibleWaterTargets: []
-  heardHostileTargets: []
-  heardFriendlyTargets: []
-  heardPreyTargets: []
-  isInfertile: 1
-  eyesTransform: {fileID: 7144086159933997272}
-  centerTransform: {fileID: 6554643367461361501}
 --- !u!114 &5514137693859962826
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2590,6 +2562,37 @@ MonoBehaviour:
   showVisibleTargets: 1
   showFleeingVector: 0
   showPerceptionRange: 0
+--- !u!114 &1759933966862006105
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4793952549922607340}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 838c046e3cd04bc9a876a139690684d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  parameterUI: {fileID: 0}
+  tickEventPublisher: {fileID: 0}
+  startVector: {x: 0, y: 0, z: 0}
+  agent: {fileID: 0}
+  energyModifier: 0
+  hydrationModifier: 0
+  reproductiveUrgeModifier: 1
+  speedModifier: 0.5
+  visibleHostileTargets: []
+  visibleFriendlyTargets: []
+  visibleFoodTargets: []
+  visibleWaterTargets: []
+  heardHostileTargets: []
+  heardFriendlyTargets: []
+  heardPreyTargets: []
+  isInfertile: 0
+  eyesTransform: {fileID: 7144086159933997272}
+  centerTransform: {fileID: 6554643367461361501}
+  isTraining: 0
 --- !u!1 &4793952549949646182
 GameObject:
   m_ObjectHideFlags: 0

@@ -24,7 +24,7 @@ public class MushroomController : PlantController
     private void SetPhenotype()
     {
         float normalizedValue = 1f / PlantModel.plantMaxsize;
-        gameObject.transform.localScale = new Vector3(normalizedValue + 0.1f, normalizedValue + 0.1f,normalizedValue + 0.1f) * plantModel.nutritionValue;
+        gameObject.transform.localScale = new Vector3(normalizedValue, normalizedValue ,normalizedValue ) * plantModel.nutritionValue;
     }
     
     private void Grow()
