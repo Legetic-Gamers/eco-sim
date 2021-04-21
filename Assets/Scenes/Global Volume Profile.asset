@@ -102,50 +102,14 @@ MonoBehaviour:
   m_AdvancedMode: 0
   distance:
     m_OverrideState: 1
-    m_Value: 0.3
-    min: 0
-    max: 1
-  cropToFit:
-    m_OverrideState: 1
-    m_Value: 1
-    min: 0
-    max: 1
---- !u!114 &-362205311584236732
-MonoBehaviour:
-  m_ObjectHideFlags: 3
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 899c54efeace73346a0a16faa3afe726, type: 3}
-  m_Name: Vignette
-  m_EditorClassIdentifier: 
-  active: 1
-  m_AdvancedMode: 0
-  color:
-    m_OverrideState: 0
-    m_Value: {r: 0, g: 0, b: 0, a: 1}
-    hdr: 0
-    showAlpha: 0
-    showEyeDropper: 1
-  center:
-    m_OverrideState: 0
-    m_Value: {x: 0.5, y: 0.5}
-  intensity:
-    m_OverrideState: 1
     m_Value: 0.15
     min: 0
     max: 1
-  smoothness:
-    m_OverrideState: 1
-    m_Value: 0.75
-    min: 0.01
-    max: 1
-  rounded:
+  cropToFit:
     m_OverrideState: 0
-    m_Value: 0
+    m_Value: 1
+    min: 0
+    max: 1
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -164,7 +128,6 @@ MonoBehaviour:
   - {fileID: -6998809189687486804}
   - {fileID: 1904928868774220354}
   - {fileID: -7872384201663357033}
-  - {fileID: -362205311584236732}
 --- !u!114 &1904928868774220354
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -181,7 +144,7 @@ MonoBehaviour:
   m_AdvancedMode: 0
   shadows:
     m_OverrideState: 1
-    m_Value: {x: 1, y: 0.7019974, z: 0.5749031, w: -0.070422545}
+    m_Value: {x: 1, y: 0.99801606, z: 0.7868325, w: -0.070422545}
   midtones:
     m_OverrideState: 1
     m_Value: {x: 0.99999756, y: 0.999999, z: 1, w: 0.028169014}
@@ -216,7 +179,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b2db86121404754db890f4c8dfe81b2, type: 3}
   m_Name: Bloom
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   m_AdvancedMode: 0
   threshold:
     m_OverrideState: 1
@@ -244,6 +207,11 @@ MonoBehaviour:
   highQualityFiltering:
     m_OverrideState: 1
     m_Value: 0
+  skipIterations:
+    m_OverrideState: 0
+    m_Value: 1
+    min: 0
+    max: 16
   dirtTexture:
     m_OverrideState: 1
     m_Value: {fileID: 0}
