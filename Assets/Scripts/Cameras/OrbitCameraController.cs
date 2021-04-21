@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Menus;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.XR;
 
 // https://www.youtube.com/watch?v=rnqF6S7PfFA
 public class OrbitCameraController : MonoBehaviour
@@ -45,8 +46,9 @@ public class OrbitCameraController : MonoBehaviour
     private Vector3 rotateStartPosition;
     private Vector3 rotateCurrentPosition;
     
-    private bool breakAwayFromLockOn;
     private bool showUI;
+
+    private bool isInTransition;
     // Start is called before the first frame update
     private void Start()
     {
@@ -65,13 +67,13 @@ public class OrbitCameraController : MonoBehaviour
             if (followTransform)
             {
                 newPosition = followTransform.position;
-
                 // breakaway input
                 if (Input.GetKeyDown(KeyCode.Escape) || 
                     Input.GetAxis("Vertical") != 0 || 
-                    Input.GetAxis("Horizontal") != 0) breakAwayFromLockOn = true;
+                    Input.GetAxis("Horizontal") != 0) BreakAwayFromLockOn();
             }
-            else
+
+            if (!isInTransition)
             {
                 HandleMouseMovement();
                 HandleKeyboardMovement();
@@ -82,14 +84,16 @@ public class OrbitCameraController : MonoBehaviour
         HandleZoom();
         CheckCollision();
         
-        if (breakAwayFromLockOn)
+        
+    }
+
+    private void BreakAwayFromLockOn()
+    {
+        if (followTransform && followTransform.gameObject.TryGetComponent(out AnimalController animalController))
         {
-            if (followTransform && followTransform.gameObject.TryGetComponent(out AnimalController animalController))
-            {
-                animalController.parameterUI.gameObject.SetActive(showUI);
-            }
+            Debug.Log("Camera: Exiting lock on mode");
+            animalController.parameterUI.gameObject.SetActive(showUI);
             followTransform = null;
-            breakAwayFromLockOn = false;
         }
     }
 
@@ -288,6 +292,8 @@ public class OrbitCameraController : MonoBehaviour
         // left mouse button
         if (Input.GetMouseButtonDown(0))
         {
+            BreakAwayFromLockOn();
+            
             Plane plane = new Plane(Vector3.up, Vector3.zero);
 
             Ray ray = camera.ScreenPointToRay(Input.mousePosition);
@@ -341,5 +347,17 @@ public class OrbitCameraController : MonoBehaviour
             newPosition = new Vector3(newPosition.x, newPosition.y, HitThreshold -boundsOfWorld.bounds.size.z / 2.0f);
         else if (newPosition.z > boundsOfWorld.bounds.size.z / 2.0f)
             newPosition = new Vector3(newPosition.x, newPosition.y, -HitThreshold + boundsOfWorld.bounds.size.z / 2.0f);
+    }
+
+    public void Transition()
+    {
+        StartCoroutine(HandleTransition());
+    }
+    
+    public IEnumerator HandleTransition()
+    {
+        isInTransition = true;
+        yield return new WaitForSeconds(0.1f);  //some feasable number of time before HandleMouseMovement() and HandleKeyBoardMovement() can be called upon clicking on an animal
+        isInTransition = false;
     }
 }
