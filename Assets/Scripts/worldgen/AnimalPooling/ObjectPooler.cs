@@ -166,8 +166,7 @@ public class ObjectPooler : MonoBehaviour
             //Debug.Log(animalObj.name.Replace("(Clone)", "").Trim());
             
             poolDictionary[animalObj.name.Replace("(Clone)", "").Trim()].Enqueue(animalObj);
-        } 
-        
+        }
     }
 
     /// <summary>
@@ -191,7 +190,6 @@ public class ObjectPooler : MonoBehaviour
             //Debug.Log(childController.animalModel.generation);
             childController.animalModel.currentEnergy = energy;
             childController.animalModel.currentHydration = hydration;
-
             childController.parameterUI.gameObject.SetActive(showCanvasForAll);
             
             // update the childs speed (in case of mutation).
