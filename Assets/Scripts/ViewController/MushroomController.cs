@@ -24,7 +24,7 @@ public class MushroomController : PlantController
     private void SetPhenotype()
     {
         float normalizedValue = 1f / PlantModel.plantMaxsize;
-        gameObject.transform.localScale = new Vector3(normalizedValue, normalizedValue ,normalizedValue ) * plantModel.nutritionValue;
+        gameObject.transform.localScale = new Vector3(normalizedValue + 0.1f, normalizedValue + 0.1f,normalizedValue + 0.1f) * plantModel.nutritionValue;
     }
     
     private void Grow()
@@ -38,40 +38,44 @@ public class MushroomController : PlantController
         SetPhenotype();
 
         float r = Random.Range(0, 1f);
-        float rx = Random.Range(-10f, 10f);
-        float rz = Random.Range(-10f, 10f);
+        
         
         // chance of reproducing every 2 seconds if age and size restrictions are met.
-        if (plantModel.plantAge > 20 && plantModel.nutritionValue > 30 && !plantModel.isRegrowing && r > 0.97)
+        if (plantModel.isMature && r > 0.99)
         {
-            float height = 0;
-            bool isHit = false;
-            
-            var position = gameObject.transform.position;
-            
-            
-            /*
-            Vector3 newPosition = new Vector3(position.x + rx, position.y + 100, position.z + rz);
-            Ray ray = new Ray(newPosition, Vector3.down);
-            RaycastHit hit;
-            if (Physics.Raycast(ray, out hit, float.MaxValue))
-            {
-                if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Ground"))
-                {
-                    height = hit.point.y;
-                    isHit = true;
-                }
-            }
-            */
-            
-            Vector3 newPosition = new Vector3(position.x + rx, position.y, position.z + rz);
-            NavMeshHit hit;
-            if (NavMesh.SamplePosition(newPosition, out hit, 1f,
-                1 << NavMesh.GetAreaFromName("Walkable")))
-            {
-                SpawnNewPlant?.Invoke(GetObjectLabel(),hit.position);
-            }
+            Reproduce();
+        }
+    }
 
+    private void Reproduce()
+    {
+        var position = gameObject.transform.position;
+            
+            
+        /*
+        bool isHit = false;
+        float height = 0;
+        Vector3 newPosition = new Vector3(position.x + rx, position.y + 100, position.z + rz);
+        Ray ray = new Ray(newPosition, Vector3.down);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, float.MaxValue))
+        {
+            if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Ground"))
+            {
+                height = hit.point.y;
+                isHit = true;
+            }
+        }
+        */
+            
+        float rx = Random.Range(-10f, 10f);
+        float rz = Random.Range(-10f, 10f);
+        Vector3 newPosition = new Vector3(position.x + rx, position.y, position.z + rz);
+        NavMeshHit hit;
+        if (NavMesh.SamplePosition(newPosition, out hit, 1f,
+            1 << NavMesh.GetAreaFromName("Walkable")))
+        {
+            SpawnNewPlant?.Invoke(GetObjectLabel(),hit.position);
         }
     }
     
@@ -100,12 +104,13 @@ public class MushroomController : PlantController
     //is triggered by an action in plantModel instead of checking every tick
     private void HandleDeathStatus()
     {
-        
         if (gameObject.activeSelf)
         {
+            Reproduce();
             //dh.LogDeadPlant();
             onDeadPlant?.Invoke(this);
             StopAllCoroutines();
+            plantModel.onGrowOld -= HandleDeathStatus;
         }
     }
     

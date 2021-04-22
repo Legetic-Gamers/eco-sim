@@ -43,8 +43,6 @@ namespace AnimalsV2
         {
             //animator.SetFloat("runningSpeed",animal.animalModel.GetSpeedPercentage);
             animator.CrossFade("Base Layer." + state.GetStateAnimation(), transitionSpeed, 0);
-            
-            Debug.Log("State:  " + state + "   " + "Animation: " + animator.GetCurrentAnimatorClipInfo(0)[0].clip.name);
         }
 
         //Animation parameters which need updating every frame

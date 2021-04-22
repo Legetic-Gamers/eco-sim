@@ -46,6 +46,8 @@ namespace Model
                 }
             }
         }
+
+        public bool isMature => !isRegrowing && plantAge > 20 && nutritionValue > 30;
         
         public bool isRegrowing;
 
