@@ -79,6 +79,11 @@ namespace AnimalsV2
         public abstract override string ToString();
 
         public abstract bool MeetRequirements();
+
+        public bool isActiveState()
+        {
+            return finiteStateMachine.currentState == this;
+        }
         
     }
 }

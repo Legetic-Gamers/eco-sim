@@ -41,7 +41,7 @@ public class MushroomController : PlantController
         
         
         // chance of reproducing every 2 seconds if age and size restrictions are met.
-        if (plantModel.isMature && r > 0.99)
+        if (plantModel.isMature && r > 0.999)
         {
             Reproduce();
         }
@@ -72,7 +72,7 @@ public class MushroomController : PlantController
         float rz = Random.Range(-10f, 10f);
         Vector3 newPosition = new Vector3(position.x + rx, position.y, position.z + rz);
         NavMeshHit hit;
-        if (NavMesh.SamplePosition(newPosition, out hit, 1f,
+        if (NavMesh.SamplePosition(newPosition, out hit, 5f,
             1 << NavMesh.GetAreaFromName("Walkable")))
         {
             SpawnNewPlant?.Invoke(GetObjectLabel(),hit.position);
@@ -92,13 +92,11 @@ public class MushroomController : PlantController
     {
         meshRenderer.enabled = false;
         capsuleCollider.enabled = false;
-        //dh.LogDeadPlant();
         yield return new WaitForSeconds(10f / Time.timeScale);
         plantModel.isRegrowing = false; //reset isregrowing which is set to true when GetEaten() in plantmodel is called
         meshRenderer.enabled = true;
         capsuleCollider.enabled = true;
         SetPhenotype();
-        //dh.LogNewPlant();
     }
 
     //is triggered by an action in plantModel instead of checking every tick
@@ -107,7 +105,6 @@ public class MushroomController : PlantController
         if (gameObject.activeSelf)
         {
             Reproduce();
-            //dh.LogDeadPlant();
             onDeadPlant?.Invoke(this);
             StopAllCoroutines();
             plantModel.onGrowOld -= HandleDeathStatus;
@@ -121,9 +118,6 @@ public class MushroomController : PlantController
         plantModel._plantAge = 0;
         plantModel.onGrowOld += HandleDeathStatus;
         SetPhenotype();
-        //dh = FindObjectOfType<DataHandler>();
-        //dh.LogNewPlant();
-        
         StartCoroutine(PlantControllerUpdate());
     }
     

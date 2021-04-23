@@ -31,7 +31,10 @@ public class WaterSettings
     [SerializeField]
     private Material stylizedMaterial;
 
-    public WaterSettings(bool generateWater, bool stylizedWater, float waterLevel, float waterVertexDiff, float size, int gridSize, Material material, Material stylizedMaterial) {
+    [SerializeField] 
+    private GameObject waterObjectPrefab;
+
+    public WaterSettings(bool generateWater, bool stylizedWater, float waterLevel, float waterVertexDiff, float size, int gridSize, Material material, Material stylizedMaterial, GameObject waterObjectPrefab) {
         this.generateWater = generateWater;
         this.stylizedWater = stylizedWater;
         this.waterLevel = waterLevel;
@@ -40,6 +43,7 @@ public class WaterSettings
         this.gridSize = gridSize;
         this.material = material;
         this.stylizedMaterial = stylizedMaterial;
+        this.waterObjectPrefab = waterObjectPrefab;
     }
 
 #region Getters/Setters
@@ -73,5 +77,10 @@ public class WaterSettings
     public Material StylizedMaterial {
         get { return stylizedMaterial; }
     }
-#endregion
+
+    public GameObject WaterObjectPrefab {
+        get { return waterObjectPrefab; }
+    }
+
+    #endregion
 }

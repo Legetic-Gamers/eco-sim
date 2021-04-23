@@ -325,7 +325,8 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     }
     private void Update()
     {
-        rotateToTerrain();
+        //outcommented to boost performance
+        //rotateToTerrain();
     }
 
     //This could be used as an alternative to rotateToTerrain to avoid updating rotation every frame.

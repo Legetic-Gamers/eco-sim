@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -15,6 +16,8 @@ using Object = UnityEngine.Object;
 
 public class ObjectPooler : MonoBehaviour
 {
+    private GameObject groupObject;
+
     /// <summary>
     /// A Pool has a label for the contained element, rabbit. A prefab and an amount of that object to start with (size)
     /// </summary>
@@ -24,6 +27,7 @@ public class ObjectPooler : MonoBehaviour
         public string label;
         public GameObject prefab;
         public int size;
+        
         public void OnBeforeSerialize()
         {
             if (prefab.TryGetComponent(out IPooledObject pooledObject))
@@ -54,7 +58,7 @@ public class ObjectPooler : MonoBehaviour
     public static ObjectPooler instance;
     
     public List<Pool> pools;
-    public Dictionary<string, Queue<GameObject>> poolDictionary;
+    public Dictionary<string, ConcurrentQueue<GameObject>> poolDictionary;
     public Dictionary<string, Stack<GameObject>> stackDictionary;
     private bool showCanvasForAll;
     private bool isFinishedPlacing;
@@ -62,12 +66,15 @@ public class ObjectPooler : MonoBehaviour
 
     private void Awake()
     {
+        
         instance = this;
-        poolDictionary = new Dictionary<string, Queue<GameObject>>();
+        groupObject = new GameObject("Pool");
+
+        poolDictionary = new Dictionary<string, ConcurrentQueue<GameObject>>();
         stackDictionary = new Dictionary<string, Stack<GameObject>>();
         foreach (Pool pool in pools)
         {
-            Queue<GameObject> objectPool = new Queue<GameObject>();
+            ConcurrentQueue<GameObject> objectPool = new ConcurrentQueue<GameObject>();
             Stack<GameObject> objectStack = new Stack<GameObject>();
             poolDictionary.Add(pool.label, objectPool);
             stackDictionary.Add(pool.label, objectStack);
@@ -113,7 +120,6 @@ public class ObjectPooler : MonoBehaviour
     {
         if (!isFinishedPlacing)
         {
-            GameObject groupObject = new GameObject("Pool");
             foreach (Pool pool in pools)
             {
                 string objlabel = pool.label;
@@ -238,7 +244,8 @@ public class ObjectPooler : MonoBehaviour
     /// <returns></returns>
     public GameObject SpawnFromPool(string label, Vector3 position, Quaternion rotation)
     {
-        if (!poolDictionary[label].Any())
+        /*
+        if (poolDictionary[label].Any())
         {
             // Empty queue, make more
             foreach (var pool in pools)
@@ -248,17 +255,41 @@ public class ObjectPooler : MonoBehaviour
                     pool.size += 20;
                     for (int i = 0; i < 20; i++)
                     {
-                        GameObject obj = Instantiate(pool.prefab);
+                        GameObject obj = Instantiate(pool.prefab, groupObject.transform, true);
                         obj.SetActive(false);
                         poolDictionary[label].Enqueue(obj);
                     }
                 }
             }
         }
+        */
         
+
         if (poolDictionary != null && poolDictionary.ContainsKey(label))
         {
-            GameObject objectToSpawn = poolDictionary[label].Dequeue();
+            GameObject objectToSpawn = null;
+            bool succesfulDequeue = poolDictionary[label].TryDequeue(out objectToSpawn);
+
+            if (!succesfulDequeue)
+            {
+                // Empty queue, make more
+                foreach (var pool in pools)
+                {
+                    if (pool.label.Equals(label))
+                    {
+                        pool.size += 20;
+                        GameObject obj = null;
+                        for (int i = 0; i < 20; i++)
+                        {
+                            obj = Instantiate(pool.prefab, groupObject.transform, true);
+                            obj.SetActive(false);
+                            poolDictionary[label].Enqueue(obj);
+                        }
+                        objectToSpawn = obj;
+                        objectToSpawn.SetActive(true);
+                    }
+                }
+            }
 
             if (objectToSpawn != null)
             {
@@ -277,12 +308,22 @@ public class ObjectPooler : MonoBehaviour
                 {
                     plantController.SpawnNewPlant += HandleGrowPlant;
                     plantController.onDeadPlant += HandleDeadPlant;
+                    dh.LogNewPlant();   //must be placed here because grass dont call on neither handlefoodinstantiated nor handlegrowfood
                 }
                 
                 return objectToSpawn;
             }
+            else
+            {
+                Debug.Log("objectToSpawn " + label + " is null");
+            }
+        }
+        else
+        {
+            Debug.Log("pooldictionary null: " + poolDictionary != null + " pooldictionary contains key " + label + ": " +poolDictionary.ContainsKey(label));
         }
 
+        Debug.Log("Spawned NULL!");
         return null;
     }
 
@@ -293,7 +334,6 @@ public class ObjectPooler : MonoBehaviour
             GameObject plantObj;
             (plantObj = plantController.gameObject).SetActive(false);
             poolDictionary[pooledObject.GetObjectLabel()].Enqueue(plantObj);
-            //oolDictionary["Food"].Enqueue(plantObj);
             dh.LogDeadPlant();
             plantController.SpawnNewPlant -= HandleGrowPlant;
             plantController.onDeadPlant -= HandleDeadPlant;    
@@ -329,7 +369,6 @@ public class ObjectPooler : MonoBehaviour
             plantModel.plantModel.isRegrowing = false;
             plantModel.plantModel.plantAge = 0;
             plantModel.plantModel.nutritionValue = 0;
-            dh.LogNewPlant();
         } else Debug.Log("Failed to spawn");
     }
 }

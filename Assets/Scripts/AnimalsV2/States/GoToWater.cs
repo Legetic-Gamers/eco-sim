@@ -37,7 +37,16 @@ using UnityEngine;
                 {
                     Vector3 pointToRunTo = closestWater.transform.position;
                     //Move the animal using the navmeshagent.
-                    NavigationUtilities.NavigateToPoint(animal,pointToRunTo);
+                    
+                    bool succesful = NavigationUtilities.NavigateToPoint(animal, pointToRunTo);
+                    
+                    //if movement was not succesful return to default state;
+                    if (!succesful)
+                    {
+                        //Debug.Log("State gotoWater is stuck, changing to defaultState");
+                        //finiteStateMachine.GoToDefaultState();
+                    }
+                    
                     Vector3 a = new Vector3(animal.transform.position.x, 0, animal.transform.position.z);
                     Vector3 b = new Vector3(closestWater.transform.position.x, 0, closestWater.transform.position.z);
                     if(Vector3.Distance(a, b) <= animal.agent.stoppingDistance + 1.25f){

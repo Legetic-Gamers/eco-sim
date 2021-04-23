@@ -31,7 +31,7 @@ namespace AnimalsV2
             return animalTransform.position + Vector3.Normalize(pointToAnimalVector)*5f;
         }
 
-        public static void NavigateToPoint(AnimalController animal, Vector3 position)
+        public static bool NavigateToPoint(AnimalController animal, Vector3 position)
         {
             NavMeshHit hit;
             if (NavMesh.SamplePosition(position, out hit, animal.agent.height * 2,
@@ -41,11 +41,14 @@ namespace AnimalsV2
                 //To avoid async path calculation we do this
                 NavMeshPath path = new NavMeshPath();
                 animal.agent.CalculatePath(hit.position, path);
-                if (path.status != NavMeshPathStatus.PathInvalid)
+                if (path.status == NavMeshPathStatus.PathComplete)
                 {
                     animal.agent.SetPath(path);
+                    return true;
                 }
             }
+
+            return false;
             //TODO Maybe handle this!
 
             // NavMeshAgent agent = animal.agent;

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -15,6 +16,8 @@ public class WaterChunk : MonoBehaviour
     HeightMapSettings heightMapSettings;
     Vector3[] worldVerticies;
     float realWaterLevel;
+    private GameObject waterObjectPrefab;
+    
 
 
     public void Setup(Vector2 position, WaterSettings waterSettings, HeightMapSettings heightMapSettings, Vector3 scale, Transform parent, Vector3[] worldVerticies, bool placeWaterSources)
@@ -45,7 +48,14 @@ public class WaterChunk : MonoBehaviour
         obstacle.center = collider.center - new Vector3(0,0.1f,0);
         obstacle.carving = true;
 
-
+        if (waterSettings.WaterObjectPrefab == null)
+        {
+            waterObjectPrefab = new GameObject("Water Object Default");
+        }else
+        {
+            waterObjectPrefab = waterSettings.WaterObjectPrefab;
+        }
+        
         if (waterSettings.StylizedWater)
         {
             var stylizedObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -144,14 +154,25 @@ public class WaterChunk : MonoBehaviour
 
     private void PlaceWaterSource(Vector3 pos)
     {
-        GameObject waterSource = new GameObject("Water Source");
+        GameObject waterSource = Instantiate(waterObjectPrefab);
         waterSource.transform.parent = waterObject.transform;
         waterSource.tag = "Water";
         waterSource.layer = LayerMask.NameToLayer("Target");
         BoxCollider box = waterSource.AddComponent<BoxCollider>();
         box.isTrigger = true;
         box.size = new Vector3(0.5f, 0.5f, 0.5f);
-        waterSource.transform.position = pos;
+        NavMeshHit hit;
+        
+        //make sure water blocks are placed on navmesh
+        if (NavMesh.SamplePosition(pos, out hit, 5f,
+            1 << NavMesh.GetAreaFromName("Walkable")))
+        {
+            waterSource.transform.position = hit.position;
+        }
+        else
+        {
+            waterSource.transform.position = pos;
+        }
     }
 
 }

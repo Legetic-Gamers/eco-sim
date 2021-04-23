@@ -12,9 +12,6 @@ namespace ViewController
     public abstract class PlantController : MonoBehaviour, IPooledObject
     {
         public PlantModel plantModel;
-
-        protected DataHandler dh;
-
         public Transform centerTransform;
         
         public Action<string, Vector3> SpawnNewPlant;

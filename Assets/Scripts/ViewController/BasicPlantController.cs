@@ -7,21 +7,17 @@ namespace ViewController
     {
         public override void onObjectSpawn()
         {
-            plantModel = new PlantModel(35f);
-            dh?.LogNewPlant();
+            plantModel = new PlantModel(35f, 40);
         }
 
         public override float GetEaten()
         {
             float nutrition = plantModel.GetEaten();
-            if (onDeadPlant != null)
-            {
-                onDeadPlant?.Invoke(this);
-            }
-            else
+            if (!FindObjectOfType<ObjectPooler>())
             {
                 Destroy(gameObject);
             }
+            onDeadPlant?.Invoke(this);
             return nutrition;
         }
         

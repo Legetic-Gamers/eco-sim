@@ -47,16 +47,16 @@ namespace Model
             }
         }
 
-        public bool isMature => !isRegrowing && plantAge > 20 && nutritionValue > 30;
+        public bool isMature => !isRegrowing && plantAge > plantMaxAge/2  && nutritionValue > plantMaxsize/2;
         
         public bool isRegrowing;
 
         public const float plantMaxAge = 60;
         public const float plantMaxsize = 40;
         
-        public PlantModel(float nutritionValue)
+        public PlantModel(float nutritionValue, float plantAge)
         {
-            plantAge = 0;
+            this.plantAge = plantAge;
             isRegrowing = false;
             this.nutritionValue = nutritionValue;
         }

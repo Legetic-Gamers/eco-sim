@@ -3,6 +3,7 @@
  */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.MLAgents;
@@ -37,6 +38,8 @@ namespace AnimalsV2.States
                 //Dont slow down when chasing.
                 animal.agent.autoBraking = false;
             }
+
+            //animal.StartCoroutine(ChangeStuckState());
             
             //Make an update instantly
             LogicUpdate();
@@ -47,6 +50,8 @@ namespace AnimalsV2.States
             base.Exit();
             //Set autobraking back on.
             animal.agent.autoBraking = true;
+            
+            //animal.StopCoroutine(ChangeStuckState());
         }
         public override void HandleInput()
         {
@@ -85,7 +90,14 @@ namespace AnimalsV2.States
                     }
 
                     //Move the animal using the navmeshagent.
-                    NavigationUtilities.NavigateToPoint(animal, pointToRunTo);
+                    bool succesful = NavigationUtilities.NavigateToPoint(animal, pointToRunTo);
+                    
+                    //if movement was not succesful return to default state;
+                    if (!succesful)
+                    {
+                        //Debug.Log("State gotoFood is stuck, changing to defaultState");
+                        finiteStateMachine.GoToDefaultState();
+                    }
 
                 }else
                 {
@@ -118,6 +130,16 @@ namespace AnimalsV2.States
             }
 
             return closestFood != null && !(finiteStateMachine.currentState is EatingState) && !animal.animalModel.HighEnergy;
+        }
+
+        IEnumerator ChangeStuckState()
+        {
+            yield return new WaitForSeconds(10f / Time.timeScale);
+            if (isActiveState())
+            {
+                Debug.Log("State is stuck, but is now changing to default!");
+                finiteStateMachine.GoToDefaultState();
+            }
         }
     }
 }

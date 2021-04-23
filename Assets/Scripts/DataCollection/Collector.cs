@@ -279,7 +279,7 @@ namespace DataCollection
             animalVar[11][gen] = varDist;
 
             causeOfDeath[cause] = causeOfDeath[cause] += 1;
-            Debug.Log("cause of death: " + cause.ToString());
+            //Debug.Log("cause of death: " + cause.ToString());
             
             switch (am)
             {

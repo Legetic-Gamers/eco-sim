@@ -26,7 +26,8 @@ public class WaterTab : SettingsManager
             simulationSettings.WaterSettings.Size,
             simulationSettings.WaterSettings.GridSize,
             simulationSettings.WaterSettings.Material,
-            simulationSettings.WaterSettings.StylizedMaterial
+            simulationSettings.WaterSettings.StylizedMaterial,
+            simulationSettings.WaterSettings.WaterObjectPrefab
         );
     }
 }
