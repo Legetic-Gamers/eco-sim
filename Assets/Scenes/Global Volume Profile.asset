@@ -82,8 +82,8 @@ MonoBehaviour:
     min: -100
     max: 100
   tint:
-    m_OverrideState: 1
-    m_Value: 35
+    m_OverrideState: 0
+    m_Value: 12.6
     min: -100
     max: 100
 --- !u!114 &-6998809189687486804
@@ -98,11 +98,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb60a22f311433c4c962b888d1393f88, type: 3}
   m_Name: PaniniProjection
   m_EditorClassIdentifier: 
-  active: 0
+  active: 1
   m_AdvancedMode: 0
   distance:
     m_OverrideState: 1
-    m_Value: 0.2
+    m_Value: 0.015
     min: 0
     max: 1
   cropToFit:
@@ -135,12 +135,12 @@ MonoBehaviour:
     m_Value: {x: 0.5, y: 0.5}
   intensity:
     m_OverrideState: 1
-    m_Value: 0.075
+    m_Value: 0.157
     min: 0
     max: 1
   smoothness:
     m_OverrideState: 1
-    m_Value: 0.631
+    m_Value: 0.308
     min: 0.01
     max: 1
   rounded:
@@ -181,7 +181,7 @@ MonoBehaviour:
   m_AdvancedMode: 0
   shadows:
     m_OverrideState: 1
-    m_Value: {x: 1, y: 0.7019974, z: 0.5749031, w: -0.070422545}
+    m_Value: {x: 1, y: 0.7019974, z: 0.5749031, w: -0.015515204}
   midtones:
     m_OverrideState: 1
     m_Value: {x: 0.99999756, y: 0.999999, z: 1, w: 0.028169014}
@@ -220,19 +220,19 @@ MonoBehaviour:
   m_AdvancedMode: 0
   threshold:
     m_OverrideState: 1
-    m_Value: 1.2
+    m_Value: 1.06
     min: 0
   intensity:
     m_OverrideState: 1
-    m_Value: 10
+    m_Value: 2.14
     min: 0
   scatter:
     m_OverrideState: 1
-    m_Value: 0.7
+    m_Value: 0.403
     min: 0
     max: 1
   clamp:
-    m_OverrideState: 1
+    m_OverrideState: 0
     m_Value: 65472
     min: 0
   tint:
