@@ -181,8 +181,6 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         startVector = transform.position;
         StartCoroutine(UpdateStatesLogicLoop());
         
-        Debug.Log("onObjectSpawn");
-        
         if (TryGetComponent(out Senses s))
         {
             s.Activate();
@@ -324,15 +322,13 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         }
 
         // energy
-        animalModel.currentEnergy -= (animalModel.age / 20 + animalModel.currentSpeed / 10 +
+        animalModel.currentEnergy -= (animalModel.age/2 + animalModel.currentSpeed / 10 +
                                       animalModel.traits.viewRadius / 10 + animalModel.traits.hearingRadius / 10)
                                      * animalModel.traits.size * energyModifier;
 
-        Debug.Log("beforeHydration: "+ animalModel.currentHydration);
         // hydration
-        animalModel.currentHydration -= (animalModel.traits.size / 2.5f) * (1 + animalModel.currentSpeed / animalModel.traits.endurance *
+        animalModel.currentHydration -= (animalModel.traits.size) * (1 + animalModel.currentSpeed / animalModel.traits.endurance *
                                          hydrationModifier);
-        Debug.Log("afterHydration: " + animalModel.currentHydration);
         
         
         // reproductive urge
@@ -460,7 +456,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     
     IEnumerator GiveBirth(float childEnergy, float childHydration, float laborTime, AnimalController otherParentAnimalController) 
     {
-        yield return new WaitForSeconds(laborTime*0.6f);
+        yield return new WaitForSeconds(laborTime*0.6f / Time.timeScale);
         AnimalModel childModel = animalModel.Mate(otherParentAnimalController.animalModel);
         SpawnNew?.Invoke(childModel, transform.position, childEnergy, childHydration, GetObjectLabel());
         // invoke only once when birthing multiple children

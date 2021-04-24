@@ -219,8 +219,6 @@ public class ObjectPooler : MonoBehaviour
 
         child = SpawnFromPool(label, pos, Quaternion.identity);
         
-        Debug.Log(childModel);
-        
         if (child != null)
         {
             AnimalController childController = child.GetComponent<AnimalController>();
