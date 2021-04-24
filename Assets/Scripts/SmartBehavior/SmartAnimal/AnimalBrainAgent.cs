@@ -19,7 +19,6 @@ public class AnimalBrainAgent : Agent,IAgent
 {
     //ANIMAL RELATED THINGS
     private AnimalController animalController;
-    private AnimalModel animalModel;
     private TickEventPublisher eventPublisher;
     private FiniteStateMachine fsm;
 
@@ -33,8 +32,6 @@ public class AnimalBrainAgent : Agent,IAgent
 
         animalController = GetComponent<AnimalController>();
         fsm = animalController.fsm;
-        animalModel = animalController.animalModel;
-        
 
         eventPublisher = FindObjectOfType<global::TickEventPublisher>();
         
@@ -62,7 +59,7 @@ public class AnimalBrainAgent : Agent,IAgent
 
     private void ResetRabbit()
     {
-        
+        AnimalModel animalModel = animalController.animalModel;
         //MAKE SURE YOU ARE USING LOCAL POSITION
         if (transform != null && world != null)
         {
@@ -99,6 +96,9 @@ public class AnimalBrainAgent : Agent,IAgent
     public override void CollectObservations(VectorSensor sensor)
     {
         base.CollectObservations(sensor);
+        
+        AnimalModel animalModel = animalController.animalModel;
+
         if (animalModel == null) return;
         
         //parameters of the Animal = 2
@@ -122,6 +122,9 @@ public class AnimalBrainAgent : Agent,IAgent
     public override void OnActionReceived(ActionBuffers vectorAction)
     {
         base.OnActionReceived(vectorAction);
+        
+        AnimalModel animalModel = animalController.animalModel;
+
         ActionSegment<int> discreteActions = vectorAction.DiscreteActions;
 
         

@@ -182,16 +182,11 @@ namespace ViewController.Senses
         }
         
         /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
-        private void Start()
-        {
-            Init();
-        }
+        
 
         public void Init()
         {
-
             animalController = GetComponent<AnimalController>();
-            
             hearingRadius = animalController.animalModel.traits.hearingRadius; 
             viewRadius = animalController.animalModel.traits.viewRadius;
             
@@ -206,17 +201,27 @@ namespace ViewController.Senses
                 Debug.LogWarning("NO EYES FOUND, SENSING FROM FEET!");
                 thisTransform = transform;
             }
+        }
 
-            //Used in ML
-            if (useConstantTickInterval)
+        public void Activate()
+        {
+            if (animalController)
             {
-                Debug.Log("Using tickEventPublisher for senses");
-                StartCoroutine(ConstantSenseLoop());
+                if (useConstantTickInterval)
+                {
+                    Debug.Log("Using tickEventPublisher for senses");
+                    StartCoroutine(ConstantSenseLoop());
+                }
+                else
+                {
+                    StartCoroutine(RandomSensesLoop());
+                }   
             }
-            else
-            {
-                StartCoroutine(RandomSensesLoop());
-            }
+        }
+
+        public void Deactivate()
+        {
+            StopAllCoroutines();
         }
 
         private IEnumerator ConstantSenseLoop()
@@ -236,10 +241,8 @@ namespace ViewController.Senses
                 FindTargets();
                 onSenseTick?.Invoke();
                 yield return new WaitForSeconds(Random.Range(0.5f, 1f));
-            
             }
         }
-
         private void OnDestroy()
         {
             StopAllCoroutines();

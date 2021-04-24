@@ -189,6 +189,7 @@ public class ObjectPooler : MonoBehaviour
         else if (am.currentHealth <= 0) cause = AnimalModel.CauseOfDeath.Health;
         else cause = AnimalModel.CauseOfDeath.Eaten;
         
+        //Debug.Log("Cause of death: " + cause.ToString());
         yield return new WaitForSeconds(delay / Time.timeScale);
         if (animalController != null)
         {
@@ -217,6 +218,8 @@ public class ObjectPooler : MonoBehaviour
         GameObject child;
 
         child = SpawnFromPool(label, pos, Quaternion.identity);
+        
+        Debug.Log(childModel);
         
         if (child != null)
         {

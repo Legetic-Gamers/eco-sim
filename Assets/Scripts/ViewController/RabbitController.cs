@@ -4,8 +4,8 @@ public class RabbitController : AnimalController
 {
     new void Awake()
     {
-        base.Awake();
         animalModel = new RabbitModel();
+        base.Awake();
     }
     public override Vector3 getNormalizedScale()
     {

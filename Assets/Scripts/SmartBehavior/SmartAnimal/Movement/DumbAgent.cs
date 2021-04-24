@@ -21,7 +21,6 @@ public class DumbAgent : Agent, IAgent
 {
     //ANIMAL RELATED THINGS
     private MLRabbitSteeringController animalController;
-    private AnimalModel animalModel;
     private Senses senses;
     private FiniteStateMachine fsm;
     public Action<float> onEpisodeBegin { get; set; }
@@ -41,7 +40,6 @@ public class DumbAgent : Agent, IAgent
 
     private void Init()
     {
-        animalModel = animalController.animalModel;
         fsm = animalController.fsm;
         
         //set infertile if training
@@ -61,6 +59,8 @@ public class DumbAgent : Agent, IAgent
     //Choices based on https://github.com/Unity-Technologies/ml-agents/blob/release_2_verified_docs/docs/Learning-Environment-Design-Agents.md#vector-observations
     public override void CollectObservations(VectorSensor sensor)
     {
+        AnimalModel animalModel = animalController.animalModel;
+
         if (animalModel == null || animalController == null) return;
         //Position of the animal
         Vector3 thisPosition = transform.position;
@@ -184,6 +184,8 @@ public class DumbAgent : Agent, IAgent
     
     private void HandleDrink(GameObject water, float currentHydration)
     {
+        AnimalModel animalModel = animalController.animalModel;
+
         // the reward should be proportional to how much hydration was gained when drinking
         float reward = animalModel.traits.maxHydration - currentHydration;
         // normalize reward as a percentage
@@ -194,6 +196,8 @@ public class DumbAgent : Agent, IAgent
     //The reason to why I have curentEnergy as an in-parameter is because currentEnergy is updated through EatFood before reward gets computed in AnimalMovementBrain
     private void HandleEat(GameObject food, float currentEnergy)
     {
+        AnimalModel animalModel = animalController.animalModel;
+
         //Debug.Log("currentEnergy: " + animalController.animalModel.currentEnergy);
         float reward = 0f;
         //Give reward
@@ -317,6 +321,8 @@ public class DumbAgent : Agent, IAgent
     // It is not guaranteed that the statechange will happen since meetrequirements has to be true for given statechange.
     public void Interact(GameObject target)
     {
+        AnimalModel animalModel = animalController.animalModel;
+
         //Dont start to interact if we are fleeing.
         if (fsm == null || fsm.currentState is FleeingState || fsm.currentState is Dead) return;
 

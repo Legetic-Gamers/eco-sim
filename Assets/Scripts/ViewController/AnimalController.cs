@@ -129,6 +129,18 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
             Debug.LogWarning("Center not assigned, defaulting to transform");
             centerTransform = transform;
         }
+        
+        
+        //NOTE IT IS IMPORTANT THAT MODEL IS ASSIGNED (IN CONCRETE CLASS) BEFORE THIS AWAKE METHOD IS CALLED
+        if (TryGetComponent(out Senses s))
+        {
+            s.Init();
+        }
+        if (gameObject.TryGetComponent(out DecisionMaker dm))
+        {
+            dm.Init();
+        }
+
     }
     
 
@@ -141,16 +153,12 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         }
     }
     
+    
     /// <summary>
     /// "Start()" when using animal pooling, called when the animal is set to be active. 
     /// </summary>
     public virtual void onObjectSpawn()
     {
-        if (gameObject.TryGetComponent(out DecisionMaker dm))
-        {
-            dm.Init();
-        }
-        
         // Init the NavMesh agent
         agent.autoBraking = true;
         animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
@@ -173,9 +181,15 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         startVector = transform.position;
         StartCoroutine(UpdateStatesLogicLoop());
         
+        Debug.Log("onObjectSpawn");
+        
         if (TryGetComponent(out Senses s))
         {
-            s.Init();
+            s.Activate();
+        }
+        if (gameObject.TryGetComponent(out DecisionMaker dm))
+        {
+            dm.Activate();
         }
     }
 
@@ -314,9 +328,12 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
                                       animalModel.traits.viewRadius / 10 + animalModel.traits.hearingRadius / 10)
                                      * animalModel.traits.size * energyModifier;
 
+        Debug.Log("beforeHydration: "+ animalModel.currentHydration);
         // hydration
         animalModel.currentHydration -= (animalModel.traits.size / 2.5f) * (1 + animalModel.currentSpeed / animalModel.traits.endurance *
                                          hydrationModifier);
+        Debug.Log("afterHydration: " + animalModel.currentHydration);
+        
         
         // reproductive urge
         animalModel.reproductiveUrge += 0.04f * reproductiveUrgeModifier;
@@ -452,12 +469,6 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     }
 
     /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
-    private void HandleDeathStatus(AnimalController animalController, bool gotEaten)
-    {
-        //Stop animal from giving birth once dead.
-        StopCoroutine("GiveBirth");
-        StopAllCoroutines();
-    }
 
     //Check if animal is dead and activate deadState (absorbing state)
     private void CheckDeath()
@@ -471,11 +482,11 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
                 
                 if (TryGetComponent(out Senses s))
                 {
-                    s.StopAllCoroutines();
+                    s.Deactivate();
                 }
                 if (TryGetComponent(out DecisionMaker dm))
                 {
-                    dm.StopAllCoroutines();
+                    dm.Deactivate();
                 }    
             }
             fsm.ChangeState(deadState);

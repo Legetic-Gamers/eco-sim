@@ -4,8 +4,8 @@ public class DeerController : AnimalController
 {
     new void Awake()
     {
-        base.Awake();
         animalModel = new DeerModel();
+        base.Awake();
     }
     
     public override string GetObjectLabel()

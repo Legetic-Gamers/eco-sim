@@ -35,7 +35,6 @@ namespace AnimalsV2
         /// <param name="startingState"> State to start in (Idle) </param>
         public void Initialize(State startingState)
         {
-            absorbingState = false;
             defaultState = startingState;
             ForceDefaultState();
         }
@@ -46,6 +45,17 @@ namespace AnimalsV2
         /// <param name="newState"> State to change into. </param>
         public bool ChangeState(State newState)
         {
+            /*
+            if (newState == null)
+            {
+                Debug.Log("newState is null");
+            }
+            else if (currentState == null){
+                Debug.Log("currentState is null");
+            } else {
+                Debug.Log("currentState: " + currentState?.ToString() + " newState: " + newState.ToString() + " isPossible: " + !(absorbingState || !newState.MeetRequirements())); 
+            }
+            */
             // if the state is absorbing, meaning that state change is not possible or newState == CurrentState or newState does not meet requirements, we return
             if( absorbingState || !newState.MeetRequirements()) return false;
             //If we try to enter same state, don't do anything but essentially the state change was good.
