@@ -4,9 +4,9 @@ using Model;
 public class DeerModel : AnimalModel, IEdible
 {
 
-    public DeerModel() : base(new Traits(3.25f, 200, 100, 
+    public DeerModel() : base(new Traits(3.25f, 150, 100, 
                                     300, 6f, 10, 
-                                    10, 150, 10, 
+                                    10, 90, 10, 
                                     180, 17, 10), 0)
 
     {
