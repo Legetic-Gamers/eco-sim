@@ -2574,7 +2574,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 838c046e3cd04bc9a876a139690684d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parameterUI: {fileID: 0}
+  parameterUI: {fileID: 2076542593631984908}
   tickEventPublisher: {fileID: 0}
   startVector: {x: 0, y: 0, z: 0}
   agent: {fileID: 0}
@@ -2589,7 +2589,7 @@ MonoBehaviour:
   heardHostileTargets: []
   heardFriendlyTargets: []
   heardPreyTargets: []
-  isInfertile: 0
+  isInfertile: 1
   eyesTransform: {fileID: 7144086159933997272}
   centerTransform: {fileID: 6554643367461361501}
   isTraining: 0

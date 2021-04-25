@@ -3,7 +3,7 @@
 public class BearController : AnimalController
 {
     // Start is called before the first frame update
-    new void Awake()
+    protected virtual void Awake()
     {
         animalModel = new BearModel();
         base.Awake();

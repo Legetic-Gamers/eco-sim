@@ -25,18 +25,27 @@ public class AnimalBrainAgent : Agent,IAgent
 
     public World world;
 
-    
     public void Init()
     {
-        //Debug.Log("Brain Awake");
-
         animalController = GetComponent<AnimalController>();
         fsm = animalController.fsm;
-
         eventPublisher = FindObjectOfType<global::TickEventPublisher>();
-        
-
         EventSubscribe();
+    }
+
+    public void OnDestroy()
+    {
+        EventUnsubscribe();
+    }
+
+    public void Activate()
+    {
+        eventPublisher.onSenseTickEvent += RequestDecision;
+    }
+
+    public void Deactivate()
+    {
+        eventPublisher.onSenseTickEvent -= RequestDecision;
     }
 
     public override void OnEpisodeBegin()
@@ -296,8 +305,6 @@ public class AnimalBrainAgent : Agent,IAgent
     //Listen to when senses were updated.
     private void EventSubscribe()
     {
-        eventPublisher.onSenseTickEvent += RequestDecision;
-
         animalController.deadState.onDeath += HandleDeath;
         animalController.matingState.onMate += HandleMate;
         animalController.eatingState.onEatFood += HandleEating;
@@ -310,8 +317,6 @@ public class AnimalBrainAgent : Agent,IAgent
 
     public void EventUnsubscribe()
     {
-        eventPublisher.onSenseTickEvent -= RequestDecision;
-
         animalController.deadState.onDeath -= HandleDeath;
         animalController.matingState.onMate -= HandleMate;
         animalController.eatingState.onEatFood -= HandleEating;

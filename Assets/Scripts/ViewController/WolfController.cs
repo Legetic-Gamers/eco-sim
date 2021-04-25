@@ -2,10 +2,10 @@
 
 public class WolfController : AnimalController
 {
-    new void Awake()
+    protected virtual void Awake()
     {
-        base.Awake();
         animalModel = new WolfModel();
+        base.Awake();
     }
 
     public override Vector3 getNormalizedScale()

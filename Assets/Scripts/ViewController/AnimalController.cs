@@ -114,6 +114,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         
         
         agent = GetComponent<NavMeshAgent>();
+        agent.autoBraking = true;
         
         tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
         
@@ -159,17 +160,16 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     /// </summary>
     public virtual void onObjectSpawn()
     {
-        // Init the NavMesh agent
-        agent.autoBraking = true;
-        animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
-
+        
         //Can be used later.
         baseAngularSpeed = agent.angularSpeed;
         baseAcceleration = agent.acceleration;
         
+        animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
         agent.speed = animalModel.currentSpeed * Time.timeScale;
         agent.acceleration *= Time.timeScale;
         agent.angularSpeed *= Time.timeScale;
+        
         //agent.isStopped = false;
         fsm.Initialize(wanderState);
         //Set modifiers
@@ -189,6 +189,21 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         {
             dm.Activate();
         }
+    }
+    
+    public virtual void OnObjectDespawn()
+    {
+        TickEventUnsubscribe();
+        StopAllCoroutines();
+        
+        if (TryGetComponent(out Senses s))
+        {
+            s.Deactivate();
+        }
+        if (TryGetComponent(out DecisionMaker dm))
+        {
+            dm.Deactivate();
+        }  
     }
 
     public abstract string GetObjectLabel();
@@ -473,21 +488,12 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         {
             if (FindObjectOfType<ObjectPooler>())
             {
-                TickEventUnsubscribe();
-                StopAllCoroutines();
-                
-                if (TryGetComponent(out Senses s))
-                {
-                    s.Deactivate();
-                }
-                if (TryGetComponent(out DecisionMaker dm))
-                {
-                    dm.Deactivate();
-                }    
+                OnObjectDespawn();
             }
             fsm.ChangeState(deadState);
         }
     }
+    
 
     public void OnDestroy()
     {

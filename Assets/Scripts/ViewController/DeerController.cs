@@ -2,7 +2,7 @@
 
 public class DeerController : AnimalController
 {
-    new void Awake()
+    protected virtual void Awake()
     {
         animalModel = new DeerModel();
         base.Awake();

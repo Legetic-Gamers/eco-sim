@@ -76,7 +76,7 @@ public class VisualAnimalDebugger : MonoBehaviour
     void Update()
     {
         //Show debug when alive only
-        if (animalController != null && animalController.animalModel.IsAlive)
+        if (animalController && animalController.animalModel.IsAlive)
         {
             debugHandler?.Invoke();
         }

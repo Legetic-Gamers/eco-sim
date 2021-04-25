@@ -38,7 +38,6 @@ public class MLRabbitSteeringController : AnimalController
 
     new void Awake()
     {
-        base.Awake();
         if (TryGetComponent(out BehaviorParameters bp))
         {
             isTraining = bp.BehaviorType == BehaviorType.Default || bp.BehaviorType == BehaviorType.HeuristicOnly;
@@ -56,6 +55,8 @@ public class MLRabbitSteeringController : AnimalController
         {
             animalModel = new RabbitModel();
         }
+        base.Awake();
+
         
         
         agent.acceleration *= Time.timeScale;
