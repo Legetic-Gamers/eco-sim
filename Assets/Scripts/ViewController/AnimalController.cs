@@ -334,6 +334,8 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         if (agent != null)
         {
             agent.speed = animalModel.currentSpeed * Time.timeScale;   
+            agent.acceleration = baseAcceleration * Time.timeScale;
+            agent.angularSpeed = baseAngularSpeed * Time.timeScale;
         }
 
         // energy
@@ -348,8 +350,6 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         
         // reproductive urge
         animalModel.reproductiveUrge += 0.04f * reproductiveUrgeModifier;
-        agent.acceleration = baseAcceleration * Time.timeScale;
-        agent.angularSpeed = baseAngularSpeed * Time.timeScale;
     }
     private void Update()
     {

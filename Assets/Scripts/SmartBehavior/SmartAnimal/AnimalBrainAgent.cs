@@ -355,9 +355,7 @@ public class AnimalBrainAgent : Agent,IAgent
         //Task achieved
         //TODO REENABLE FOR TRAINING
         //EndEpisode();
-        
-        
-        
+
     }
 
    
