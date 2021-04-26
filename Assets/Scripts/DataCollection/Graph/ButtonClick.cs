@@ -8,7 +8,9 @@ public class ButtonClick : Window_Graph
 {
 
     public Action<int,int, int, int> GetListTrait;
-    public Action<int> GetListPopulation;
+    public Action<int> GetListPopulationPerGeneration;
+    public Action<int> GetListPopulationPerMinute;
+    
     public Action<int> GetListBirthRate;
     public Action GetListFoodAvailable;
     public static event EventHandler OnButtonReDraw;
@@ -33,6 +35,10 @@ public class ButtonClick : Window_Graph
     public Sprite check;
     public Button buttonOne;
     public Button buttonTwo;
+
+    private bool isPerMinute = false;
+    
+    
 
 
 
@@ -74,12 +80,48 @@ public class ButtonClick : Window_Graph
         OnButtonReDraw?.Invoke(this, EventArgs.Empty);
     }
 
+    public void ButtonPopulationGeneration()
+    {
+        isPerMinute = false;
+        dropdownPopulation.options.Clear();
+        dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "All Animals"});
+        dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Rabbit"});
+        dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Wolf"});
+        dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Deer"});
+        dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Bear"});
+        dropdownPopulation.value = 0;
+        DropDownPopulation();
+    }
+
+    public void ButtonPopulationMinute()
+    {
+        isPerMinute = true;
+        dropdownPopulation.options.Clear();
+        dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Rabbit"});
+        dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Wolf"});
+        dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Deer"});
+        dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Bear"});
+        dropdownPopulation.value = 0;
+        DropDownPopulation();
+    }
+
     public void DropDownPopulation()
     {
         int species = dropdownPopulation.GetComponent<Dropdown>().value;
-        GetListPopulation(species);
+        if (!isPerMinute)
+        {
+            GetListPopulationPerGeneration(species);
+            xLabel.text = "Generation";
+        }
+
+        if (isPerMinute)
+        {
+            GetListPopulationPerMinute(species);
+            xLabel.text = "Minute";
+        }
+
         yLabel.text = dropdownPopulation.GetComponent<Dropdown>().options [species].text + " population";
-        xLabel.text = "Generation";
+        
     }
 
     public void DropDownTrait()
