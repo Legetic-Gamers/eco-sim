@@ -19,7 +19,7 @@ namespace AnimalsV2
 
         private float transitionSpeed = 0.1f;
 
-        private const float cameraDistanceThreshold = 60f;
+        private const float cameraDistanceThreshold = 65f;  //threshold in which lower distance to camera will render animation
 
         public void Init()
         {
@@ -39,7 +39,7 @@ namespace AnimalsV2
         //only animate when close to camera and when timescale is below a threshold
         private void Update()
         {
-            if (Time.timeScale < 6)
+            if (Time.timeScale < 5)
             {
                 if (animator.enabled && !IsCloseToCamera())
                 {
