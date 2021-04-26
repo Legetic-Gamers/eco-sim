@@ -25,6 +25,7 @@ namespace AnimalsV2
         {
             animal = GetComponent<AnimalController>();
             animator = GetComponent<Animator>();
+            animator.keepAnimatorControllerStateOnDisable = true;
             defaultSpeed = animator.speed;
             camera = Camera.main;
             EventSubscribe();
@@ -40,28 +41,28 @@ namespace AnimalsV2
         {
             if (Time.timeScale < 6)
             {
-                if (animator.speed != 0 && !IsCloseToCamera())
+                if (animator.enabled && !IsCloseToCamera())
                 {
-                    animator.speed = 0;
-                } else if (animator.speed == 0 && IsCloseToCamera())
+                    animator.enabled = false;
+                    //Debug.Log("disable animator");
+                } else if (!animator.enabled && IsCloseToCamera())
                 {
-                    animator.speed = defaultSpeed;
+                    animator.enabled = true;
+                    animator.Rebind();
+                    //Debug.Log("enable animator");
+                    FSM_OnStateEnter(animal.fsm.currentState);
+                    
                 }    
             }
             else
             {
-                if (animator.speed != 0)
+                if (animator.enabled)
                 {
-                    animator.speed = 0;
+                    animator.enabled = false;
                 }
             }
         }
 
-        private void OnlyActivate()
-        {
-            
-        }
-        
         public AnimationController()
         {
             //Get access to animal to animate
@@ -90,6 +91,11 @@ namespace AnimalsV2
         {
             //animator.SetFloat("runningSpeed",animal.animalModel.GetSpeedPercentage);
             animator.CrossFade("Base Layer." + state.GetStateAnimation(), transitionSpeed, 0);
+        }
+
+        private void PlayAnimation(State state)
+        {
+            animator.Play("Base Layer." + state.GetStateAnimation(),0 ,0 );
         }
 
         //Animation parameters which need updating every frame
