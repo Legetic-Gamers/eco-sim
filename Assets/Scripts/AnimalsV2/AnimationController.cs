@@ -2,26 +2,73 @@
  * Author: Alexander L.V
  */
 
+using System;
 using System.Linq;
 using UnityEngine;
 
 namespace AnimalsV2
 {
-    public class AnimationController
+    public class AnimationController : MonoBehaviour
     {
         private AnimalController animal;
         private Animator animator;
+        private float defaultSpeed;
+        
+        [HideInInspector]
+        private Camera camera;
 
         private float transitionSpeed = 0.1f;
 
+        private const float cameraDistanceThreshold = 60f;
 
-        public AnimationController(AnimalController animal)
+        public void Init()
+        {
+            animal = GetComponent<AnimalController>();
+            animator = GetComponent<Animator>();
+            defaultSpeed = animator.speed;
+            camera = Camera.main;
+            EventSubscribe();
+        }
+
+        public void OnDestroy()
+        {
+            EventUnsubscribe();
+        }
+
+        //only animate when close to camera and when timescale is below a threshold
+        private void Update()
+        {
+            if (Time.timeScale < 6)
+            {
+                if (animator.speed != 0 && !IsCloseToCamera())
+                {
+                    animator.speed = 0;
+                } else if (animator.speed == 0 && IsCloseToCamera())
+                {
+                    animator.speed = defaultSpeed;
+                }    
+            }
+            else
+            {
+                if (animator.speed != 0)
+                {
+                    animator.speed = 0;
+                }
+            }
+        }
+
+        private void OnlyActivate()
+        {
+            
+        }
+        
+        public AnimationController()
         {
             //Get access to animal to animate
-            this.animal = animal;
+            //this.animal = animal;
             
             //Get access to Animator to animate the animal.
-            animator = this.animal.GetComponent<Animator>();
+            //animator = this.animal.GetComponent<Animator>();
             //animator.Play("Base Layer." + StateAnimation.Walking,0);
         }
 
@@ -58,6 +105,12 @@ namespace AnimalsV2
             // {
             //     animator?.CrossFade("Base Layer." + state.GetStateAnimation(), transitionSpeed, 0);
             // }
+        }
+        
+        
+        bool IsCloseToCamera()
+        {
+            return Vector3.Distance(camera.transform.position, animal.transform.position) < cameraDistanceThreshold;
         }
         
     }

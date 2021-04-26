@@ -2600,6 +2600,7 @@ GameObject:
   - component: {fileID: -2764591342635862510}
   - component: {fileID: 4070453221509366237}
   - component: {fileID: -4643888573197647929}
+  - component: {fileID: -9210487415850320567}
   m_Layer: 8
   m_Name: Rabbit Brown
   m_TagString: Animal
@@ -2634,7 +2635,7 @@ Animator:
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 63b5250ea377b104a8c56fd4f3aa55bc, type: 3}
   m_Controller: {fileID: 9100000, guid: 8f90dc31d23f89b4fbcc3a81f0a72bed, type: 2}
-  m_CullingMode: 1
+  m_CullingMode: 2
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
@@ -2784,7 +2785,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5945667779142240406}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c0795e2e31cde64428dc997f642c4648, type: 3}
   m_Name: 
@@ -2810,6 +2811,7 @@ MonoBehaviour:
   tickEventPublisher: {fileID: 0}
   startVector: {x: 0, y: 0, z: 0}
   agent: {fileID: 0}
+  animationController: {fileID: 0}
   energyModifier: 0
   hydrationModifier: 0
   reproductiveUrgeModifier: 1
@@ -2922,6 +2924,18 @@ LineRenderer:
     generateLightingData: 0
   m_UseWorldSpace: 1
   m_Loop: 0
+--- !u!114 &-9210487415850320567
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5945667779142240406}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d9fcffdb87451b408ef834740fc630f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5945667779165617436
 GameObject:
   m_ObjectHideFlags: 0

@@ -6103,6 +6103,7 @@ GameObject:
   - component: {fileID: 7555348025278502854}
   - component: {fileID: 3903865309380385879}
   - component: {fileID: 2075247554}
+  - component: {fileID: -2423851855853786807}
   m_Layer: 8
   m_Name: SmartDeer
   m_TagString: Animal
@@ -6461,6 +6462,18 @@ LineRenderer:
     generateLightingData: 0
   m_UseWorldSpace: 1
   m_Loop: 0
+--- !u!114 &-2423851855853786807
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1472361199608738841}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d9fcffdb87451b408ef834740fc630f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1472362420896316419
 GameObject:
   m_ObjectHideFlags: 0
