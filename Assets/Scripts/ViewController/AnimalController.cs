@@ -436,18 +436,13 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         if (targetAnimalController != null && targetAnimalController.animalModel.IsSameSpecies(animalModel) &&
             targetAnimalController.animalModel.WantingOffspring)
         {
-            // higher max urge gives greater potential for more offspring. (1-8 offspring)
-            int offspringCount = Math.Max(1, rng.Next((int) animalModel.traits.maxReproductiveUrge / 5 + 1));
-
-            // higher max urge => lower gestation time.
-            float gestationTime = Mathf.Max(1, 100 / animalModel.traits.maxReproductiveUrge);
 
             float childEnergy = animalModel.currentEnergy * 0.3f +
                                 targetAnimalController.animalModel.currentEnergy * 0.3f;
-            childEnergy /= offspringCount;
+            childEnergy /= animalModel.offspringCount; // split the energy between the offspring
             float childHydration = animalModel.currentHydration * 0.25f +
                                    targetAnimalController.animalModel.currentHydration * 0.25f;
-
+            childHydration /= animalModel.offspringCount; // split the hydration between the offspring
 
             // Expend energy and give it to child(ren)
             animalModel.currentEnergy *= 0.9f;
@@ -459,13 +454,12 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
             animalModel.reproductiveUrge = 0f;
             targetAnimalController.animalModel.reproductiveUrge = 0f;
 
-
             animalModel.isPregnant = true;
             ActionPregnant?.Invoke(true);
             
-            for (int i = 1; i <= offspringCount; i++)
+            for (int i = 1; i <= animalModel.offspringCount; i++)
                 // Wait some time before giving birth
-                StartCoroutine(GiveBirth(childEnergy, childHydration, gestationTime, targetAnimalController));
+                StartCoroutine(GiveBirth(childEnergy, childHydration, animalModel.gestationTime, targetAnimalController));
         }
     }
     

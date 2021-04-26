@@ -155,7 +155,6 @@ namespace DataCollection
                 birthRatePerMinute[i].Add(birthRate);
                 newBirths[i] = 0;
                 animalsAlivePerSpecies[i].Add(currentAnimalsTotalAlivePerSpecies[i]);
-                Debug.Log(currentAnimalsTotalAlivePerSpecies[i]);
             }
             timeIndexBirth++;
             if (timeIndexFood > 0) foodActivePerMinute.Add(foodActivePerMinute[timeIndexFood - 1] + foodDelta);
