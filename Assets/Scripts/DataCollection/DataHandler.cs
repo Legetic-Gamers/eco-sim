@@ -84,7 +84,8 @@ namespace DataCollection
             if (bc)
             {
                 bc.GetListTrait += SetTrait;
-                bc.GetListPopulation += SetPopulation;
+                bc.GetListPopulationPerGeneration += SetPopulationGeneration;
+                bc.GetListPopulationPerMinute += SetPopulationMinute;
                 bc.GetListBirthRate += SetBirthRate;
                 bc.GetListFoodAvailable += SetFoodAvailable;    
             }
@@ -148,7 +149,7 @@ namespace DataCollection
             c.CollectDeadFood();
         }
 
-        private void SetPopulation(int speciesNumberPopulation)
+        private void SetPopulationGeneration(int speciesNumberPopulation)
         {
             List<float> tmplist = new List<float>();
             switch (speciesNumberPopulation)
@@ -176,6 +177,32 @@ namespace DataCollection
             _listNumber = 0;
             Display?.Invoke(sendList1, sendList2);
 
+        }
+
+        private void SetPopulationMinute(int speciesNumberPopulation)
+        {
+            List<float> tmplist = new List<float>();
+            switch (speciesNumberPopulation)
+            {
+                case 0:
+                    tmplist = c.animalsAlivePerSpecies[0];
+                    break;
+                case 1:
+                    tmplist = c.animalsAlivePerSpecies[1];
+                    break;
+                case 2:
+                    tmplist = c.animalsAlivePerSpecies[2];
+                    break;
+                case 3:
+                    tmplist = c.animalsAlivePerSpecies[3];
+                    break;
+                
+            }
+
+            sendList1 = tmplist;
+            _speciesNumberPopulation = speciesNumberPopulation;
+            _listNumber = 4;
+            Display?.Invoke(sendList1, sendList2);
         }
 
         private void SetTrait(int listNumber, int speciesNumber, int traitNumber, int dataType)
@@ -259,13 +286,15 @@ namespace DataCollection
         {
             switch (listNumber)
             {
-                case 0: SetPopulation(_speciesNumberPopulation);
+                case 0: SetPopulationGeneration(_speciesNumberPopulation);
                     break;
                 case 1: SetTrait(0,_speciesNumber1, _traitNumber1, 0);
                     break;
                 case 2: SetBirthRate(_speciesNumberBirthRate);
                     break;
                 case 3: SetFoodAvailable();
+                    break;
+                case 4: SetPopulationMinute(_speciesNumberPopulation);
                     break;
                 
             }
