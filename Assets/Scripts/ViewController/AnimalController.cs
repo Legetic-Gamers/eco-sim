@@ -44,7 +44,6 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     [HideInInspector] public NavMeshAgent agent;
 
     public FiniteStateMachine fsm;
-    public AnimationController animationController;
 
     //States
     public FleeingState fleeingState;
@@ -94,7 +93,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     
     public void Awake()
     {
-        animationController = new AnimationController(this);
+        //animationController = new AnimationController(this);
 
         //Create the FSM.
         fsm = new FiniteStateMachine();
@@ -133,6 +132,10 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         
         
         //NOTE IT IS IMPORTANT THAT MODEL IS ASSIGNED (IN CONCRETE CLASS) BEFORE THIS AWAKE METHOD IS CALLED
+        if (TryGetComponent(out AnimationController a))
+        {
+            a.Init();
+        }
         if (TryGetComponent(out Senses s))
         {
             s.Init();
@@ -520,7 +523,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         eatingState.onEatFood += EatFood;
         drinkingState.onDrinkWater += DrinkWater;
         matingState.onMate += Mate;
-        animationController.EventSubscribe();
+        //animationController.EventSubscribe();
     }
     private void StateEventUnSubscribe()
     {
@@ -528,7 +531,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         eatingState.onEatFood -= EatFood;
         drinkingState.onDrinkWater -= DrinkWater;
         matingState.onMate -= Mate; 
-        animationController.EventUnsubscribe();
+        //animationController.EventUnsubscribe();
     }
     
     public abstract Vector3 getNormalizedScale();

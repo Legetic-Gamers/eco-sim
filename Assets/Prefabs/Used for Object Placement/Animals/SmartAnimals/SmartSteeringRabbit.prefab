@@ -2290,6 +2290,7 @@ GameObject:
   - component: {fileID: 45032740508211837}
   - component: {fileID: -600961360408927680}
   - component: {fileID: 4246883440997276041}
+  - component: {fileID: 5503518748347963888}
   m_Layer: 8
   m_Name: SmartSteeringRabbit
   m_TagString: Animal
@@ -2617,6 +2618,18 @@ MonoBehaviour:
   eyesTransform: {fileID: 7144086159933997272}
   centerTransform: {fileID: 6554643367461361501}
   isTraining: 0
+--- !u!114 &5503518748347963888
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4793952549922607340}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d9fcffdb87451b408ef834740fc630f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4793952549949646182
 GameObject:
   m_ObjectHideFlags: 0

@@ -5257,6 +5257,7 @@ GameObject:
   - component: {fileID: 7234598156811670218}
   - component: {fileID: -5890278897349778856}
   - component: {fileID: 5520464903123953793}
+  - component: {fileID: 866113084493601916}
   m_Layer: 8
   m_Name: Deer
   m_TagString: Animal
@@ -5292,7 +5293,7 @@ Animator:
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 4f04ddbc20d0cc5478aa4e085885c26c, type: 3}
   m_Controller: {fileID: 9100000, guid: 51140fb07450497469e75ba5b736a699, type: 2}
-  m_CullingMode: 1
+  m_CullingMode: 2
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
@@ -5580,6 +5581,18 @@ MonoBehaviour:
   isInfertile: 0
   eyesTransform: {fileID: 8215143030873752697}
   centerTransform: {fileID: 4602349353746575550}
+--- !u!114 &866113084493601916
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1567582185033856}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d9fcffdb87451b408ef834740fc630f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1571034971651392
 GameObject:
   m_ObjectHideFlags: 0
