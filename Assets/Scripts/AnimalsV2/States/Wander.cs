@@ -53,6 +53,22 @@ namespace AnimalsV2.States
             water = NavigationUtilities.GetNearestObjectPosition(animal.visibleWaterTargets, position1);
             mate = NavigationUtilities.GetNearestObjectPosition(animal.visibleFriendlyTargets, position1);
             */
+
+            if (!animal.agent.isOnNavMesh)
+            {
+                //if agents is not placed on navmesh, warp that bad boy
+                NavMeshHit hit;
+                if (NavMesh.SamplePosition(animal.transform.position, out hit, 1000f, 1 << NavMesh.GetAreaFromName("Walkable")))
+                {
+                    animal.agent.Warp(hit.position);    
+                }
+                else
+                {
+                    Debug.LogError("Agent is not on navmesh and can not be warped");
+                }
+                
+            }
+            
             if (animal.agent != null && animal.agent.isActiveAndEnabled)
             {
                 if (Vector3.Distance(animal.transform.position, nextPosition) <= animal.agent.stoppingDistance + 0.2 || animal.agent.velocity.magnitude <= 0.1f)

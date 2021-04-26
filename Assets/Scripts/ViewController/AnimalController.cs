@@ -339,12 +339,12 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         }
 
         // energy
-        animalModel.currentEnergy -= (animalModel.age/2 + animalModel.currentSpeed / 10 +
-                                      animalModel.traits.viewRadius / 10 + animalModel.traits.hearingRadius / 10)
+        animalModel.currentEnergy -= (animalModel.currentSpeed / 10 +
+                                      animalModel.traits.viewRadius / 10 + animalModel.traits.hearingRadius / 8)
                                      * animalModel.traits.size * energyModifier;
 
         // hydration
-        animalModel.currentHydration -= (animalModel.traits.size) * (1 + animalModel.currentSpeed / animalModel.traits.endurance *
+        animalModel.currentHydration -= (animalModel.traits.size) * (1 + animalModel.currentSpeed / 10  *
                                          hydrationModifier);
         
         
