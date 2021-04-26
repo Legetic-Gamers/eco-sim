@@ -15,13 +15,17 @@ public class RabbitModel : AnimalModel,IEdible
     {
         // Rabbit specific initialization 
         
-        //nutrionValue is same as maxEnergy in this case
+        //nutritionValue is same as maxEnergy in this case
         nutritionValue = traits.maxEnergy;
+        offspringCount = 3; // rabbits will get more offspring
+        gestationTime = 10; // 4 weeks IRL 
     }
     
     public RabbitModel(Traits traits, int generation) : base(traits, generation)
     {
         nutritionValue = traits.maxEnergy;
+        offspringCount = 3;
+        gestationTime = 10;
     }
 
     public override AnimalModel Mate(AnimalModel otherParent)

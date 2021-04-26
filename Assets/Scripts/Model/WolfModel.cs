@@ -10,12 +10,14 @@ public class WolfModel : AnimalModel, IEdible
 
     {
         nutritionValue = traits.maxEnergy;
+        gestationTime = 15; // 10 weeks IRL
     }
 
 
     public WolfModel(Traits traits, int generation) : base(traits, generation)
     {
         nutritionValue = traits.maxEnergy;
+        gestationTime = 15;
     }
     public float nutritionValue { get; set; }
 

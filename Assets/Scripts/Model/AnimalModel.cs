@@ -192,6 +192,8 @@ public abstract class AnimalModel
     }
 
     public bool isPregnant;
+    public int offspringCount = 1; // rabbit has different value
+    public int gestationTime = 20; // wolf and rabbit has different values
 
     public bool IsAlive => (currentHealth > 0 && currentEnergy > 0 && age < traits.ageLimit && currentHydration > 0);
 
