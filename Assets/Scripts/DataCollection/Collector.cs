@@ -44,7 +44,8 @@ namespace DataCollection
         public readonly List<float> deerTotalAlivePerGen;
         public readonly List<float> bearTotalAlivePerGen;
 
-        public readonly List<int> currentAnimalsTotalAlivePerSpecies;
+        private readonly List<int> currentAnimalsTotalAlivePerSpecies;
+        public List<List<float>> animalsAlivePerSpecies; 
 
         public readonly List<float> totalDeadAnimals; 
         
@@ -114,6 +115,8 @@ namespace DataCollection
             bearTotalAlivePerGen.Add(0);
 
             currentAnimalsTotalAlivePerSpecies = new List<int>{0,0,0,0};
+            animalsAlivePerSpecies = new List<List<float>>(4);
+            for (int i = 0; i < 4; i++) animalsAlivePerSpecies.Add(new List<float>());
 
             foodActivePerMinute = new List<int>{0};
 
@@ -147,10 +150,12 @@ namespace DataCollection
             {
                 //birthRatePerMinute[i].Add(0);
                 float birthRate = 0;
-                if(currentAnimalsTotalAlivePerSpecies[i] == 0) continue;
+                //if(currentAnimalsTotalAlivePerSpecies[i] == 0) continue;
                 if (currentAnimalsTotalAlivePerSpecies[i] - newBirths[i] > 0f ) birthRate = newBirths[i] / (currentAnimalsTotalAlivePerSpecies[i] - newBirths[i]);
                 birthRatePerMinute[i].Add(birthRate);
                 newBirths[i] = 0;
+                animalsAlivePerSpecies[i].Add(currentAnimalsTotalAlivePerSpecies[i]);
+                Debug.Log(currentAnimalsTotalAlivePerSpecies[i]);
             }
             timeIndexBirth++;
             if (timeIndexFood > 0) foodActivePerMinute.Add(foodActivePerMinute[timeIndexFood - 1] + foodDelta);
