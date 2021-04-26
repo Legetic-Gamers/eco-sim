@@ -270,7 +270,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animal: {fileID: 5945667779142240406}
   state: {fileID: 1195345261243971862}
-  health: {fileID: 5542760120312343191}
   energy: {fileID: 5542760120057978334}
   hydration: {fileID: 5542760118698675375}
   reproductiveUrge: {fileID: 5542760118645572184}
@@ -449,7 +448,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -3496,7 +3495,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4234874407055832951
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3514,9 +3513,9 @@ RectTransform:
   m_Father: {fileID: 924811714569130553}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 0.5, y: -0.24999999}
   m_SizeDelta: {x: 160, y: 10}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &5542760120312343191
