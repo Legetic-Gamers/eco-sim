@@ -48,7 +48,7 @@ namespace Menus
        {
            timer++;
            var time = TimeSpan.FromSeconds(timer);
-           timerText.text = $"{time.Minutes:D2}:{time.Seconds:D2}";
+           timerText.text = $"{time.Hours:D2}:{time.Minutes:D2}:{time.Seconds:D2}";
        }
 
         public void Resume()

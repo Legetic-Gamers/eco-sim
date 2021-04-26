@@ -130,6 +130,7 @@ public class ObjectPooler : MonoBehaviour
                         GameObject obj = Instantiate(pool.prefab, groupObject.transform, true);
                         obj.SetActive(false);
                         poolDictionary[objlabel].Enqueue(obj);
+                        
                     }
 
                     for (int i = 0; i < stackDictionary[objlabel].Count - 1; i++) poolDictionary[objlabel].Enqueue(stackDictionary[objlabel].Pop());
@@ -189,7 +190,7 @@ public class ObjectPooler : MonoBehaviour
         else if (am.currentHealth <= 0) cause = AnimalModel.CauseOfDeath.Health;
         else cause = AnimalModel.CauseOfDeath.Eaten;
         
-        //Debug.Log("Cause of death: " + cause.ToString());
+        Debug.Log("Cause of death: " + cause.ToString());
         yield return new WaitForSeconds(delay / Time.timeScale);
         if (animalController != null)
         {
@@ -264,13 +265,18 @@ public class ObjectPooler : MonoBehaviour
             }
         }
         */
-        
 
         if (poolDictionary != null && poolDictionary.ContainsKey(label))
         {
-            GameObject objectToSpawn = null;
+            GameObject objectToSpawn;
             bool succesfulDequeue = poolDictionary[label].TryDequeue(out objectToSpawn);
 
+            if (succesfulDequeue && objectToSpawn == null)
+            {
+                Debug.Log("Count: " + poolDictionary[label].Count);
+                Debug.Log("THIS IS FUCKED UP");
+            }
+            
             if (!succesfulDequeue)
             {
                 // Empty queue, make more
@@ -279,14 +285,17 @@ public class ObjectPooler : MonoBehaviour
                     if (pool.label.Equals(label))
                     {
                         pool.size += 20;
-                        GameObject obj = null;
                         for (int i = 0; i < 20; i++)
                         {
-                            obj = Instantiate(pool.prefab, groupObject.transform, true);
+                            GameObject obj = Instantiate(pool.prefab, groupObject.transform, true);
                             obj.SetActive(false);
                             poolDictionary[label].Enqueue(obj);
                         }
-                        objectToSpawn = obj;
+
+                        if (poolDictionary[label].TryDequeue(out objectToSpawn))
+                        {
+                            Debug.Log(objectToSpawn.name);
+                        }
                         objectToSpawn.SetActive(true);
                     }
                 }
