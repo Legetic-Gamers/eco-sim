@@ -1619,7 +1619,7 @@ MonoBehaviour:
     hasUpgradedBrainParametersWithActionSpec: 1
   m_Model: {fileID: 5022602860645237092, guid: 95b9dd35900f1924c8a488a1314a15ee, type: 3}
   m_InferenceDevice: 0
-  m_BehaviorType: 0
+  m_BehaviorType: 2
   m_BehaviorName: RabbitBehavior
   TeamId: 0
   m_UseChildSensors: 1

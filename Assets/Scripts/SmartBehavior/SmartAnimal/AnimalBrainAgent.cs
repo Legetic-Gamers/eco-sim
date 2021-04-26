@@ -9,6 +9,7 @@ using AnimalsV2.States.AnimalsV2.States;
 using Unity.Barracuda;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
+using Unity.MLAgents.Policies;
 using Unity.MLAgents.Sensors;
 using UnityEngine;
 using UnityEngine.AI;
@@ -50,6 +51,12 @@ public class AnimalBrainAgent : Agent,IAgent
 
     public override void OnEpisodeBegin()
     {
+
+        //dont run OnEpisodeBegin if inference mode
+        if (TryGetComponent(out BehaviorParameters bp) && bp.BehaviorType == BehaviorType.InferenceOnly) return;
+        
+        
+        Debug.Log("WHY IS ONEPISODEBEGIN GETTING CALLED?");
         base.OnEpisodeBegin();
         
 

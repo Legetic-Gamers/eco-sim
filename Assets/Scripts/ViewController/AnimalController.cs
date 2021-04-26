@@ -193,9 +193,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     
     public virtual void OnObjectDespawn()
     {
-        TickEventUnsubscribe();
-        StopAllCoroutines();
-        
+
         if (TryGetComponent(out Senses s))
         {
             s.Deactivate();
@@ -204,6 +202,8 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         {
             dm.Deactivate();
         }  
+        TickEventUnsubscribe();
+        StopAllCoroutines();
     }
 
     public abstract string GetObjectLabel();
