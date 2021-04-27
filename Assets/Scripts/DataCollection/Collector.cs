@@ -152,9 +152,9 @@ namespace DataCollection
                 float birthRate = 0;
                 //if(currentAnimalsTotalAlivePerSpecies[i] == 0) continue;
                 if (currentAnimalsTotalAlivePerSpecies[i] - newBirths[i] > 0f ) birthRate = newBirths[i] / (currentAnimalsTotalAlivePerSpecies[i] - newBirths[i]);
-                birthRatePerMinute[i].Add(birthRate);
+                birthRatePerMinute[i].Add((float) Math.Round(birthRate, 1));
                 newBirths[i] = 0;
-                animalsAlivePerSpecies[i].Add(currentAnimalsTotalAlivePerSpecies[i]);
+                animalsAlivePerSpecies[i].Add((float) Math.Round((double) currentAnimalsTotalAlivePerSpecies[i], 1));
             }
             timeIndexBirth++;
             if (timeIndexFood > 0) foodActivePerMinute.Add(foodActivePerMinute[timeIndexFood - 1] + foodDelta);
@@ -191,9 +191,9 @@ namespace DataCollection
                 if(animalVar[trait].Count <= gen) animalVar[trait].Add(0);
                 (float mean, float var) =
                         GetNewMeanVariance(animalMean[trait][gen],animalVar[trait][gen], traitsInAnimal[indexTrait], animalTotal[gen]);
-                if(animalMean.Count <= gen) animalMean[trait].Add(mean);
+                if(animalMean.Count <= gen) animalMean[trait].Add((float) Math.Round(mean, 1));
                 else animalMean[trait][gen] = mean;
-                if(animalVar.Count <= gen) animalVar[trait].Add(var);
+                if(animalVar.Count <= gen) animalVar[trait].Add((float) Math.Round(var, 1));
                 else animalVar[trait][gen] = var;
                 indexTrait++;
             }
@@ -276,11 +276,11 @@ namespace DataCollection
             (float meanDist, float varDist) =
                 GetNewMeanVariance(animalMean[11][gen], animalVar[11][gen], distanceTravelled, totalDeadAnimals[gen]);
                 
-            animalMean[12][gen] = meanAge;
-            animalVar[12][gen] = varAge;
+            animalMean[12][gen] = (float) Math.Round(meanAge, 1);
+            animalVar[12][gen] = (float) Math.Round(varAge, 1);
             
-            animalMean[11][gen] = meanDist;
-            animalVar[11][gen] = varDist;
+            animalMean[11][gen] = (float) Math.Round(meanDist, 1);
+            animalVar[11][gen] = (float) Math.Round(varDist, 1);
 
             causeOfDeath[cause] = causeOfDeath[cause] += 1;
             //Debug.Log("cause of death: " + cause.ToString());
