@@ -92,7 +92,7 @@ public class MushroomController : PlantController
     {
         meshRenderer.enabled = false;
         capsuleCollider.enabled = false;
-        yield return new WaitForSeconds(10f / Time.timeScale);
+        yield return new WaitForSeconds(10f);
         plantModel.isRegrowing = false; //reset isregrowing which is set to true when GetEaten() in plantmodel is called
         meshRenderer.enabled = true;
         capsuleCollider.enabled = true;
@@ -125,7 +125,7 @@ public class MushroomController : PlantController
     {
         while (true)
         {
-            yield return new WaitForSeconds(Random.Range(1f, 1.5f)/Time.timeScale);
+            yield return new WaitForSeconds(Random.Range(1f, 1.5f));
             Grow();
         }
     }

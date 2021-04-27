@@ -270,7 +270,7 @@ public class DumbAgent : Agent, IAgent
         }
         
         // Wait a while then change state and resume walking
-        yield return new WaitForSeconds(delaySeconds/Time.timeScale);
+        yield return new WaitForSeconds(delaySeconds);
         
         //subscribe to own onSenseTick
         if (senses)

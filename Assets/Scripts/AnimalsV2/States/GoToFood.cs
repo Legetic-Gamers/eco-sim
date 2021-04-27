@@ -131,15 +131,5 @@ namespace AnimalsV2.States
 
             return closestFood != null && !(finiteStateMachine.currentState is EatingState) && !animal.animalModel.HighEnergy;
         }
-
-        IEnumerator ChangeStuckState()
-        {
-            yield return new WaitForSeconds(10f / Time.timeScale);
-            if (isActiveState())
-            {
-                Debug.Log("State is stuck, but is now changing to default!");
-                finiteStateMachine.GoToDefaultState();
-            }
-        }
     }
 }

@@ -244,9 +244,9 @@ public abstract class AnimalModel
         // initializing parameters
         this.generation = generation;
         age = 0;
-        currentHealth = traits.maxHealth;
-        currentEnergy = traits.maxEnergy;
-        currentHydration = traits.maxHydration;
+        currentHealth = traits.maxHealth * 0.5f;
+        currentEnergy = traits.maxEnergy * 0.5f;
+        currentHydration = traits.maxHydration * 0.5f;
         reproductiveUrge = 0;
         this.traits = traits;
     }

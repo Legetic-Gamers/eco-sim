@@ -195,7 +195,7 @@ public class ObjectPooler : MonoBehaviour
             Debug.Log("Cause of death: " + cause.ToString());
         }
         
-        yield return new WaitForSeconds(delay / Time.timeScale);
+        yield return new WaitForSeconds(delay);
         if (animalController != null)
         {
             if (animalController.TryGetComponent(out IPooledObject pooledObject))

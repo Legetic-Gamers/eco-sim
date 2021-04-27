@@ -230,7 +230,7 @@ namespace ViewController.Senses
             {
                 FindTargets();
                 onSenseTick?.Invoke();
-                yield return new WaitForSeconds(0.5f/Time.timeScale);
+                yield return new WaitForSeconds(0.5f);
             
             }
         }

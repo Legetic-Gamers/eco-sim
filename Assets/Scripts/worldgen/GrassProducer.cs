@@ -78,7 +78,7 @@ public class GrassProducer : MonoBehaviour
 
     IEnumerator ExpirePlant(PlantController plantController)
     {
-        yield return new WaitForSeconds(60f / Time.timeScale);
+        yield return new WaitForSeconds(60f);
         plantController.GetEaten(); //just remove the food
     }
     
