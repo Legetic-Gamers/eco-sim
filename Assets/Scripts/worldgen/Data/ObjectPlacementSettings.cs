@@ -52,8 +52,7 @@ public struct ObjectType
 {
     [SerializeField]
     private string name;
-    [SerializeField]
-    private GameObjectSettings[] gameObjectSettings;
+    
     [SerializeField]
     private float minimumDistance;
     [SerializeField]
@@ -69,6 +68,9 @@ public struct ObjectType
     [SerializeField]
     [Range(0, 1)]
     private float maxHeight;
+    
+    [SerializeField]
+    private GameObjectSettings[] gameObjectSettings;
 
     public ObjectType(string name, GameObjectSettings[] gameObjectSettings, float minimumDistance, int newPointCount, float scale, float yOffset, float minHeight, float maxHeight)
     {

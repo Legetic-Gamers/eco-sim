@@ -62,8 +62,10 @@ public class ParameterUI : MonoBehaviour
 
     void lookAtCamera()
     {
-        if(transform == null) return;
-        transform.LookAt(transform.position + camera.transform.rotation * Vector3.back, camera.transform.rotation * Vector3.up);
+        if (camera && transform)
+        {
+            transform.LookAt(transform.position + camera.transform.rotation * Vector3.back, camera.transform.rotation * Vector3.up);
+        }
     }
 
     bool isCloseToCamera()

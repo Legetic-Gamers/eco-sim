@@ -212,12 +212,16 @@ public abstract class AnimalModel
     public bool HighEnergy => currentEnergy / traits.maxEnergy > 0.8f;
 
     public bool LowEnergy => currentEnergy / traits.maxEnergy < 0.5f;
+    
+    public bool CriticalEnergy => currentEnergy / traits.maxEnergy < 0.15f;
 
     public bool HydrationFull => currentHydration == traits.maxHydration;
 
     public bool HighHydration => currentHydration / traits.maxHydration > 0.8f;
 
     public bool LowHydration => currentHydration / traits.maxHydration < 0.5f;
+    
+    public bool CriticalHydration => currentHydration / traits.maxHydration < 0.15f;
 
     public bool WantingOffspring => (reproductiveUrge / traits.maxReproductiveUrge > (traits.maxEnergy - currentEnergy) / traits.maxEnergy) && (reproductiveUrge / traits.maxReproductiveUrge > (traits.maxHydration - currentHydration) / traits.maxHydration) && !isPregnant;
     //reproductive urge greater than average of energy and hydration.

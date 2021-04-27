@@ -145,7 +145,7 @@ namespace AnimalsV2.States
 
         public override bool MeetRequirements()
         {
-            return animal.heardHostileTargets.Concat(animal.visibleHostileTargets).ToList().Count > 0;
+            return animal.heardHostileTargets.Concat(animal.visibleHostileTargets).ToList().Count > 0 && !animal.animalModel.CriticalHydration && !animal.animalModel.CriticalEnergy;
         }
     }
 }
