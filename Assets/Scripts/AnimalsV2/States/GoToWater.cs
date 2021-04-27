@@ -44,7 +44,7 @@ using UnityEngine;
                     if (!succesful)
                     {
                         //Debug.Log("State gotoWater is stuck, changing to defaultState");
-                        //finiteStateMachine.GoToDefaultState();
+                        finiteStateMachine.GoToDefaultState();
                     }
                     
                     Vector3 a = new Vector3(animal.transform.position.x, 0, animal.transform.position.z);
