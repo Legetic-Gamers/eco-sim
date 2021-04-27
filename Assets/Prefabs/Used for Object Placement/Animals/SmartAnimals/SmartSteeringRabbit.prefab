@@ -2503,7 +2503,7 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 1
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 5022602860645237092, guid: 05168d7b9b372f8468d1d9f0126f5ab8, type: 3}
+  m_Model: {fileID: 5022602860645237092, guid: 7c3b81b881a66b14fb2f2be14818f8a0, type: 3}
   m_InferenceDevice: 2
   m_BehaviorType: 2
   m_BehaviorName: Movement
