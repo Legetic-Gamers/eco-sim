@@ -8,7 +8,7 @@ public class RabbitModel : AnimalModel,IEdible
     public float nutritionValue { get; set; }
 
     public RabbitModel() : base(new Traits(1f, 100, 50, 
-                                    100, 6.65f, 5f, 
+                                    100, 6f, 20f, 
                                     10,30, 10, 
                                     160, 13, 7), 0)
 
@@ -23,7 +23,7 @@ public class RabbitModel : AnimalModel,IEdible
     
     public RabbitModel(Traits traits, int generation) : base(traits, generation)
     {
-        nutritionValue = traits.maxEnergy * 4.5f;
+        nutritionValue = traits.maxEnergy / 2;
         offspringCount = 2;
         gestationTime = 10;
     }

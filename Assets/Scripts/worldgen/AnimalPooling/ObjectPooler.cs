@@ -189,8 +189,12 @@ public class ObjectPooler : MonoBehaviour
         else if (am.age >= am.traits.ageLimit) cause = AnimalModel.CauseOfDeath.Age;
         else if (am.currentHealth <= 0) cause = AnimalModel.CauseOfDeath.Health;
         else cause = AnimalModel.CauseOfDeath.Eaten;
+
+        if (animalController is WolfController)
+        {
+            Debug.Log("Cause of death: " + cause.ToString());
+        }
         
-        Debug.Log("Cause of death: " + cause.ToString());
         yield return new WaitForSeconds(delay / Time.timeScale);
         if (animalController != null)
         {
@@ -292,10 +296,7 @@ public class ObjectPooler : MonoBehaviour
                             poolDictionary[label].Enqueue(obj);
                         }
 
-                        if (poolDictionary[label].TryDequeue(out objectToSpawn))
-                        {
-                            Debug.Log(objectToSpawn.name);
-                        }
+                        poolDictionary[label].TryDequeue(out objectToSpawn);
                         objectToSpawn.SetActive(true);
                     }
                 }

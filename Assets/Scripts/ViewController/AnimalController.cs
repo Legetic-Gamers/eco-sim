@@ -355,7 +355,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         // reproductive urge
         if (animalModel.HighEnergy && animalModel.HighHydration)
         {
-            animalModel.reproductiveUrge += 0.04f * reproductiveUrgeModifier;
+            animalModel.reproductiveUrge += reproductiveUrgeModifier;
         }
     }
     private void Update()

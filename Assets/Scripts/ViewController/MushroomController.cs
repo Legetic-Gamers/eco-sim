@@ -41,7 +41,7 @@ public class MushroomController : PlantController
         
         
         // chance of reproducing every 2 seconds if age and size restrictions are met.
-        if (plantModel.isMature && r > 0.999)
+        if (plantModel.isMature && r > 0.9975)
         {
             Reproduce();
         }
