@@ -114,6 +114,9 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         
         agent = GetComponent<NavMeshAgent>();
         agent.autoBraking = true;
+        //Can be used later.
+        baseAngularSpeed = agent.angularSpeed;
+        baseAcceleration = agent.acceleration;
         
         tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
         
@@ -164,14 +167,12 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     public virtual void onObjectSpawn()
     {
         
-        //Can be used later.
-        baseAngularSpeed = agent.angularSpeed;
-        baseAcceleration = agent.acceleration;
+        agent.acceleration = baseAcceleration * Time.timeScale;
+        agent.angularSpeed = baseAcceleration * Time.timeScale;
         
         animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
         agent.speed = animalModel.currentSpeed * Time.timeScale;
-        agent.acceleration *= Time.timeScale;
-        agent.angularSpeed *= Time.timeScale;
+        
         
         //agent.isStopped = false;
         fsm.Initialize(wanderState);
@@ -352,7 +353,10 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         
         
         // reproductive urge
-        animalModel.reproductiveUrge += 0.04f * reproductiveUrgeModifier;
+        if (animalModel.HighEnergy && animalModel.HighHydration)
+        {
+            animalModel.reproductiveUrge += 0.04f * reproductiveUrgeModifier;
+        }
     }
     private void Update()
     {

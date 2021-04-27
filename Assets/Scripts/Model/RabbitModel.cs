@@ -24,7 +24,7 @@ public class RabbitModel : AnimalModel,IEdible
     public RabbitModel(Traits traits, int generation) : base(traits, generation)
     {
         nutritionValue = traits.maxEnergy;
-        offspringCount = 3;
+        offspringCount = 2;
         gestationTime = 10;
     }
 
