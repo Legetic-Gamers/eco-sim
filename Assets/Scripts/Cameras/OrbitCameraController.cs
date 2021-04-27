@@ -36,6 +36,7 @@ public class OrbitCameraController : MonoBehaviour
     public float minZoom;
 
     // camera transform
+    public Vector3 startPosition;
     public Vector3 newPosition;
     public Vector3 newZoom;
     private Quaternion newRotation;
@@ -53,6 +54,7 @@ public class OrbitCameraController : MonoBehaviour
     private void Start()
     {
         instance = this;
+        startPosition = transform.position;
         newPosition = transform.position;
         newRotation = transform.rotation;
         newZoom = camera.transform.localPosition;
@@ -98,7 +100,6 @@ public class OrbitCameraController : MonoBehaviour
     {
         if (followTransform && followTransform.gameObject.TryGetComponent(out AnimalController animalController))
         {
-            Debug.Log("Camera: Exiting lock on mode");
             animalController.parameterUI.gameObject.SetActive(showUI);
             followTransform = null;
         }
@@ -331,6 +332,11 @@ public class OrbitCameraController : MonoBehaviour
     {
         // "sprinting"
         movementSpeed = Input.GetKey(KeyCode.LeftShift) ? fastSpeed : normalSpeed;
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            newPosition = startPosition;
+        }
 
         // WASD/arrows input
         if (navigateWithKeyboard)
