@@ -89,6 +89,7 @@ public class ButtonClick : Window_Graph
         dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Wolf"});
         dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Deer"});
         dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Bear"});
+        dropdownPopulation.value = 1;
         dropdownPopulation.value = 0;
         DropDownPopulation();
     }
@@ -101,6 +102,7 @@ public class ButtonClick : Window_Graph
         dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Wolf"});
         dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Deer"});
         dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Bear"});
+        dropdownPopulation.value = 1;
         dropdownPopulation.value = 0;
         DropDownPopulation();
     }

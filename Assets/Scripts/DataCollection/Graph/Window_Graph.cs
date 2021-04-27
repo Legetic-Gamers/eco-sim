@@ -107,14 +107,14 @@ public class Window_Graph : MonoBehaviour
     if (gameObjectList != null) DestroyGraph(gameObjectList);
     if (_isGraphOne && _isGraphTwo)
     {
-        ShowGraph(list1, Color.red);
-        DrawCurve(list2, Color.blue);
+        ShowGraph(list1, lineColor);
+        DrawCurve(list2, Color.red);
     }
         
     else if (_isGraphOne)
-        ShowGraph(list1, Color.red);
+        ShowGraph(list1, lineColor);
     else if (_isGraphTwo)
-        ShowGraph(list2, Color.blue);
+        ShowGraph(list2, Color.red);
 }
 
 
@@ -123,13 +123,13 @@ private void ReDraw(object sender, EventArgs e)
     if (gameObjectList != null) DestroyGraph(gameObjectList);
     if (_isGraphOne && _isGraphTwo)
     {
-        ShowGraph(_list1, Color.red);
-        DrawCurve(_list2, Color.blue);
+        ShowGraph(_list1, lineColor);
+        DrawCurve(_list2, Color.red);
     }
     else if (_isGraphOne)
-        ShowGraph(_list1, Color.red);
+        ShowGraph(_list1, lineColor);
     else if (_isGraphTwo)
-        ShowGraph(_list2, Color.blue);
+        ShowGraph(_list2, Color.red);
 }
 
 
