@@ -81,7 +81,7 @@ public class Traits
     public float maxReproductiveUrge
     {
         get => _maxReproductiveUrge; 
-        set => _maxReproductiveUrge = Mathf.Clamp(value, 1,40);
+        set => _maxReproductiveUrge = Mathf.Clamp(value, 1,200);
     }
     
     public float endurance { get; set; }
