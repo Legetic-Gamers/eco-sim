@@ -118,9 +118,9 @@ public class AnimalBrainAgent : Agent,IAgent
         if (animalModel == null) return;
         
         //parameters of the Animal = 2
-        sensor.AddObservation(animalModel.GetEnergyPercentage);
+        sensor.AddObservation(animalModel.EnergyPercentage);
         //sensor.AddObservation(animalModel.currentSpeed / animalModel.traits.maxSpeed); //UNESSECARY
-        sensor.AddObservation(animalModel.GetHydrationPercentage); 
+        sensor.AddObservation(animalModel.HydrationPercentage); 
         //sensor.AddObservation(animalModel.currentHealth / animalModel.traits.maxHealth);//UNESSECARY
         //sensor.AddObservation(animalModel.WantingOffspring); IS ALREADY IN GOTOMATE REQUIREMENTS
 

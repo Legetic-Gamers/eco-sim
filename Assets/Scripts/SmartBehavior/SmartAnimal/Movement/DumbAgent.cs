@@ -90,13 +90,13 @@ public class DumbAgent : Agent, IAgent
         sensor.AddObservation(nearestFoodDistance);
         sensor.AddObservation(nearestFood.x);
         sensor.AddObservation(nearestFood.z);
-        sensor.AddObservation(animalModel.GetEnergyPercentage);
+        sensor.AddObservation(animalModel.EnergyPercentage);
         
         //Add observations for water
         sensor.AddObservation(nearestWaterDistance);
         sensor.AddObservation(nearestWater.x);
         sensor.AddObservation(nearestWater.z);
-        sensor.AddObservation(animalModel.GetHydrationPercentage);
+        sensor.AddObservation(animalModel.HydrationPercentage);
         
         //Add observations for mate
         sensor.AddObservation(potentialMateDistance);

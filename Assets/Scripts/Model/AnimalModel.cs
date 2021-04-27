@@ -199,14 +199,12 @@ public abstract class AnimalModel
 
     public float GetHealthPercentage => currentHealth / traits.maxEnergy;
 
-    public float GetEnergyPercentage => currentEnergy / traits.maxEnergy;
+    public float EnergyPercentage => currentEnergy / traits.maxEnergy;
 
-    public float GetHydrationPercentage => currentHydration / traits.maxHydration;
+    public float HydrationPercentage => currentHydration / traits.maxHydration;
 
-    public float GetSpeedPercentage => currentSpeed / traits.maxSpeed;
+    public float SpeedPercentage => currentSpeed / traits.maxSpeed;
     
-    public float GetUrgePercentage => reproductiveUrge / traits.maxReproductiveUrge;
-
     public bool EnergyFull => currentEnergy == traits.maxEnergy;
 
     public bool HighEnergy => currentEnergy / traits.maxEnergy > 0.8f;
@@ -223,7 +221,7 @@ public abstract class AnimalModel
     
     public bool CriticalHydration => currentHydration / traits.maxHydration < 0.15f;
 
-    public bool WantingOffspring => (reproductiveUrge / traits.maxReproductiveUrge > (traits.maxEnergy - currentEnergy) / traits.maxEnergy) && (reproductiveUrge / traits.maxReproductiveUrge > (traits.maxHydration - currentHydration) / traits.maxHydration) && !isPregnant;
+    public bool WantingOffspring => (ReproductiveUrgePercentage > EnergyPercentage / traits.maxEnergy) && (ReproductiveUrgePercentage > (traits.maxHydration - currentHydration) / traits.maxHydration) && !isPregnant && ReproductiveUrgePercentage > 0.2;
     //reproductive urge greater than average of energy and hydration.
     //reproductiveUrge > (currentEnergy + currentHydration) / (traits.maxEnergy + traits.maxHydration);
     // public bool WantingOffspring()
@@ -238,6 +236,7 @@ public abstract class AnimalModel
     //     return condition;
     // }
 
+    public float ReproductiveUrgePercentage => reproductiveUrge / traits.maxReproductiveUrge;
     public bool LowHealth => currentHealth < 30;
 
     public AnimalModel(Traits traits, int generation)
