@@ -2785,15 +2785,15 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5945667779142240406}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c0795e2e31cde64428dc997f642c4648, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  showNavMeshAgentPath: 1
+  showNavMeshAgentPath: 0
   allowNavigateWithClick: 0
-  showVisibleTargets: 1
-  showFleeingVector: 0
+  showVisibleTargets: 0
+  showFleeingVector: 1
   showPerceptionRange: 0
 --- !u!114 &4070453221509366237
 MonoBehaviour:

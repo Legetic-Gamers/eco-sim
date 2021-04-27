@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -14,21 +15,36 @@ namespace AnimalsV2.States
     {
         private Vector3 averagePosition;
 
+        private string stateName = "FleeingState";
+
         public FleeingState(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal,
             finiteStateMachine)
         {
             stateAnimation = Running;
         }
-
-        // own timer (note it's unit is number of LogicalUpdate ticks. This is the number of ticks in which the state will hold after MeetRequirements becomes false. We want the animal to run a little more than just outside of percieved predators space
-        private float timer;
-        private const float startTimerValue = 3f;
+        
         
         public override void Enter()
         {
             base.Enter();
-            timer = startTimerValue;
+            float fleeTime;
+
+            if (IsBeingChased())
+            {
+                stateName = "Fleeing";
+                fleeTime = 3f;
+            } else if (IsSeenByHostile())
+            {
+                stateName = "Evade vision";
+                fleeTime = 2f;
+            }
+            else
+            {
+                stateName = "Avoiding hostile";
+                fleeTime = 1f;
+            }
             
+            animal.StartCoroutine(ReturnToDefaultStateAfterDelay(fleeTime));
             //Make an update instantly
             LogicUpdate();
         }
@@ -36,6 +52,7 @@ namespace AnimalsV2.States
         public override void Exit()
         {
             base.Exit();
+            animal.StopCoroutine(ReturnToDefaultStateAfterDelay(0));
         }
 
         public override void LogicUpdate()
@@ -53,14 +70,7 @@ namespace AnimalsV2.States
             //If we found a hostile averagePosition we set new vector and reset timer
             if (averagePosition != animal.transform.position)
             {
-                timer = startTimerValue;
                 pointToRunTo = NavigationUtilities.RunFromPoint(animal.transform,averagePosition);
-            }
-            else
-            {
-                //No hostile found, reset timer.
-                
-                timer-=0.5f;
             }
 
             //Move agent
@@ -70,49 +80,67 @@ namespace AnimalsV2.States
                 NavMeshHit hit;
                 if (NavMesh.SamplePosition(pointToRunTo, out hit, animal.agent.height*2, 1 << NavMesh.GetAreaFromName("Walkable")))
                 {
-                    animal.agent.SetDestination(hit.position);
-                    
+                    NavigationUtilities.NavigateToPoint(animal, hit.position);
+
                 }//Try running perpendicular to front (Avoid walls).
                 else if (NavigationUtilities.PerpendicularPoint(animal.transform.position,animal.transform.forward,animal.transform.up,animal.agent.height*2 + 2f,out pointToRunTo))
                 {
-                    //animal.agent.SetDestination(pointToRunTo);
-                    
-                    //To avoid async path calculation we do this
-                    NavMeshPath path = new NavMeshPath();
-                    animal.agent.CalculatePath(pointToRunTo, path);
-                    if (path.status != NavMeshPathStatus.PathInvalid)
-                    {
-                        animal.agent.SetPath(path);
-                    }
-                    
+                    NavigationUtilities.NavigateToPoint(animal, pointToRunTo);
+
                 } //Try running randomly if no other way found.
                 else if(NavigationUtilities.RandomPoint(animal.transform.position, 10f,10f, out pointToRunTo))
                 {
-                    //animal.agent.SetDestination(pointToRunTo);
-                    
-                    //To avoid async path calculation we do this
-                    NavMeshPath path = new NavMeshPath();
-                    animal.agent.CalculatePath(pointToRunTo, path);
-                    if (path.status != NavMeshPathStatus.PathInvalid)
-                    {
-                        animal.agent.SetPath(path);
-                    }
+                    NavigationUtilities.NavigateToPoint(animal, pointToRunTo);
                 }
-                
-                // animal.agent.height*2
-            }
-
-            // if timer has ran out, we change to default state
-            if (timer <= 0)
-            {
-                finiteStateMachine.GoToDefaultState();
             }
 
         }
 
+        IEnumerator ReturnToDefaultStateAfterDelay(float delay)
+        {
+            yield return new WaitForSeconds(delay);
+            
+            //if no hostiles go back to default state
+            if (!MeetRequirements())
+            {
+                finiteStateMachine.GoToDefaultState();
+            }
+            else
+            {
+                Enter();
+            }
+        }
+
+        private bool IsBeingChased()
+        {
+            foreach (GameObject hostile in animal.heardHostileTargets.Concat(animal.visibleHostileTargets))
+            {
+                if (hostile.TryGetComponent(out AnimalController hostileAnimalController) && hostileAnimalController.fsm.currentState is GoToFood)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private bool IsSeenByHostile()
+        {
+            foreach (GameObject hostile in animal.heardHostileTargets.Concat(animal.visibleHostileTargets))
+            {
+                if (hostile.TryGetComponent(out AnimalController hostileAnimalController) && hostileAnimalController.visibleFoodTargets.Contains(animal.gameObject))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        
+
         public override string ToString()
         {
-            return "Fleeing";
+            return stateName;
         }
 
         public override bool MeetRequirements()
