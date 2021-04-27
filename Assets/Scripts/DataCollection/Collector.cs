@@ -191,9 +191,9 @@ namespace DataCollection
                 if(animalVar[trait].Count <= gen) animalVar[trait].Add(0);
                 (float mean, float var) =
                         GetNewMeanVariance(animalMean[trait][gen],animalVar[trait][gen], traitsInAnimal[indexTrait], animalTotal[gen]);
-                if(animalMean.Count <= gen) animalMean[trait].Add((float) Math.Round(mean, 1));
+                if(animalMean[trait].Count <= gen) animalMean[trait].Add((float) Math.Round(mean, 1));
                 else animalMean[trait][gen] = mean;
-                if(animalVar.Count <= gen) animalVar[trait].Add((float) Math.Round(var, 1));
+                if(animalVar[trait].Count <= gen) animalVar[trait].Add((float) Math.Round(var, 1));
                 else animalVar[trait][gen] = var;
                 indexTrait++;
             }
@@ -256,7 +256,7 @@ namespace DataCollection
             // Changes the referenced lists depending on the species of the animal. 
             (List<List<float>> animalMean, List<List<float>> animalVar, _) = GetAnimalList(am);
             
-            if (gen > animalMean[12].Count - 1)
+            if (gen > animalMean[11].Count - 1)
             {
                 //Debug.Log("generation is: " + gen + " and list length is: " + animalMean[12].Count);
                 int difference = gen + 1 - animalMean[12].Count;
@@ -383,11 +383,12 @@ namespace DataCollection
         // source: https://www.johndcook.com/blog/standard_deviation/
         private (float m, float v) GetNewMeanVariance(float m, float s,float valueToAdd, float populationSize)
         {
-            var oldM = m;
-            if(populationSize > 1) s = s * (populationSize - 2);
+            if (populationSize <= 1) return (valueToAdd, 0f);
+            float oldM = m;
+            s = s * (populationSize - 2f);
             m += (valueToAdd - m) / populationSize;
             s += (valueToAdd - m) * (valueToAdd - oldM);
-            return (populationSize > 1) ? (m, s / (populationSize - 1f)) : (valueToAdd, 0);
+            return (m, s / (populationSize - 1f));
         }
 
         public void CollectNewFood()
