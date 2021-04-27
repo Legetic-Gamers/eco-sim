@@ -23,15 +23,30 @@ namespace Menus
         public Text timerText;
         private float timer = 0f;
 
+        public static bool isPaused2;
 
         private float lastGameSpeed = 1f;
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Escape) && !isEnded)
+            if (Input.GetKeyDown(KeyCode.Escape) && !isEnded && !isPaused2)
             {
                 if (isPaused) Resume();
                 else Pause();
+            }
+
+            if (Input.GetKeyDown(KeyCode.P) && !isPaused)
+            {
+                if (isPaused2)
+                {
+                    Time.timeScale = lastGameSpeed;
+                }
+                else
+                {
+                    lastGameSpeed = Time.timeScale;
+                    Time.timeScale = 0;
+                }
+                isPaused2 = !isPaused2;
             }
         }
 
