@@ -22,15 +22,11 @@ namespace AnimalsV2.States
         {
             stateAnimation = Running;
         }
-
-        // own timer (note it's unit is number of LogicalUpdate ticks. This is the number of ticks in which the state will hold after MeetRequirements becomes false. We want the animal to run a little more than just outside of percieved predators space
-        private float timer;
-        private const float startTimerValue = 3f;
+        
         
         public override void Enter()
         {
             base.Enter();
-            timer = startTimerValue;
             float fleeTime;
 
             if (IsBeingChased())
@@ -74,14 +70,7 @@ namespace AnimalsV2.States
             //If we found a hostile averagePosition we set new vector and reset timer
             if (averagePosition != animal.transform.position)
             {
-                timer = startTimerValue;
                 pointToRunTo = NavigationUtilities.RunFromPoint(animal.transform,averagePosition);
-            }
-            else
-            {
-                //No hostile found, reset timer.
-                
-                timer-=0.5f;
             }
 
             //Move agent
@@ -103,12 +92,6 @@ namespace AnimalsV2.States
                 {
                     NavigationUtilities.NavigateToPoint(animal, pointToRunTo);
                 }
-            }
-
-            // if timer has ran out, we change to default state
-            if (timer <= 0)
-            {
-                //finiteStateMachine.GoToDefaultState();
             }
 
         }
