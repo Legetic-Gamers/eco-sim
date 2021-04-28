@@ -204,7 +204,7 @@ public class DumbAgent : Agent, IAgent
     {
         AnimalModel animalModel = animalController.animalModel;
 
-        //Debug.Log("currentEnergy: " + animalController.animalModel.currentEnergy);
+        //Debug.Log("currentEnergy: " + aniangularmalController.animalModel.currentEnergy);
         float reward = 0f;
         //Give reward
         if (food.GetComponent<AnimalController>()?.animalModel is IEdible edibleAnimal &&

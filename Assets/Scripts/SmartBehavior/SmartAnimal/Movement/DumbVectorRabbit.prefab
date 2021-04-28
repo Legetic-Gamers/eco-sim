@@ -270,7 +270,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animal: {fileID: 4793952549922607340}
   state: {fileID: 41221827750650220}
-  health: {fileID: 6696603951424238317}
   energy: {fileID: 6696603952247768484}
   hydration: {fileID: 6696603950890210517}
   reproductiveUrge: {fileID: 6696603950841797154}
@@ -2289,6 +2288,7 @@ GameObject:
   - component: {fileID: 2495113230471018666}
   - component: {fileID: 45032740508211837}
   - component: {fileID: 1759933966862006105}
+  - component: {fileID: 281582929052994623}
   m_Layer: 8
   m_Name: DumbVectorRabbit
   m_TagString: Animal
@@ -2344,7 +2344,7 @@ NavMeshAgent:
   m_Speed: 2
   m_Acceleration: 10
   avoidancePriority: 50
-  m_AngularSpeed: 100
+  m_AngularSpeed: 2000
   m_StoppingDistance: 0.1
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 0
@@ -2593,6 +2593,18 @@ MonoBehaviour:
   eyesTransform: {fileID: 7144086159933997272}
   centerTransform: {fileID: 6554643367461361501}
   isTraining: 0
+--- !u!114 &281582929052994623
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4793952549922607340}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d9fcffdb87451b408ef834740fc630f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4793952549949646182
 GameObject:
   m_ObjectHideFlags: 0

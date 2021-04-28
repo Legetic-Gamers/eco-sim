@@ -168,7 +168,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     {
         
         agent.acceleration = baseAcceleration;
-        agent.angularSpeed = baseAcceleration;
+        agent.angularSpeed = baseAngularSpeed;
         
         animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
         agent.speed = animalModel.currentSpeed;
