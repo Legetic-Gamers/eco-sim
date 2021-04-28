@@ -29,14 +29,16 @@ namespace AnimalsV2.States
             base.Enter();
             float fleeTime;
 
-            if (IsBeingChased())
+            if (IsSeenByHostile())
             {
-                stateName = "Fleeing";
-                fleeTime = 3f;
-            } else if (IsSeenByHostile())
-            {
-                stateName = "Evade vision";
-                fleeTime = 2f;
+                if (IsBeingChased())
+                {
+                    stateName = "Fleeing";
+                    fleeTime = 3f;
+                } else {
+                    stateName = "Evade vision";
+                    fleeTime = 1.5f;   
+                }
             }
             else
             {
