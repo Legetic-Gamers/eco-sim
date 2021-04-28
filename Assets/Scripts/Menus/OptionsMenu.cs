@@ -2,14 +2,7 @@
  * Author: Johan A.
  */
 
-using System;
-using System.Diagnostics;
-using ICSharpCode.NRefactory.Ast;
 using UnityEngine;
-using UnityEngine.Audio;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
-using Debug = UnityEngine.Debug;
 
 namespace Menus
 {

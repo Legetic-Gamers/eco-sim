@@ -167,11 +167,11 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     public virtual void onObjectSpawn()
     {
         
-        agent.acceleration = baseAcceleration * Time.timeScale;
-        agent.angularSpeed = baseAcceleration * Time.timeScale;
+        agent.acceleration = baseAcceleration;
+        agent.angularSpeed = baseAcceleration;
         
         animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
-        agent.speed = animalModel.currentSpeed * Time.timeScale;
+        agent.speed = animalModel.currentSpeed;
         
         
         //agent.isStopped = false;
@@ -301,7 +301,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     public void SetSpeed(float speedModifier)
     {
         animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier;
-        agent.speed = animalModel.currentSpeed * Time.timeScale;
+        agent.speed = animalModel.currentSpeed;
     }
 
     protected void HighEnergyState()
@@ -337,9 +337,9 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier;
         if (agent != null)
         {
-            agent.speed = animalModel.currentSpeed * Time.timeScale;   
-            agent.acceleration = baseAcceleration * Time.timeScale;
-            agent.angularSpeed = baseAngularSpeed * Time.timeScale;
+            agent.speed = animalModel.currentSpeed;   
+            agent.acceleration = baseAcceleration;
+            agent.angularSpeed = baseAngularSpeed;
         }
 
         // energy
@@ -447,8 +447,8 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
             float childEnergy = animalModel.currentEnergy * 0.3f +
                                 targetAnimalController.animalModel.currentEnergy * 0.3f;
             childEnergy /= animalModel.offspringCount; // split the energy between the offspring
-            float childHydration = animalModel.currentHydration * 0.25f +
-                                   targetAnimalController.animalModel.currentHydration * 0.25f;
+            float childHydration = animalModel.currentHydration * 0.4f +
+                                   targetAnimalController.animalModel.currentHydration * 0.4f;
             childHydration /= animalModel.offspringCount; // split the hydration between the offspring
 
             // Expend energy and give it to child(ren)
