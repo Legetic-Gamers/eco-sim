@@ -16,9 +16,9 @@ namespace Model
             }
             set
             {
-                if (value > plantMaxsize)
+                if (value > plantMaxNutrition)
                 {
-                    _nutritionValue = plantMaxsize;
+                    _nutritionValue = plantMaxNutrition;
                 }
                 else
                 {
@@ -47,12 +47,12 @@ namespace Model
             }
         }
 
-        public bool isMature => !isRegrowing && plantAge > plantMaxAge/2  && nutritionValue > plantMaxsize/2;
+        public bool isMature => !isRegrowing && nutritionValue > plantMaxNutrition/2;
         
         public bool isRegrowing;
 
         public const float plantMaxAge = 60;
-        public const float plantMaxsize = 40;
+        public const float plantMaxNutrition = 60;
         
         public PlantModel(float nutritionValue, float plantAge)
         {
@@ -71,7 +71,7 @@ namespace Model
         public void Grow()
         {
             plantAge += 1f;
-            nutritionValue += 4;
+            nutritionValue += 1;
             if (plantAge >= plantMaxAge)
             {
                 onGrowOld?.Invoke();
