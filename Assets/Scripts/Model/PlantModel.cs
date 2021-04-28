@@ -7,7 +7,7 @@ namespace Model
     {
         public Action onGrowOld;
 
-        public float _nutritionValue;
+        private float _nutritionValue;
         public float nutritionValue
         {
             get
@@ -27,7 +27,7 @@ namespace Model
             }
         }
 
-        public float _plantAge;
+        private float _plantAge;
         public float plantAge
         {
             get
@@ -51,7 +51,7 @@ namespace Model
         
         public bool isRegrowing;
 
-        public const float plantMaxAge = 60;
+        public const float plantMaxAge = 120;
         public const float plantMaxNutrition = 60;
         
         public PlantModel(float nutritionValue, float plantAge)

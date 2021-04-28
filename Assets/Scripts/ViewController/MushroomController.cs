@@ -138,8 +138,8 @@ public class MushroomController : PlantController
     public override void onObjectSpawn()
     {
         plantModel = new PlantModel();
-        plantModel._nutritionValue = 0;
-        plantModel._plantAge = 0;
+        plantModel.nutritionValue = 0;
+        plantModel.plantAge = 0;
         plantModel.onGrowOld += HandleDeathStatus;
         SetPhenotype();
         StartCoroutine(PlantControllerUpdate());

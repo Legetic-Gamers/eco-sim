@@ -2792,8 +2792,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   showNavMeshAgentPath: 0
   allowNavigateWithClick: 0
-  showVisibleTargets: 1
-  showFleeingVector: 1
+  showVisibleTargets: 0
+  showFleeingVector: 0
   showPerceptionRange: 0
 --- !u!114 &4070453221509366237
 MonoBehaviour:
