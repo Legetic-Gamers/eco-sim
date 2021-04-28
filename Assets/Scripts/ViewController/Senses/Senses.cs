@@ -78,7 +78,7 @@ namespace ViewController.Senses
                 //If target is a plant, try to find its center transform, otherwise target transform is at the bottom.
                 if (target.gameObject.CompareTag("Plant"))
                 {
-                    if(target.TryGetComponent(out PlantController plantController) && plantController.centerTransform != null && plantController.plantModel != null && plantController.plantModel.isRegrowing)
+                    if(target.TryGetComponent(out PlantController plantController) && plantController.centerTransform != null )
                     {
                         targetTransform = plantController.centerTransform;
                     }
