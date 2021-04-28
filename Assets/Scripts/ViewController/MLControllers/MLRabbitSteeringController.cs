@@ -57,12 +57,7 @@ public class MLRabbitSteeringController : AnimalController
         }
         base.Awake();
 
-        
-        
-        agent.acceleration *= Time.timeScale;
-        agent.angularSpeed *= Time.timeScale; 
-        
-        
+
     }
 
     public override void ChangeModifiers(State state)

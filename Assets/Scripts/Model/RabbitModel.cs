@@ -9,7 +9,7 @@ public class RabbitModel : AnimalModel,IEdible
     public bool isEaten { get; set; }
 
     public RabbitModel() : base(new Traits(1f, 70, 50, 
-                                    50, 6.25f, 35f, 
+                                    50, 6.25f, 30f, 
                                     10,30, 10, 
                                     160, 13, 7), 0)
 
@@ -17,14 +17,15 @@ public class RabbitModel : AnimalModel,IEdible
         // Rabbit specific initialization 
         
         //nutritionValue is same as maxEnergy in this case
-        nutritionValue = traits.maxEnergy;
+        nutritionValue = traits.maxEnergy * 2;
         offspringCount = 3; // rabbits will get more offspring
         gestationTime = 10; // 4 weeks IRL 
     }
     
     public RabbitModel(Traits traits, int generation) : base(traits, generation)
     {
-        nutritionValue = traits.maxEnergy / 2;
+        nutritionValue = traits.maxEnergy * 2;
+
         offspringCount = 3;
         gestationTime = 10;
     }

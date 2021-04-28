@@ -86,7 +86,7 @@ namespace AnimalsV2.States
                     //Overshoot if we are chasing another animal.
                     if (closestFood.TryGetComponent(out NavMeshAgent otherAgent))
                     {
-                        pointToRunTo = pointToRunTo + otherAgent.velocity * (1/Time.timeScale);
+                        pointToRunTo = pointToRunTo + otherAgent.velocity;
                     }
 
                     //Move the animal using the navmeshagent.
