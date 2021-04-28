@@ -4,8 +4,8 @@ using Model;
 public class WolfModel : AnimalModel, IEdible
 {
     public WolfModel() : base(new Traits(2.35f, 250, 100, 
-                                200, 6.25f, 75f, 
-                                10, 75, 10, 
+                                200, 6.25f, 80f, 
+                                10, 70, 10, 
                                 180, 14, 10), 0)
 
     {

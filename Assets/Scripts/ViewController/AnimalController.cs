@@ -444,11 +444,11 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
             targetAnimalController.animalModel.WantingOffspring)
         {
 
-            float childEnergy = animalModel.currentEnergy * 0.3f +
-                                targetAnimalController.animalModel.currentEnergy * 0.3f;
+            float childEnergy = animalModel.currentEnergy * 0.5f +
+                                targetAnimalController.animalModel.currentEnergy * 0.5f;
             childEnergy /= animalModel.offspringCount; // split the energy between the offspring
-            float childHydration = animalModel.currentHydration * 0.3f +
-                                   targetAnimalController.animalModel.currentHydration * 0.3f;
+            float childHydration = animalModel.currentHydration * 0.5f +
+                                   targetAnimalController.animalModel.currentHydration * 0.5f;
             childHydration /= animalModel.offspringCount; // split the hydration between the offspring
 
             // Expend energy and give it to child(ren)
