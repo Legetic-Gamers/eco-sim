@@ -145,3 +145,4 @@ MonoBehaviour:
   meshRenderer: {fileID: 8585085198824190952}
   ripeMaterial: {fileID: 2100000, guid: 6a1c4b1a3c638af449aad46de78081dc, type: 2}
   youngMaterial: {fileID: 2100000, guid: 5633c670b57895148a0218ee4faa36a6, type: 2}
+  reproductionProbability: 0.1363

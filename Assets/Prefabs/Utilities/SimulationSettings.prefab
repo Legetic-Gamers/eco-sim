@@ -134,7 +134,7 @@ MonoBehaviour:
       - gameObjectIndex: 2
         probability: 1
     - name: Plants
-      minimumDistance: 7.06
+      minimumDistance: 13
       newPointCount: 20
       scale: 1
       _yOffset: 0
