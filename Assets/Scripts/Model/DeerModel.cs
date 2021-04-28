@@ -14,7 +14,7 @@ public class DeerModel : AnimalModel, IEdible
         nutritionValue = traits.maxEnergy;
     }
     public float nutritionValue { get; set; }
-
+    public bool isEaten { get; set; }
     
     public DeerModel(Traits traits, int generation) : base(traits, generation)
     {
@@ -41,7 +41,14 @@ public class DeerModel : AnimalModel, IEdible
     
     public float GetEaten()
     {
-        actionKilled?.Invoke();
-        return nutritionValue;
+        //Only return nutrition if deer has not already been eaten.
+        if (!isEaten)
+        {
+            actionKilled?.Invoke();
+            isEaten = true;
+            return nutritionValue;
+        }
+
+        return 0;
     }
 }

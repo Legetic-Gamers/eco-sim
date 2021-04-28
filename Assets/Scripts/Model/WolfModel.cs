@@ -20,6 +20,7 @@ public class WolfModel : AnimalModel, IEdible
         gestationTime = 15;
     }
     public float nutritionValue { get; set; }
+    public bool isEaten { get; set; }
 
 
 
@@ -46,7 +47,14 @@ public class WolfModel : AnimalModel, IEdible
 
     public float GetEaten()
     {
-        actionKilled?.Invoke();
-        return nutritionValue;
+        //Only return nutrition if wolf has not already been eaten.
+        if (!isEaten)
+        {
+            actionKilled?.Invoke();
+            isEaten = true;
+            return nutritionValue;
+        }
+
+        return 0;
     }
 }

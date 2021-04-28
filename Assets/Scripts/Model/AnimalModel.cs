@@ -221,7 +221,7 @@ public abstract class AnimalModel
     
     public bool CriticalHydration => currentHydration / traits.maxHydration < 0.2f;
 
-    public bool WantingOffspring =>  !isPregnant && ReproductiveUrgePercentage > 0.9;
+    public bool WantingOffspring =>  !isPregnant && ReproductiveUrgePercentage >= 1;
     //reproductive urge greater than average of energy and hydration.
     //reproductiveUrge > (currentEnergy + currentHydration) / (traits.maxEnergy + traits.maxHydration);
     // public bool WantingOffspring()

@@ -6,6 +6,7 @@ using Random = System.Random;
 public class RabbitModel : AnimalModel,IEdible
 {
     public float nutritionValue { get; set; }
+    public bool isEaten { get; set; }
 
     public RabbitModel() : base(new Traits(1f, 100, 50, 
                                     100, 6.25f, 35f, 
@@ -38,8 +39,16 @@ public class RabbitModel : AnimalModel,IEdible
 
     public float GetEaten()
     {
-        actionKilled?.Invoke();
-        return nutritionValue;
+        //Only return nutrition if rabbit has not already been eaten.
+        if (!isEaten)
+        {
+            actionKilled?.Invoke();
+            isEaten = true;
+            return nutritionValue;
+        }
+
+        return 0;
+        
     }
 
     public override bool CanEat<T>(T obj)

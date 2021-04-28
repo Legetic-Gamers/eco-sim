@@ -6,6 +6,12 @@
         {
             get;
         }
+
+        bool isEaten
+        {
+            get;
+        }
+
         float GetEaten();
     }
 }

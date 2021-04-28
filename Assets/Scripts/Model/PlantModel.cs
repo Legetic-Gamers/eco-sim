@@ -8,12 +8,11 @@ namespace Model
         public Action onGrowOld;
 
         private float _nutritionValue;
+        public bool isEaten { get; set; }
+
         public float nutritionValue
         {
-            get
-            {
-                return _nutritionValue;
-            }
+            get { return _nutritionValue; }
             set
             {
                 if (value > plantMaxNutrition)
@@ -28,12 +27,10 @@ namespace Model
         }
 
         private float _plantAge;
+
         public float plantAge
         {
-            get
-            {
-                return _plantAge;
-            }
+            get { return _plantAge; }
             set
             {
                 if (value > plantMaxAge)
@@ -47,13 +44,13 @@ namespace Model
             }
         }
 
-        public bool isMature => !isRegrowing && nutritionValue > plantMaxNutrition/2;
-        
+        public bool isMature => !isRegrowing && nutritionValue > plantMaxNutrition / 2;
+
         public bool isRegrowing;
 
         public const float plantMaxAge = 120;
         public const float plantMaxNutrition = 60;
-        
+
         public PlantModel(float nutritionValue, float plantAge)
         {
             this.plantAge = plantAge;
@@ -76,9 +73,8 @@ namespace Model
             {
                 onGrowOld?.Invoke();
             }
-            
         }
-       
+
         public float GetEaten()
         {
             float tmp = 0;
@@ -87,9 +83,10 @@ namespace Model
                 tmp = nutritionValue;
                 nutritionValue = 0;
                 isRegrowing = true;
+                
             }
+
             return tmp;
         }
-        
     }
 }
