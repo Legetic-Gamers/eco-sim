@@ -16,7 +16,7 @@ public class MushroomController : PlantController
     public Material youngMaterial;
     
     
-    private float reproductionProbability = 0.3f;
+    private float reproductionProbability = 0.05f;
     
     public void Start()
     {
