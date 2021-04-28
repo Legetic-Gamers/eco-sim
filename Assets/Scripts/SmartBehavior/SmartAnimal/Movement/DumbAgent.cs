@@ -186,6 +186,12 @@ public class DumbAgent : Agent, IAgent
     {
         AnimalModel animalModel = animalController.animalModel;
 
+        if (!animalController.isTraining)
+        {
+            //Turn 180 degrees to help them not get stuck
+            transform.RotateAround (transform.position, transform.up, 180f);
+        }
+        
         // the reward should be proportional to how much hydration was gained when drinking
         float reward = animalModel.traits.maxHydration - currentHydration;
         // normalize reward as a percentage

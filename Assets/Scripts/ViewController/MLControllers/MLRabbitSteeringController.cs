@@ -138,7 +138,7 @@ public class MLRabbitSteeringController : AnimalController
     public override void UpdateParameters()
     {
         //The age will increase 2 per 2 seconds.
-        animalModel.age += 1;
+        animalModel.age += 0.2f;
 
         if (isTraining)
         {
@@ -156,18 +156,21 @@ public class MLRabbitSteeringController : AnimalController
         else
         {
             // energy
-            animalModel.currentEnergy -= (animalModel.age / 20 + animalModel.currentSpeed / 10 +
-                                          animalModel.traits.viewRadius / 10 + animalModel.traits.hearingRadius / 10)
+            animalModel.currentEnergy -= (animalModel.currentSpeed / 10 +
+                                          animalModel.traits.viewRadius / 10 + animalModel.traits.hearingRadius / 8)
                                          * animalModel.traits.size * energyModifier;
 
             // hydration
-            animalModel.currentHydration -= (animalModel.traits.size / 2.5f) * (1 + animalModel.currentSpeed / animalModel.traits.endurance *
+            animalModel.currentHydration -= (animalModel.traits.size) * (1 + animalModel.currentSpeed / 10  *
                 hydrationModifier);
-        }
         
-
+            
+        }
         // reproductive urge
-        animalModel.reproductiveUrge += 0.01f * reproductiveUrgeModifier;
+        if (animalModel.HighEnergy && animalModel.HighHydration)
+        {
+            animalModel.reproductiveUrge += reproductiveUrgeModifier;
+        }
 
     }
     
