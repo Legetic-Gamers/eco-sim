@@ -76,6 +76,7 @@ namespace Model
             {
                 onGrowOld?.Invoke();
             }
+            
         }
        
         public float GetEaten()

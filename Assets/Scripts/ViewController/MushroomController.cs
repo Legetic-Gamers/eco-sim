@@ -12,6 +12,9 @@ public class MushroomController : PlantController
     public CapsuleCollider capsuleCollider;
     public MeshRenderer meshRenderer;
 
+    public Material ripeMaterial;
+    public Material youngMaterial;
+    
     public void Start()
     {
         //If there is no object pooler present, we need to call onObjectSpawn through start
@@ -28,6 +31,24 @@ public class MushroomController : PlantController
         //   
         float nutritionPercent = (plantModel.nutritionValue / PlantModel.plantMaxNutrition);
         gameObject.transform.localScale = new Vector3(nutritionPercent, nutritionPercent, nutritionPercent ) * 3f;
+        
+        //Update mushroom material to reflect maturity
+
+        
+            if (plantModel.isMature && ripeMaterial != null)
+            {
+                // renderer.material = renderer.materials[0];
+                meshRenderer.material = ripeMaterial;
+            }
+            else if(youngMaterial != null)
+            {
+                // renderer.material = renderer.materials[1];
+                meshRenderer.material = youngMaterial;
+            }
+
+            
+        
+
     }
     
     private void Grow()
