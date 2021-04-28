@@ -15,6 +15,9 @@ public class MushroomController : PlantController
     public Material ripeMaterial;
     public Material youngMaterial;
     
+    
+    private float reproductionProbability = 0.3f;
+    
     public void Start()
     {
         //If there is no object pooler present, we need to call onObjectSpawn through start
@@ -64,8 +67,9 @@ public class MushroomController : PlantController
         float r = Random.Range(0, 1f);
         
         
+        //0.9975
         // chance of reproducing every 2 seconds if age and size restrictions are met.
-        if (plantModel.isMature && r > 0.9975)
+        if (plantModel.isMature && r > (1-reproductionProbability))
         {
             Reproduce();
         }
@@ -91,12 +95,27 @@ public class MushroomController : PlantController
             }
         }
         */
+        
+        
+        //If there already is mushroom nearby, dont spawn new
+        //This is a restriction!
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, 7f);
+        foreach (var hitCollider in hitColliders)
+        {
+            if(hitCollider.gameObject == gameObject) continue;
+            
+            if (hitCollider.gameObject.CompareTag("Plant"))
+            {
+                return;
+            }
+
+        }
             
         float rx = Random.Range(-10f, 10f);
         float rz = Random.Range(-10f, 10f);
         Vector3 newPosition = new Vector3(position.x + rx, position.y, position.z + rz);
         NavMeshHit hit;
-        if (NavMesh.SamplePosition(newPosition, out hit, 5f,
+        if (NavMesh.SamplePosition(newPosition, out hit, 10f,
             1 << NavMesh.GetAreaFromName("Walkable")))
         {
             SpawnNewPlant?.Invoke(GetObjectLabel(),hit.position);
@@ -128,7 +147,14 @@ public class MushroomController : PlantController
     {
         if (gameObject.activeSelf)
         {
-            Reproduce();
+            //50% to spawn new
+            // float r = Random.Range(0, 1f);
+            // if (r > 0.5)
+            // {
+            //     Reproduce();
+            // }
+            
+            //Reproduce();
             onDeadPlant?.Invoke(this);
             StopAllCoroutines();
             plantModel.onGrowOld -= HandleDeathStatus;
