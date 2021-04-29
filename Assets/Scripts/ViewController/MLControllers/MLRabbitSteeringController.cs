@@ -38,6 +38,7 @@ public class MLRabbitSteeringController : AnimalController
 
     new void Awake()
     {
+        
         if (TryGetComponent(out BehaviorParameters bp))
         {
             isTraining = bp.BehaviorType == BehaviorType.Default || bp.BehaviorType == BehaviorType.HeuristicOnly;

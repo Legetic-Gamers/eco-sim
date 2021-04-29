@@ -204,10 +204,16 @@ public class DumbAgent : Agent, IAgent
     {
         AnimalModel animalModel = animalController.animalModel;
 
-        //Debug.Log("currentEnergy: " + aniangularmalController.animalModel.currentEnergy);
+        if (food == null)
+        {
+            Debug.Log("food is null");
+            return;
+        }
+            
+        //Debug.Log("currentEnergy: " + animalController.animalModel.currentEnergy);
         float reward = 0f;
         //Give reward
-        if (food.GetComponent<AnimalController>()?.animalModel is IEdible edibleAnimal &&
+        if (food.TryGetComponent(out AnimalController foodAnimalController) && foodAnimalController.animalModel is IEdible edibleAnimal &&
             animalModel.CanEat(edibleAnimal))
         {
             float nutritionReward = edibleAnimal.nutritionValue;
@@ -217,7 +223,7 @@ public class DumbAgent : Agent, IAgent
             reward = Math.Min(nutritionReward, hunger);
             // normalize reward as a percentage
             reward /= animalModel.traits.maxEnergy;
-        } else if (food.GetComponent<PlantController>()?.plantModel is IEdible ediblePlant && animalModel.CanEat(ediblePlant))
+        } else if (food.TryGetComponent(out PlantController foodPlantController) && foodPlantController.plantModel  is IEdible ediblePlant && animalModel.CanEat(ediblePlant))
         {
             float nutritionReward = ediblePlant.nutritionValue;
             float hunger = animalModel.traits.maxEnergy - currentEnergy;
@@ -226,6 +232,7 @@ public class DumbAgent : Agent, IAgent
             reward = Math.Min(nutritionReward, hunger);
             reward /= animalModel.traits.maxEnergy;
         }
+        Destroy(food);
         AddReward((1 - reward) * 0.1f);
     }
     

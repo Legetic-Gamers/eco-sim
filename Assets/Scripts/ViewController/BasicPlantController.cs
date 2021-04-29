@@ -13,11 +13,11 @@ namespace ViewController
         public override float GetEaten()
         {
             float nutrition = plantModel.GetEaten();
+            onDeadPlant?.Invoke(this);
             if (!FindObjectOfType<ObjectPooler>())
             {
-                Destroy(gameObject);
+                //Destroy(gameObject);
             }
-            onDeadPlant?.Invoke(this);
             return nutrition;
         }
         
