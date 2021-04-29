@@ -119,7 +119,7 @@ public class ButtonClick : Window_Graph
         if (isPerMinute)
         {
             GetListPopulationPerMinute(species);
-            xLabel.text = "Minute";
+            xLabel.text = "Time (minute)";
         }
 
         yLabel.text = dropdownPopulation.GetComponent<Dropdown>().options [species].text + " population";
@@ -147,14 +147,14 @@ public class ButtonClick : Window_Graph
         int species = dropdownBirthRate.GetComponent<Dropdown>().value;
         GetListBirthRate(species);
         yLabel.text = "Birth rate " + dropdownBirthRate.GetComponent<Dropdown>().options [species].text;
-        xLabel.text = "Minute";
+        xLabel.text = "Time (minute)";
     }
 
     public void OnButtonFoodAvailable()
     {
         GetListFoodAvailable();
         yLabel.text = "Amount of food";
-        xLabel.text = "Minute";
+        xLabel.text = "Time (minute)";
     }
     
 
