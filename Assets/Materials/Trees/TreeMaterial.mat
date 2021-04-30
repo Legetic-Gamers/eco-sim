@@ -83,7 +83,7 @@ Material:
     m_Floats:
     - TransparencyDistance: 3
     - TransparencyDitherSize: 0.2
-    - Vector1_1A6F2BEE: 0.1
+    - Vector1_1A6F2BEE: -0.042
     - Vector1_42EB5EEC: 0.3
     - Vector1_6DDC62FF: 10
     - Vector1_893DCA18: 0.4
@@ -119,7 +119,7 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - Color_59D500A6: {r: 0.23584905, g: 0.025587412, b: 0.025587412, a: 0}
-    - Color_A6FA7443: {r: 0.4811321, g: 0.19397251, b: 0, a: 0}
+    - Color_A6FA7443: {r: 0.5176471, g: 0.30980393, b: 0.30980393, a: 0}
     - Color_B8C88667: {r: 0, g: 0, b: 0, a: 0}
     - Color_C90FA907: {r: 0.5377358, g: 0.44247234, b: 0.22574759, a: 0}
     - Direction: {r: 0.3, g: 0.3, b: 0, a: 0}
