@@ -203,6 +203,8 @@ public abstract class AnimalModel
 
     public float HydrationPercentage => currentHydration / traits.maxHydration;
 
+    public float AgePercentage => age / traits.ageLimit;
+
     public float SpeedPercentage => currentSpeed / traits.maxSpeed;
     
     public bool EnergyFull => currentEnergy == traits.maxEnergy;
