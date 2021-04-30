@@ -93,6 +93,6 @@ public class GrassProducer : MonoBehaviour
 
     private void OnDestroy()
     {
-        tickEventPublisher.onParamTickEvent -= GrowGrassNearby;
+        if(tickEventPublisher) tickEventPublisher.onParamTickEvent -= GrowGrassNearby;
     }
 }
