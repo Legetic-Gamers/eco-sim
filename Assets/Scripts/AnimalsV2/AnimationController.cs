@@ -87,15 +87,21 @@ namespace AnimalsV2
         }
 
         //Animation parameters which need updating on state enter.
-        private void FSM_OnStateEnter(State state)
+        public void FSM_OnStateEnter(State state)
         {
             //animator.SetFloat("runningSpeed",animal.animalModel.GetSpeedPercentage);
-            animator.CrossFade("Base Layer." + state.GetStateAnimation(), transitionSpeed, 0);
+            CrossOverAnimation(state.GetStateAnimation());
         }
 
-        private void PlayAnimation(State state)
+        public void PlayAnimation(string animationName)
         {
-            animator.Play("Base Layer." + state.GetStateAnimation(),0 ,0 );
+            animator.Play("Base Layer." + animationName,0 ,0 );
+        }
+
+        public void CrossOverAnimation(string animationName)
+        {
+            animator.CrossFade("Base Layer." + animationName, transitionSpeed, 0);
+
         }
 
         //Animation parameters which need updating every frame

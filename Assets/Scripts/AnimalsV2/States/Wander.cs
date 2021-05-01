@@ -77,12 +77,11 @@ namespace AnimalsV2.States
                     //Vector3 position = new Vector3(Random.Range(-10.0f, 10.0f), 0, Random.Range(-10.0f, 10.0f)) + animal.transform.position;
                     //Debug.Log("Framme!");
                     //Move the animal using the navmeshagent.
-                    NavMeshHit hit;
                     //TODO this maxDistance is what is causing rabbits to dance sometimes, if poisition cant be found.
                     // ALEXANDER H: https://docs.unity3d.com/ScriptReference/AI.NavMesh.SamplePosition.html recommends setting maxDistance as agents height * 2
 
                     float animalScale = Mathf.Max(1, animal.agent.height);
-                    if(NavigationUtilities.RandomPoint(animal.transform.position, 10 * animalScale,10f * animalScale, out nextPosition))
+                    if(NavigationUtilities.RandomPoint(animal.transform.position, 8 * animalScale,10f * animalScale, out nextPosition))
                     {
                         //animal.agent.SetDestination(nextPosition);
                         

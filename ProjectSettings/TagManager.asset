@@ -10,6 +10,7 @@ TagManager:
   - Wall
   - FxTemporaire
   - Music
+  - Hideout
   layers:
   - Default
   - TransparentFX

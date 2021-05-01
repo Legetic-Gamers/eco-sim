@@ -18,9 +18,6 @@ namespace AnimalsV2.States
         {
             base.Enter();
             
-            //Dont slow down when chasing.
-            animal.agent.autoBraking = false;
-            
             //Make an update instantly
             LogicUpdate();
         }
@@ -28,8 +25,6 @@ namespace AnimalsV2.States
         public override void Exit()
         {
             base.Exit();
-            
-            animal.agent.autoBraking = true;
         }
 
         public override void HandleInput()

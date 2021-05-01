@@ -35,7 +35,7 @@ namespace AnimalsV2
         {
             NavMeshHit hit;
             if (NavMesh.SamplePosition(position, out hit, animal.agent.height * 2,
-                1 << NavMesh.GetAreaFromName("Walkable")))
+                1 << NavMesh.GetAreaFromName("Walkable")) && animal.agent.isOnNavMesh)
             {
                 //animal.agent.SetDestination(hit.position);
                 //To avoid async path calculation we do this
@@ -77,9 +77,12 @@ namespace AnimalsV2
         //https://docs.unity3d.com/ScriptReference/AI.NavMesh.SamplePosition.html
         public static bool RandomPoint(Vector3 center, float range, float maxDist, out Vector3 result)
         {
-            while (true)
+            for (int i = 0; i < 100; i++)
             {
-                Vector3 randomPoint = center + Random.insideUnitSphere * range;
+                Vector3 randomPoint = Random.insideUnitSphere;
+                randomPoint.y = center.y;
+                randomPoint = randomPoint.normalized * range;
+                randomPoint += center;
                 NavMeshHit hit;
                 if (NavMesh.SamplePosition(randomPoint, out hit, maxDist, 1 << NavMesh.GetAreaFromName("Walkable")))
                 {
@@ -89,15 +92,6 @@ namespace AnimalsV2
                     //Try opposite direction to avoid clinging to walls.
                 }
             }
-            //     else if (NavMesh.SamplePosition(new Vector3(-randomPoint.x, randomPoint.y, -randomPoint.z), out hit,
-            //         maxDist, 1 << NavMesh.GetAreaFromName("Walkable")))
-            //     {
-            //         result = hit.position;
-            //         return true;
-            //     }
-            // }
-
-
             result = center;
             return false;
         }
