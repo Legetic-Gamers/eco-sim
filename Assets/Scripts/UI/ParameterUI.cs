@@ -13,6 +13,7 @@ public class ParameterUI : MonoBehaviour
     [SerializeField] private Slider energy;
     [SerializeField] private Slider hydration;
     [SerializeField] private Slider reproductiveUrge;
+    [SerializeField] private Slider age;
     
     [Header("Note disable -> lower performance")]
     [SerializeField] private bool onlyUpdateNearCamera;
@@ -95,6 +96,7 @@ public class ParameterUI : MonoBehaviour
         energy.value = animal.EnergyPercentage;
         hydration.value = animal.HydrationPercentage;
         reproductiveUrge.value = animal.ReproductiveUrgePercentage;
+        age.value = animal.AgePercentage;
         if(animalController.fsm.currentState != null) state.text = animalController.fsm.currentState.ToString();
     }
 }
