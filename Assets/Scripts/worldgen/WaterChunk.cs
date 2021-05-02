@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -85,13 +86,19 @@ public class WaterChunk : MonoBehaviour
             stylizedMeshRenderer.material = waterSettings.StylizedMaterial;
         }
 
+        StartCoroutine(DelayWaterSources(placeWaterSources));
+    }
+
+    IEnumerator DelayWaterSources(bool placeWaterSources)
+    {
+        Debug.Log("Putting down water sources the frame after start!");
+        yield return null;  //Very important. Schedule coroutine to fire after next frame after update
         if (placeWaterSources)
         {
             PlaceWaterSources();
         }
-
     }
-
+    
     private void OnDestroy()
     {
         Destroy(waterObject);
@@ -163,8 +170,9 @@ public class WaterChunk : MonoBehaviour
         box.size = new Vector3(0.5f, 0.5f, 0.5f);
         NavMeshHit hit;
         
+        
         //make sure water blocks are placed on navmesh
-        if (NavMesh.SamplePosition(pos, out hit, 5f,
+        if (NavMesh.SamplePosition(pos, out hit, 100f,
             1 << NavMesh.GetAreaFromName("Walkable")))
         {
             waterSource.transform.position = hit.position;
@@ -172,7 +180,10 @@ public class WaterChunk : MonoBehaviour
         else
         {
             waterSource.transform.position = pos;
+            
+            Debug.Log("WTF");
         }
+        
     }
 
 }
