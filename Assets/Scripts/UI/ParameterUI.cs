@@ -56,12 +56,12 @@ public class ParameterUI : MonoBehaviour
         // NOTE: this will be true even if the renderer is visible from scene view.
         if (renderer.isVisible)
         {
-            lookAtCamera();
+            LookAtCamera();
         }
     }
 
 
-    void lookAtCamera()
+    void LookAtCamera()
     {
         if (camera && transform)
         {

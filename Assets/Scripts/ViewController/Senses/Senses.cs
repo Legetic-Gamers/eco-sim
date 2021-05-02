@@ -128,7 +128,10 @@ namespace ViewController.Senses
 
         private void HandleHideoutTarget(GameObject target)
         {
-            animalController.visibleHideoutTargets.Add(target);
+            if (target.TryGetComponent(out HideoutController hideoutController) && hideoutController.CanHide(animalController))
+            {
+                animalController.visibleHideoutTargets.Add(target);
+            }
         }
         
         private void HandleHeardAnimalTarget(GameObject target)

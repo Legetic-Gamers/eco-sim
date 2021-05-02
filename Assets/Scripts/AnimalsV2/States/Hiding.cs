@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
+using UnityEngine.AI;
 using ViewController;
 
 namespace AnimalsV2.States
@@ -8,7 +9,6 @@ namespace AnimalsV2.States
     {
 
         private HideoutController target;
-        private Vector3 lastPosition;
         private bool isExiting;
         
         public Hiding(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine)
@@ -22,24 +22,21 @@ namespace AnimalsV2.States
 
         public override void Enter()
         {
-            Debug.Log("HEHEH");
             base.Enter();
             target.EnterHideout();
-            animal.agent.isStopped = true;
-            lastPosition = animal.transform.position;
-            animal.transform.position = target.transform.position;
-            finiteStateMachine.absorbingState = true;
+            finiteStateMachine.isLocked = true;
             isExiting = false;
+            animal.agent.enabled = false;
+            animal.GetComponentInChildren<SkinnedMeshRenderer>().enabled = false;
         }
 
         public override void Exit()
         {
             base.Exit();
-            animal.agent.isStopped = false;
-
             target.ExitHideout();
             target = null;
-            animal.transform.position = lastPosition;
+            animal.agent.enabled = true;
+            animal.GetComponentInChildren<SkinnedMeshRenderer>().enabled = true;
         }
 
         public override void LogicUpdate()
@@ -47,18 +44,17 @@ namespace AnimalsV2.States
             base.LogicUpdate();
             if (animal.heardHostileTargets.Count == 0 && !isExiting)
             { 
-                animal.StartCoroutine(delayExit());
+                animal.StartCoroutine(DelayExit());
             }
         }
 
-        IEnumerator delayExit()
+        IEnumerator DelayExit()
         {
             isExiting = true;
             yield return new WaitForSeconds(2);
             if (animal.heardHostileTargets.Count == 0)
             {
-                finiteStateMachine.absorbingState = false;
-                animal.transform.position = lastPosition;
+                finiteStateMachine.isLocked = false;
                 finiteStateMachine.GoToDefaultState();    
             }
             else

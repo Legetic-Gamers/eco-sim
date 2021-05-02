@@ -26,7 +26,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     [HideInInspector] public AnimationController animationController;
     
     // decisionMaker subscribes to these actions
-    public Action<GameObject> actionPerceivedHostile;
+    public Action< GameObject> actionPerceivedHostile;
     public Action<AnimalModel, Vector3, float, float, string> SpawnNew;
 
     // Start vector for the animal, used in datahandler distance travelled
@@ -50,7 +50,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     //States
     public FleeingState fleeingState;
     public GoToFood goToFoodState;
-    public Wander wanderState;
+    public Wander2 wanderState;
     public Idle idleState;
     public GoToWater goToWaterState;
     public MatingState matingState;
@@ -104,7 +104,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         
         goToFoodState = new GoToFood(this, fsm);
         fleeingState = new FleeingState(this, fsm);
-        wanderState = new Wander(this, fsm);
+        wanderState = new Wander2(this, fsm);
         idleState = new Idle(this, fsm);
         goToWaterState = new GoToWater(this, fsm);
         matingState = new MatingState(this, fsm);
@@ -277,7 +277,10 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
             case Idle _:
                 LowEnergyState();
                 break;
-            case Wander _:
+            case Wander2 _:
+                LowEnergyState();
+                break;
+            case Hiding _:
                 LowEnergyState();
                 break;
             case Dead _:
@@ -285,12 +288,6 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
                 hydrationModifier = 0f;
                 reproductiveUrgeModifier = 0f;
                 speedModifier = 0f;
-                break;
-            case MLInferenceState _:
-                energyModifier = 0.5f;
-                hydrationModifier = 0.5f;
-                reproductiveUrgeModifier = 20f;
-                speedModifier = JoggingSpeed;
                 break;
             default:
                 energyModifier = 0.1f;
@@ -498,7 +495,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
             {
                 OnObjectDespawn();
             }
-            fsm.ChangeState(deadState);
+            fsm.ChangeState(deadState, true);
         }
     }
     

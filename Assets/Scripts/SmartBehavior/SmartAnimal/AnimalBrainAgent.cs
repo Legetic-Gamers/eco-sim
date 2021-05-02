@@ -94,7 +94,7 @@ public class AnimalBrainAgent : Agent,IAgent
                 animalModel.currentHydration = animalModel.traits.maxHydration * beginHydration;
                 animalModel.reproductiveUrge = 0.0f;
                 animalModel.age = 0;
-                animalController.fsm.absorbingState = false;
+                animalController.fsm.isLocked = false;
                 
                 animalController.isInfertile = true;
             }

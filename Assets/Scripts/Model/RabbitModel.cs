@@ -8,8 +8,8 @@ public class RabbitModel : AnimalModel,IEdible
     public float nutritionValue { get; set; }
     public bool isEaten { get; set; }
 
-    public RabbitModel() : base(new Traits(1f, 60, 50, 
-                                    70, 6.25f, 30f, 
+    public RabbitModel() : base(new Traits(1f, 70, 50, 
+                                    60, 6.25f, 30f, 
                                     10,30, 10, 
                                     160, 13, 7), 0)
 

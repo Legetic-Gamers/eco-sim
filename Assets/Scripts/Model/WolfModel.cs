@@ -5,7 +5,7 @@ public class WolfModel : AnimalModel, IEdible
 {
     public WolfModel() : base(new Traits(2.35f, 250, 100, 
                                 260, 6.25f, 100f, 
-                                10, 120, 10, 
+                                10, 110, 10, 
                                 180, 14, 10), 0)
 
     {
