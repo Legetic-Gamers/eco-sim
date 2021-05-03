@@ -100,6 +100,9 @@ public class MLRabbitSteeringController : AnimalController
             case Wander _:
                 LowEnergyState();
                 break;
+            case Hiding _:
+                LowEnergyState();
+                break;
             case Dead _:
                 energyModifier = 0f;
                 hydrationModifier = 0f;
@@ -107,10 +110,10 @@ public class MLRabbitSteeringController : AnimalController
                 speedModifier = 0f;
                 break;
             case MLTrainingState _:
-                energyModifier = 0.4f;
-                hydrationModifier = 0.7f;
-                reproductiveUrgeModifier = 20f;
-                speedModifier = JoggingSpeed;
+                MediumEnergyState();
+                break;
+            case MLInferenceState _:
+                MediumEnergyState();
                 break;
             default:
                 energyModifier = 0.35f;
@@ -159,6 +162,7 @@ public class MLRabbitSteeringController : AnimalController
             // hydration
             animalModel.currentHydration -= (animalModel.traits.size) * (1 + animalModel.currentSpeed / 10  *
                 hydrationModifier);
+            
         
             
         }

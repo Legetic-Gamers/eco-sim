@@ -80,7 +80,7 @@ behaviors:
         memory_size: 256
 
     # Trainer configurations common to all trainers
-    max_steps: 10.0e6
+    max_steps: 40.0e6
     time_horizon: 128
     summary_freq: 20000
     keep_checkpoints: 5
@@ -105,7 +105,7 @@ engine_settings:
   #width: 84
   #height: 84
   #quality_level: 5
-  time_scale: 6
+  time_scale: 15
   #target_frame_rate: -1
   #capture_frame_rate: 60
   #no_graphics: false

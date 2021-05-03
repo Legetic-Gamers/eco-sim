@@ -48,14 +48,16 @@ namespace Model
 
         public bool isRegrowing;
 
-        public const float plantMaxAge = 200;
-        public const float plantMaxNutrition = 60;
+        public float plantMaxAge = 200;
+        public float plantMaxNutrition = 60;
 
-        public PlantModel(float nutritionValue, float plantAge)
+        public PlantModel(float nutritionValue, float plantAge, float plantMaxAge, float plantMaxNutrition)
         {
             this.plantAge = plantAge;
             isRegrowing = false;
             this.nutritionValue = nutritionValue;
+            this.plantMaxAge = plantMaxAge;
+            this.plantMaxNutrition = plantMaxNutrition;
         }
 
         public PlantModel()

@@ -50,7 +50,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     //States
     public FleeingState fleeingState;
     public GoToFood goToFoodState;
-    public Wander2 wanderState;
+    public Wander wanderState;
     public Idle idleState;
     public GoToWater goToWaterState;
     public MatingState matingState;
@@ -104,7 +104,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         
         goToFoodState = new GoToFood(this, fsm);
         fleeingState = new FleeingState(this, fsm);
-        wanderState = new Wander2(this, fsm);
+        wanderState = new Wander(this, fsm);
         idleState = new Idle(this, fsm);
         goToWaterState = new GoToWater(this, fsm);
         matingState = new MatingState(this, fsm);
@@ -277,7 +277,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
             case Idle _:
                 LowEnergyState();
                 break;
-            case Wander2 _:
+            case Wander _:
                 LowEnergyState();
                 break;
             case Hiding _:

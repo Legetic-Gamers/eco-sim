@@ -33,7 +33,7 @@ namespace AnimalsV2.States
             base.Enter();
 
             nextPosition = animal.transform.position;
-            
+
             //Make an update instantly
             LogicUpdate();
         }

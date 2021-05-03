@@ -6,12 +6,20 @@ public class DummyRabbitController : AnimalController
     
     new void Awake()
     {
-        base.Awake();
         animalModel = new RabbitModel();
+        base.Awake();
+        animalModel.currentHydration = animalModel.traits.maxHydration;
+        animalModel.currentEnergy = animalModel.traits.maxEnergy;
         animalModel.reproductiveUrge = 100f;
         fsm.SetDefaultState(idleState);
         fsm.ChangeState(idleState);
     }
+
+    public override void onObjectSpawn()
+    {
+        //Do nothing
+    }
+
     public override void ChangeModifiers(State state)
     {
         //Do nothing

@@ -37,7 +37,7 @@ namespace AnimalsV2.States
                     stateName = "Fleeing";
                     fleeTime = 3f;
                 } else {
-                    stateName = "Evade vision";
+                    stateName = "Evading vision";
                     fleeTime = 1.5f;   
                 }
             }
@@ -61,7 +61,7 @@ namespace AnimalsV2.States
         public override void LogicUpdate()
         {
             base.LogicUpdate();
-            
+
             // If a hideout is found try to hide
             GameObject hideout = NavigationUtilities.GetNearestObject(animal.visibleHideoutTargets, animal.transform.position);
             if (hideout && hideout.TryGetComponent(out HideoutController hideoutController) && hideoutController.CanHide(animal))
@@ -126,7 +126,7 @@ namespace AnimalsV2.States
             {
                 finiteStateMachine.GoToDefaultState();
             }
-            else
+            else if(finiteStateMachine.currentState == this)    //make sure that enter does not get called if state has changed since coroutine started (such as changing to hiding)
             {
                 Enter();
             }

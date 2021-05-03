@@ -7,7 +7,7 @@ namespace ViewController
     {
         public override void onObjectSpawn()
         {
-            plantModel = new PlantModel(35f, 40);
+            plantModel = new PlantModel(35f, 40, 80, 60);
         }
 
         public override float GetEaten()

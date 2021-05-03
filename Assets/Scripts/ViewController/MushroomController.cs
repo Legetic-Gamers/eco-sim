@@ -32,7 +32,7 @@ public class MushroomController : PlantController
         // float normalizedValue = 1f / PlantModel.plantMaxNutrition;
         // gameObject.transform.localScale = new Vector3(normalizedValue + 0.1f, normalizedValue + 0.1f,normalizedValue + 0.1f) * plantModel.nutritionValue;
         //   
-        float nutritionPercent = (plantModel.nutritionValue / PlantModel.plantMaxNutrition);
+        float nutritionPercent = (plantModel.nutritionValue / plantModel.plantMaxNutrition);
         gameObject.transform.localScale = new Vector3(nutritionPercent, nutritionPercent, nutritionPercent ) * 3f;
         
         //Update mushroom material to reflect maturity

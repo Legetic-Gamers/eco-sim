@@ -73,7 +73,7 @@ public class ParameterUI : MonoBehaviour
     {
         return Vector3.Distance(camera.transform.position, animal.transform.position) < cameraDistanceThreshold;
     }
-    void UpdateUI()
+    public void UpdateUI()
     {
         
         if (renderer.isVisible && !onlyUpdateNearCamera)
@@ -89,7 +89,7 @@ public class ParameterUI : MonoBehaviour
         else if(isCloseToCamera() && !gameObject.activeSelf) gameObject.SetActive(true);
     }
 
-    void UpdateRenderParameterUI()
+    public void UpdateRenderParameterUI()
     {
         AnimalModel animal = animalController.animalModel;
         //health.value = animal.GetHealthPercentage;
