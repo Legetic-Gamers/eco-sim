@@ -35,7 +35,7 @@ namespace Tests
             if (fsm != null)
             {
                 Assert.IsTrue(fsm.currentState is Wander);
-                Assert.IsFalse(fsm.absorbingState);
+                Assert.IsFalse(fsm.isLocked);
             }
 
 

@@ -26,7 +26,7 @@ namespace AnimalsV2.States
                     animal.agent.isStopped = true;
                 }
                 // Set state so that it can't change
-                finiteStateMachine.absorbingState = true;
+                finiteStateMachine.isLocked = true;
                 onDeath?.Invoke(animal, false);
             }
 

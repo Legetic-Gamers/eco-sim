@@ -22,9 +22,11 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     public Canvas parameterUI;
 
     [HideInInspector] public TickEventPublisher tickEventPublisher;
+
+    [HideInInspector] public AnimationController animationController;
     
     // decisionMaker subscribes to these actions
-    public Action<GameObject> actionPerceivedHostile;
+    public Action< GameObject> actionPerceivedHostile;
     public Action<AnimalModel, Vector3, float, float, string> SpawnNew;
 
     // Start vector for the animal, used in datahandler distance travelled
@@ -48,7 +50,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     //States
     public FleeingState fleeingState;
     public GoToFood goToFoodState;
-    public Wander wanderState;
+    public Wander2 wanderState;
     public Idle idleState;
     public GoToWater goToWaterState;
     public MatingState matingState;
@@ -57,6 +59,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     public EatingState eatingState;
     public GoToMate goToMate;
     public Waiting waitingState;
+    public Hiding hiding;
 
     //Constants
     protected const float WalkingSpeed = 0.3f;
@@ -78,6 +81,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     public List<GameObject> visibleFriendlyTargets = new List<GameObject>();
     public List<GameObject> visibleFoodTargets = new List<GameObject>();
     public List<GameObject> visibleWaterTargets = new List<GameObject>();
+    public List<GameObject> visibleHideoutTargets = new List<GameObject>();
 
 
     public List<GameObject> heardHostileTargets = new List<GameObject>();
@@ -100,7 +104,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         
         goToFoodState = new GoToFood(this, fsm);
         fleeingState = new FleeingState(this, fsm);
-        wanderState = new Wander(this, fsm);
+        wanderState = new Wander2(this, fsm);
         idleState = new Idle(this, fsm);
         goToWaterState = new GoToWater(this, fsm);
         matingState = new MatingState(this, fsm);
@@ -109,6 +113,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         eatingState = new EatingState(this, fsm);
         goToMate = new GoToMate(this, fsm);
         waitingState = new Waiting(this, fsm);
+        hiding = new Hiding(this, fsm);
         StateEventSubscribe();
         
         
@@ -119,6 +124,8 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         baseAcceleration = agent.acceleration;
         
         tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
+
+        animationController = GetComponent<AnimationController>();
         
         
         if (eyesTransform == null)
@@ -270,7 +277,10 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
             case Idle _:
                 LowEnergyState();
                 break;
-            case Wander _:
+            case Wander2 _:
+                LowEnergyState();
+                break;
+            case Hiding _:
                 LowEnergyState();
                 break;
             case Dead _:
@@ -278,12 +288,6 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
                 hydrationModifier = 0f;
                 reproductiveUrgeModifier = 0f;
                 speedModifier = 0f;
-                break;
-            case MLInferenceState _:
-                energyModifier = 0.5f;
-                hydrationModifier = 0.5f;
-                reproductiveUrgeModifier = 20f;
-                speedModifier = JoggingSpeed;
                 break;
             default:
                 energyModifier = 0.1f;
@@ -306,8 +310,8 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
 
     protected void HighEnergyState()
     {
-        energyModifier = 1f;
-        hydrationModifier = 1f;
+        energyModifier = 0.8f;
+        hydrationModifier = 0.8f;
         reproductiveUrgeModifier = 0f;
         speedModifier = RunningSpeed;
     }
@@ -491,7 +495,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
             {
                 OnObjectDespawn();
             }
-            fsm.ChangeState(deadState);
+            fsm.ChangeState(deadState, true);
         }
     }
     

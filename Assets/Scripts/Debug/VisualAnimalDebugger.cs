@@ -232,5 +232,12 @@ public class VisualAnimalDebugger : MonoBehaviour
             if (water != null)
                 Debug.DrawLine(thisTransform.position, water.transform.position, Color.blue);
         }
+
+        //Show line to hidouts
+        foreach (GameObject hideout in animalController.visibleHideoutTargets)
+        {
+            if(hideout != null)
+                Debug.DrawLine(thisTransform.position, hideout.transform.position, Color.black);
+        }
     }
 }

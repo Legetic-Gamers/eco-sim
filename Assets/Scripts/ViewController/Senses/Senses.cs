@@ -37,6 +37,7 @@ namespace ViewController.Senses
             animalController.visibleFriendlyTargets.Clear();
             animalController.visibleFoodTargets.Clear();
             animalController.visibleWaterTargets.Clear();
+            animalController.visibleHideoutTargets.Clear();
             
             animalController.heardHostileTargets.Clear();
             animalController.heardFriendlyTargets.Clear();
@@ -111,6 +112,9 @@ namespace ViewController.Senses
                             else if (target.gameObject.CompareTag("Water"))
                             {
                                 HandleWaterTarget(target);
+                            } else if (target.gameObject.CompareTag("Hideout"))
+                            {
+                                HandleHideoutTarget(target);                                
                             }
                         }
                         
@@ -121,6 +125,14 @@ namespace ViewController.Senses
 
         
         /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
+
+        private void HandleHideoutTarget(GameObject target)
+        {
+            if (target.TryGetComponent(out HideoutController hideoutController) && hideoutController.CanHide(animalController))
+            {
+                animalController.visibleHideoutTargets.Add(target);
+            }
+        }
         
         private void HandleHeardAnimalTarget(GameObject target)
         {
@@ -138,7 +150,7 @@ namespace ViewController.Senses
                 animalController.heardFriendlyTargets.Add(target);
             }
             //if this animalModel can eat the targets animalModel: add to visibleFoodTargets
-            else if (animalController.animalModel.CanEat(targetAnimalController.animalModel) )
+            else if (animalController.animalModel.CanEat(targetAnimalController.animalModel) && targetAnimalController.fsm.currentState != targetAnimalController.hiding)
             {
                 animalController.heardPreyTargets.Add(target);
             }
@@ -156,7 +168,7 @@ namespace ViewController.Senses
 
             }  
             //if this animalModel can the targets animalModel: add to visibleFoodTargets
-            else if (animalController.animalModel.CanEat(targetAnimalController.animalModel))
+            else if (animalController.animalModel.CanEat(targetAnimalController.animalModel) && targetAnimalController.fsm.currentState != targetAnimalController.hiding)
             {
                 animalController.visibleFoodTargets.Add(target);
             }

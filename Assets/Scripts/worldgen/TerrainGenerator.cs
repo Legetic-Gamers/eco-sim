@@ -168,6 +168,7 @@ public class TerrainGenerator : MonoBehaviour
             navMeshSurface.BuildNavMesh();
             //NavMesh.pathfindingIterationsPerFrame = (int)Math.Floor(500 * Time.timeScale);
         }
+        
     }
 
     private void OnTerrainChunkVisibilityChanged(TerrainChunk chunk, bool isVisible)

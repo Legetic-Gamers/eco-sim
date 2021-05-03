@@ -15,7 +15,7 @@ namespace AnimalsV2
         private State defaultState { get; set; }
         
         // Used to identify an absorbing state, such that no other state can be entered, e.g. Dead.
-        public bool absorbingState;
+        public bool isLocked;
         
         //State Change Listeners
         public event Action<State> OnStateEnter;
@@ -37,10 +37,15 @@ namespace AnimalsV2
         /// Changing states. 
         /// </summary>
         /// <param name="newState"> State to change into. </param>
-        public bool ChangeState(State newState)
+        public bool ChangeState(State newState, bool force = false)
         {
+            if (force)
+            {
+                isLocked = false;
+            }
+            
             // if the state is absorbing, meaning that state change is not possible or newState == CurrentState or newState does not meet requirements, we return
-            if( absorbingState || !newState.MeetRequirements()) return false;
+            if(isLocked || !newState.MeetRequirements()) return false;
             //If we try to enter same state, don't do anything but essentially the state change was good.
             if (newState == currentState) return true;
             
@@ -89,8 +94,7 @@ namespace AnimalsV2
 
         public void ForceDefaultState()
         {
-            absorbingState = false;
-            ChangeState(defaultState);
+            ChangeState(defaultState, true);
         }
 
         public void SetDefaultState(State state)

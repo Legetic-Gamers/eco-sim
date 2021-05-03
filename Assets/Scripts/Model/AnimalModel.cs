@@ -247,8 +247,8 @@ public abstract class AnimalModel
         this.generation = generation;
         age = 0;
         currentHealth = traits.maxHealth;
-        currentEnergy = traits.maxEnergy;
-        currentHydration = traits.maxHydration;
+        currentEnergy = traits.maxEnergy/2;
+        currentHydration = traits.maxHydration/2;
         reproductiveUrge = 0;
         this.traits = traits;
     }

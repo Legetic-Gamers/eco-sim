@@ -125,7 +125,7 @@ namespace Tests
                     break;
             }
 
-            if (!(stateToSwitchTo == fsm.currentState || fsm.absorbingState || !stateToSwitchTo.MeetRequirements()))
+            if (!(stateToSwitchTo == fsm.currentState || fsm.isLocked || !stateToSwitchTo.MeetRequirements()))
             {
                 //Assert that we actually switched state. Successful switch
                 Assert.Equals(stateToSwitchTo, fsm.currentState);

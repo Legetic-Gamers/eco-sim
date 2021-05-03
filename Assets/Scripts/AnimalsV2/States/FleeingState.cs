@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using AnimalsV2;
 using UnityEngine;
 using UnityEngine.AI;
+using ViewController;
 using static AnimalsV2.StateAnimation;
 
 namespace AnimalsV2.States
@@ -60,6 +61,24 @@ namespace AnimalsV2.States
         public override void LogicUpdate()
         {
             base.LogicUpdate();
+            
+            // If a hideout is found try to hide
+            GameObject hideout = NavigationUtilities.GetNearestObject(animal.visibleHideoutTargets, animal.transform.position);
+            if (hideout && hideout.TryGetComponent(out HideoutController hideoutController) && hideoutController.CanHide(animal))
+            {
+                NavigationUtilities.NavigateToPoint(animal, hideout.transform.position);
+                
+                if (Vector3.Distance(animal.transform.position, hideout.transform.position) < 1f)
+                {
+                    animal.hiding.SetTarget(hideoutController);
+                    finiteStateMachine.ChangeState(animal.hiding);
+                }
+                return;
+            }
+
+
+
+
             // Get average position of enemies
             List<GameObject> allHostileTargets = animal.heardHostileTargets.Concat(animal.visibleHostileTargets).ToList();
                 
