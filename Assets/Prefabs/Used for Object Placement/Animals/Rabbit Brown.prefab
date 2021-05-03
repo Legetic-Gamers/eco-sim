@@ -1931,7 +1931,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0795e2e31cde64428dc997f642c4648, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  showNavMeshAgentPath: 0
+  showNavMeshAgentPath: 1
   allowNavigateWithClick: 0
   showVisibleTargets: 0
   showFleeingVector: 0
@@ -1950,6 +1950,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   parameterUI: {fileID: 7793180233537021941}
   tickEventPublisher: {fileID: 0}
+  animationController: {fileID: 0}
   startVector: {x: 0, y: 0, z: 0}
   agent: {fileID: 0}
   energyModifier: 0
@@ -1960,6 +1961,7 @@ MonoBehaviour:
   visibleFriendlyTargets: []
   visibleFoodTargets: []
   visibleWaterTargets: []
+  visibleHideoutTargets: []
   heardHostileTargets: []
   heardFriendlyTargets: []
   heardPreyTargets: []
@@ -1973,7 +1975,7 @@ LineRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5945667779142240406}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1

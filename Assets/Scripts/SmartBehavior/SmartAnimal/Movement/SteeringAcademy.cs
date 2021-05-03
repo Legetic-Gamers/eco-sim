@@ -98,6 +98,13 @@ public class SteeringAcademy : MonoBehaviour
             obj.transform.position = obj.transform.position +
                                      new Vector3(Random.Range(-rangeX, rangeX), 0, Random.Range(-rangeZ, rangeZ));
 
+            if (environmentObject.spawnAtEdge)
+            {
+                NavMeshHit hit;
+                NavMesh.FindClosestEdge(obj.transform.position, out hit, NavMesh.AllAreas);
+                obj.transform.position = hit.position;
+            }
+            
             environmentObject.instances.Add(obj);
         }
     }
@@ -159,6 +166,7 @@ public class EnvironmentObject
     [SerializeField] public GameObject prefab;
     [SerializeField] public List<GameObject> instances;
     [SerializeField] public int amountPerRound;
+    [SerializeField] public bool spawnAtEdge;
 
     public string GetTag()
     {

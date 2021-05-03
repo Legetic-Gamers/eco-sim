@@ -1,4 +1,6 @@
 ﻿using System;
+using AnimalsV2.States;
+using UnityEngine;
 
 
 namespace AnimalsV2
@@ -43,12 +45,11 @@ namespace AnimalsV2
             {
                 isLocked = false;
             }
-            
+
             // if the state is absorbing, meaning that state change is not possible or newState == CurrentState or newState does not meet requirements, we return
             if(isLocked || !newState.MeetRequirements()) return false;
             //If we try to enter same state, don't do anything but essentially the state change was good.
             if (newState == currentState) return true;
-            
 
             if (currentState != null)
             {
@@ -87,9 +88,9 @@ namespace AnimalsV2
             OnStatePhysicsUpdate?.Invoke(currentState);
         }
 
-        public void GoToDefaultState()
+        public bool GoToDefaultState()
         {
-            ChangeState(defaultState);
+            return ChangeState(defaultState);
         }
 
         public void ForceDefaultState()
