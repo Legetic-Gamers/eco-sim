@@ -255,6 +255,7 @@ GameObject:
   - component: {fileID: 7109646815149258887}
   - component: {fileID: 7109646815149258886}
   - component: {fileID: 7109646815149258885}
+  - component: {fileID: 5885692597160147571}
   m_Layer: 5
   m_Name: ParameterUI
   m_TagString: Untagged
@@ -343,6 +344,26 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &5885692597160147571
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7109646815149258883}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d6578aa830fc2443ba8eb7dd052ea65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animal: {fileID: 0}
+  state: {fileID: 9117412599635127386}
+  energy: {fileID: 2491840453941846063}
+  hydration: {fileID: 2491840453156778334}
+  reproductiveUrge: {fileID: 2491840453074583465}
+  age: {fileID: 2491840454762174310}
+  onlyUpdateNearCamera: 1
+  camera: {fileID: 0}
 --- !u!1 &7109646816137998295
 GameObject:
   m_ObjectHideFlags: 0
@@ -354,7 +375,6 @@ GameObject:
   - component: {fileID: 7109646816137998280}
   - component: {fileID: 7109646816137998282}
   - component: {fileID: 7109646816137998281}
-  - component: {fileID: 8413700963402318243}
   m_Layer: 5
   m_Name: Panel
   m_TagString: Untagged
@@ -420,26 +440,6 @@ MonoBehaviour:
   m_ChildScaleWidth: 1
   m_ChildScaleHeight: 1
   m_ReverseArrangement: 0
---- !u!114 &8413700963402318243
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7109646816137998295}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8d6578aa830fc2443ba8eb7dd052ea65, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  animal: {fileID: 0}
-  state: {fileID: 9117412599635127386}
-  energy: {fileID: 2491840453941846063}
-  hydration: {fileID: 2491840453156778334}
-  reproductiveUrge: {fileID: 2491840453074583465}
-  age: {fileID: 2491840454762174310}
-  onlyUpdateNearCamera: 1
-  camera: {fileID: 0}
 --- !u!1 &7733909747561087875
 GameObject:
   m_ObjectHideFlags: 0

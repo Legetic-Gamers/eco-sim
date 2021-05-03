@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Menus;
 using UnityEngine;
 
 public class ClickToFollow : MonoBehaviour
@@ -10,9 +11,9 @@ public class ClickToFollow : MonoBehaviour
         if (TryGetComponent(out AnimalController animalController))
         {
             OrbitCameraController.instance.Transition();
-            OrbitCameraController.instance.animalController?.parameterUI.gameObject.SetActive(false);
+            OrbitCameraController.instance.animalController?.GetComponentInChildren<ParameterUI>(true).SetUIActive(OptionsMenu.alwaysShowParameterUI);
             OrbitCameraController.instance.animalController = animalController;
-            animalController.parameterUI.gameObject.SetActive(true);
+            animalController.GetComponentInChildren<ParameterUI>(true).SetUIActive(true);   //set new parameterUI active
         }
     }
 }

@@ -2268,6 +2268,11 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5885692597160147571, guid: 030b186df69ae1e4d8b9c97864d578e2,
+        type: 3}
+      propertyPath: animal
+      value: 
+      objectReference: {fileID: 4793952549922607340}
     - target: {fileID: 6105287434229703241, guid: 030b186df69ae1e4d8b9c97864d578e2,
         type: 3}
       propertyPath: m_AnchorMax.y

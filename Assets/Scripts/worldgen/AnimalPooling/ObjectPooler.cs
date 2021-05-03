@@ -151,7 +151,7 @@ public class ObjectPooler : MonoBehaviour
                 dh.LogNewAnimal(animalController.animalModel);
                 animalController.deadState.onDeath += HandleDeadAnimal;
                 animalController.SpawnNew += HandleBirthAnimal;
-                animalController.parameterUI.gameObject.SetActive(showCanvasForAll);
+                animalController.GetComponentInChildren<ParameterUI>(true).SetUIActive(showCanvasForAll);
             }
 
             if (stackDictionary != null && stackDictionary.ContainsKey(label))
@@ -225,7 +225,7 @@ public class ObjectPooler : MonoBehaviour
             //Debug.Log(childController.animalModel.generation);
             childController.animalModel.currentEnergy = energy;
             childController.animalModel.currentHydration = hydration;
-            childController.parameterUI.gameObject.SetActive(showCanvasForAll);
+            childController.GetComponentInChildren<ParameterUI>(true).SetUIActive(showCanvasForAll);
             
             // update the childs speed (in case of mutation).
             childController.animalModel.traits.maxSpeed = 1;

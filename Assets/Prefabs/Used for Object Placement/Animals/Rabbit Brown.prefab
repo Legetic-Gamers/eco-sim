@@ -2268,6 +2268,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5945667779142240396}
     m_Modifications:
+    - target: {fileID: 5885692597160147571, guid: 030b186df69ae1e4d8b9c97864d578e2,
+        type: 3}
+      propertyPath: animal
+      value: 
+      objectReference: {fileID: 5945667779142240406}
     - target: {fileID: 7109646815149258883, guid: 030b186df69ae1e4d8b9c97864d578e2,
         type: 3}
       propertyPath: m_Name

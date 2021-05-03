@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using Menus;
 using UnityEngine;
 using UnityEngine.AI;
 using ViewController;
@@ -28,11 +29,7 @@ namespace AnimalsV2.States
             isExiting = false;
             animal.agent.enabled = false;
             animal.GetComponentInChildren<SkinnedMeshRenderer>().enabled = false;
-            Canvas canvas = animal.GetComponentInChildren<Canvas>();
-            if (canvas)
-            {
-                canvas.gameObject.SetActive(false);
-            }
+            animal.GetComponentInChildren<ParameterUI>(true).SetUIActive(false, true);
 
         }
 
@@ -43,11 +40,8 @@ namespace AnimalsV2.States
             target = null;
             animal.agent.enabled = true;
             animal.GetComponentInChildren<SkinnedMeshRenderer>().enabled = true;
-            ParameterUI parameterUI = animal.GetComponentInChildren<ParameterUI>();
-            if (parameterUI)
-            {
-                parameterUI.UpdateUI();
-            }
+            animal.GetComponentInChildren<ParameterUI>(true).SetUIActive(OptionsMenu.alwaysShowParameterUI);
+
         }
 
         public override void LogicUpdate()

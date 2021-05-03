@@ -60,7 +60,16 @@ namespace AnimalsV2.States
             
             
             // Wait a while then eat, change state and resume walking
-            yield return new WaitForSeconds(1);   //Outcommented for training ml
+
+            if (target.TryGetComponent(out AnimalController animalController))
+            {
+                yield return null;
+            }
+            else
+            {
+                yield return new WaitForSeconds(1);   //Outcommented for training ml  
+            }
+            
 
             //Eat the food
             //The reason to why I have curentEnergy as an in-parameter is because currentEnergy is updated through EatFood before reward gets computed in AnimalMovementBrain

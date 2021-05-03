@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Menus;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
@@ -21,12 +22,13 @@ public class ParameterUI : MonoBehaviour
     [HideInInspector]
     public Camera camera;
     
-
     private TickEventPublisher tickEventPublisher;
     private AnimalController animalController;
 
     private const float cameraDistanceThreshold = 50f;
     private Renderer renderer;
+
+    private bool isLocked;
     
     // Start is called before the first frame update
     void Start()
@@ -71,32 +73,59 @@ public class ParameterUI : MonoBehaviour
 
     bool isCloseToCamera()
     {
-        return Vector3.Distance(camera.transform.position, animal.transform.position) < cameraDistanceThreshold;
+        if (camera && animal)
+        {
+            return Vector3.Distance(camera.transform.position, animal.transform.position) < cameraDistanceThreshold;
+            
+        }
+
+        return true;
     }
     public void UpdateUI()
     {
         
-        if (renderer.isVisible && !onlyUpdateNearCamera)
+        if (renderer && renderer.isVisible && !onlyUpdateNearCamera)
         {
             UpdateRenderParameterUI();
         }
-        else if(renderer.isVisible && onlyUpdateNearCamera && isCloseToCamera())
+        else if(renderer && renderer.isVisible && onlyUpdateNearCamera && isCloseToCamera())
         {
             UpdateRenderParameterUI();
         }
 
-        if (!isCloseToCamera() && gameObject.activeSelf) gameObject.SetActive(false);
-        else if(isCloseToCamera() && !gameObject.activeSelf) gameObject.SetActive(true);
+        if (OptionsMenu.alwaysShowParameterUI && !isLocked)
+        {
+            if (!isCloseToCamera() && gameObject.activeSelf) gameObject.SetActive(false);
+            else if(isCloseToCamera() && !gameObject.activeSelf) gameObject.SetActive(true);     
+        }
+        
+        
     }
 
     public void UpdateRenderParameterUI()
     {
-        AnimalModel animal = animalController.animalModel;
-        //health.value = animal.GetHealthPercentage;
-        energy.value = animal.EnergyPercentage;
-        hydration.value = animal.HydrationPercentage;
-        reproductiveUrge.value = animal.ReproductiveUrgePercentage;
-        age.value = animal.AgePercentage;
-        if(animalController.fsm.currentState != null) state.text = animalController.fsm.currentState.ToString();
+        if (gameObject.activeSelf)
+        {
+            AnimalModel animal = animalController.animalModel;
+            //health.value = animal.GetHealthPercentage;
+            energy.value = animal.EnergyPercentage;
+            hydration.value = animal.HydrationPercentage;
+            reproductiveUrge.value = animal.ReproductiveUrgePercentage;
+            age.value = animal.AgePercentage;
+            if(animalController.fsm.currentState != null) state.text = animalController.fsm.currentState.ToString();    
+        }
+        
+    }
+
+    public void SetUIActive(bool value, bool isLocked = false)
+    {
+        this.isLocked = isLocked;
+
+        gameObject.SetActive(value);
+        if (value)
+        {
+            UpdateUI();
+        }
+        
     }
 }
