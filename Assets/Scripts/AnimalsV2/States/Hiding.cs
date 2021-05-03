@@ -28,8 +28,12 @@ namespace AnimalsV2.States
             isExiting = false;
             animal.agent.enabled = false;
             animal.GetComponentInChildren<SkinnedMeshRenderer>().enabled = false;
-            ParameterUI parameterUI = animal.GetComponentInChildren<ParameterUI>(true);
-            parameterUI.gameObject.SetActive(false);
+            Canvas canvas = animal.GetComponentInChildren<Canvas>();
+            if (canvas)
+            {
+                canvas.gameObject.SetActive(false);
+            }
+
         }
 
         public override void Exit()
@@ -39,8 +43,11 @@ namespace AnimalsV2.States
             target = null;
             animal.agent.enabled = true;
             animal.GetComponentInChildren<SkinnedMeshRenderer>().enabled = true;
-            ParameterUI parameterUI = animal.GetComponentInChildren<ParameterUI>(true);
-            parameterUI.gameObject.SetActive(false);
+            ParameterUI parameterUI = animal.GetComponentInChildren<ParameterUI>();
+            if (parameterUI)
+            {
+                parameterUI.UpdateUI();
+            }
         }
 
         public override void LogicUpdate()
