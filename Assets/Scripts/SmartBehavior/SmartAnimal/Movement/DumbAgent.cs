@@ -108,7 +108,7 @@ public class DumbAgent : Agent, IAgent
         //Add agents velocity (as a direction) to observations
         //Vector3 velocity = transform.InverseTransformDirection(animalController.agent.velocity);
         
-        Vector3 velocity = transform.InverseTransformVector(animalController.agent.velocity / Time.timeScale);
+        Vector3 velocity = transform.InverseTransformVector(animalController.agent.velocity);
         sensor.AddObservation(velocity.x);
         sensor.AddObservation(velocity.z);
     }
