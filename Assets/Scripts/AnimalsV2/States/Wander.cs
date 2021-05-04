@@ -58,14 +58,16 @@ namespace AnimalsV2.States
             {
                 //if agents is not placed on navmesh, warp that bad boy
                 NavMeshHit hit;
-                if (NavMesh.SamplePosition(animal.transform.position, out hit, 1000f, 1 << NavMesh.GetAreaFromName("Walkable")))
+                if (NavMesh.SamplePosition(animal.transform.position, out hit, 10f, 1 << NavMesh.GetAreaFromName("Walkable")))
                 {
-                    animal.agent.Warp(hit.position);    
+                    bool succesfulWarp = animal.agent.Warp(hit.position);
+
+                    if (!succesfulWarp)
+                    {
+                        Debug.LogError("Agent is not on navmesh and can not be warped");
+                    }
                 }
-                else
-                {
-                    Debug.LogError("Agent is not on navmesh and can not be warped");
-                }
+                
                 
             }
             

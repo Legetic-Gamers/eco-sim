@@ -6,6 +6,7 @@ using DataCollection;
 using DefaultNamespace;
 using Menus;
 using UnityEngine;
+using UnityEngine.AI;
 using ViewController;
 
 public class ObjectPooler : MonoBehaviour
@@ -244,36 +245,11 @@ public class ObjectPooler : MonoBehaviour
     /// <returns></returns>
     public GameObject SpawnFromPool(string label, Vector3 position, Quaternion rotation)
     {
-        /*
-        if (poolDictionary[label].Any())
-        {
-            // Empty queue, make more
-            foreach (var pool in pools)
-            {
-                if (pool.label.Equals(label))
-                {
-                    pool.size += 20;
-                    for (int i = 0; i < 20; i++)
-                    {
-                        GameObject obj = Instantiate(pool.prefab, groupObject.transform, true);
-                        obj.SetActive(false);
-                        poolDictionary[label].Enqueue(obj);
-                    }
-                }
-            }
-        }
-        */
 
         if (poolDictionary != null && poolDictionary.ContainsKey(label))
         {
             GameObject objectToSpawn;
             bool succesfulDequeue = poolDictionary[label].TryDequeue(out objectToSpawn);
-
-            if (succesfulDequeue && objectToSpawn == null)
-            {
-                Debug.Log("Count: " + poolDictionary[label].Count);
-                Debug.Log("THIS IS FUCKED UP");
-            }
             
             if (!succesfulDequeue)
             {
@@ -298,7 +274,15 @@ public class ObjectPooler : MonoBehaviour
 
             if (objectToSpawn != null)
             {
-                objectToSpawn.transform.position = position;
+                if (objectToSpawn.TryGetComponent(out NavMeshAgent navMeshAgent))
+                {
+                    navMeshAgent.Warp(position);    //make sure that navmesh agent is positioned with warp to avoid problems
+                }
+                else
+                {
+                    objectToSpawn.transform.position = position;
+                }
+                
                 objectToSpawn.transform.rotation = rotation;
                 objectToSpawn.SetActive(true);
                 //TODO Maintain list of all components for more performance

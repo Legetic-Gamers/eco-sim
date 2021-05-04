@@ -50,7 +50,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     //States
     public FleeingState fleeingState;
     public GoToFood goToFoodState;
-    public Wander wanderState;
+    public Wander2 wanderState;
     public Idle idleState;
     public GoToWater goToWaterState;
     public MatingState matingState;
@@ -104,7 +104,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
         
         goToFoodState = new GoToFood(this, fsm);
         fleeingState = new FleeingState(this, fsm);
-        wanderState = new Wander(this, fsm);
+        wanderState = new Wander2(this, fsm);
         idleState = new Idle(this, fsm);
         goToWaterState = new GoToWater(this, fsm);
         matingState = new MatingState(this, fsm);
@@ -277,7 +277,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
             case Idle _:
                 LowEnergyState();
                 break;
-            case Wander _:
+            case Wander2 _:
                 LowEnergyState();
                 break;
             case Hiding _:
@@ -404,7 +404,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
 
     public void EatFood(GameObject food, float currentEnergy)
     {
-        if (food != null && food.GetComponent<AnimalController>()?.animalModel is IEdible edibleAnimal &&
+        if (food != null && food.TryGetComponent(out AnimalController otherAnimalController) && otherAnimalController.animalModel is IEdible edibleAnimal && !(otherAnimalController.fsm.currentState is Hiding) &&
             animalModel.CanEat(edibleAnimal))
         {
             animalModel.currentEnergy += edibleAnimal.GetEaten();

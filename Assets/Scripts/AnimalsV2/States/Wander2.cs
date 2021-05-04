@@ -52,15 +52,15 @@ namespace AnimalsV2.States
             {
                 //if agents is not placed on navmesh, warp that bad boy
                 NavMeshHit hit;
-                if (NavMesh.SamplePosition(animal.transform.position, out hit, 1000f, 1 << NavMesh.GetAreaFromName("Walkable")))
+                if (NavMesh.SamplePosition(animal.transform.position, out hit, 10f, 1 << NavMesh.GetAreaFromName("Walkable")))
                 {
-                    animal.agent.Warp(hit.position);    
+                    bool succesfulWarp = animal.agent.Warp(hit.position);
+
+                    if (!succesfulWarp)
+                    {
+                        Debug.LogError("Agent is not on navmesh and can not be warped");
+                    }  
                 }
-                else
-                {
-                    Debug.LogError("Agent is not on navmesh and can not be warped");
-                }
-                
             }
 
             if (animal.agent != null && animal.agent.isActiveAndEnabled)
@@ -74,7 +74,7 @@ namespace AnimalsV2.States
                     {
                         //long walk init
                         LongWalkInit();
-                    } else if (rand > 0.6)
+                    } else if (rand > 0.4)
                     {
                         //short walk init
                         ShortWalkInit();
@@ -113,8 +113,12 @@ namespace AnimalsV2.States
 
         void LongWalkInit()
         {
-            animal.animationController.CrossOverAnimation(StateAnimation.Walking.ToString());
-            currentWanderSubstate = WanderSubState.LongWalk;
+
+            if (currentWanderSubstate != WanderSubState.LongWalk)
+            {
+                animal.animationController.CrossOverAnimation(StateAnimation.Walking.ToString());
+                currentWanderSubstate = WanderSubState.LongWalk;                
+            }
 
             //movement vector is set as local vector
             movementVector = animal.transform.forward;
@@ -124,9 +128,12 @@ namespace AnimalsV2.States
 
         void ShortWalkInit()
         {
-            animal.animationController.CrossOverAnimation(StateAnimation.Walking.ToString());
-            currentWanderSubstate = WanderSubState.ShortWalk;
-            
+            if (currentWanderSubstate != WanderSubState.ShortWalk)
+            {
+                animal.animationController.CrossOverAnimation(StateAnimation.Walking.ToString());
+                currentWanderSubstate = WanderSubState.ShortWalk;                
+            }
+
             //movement vector is set as local vector
             movementVector = Random.insideUnitSphere;
             movementVector.y = 0;
@@ -138,10 +145,14 @@ namespace AnimalsV2.States
 
         void LookAroundInit()
         {
+            
             animal.agent.ResetPath();
-            animal.animationController.PlayAnimation(StateAnimation.Idle.ToString());
-            currentWanderSubstate = WanderSubState.LookAround;
-            ticksLeftOfWanderSubstate = 1;
+            if (currentWanderSubstate != WanderSubState.LookAround)
+            {
+                animal.animationController.CrossOverAnimation(StateAnimation.Idle.ToString());
+                currentWanderSubstate = WanderSubState.LookAround;
+            }
+            ticksLeftOfWanderSubstate = 2;
         }
         
 
@@ -155,7 +166,7 @@ namespace AnimalsV2.States
             tempVector += animal.transform.position; //add position since we navigate with global coordinates
             
             NavMeshHit hit;
-            if (NavMesh.SamplePosition(tempVector, out hit, animal.agent.height * 2,
+            if (NavMesh.SamplePosition(tempVector, out hit, tempVector.magnitude,
                 1 << NavMesh.GetAreaFromName("Walkable")))
             {
                 NavigationUtilities.NavigateToPoint(animal, tempVector);
