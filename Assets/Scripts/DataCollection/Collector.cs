@@ -13,7 +13,7 @@ namespace DataCollection
 {
     public class Collector
     {
-        private int cap = 14;
+        private int cap = 11;
         public Action onAllExtinct;
 
         public static int totalAnimalsAlive;
@@ -58,13 +58,10 @@ namespace DataCollection
         These lists are contained in allStatsPerGeneration in order:
         public List<float> sizePerGeneration;
         public List<int> maxEnergyPerGeneration;
-        public List<int> maxHealthPerGeneration;
         public List<int> maxHydrationPerGeneration;
         public List<float> maxSpeedPerGeneration;
-        public List<int> maxReproductiveUrge
-        public List<float> endurancePerGeneration;
+        public List<int> maxReproductiveUrge;
         public List<int> ageLimitPerGeneration;
-        public List<float> desirabilityResistPerGeneration;
         public List<float> viewAnglePerGeneration;
         public List<float> viewRadiusPerGeneration;
         public List<float> hearingRadiusPerGeneration;
@@ -75,13 +72,10 @@ namespace DataCollection
         
         classTraits.size,
         classTraits.maxEnergy,
-        classTraits.maxHealth,
         classTraits.maxHydration,
         classTraits.maxSpeed,
         classTraits.maxReproductiveUrge,
-        classTraits.endurance,
         classTraits.ageLimit,
-        classTraits.desirability,
         classTraits.viewAngle,
         classTraits.viewRadius,
         classTraits.hearingRadius
@@ -104,15 +98,15 @@ namespace DataCollection
             deerStatsPerGenVar = new List<List<float>>();
             bearStatsPerGenVar = new List<List<float>>();
             
-            for (int i = 0; i < cap; i++) rabbitStatsPerGenMean.Add(new List<float>{0, 0});
-            for (int i = 0; i < cap; i++) wolfStatsPerGenMean.Add(new List<float>{0, 0});
-            for (int i = 0; i < cap; i++) deerStatsPerGenMean.Add(new List<float>{0, 0});
-            for (int i = 0; i < cap; i++) bearStatsPerGenMean.Add(new List<float>{0, 0});
+            for (int i = 0; i < cap; i++) rabbitStatsPerGenMean.Add(new List<float>{0});
+            for (int i = 0; i < cap; i++) wolfStatsPerGenMean.Add(new List<float>{0});
+            for (int i = 0; i < cap; i++) deerStatsPerGenMean.Add(new List<float>{0});
+            for (int i = 0; i < cap; i++) bearStatsPerGenMean.Add(new List<float>{0});
             
-            for (int i = 0; i < cap; i++) rabbitStatsPerGenVar.Add(new List<float>{0, 0});
-            for (int i = 0; i < cap; i++) wolfStatsPerGenVar.Add(new List<float>{0, 0});
-            for (int i = 0; i < cap; i++) deerStatsPerGenVar.Add(new List<float>{0, 0});
-            for (int i = 0; i < cap; i++) bearStatsPerGenVar.Add(new List<float>{0, 0});
+            for (int i = 0; i < cap; i++) rabbitStatsPerGenVar.Add(new List<float>{0});
+            for (int i = 0; i < cap; i++) wolfStatsPerGenVar.Add(new List<float>{0});
+            for (int i = 0; i < cap; i++) deerStatsPerGenVar.Add(new List<float>{0});
+            for (int i = 0; i < cap; i++) bearStatsPerGenVar.Add(new List<float>{0});
 
             totalAnimalsAlivePerGeneration = new List<int> {0};
 
@@ -200,7 +194,7 @@ namespace DataCollection
             if(animalTotal.Count <= gen) animalTotal.Add(1);
             else animalTotal[gen] += 1;
 
-            for (int trait = 0; trait < 12; trait++)
+            for (int trait = 0; trait < 9; trait++)
             {
                 if(animalMean[trait].Count <= gen) animalMean[trait].Add(0);
                 if(animalVar[trait].Count <= gen) animalVar[trait].Add(0);
@@ -271,31 +265,31 @@ namespace DataCollection
             // Changes the referenced lists depending on the species of the animal. 
             (List<List<float>> animalMean, List<List<float>> animalVar, _) = GetAnimalList(am);
             
-            if (gen > animalMean[12].Count - 1)
+            if (gen > animalMean[9].Count - 1)
             {
                 //Debug.Log("generation is: " + gen + " and list length is: " + animalMean[12].Count);
-                int difference = gen + 1 - animalMean[12].Count;
+                int difference = gen + 1 - animalMean[9].Count;
                 for (int i = 0; i < difference; i++)
                 {
                     //Debug.Log("Adding: " + i);
-                    animalMean[13].Add(0);
-                    animalVar[13].Add(0);
-                    animalMean[12].Add(0);
-                    animalVar[12].Add(0);
+                    animalMean[10].Add(0);
+                    animalVar[10].Add(0);
+                    animalMean[9].Add(0);
+                    animalVar[9].Add(0);
                 }
             }
             
             (float meanAge, float varAge) =
-                GetNewMeanVariance(animalMean[13][gen], animalVar[13][gen], am.age, totalDeadAnimals[gen]);
+                GetNewMeanVariance(animalMean[10][gen], animalVar[10][gen], am.age, totalDeadAnimals[gen]);
             
             (float meanDist, float varDist) =
-                GetNewMeanVariance(animalMean[12][gen], animalVar[12][gen], distanceTravelled, totalDeadAnimals[gen]);
+                GetNewMeanVariance(animalMean[9][gen], animalVar[9][gen], distanceTravelled, totalDeadAnimals[gen]);
                 
-            animalMean[13][gen] = (float) Math.Round(meanAge, 1);
-            animalVar[13][gen] = (float) Math.Round(varAge, 1);
+            animalMean[10][gen] = (float) Math.Round(meanAge, 1);
+            animalVar[10][gen] = (float) Math.Round(varAge, 1);
             
-            animalMean[12][gen] = (float) Math.Round(meanDist, 1);
-            animalVar[12][gen] = (float) Math.Round(varDist, 1);
+            animalMean[9][gen] = (float) Math.Round(meanDist, 1);
+            animalVar[9][gen] = (float) Math.Round(varDist, 1);
 
             causeOfDeath[cause] = causeOfDeath[cause] += 1;
             //Debug.Log("cause of death: " + cause.ToString());
@@ -366,13 +360,13 @@ namespace DataCollection
             {
                 classTraits.size,
                 classTraits.maxEnergy,
-                classTraits.maxHealth,
+                //classTraits.maxHealth,
                 classTraits.maxHydration,
                 classTraits.maxSpeed,
                 classTraits.maxReproductiveUrge,
-                classTraits.endurance,
+                //classTraits.endurance,
                 classTraits.ageLimit,
-                classTraits.desirability,
+                //classTraits.desirability,
                 classTraits.viewAngle,
                 classTraits.viewRadius,
                 classTraits.hearingRadius

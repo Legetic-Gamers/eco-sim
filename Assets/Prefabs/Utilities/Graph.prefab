@@ -4453,19 +4453,13 @@ MonoBehaviour:
       m_Image: {fileID: 0}
     - m_Text: Max Energy
       m_Image: {fileID: 0}
-    - m_Text: Max Health
-      m_Image: {fileID: 0}
     - m_Text: Max Hydration
       m_Image: {fileID: 0}
     - m_Text: Max Speed
       m_Image: {fileID: 0}
-    - m_Text: Endurance
+    - m_Text: Max Reproductive Urge
       m_Image: {fileID: 0}
     - m_Text: Age Limit
-      m_Image: {fileID: 0}
-    - m_Text: Temperature Resistance
-      m_Image: {fileID: 0}
-    - m_Text: Desirability
       m_Image: {fileID: 0}
     - m_Text: View Angle
       m_Image: {fileID: 0}
@@ -9616,19 +9610,13 @@ MonoBehaviour:
       m_Image: {fileID: 0}
     - m_Text: Max Energy
       m_Image: {fileID: 0}
-    - m_Text: Max Health
-      m_Image: {fileID: 0}
     - m_Text: Max Hydration
       m_Image: {fileID: 0}
     - m_Text: Max Speed
       m_Image: {fileID: 0}
-    - m_Text: Endurance
+    - m_Text: Max Repr. Urge
       m_Image: {fileID: 0}
     - m_Text: Age Limit
-      m_Image: {fileID: 0}
-    - m_Text: Temperature Resistance
-      m_Image: {fileID: 0}
-    - m_Text: Desirability
       m_Image: {fileID: 0}
     - m_Text: View Angle
       m_Image: {fileID: 0}
