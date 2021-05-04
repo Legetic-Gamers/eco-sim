@@ -79,10 +79,7 @@ namespace AnimalsV2
         {
             for (int i = 0; i < 100; i++)
             {
-                Vector3 randomPoint = Random.insideUnitSphere;
-                randomPoint.y = center.y;
-                randomPoint = randomPoint.normalized * range;
-                randomPoint += center;
+                Vector3 randomPoint = center + Random.insideUnitSphere * range;
                 NavMeshHit hit;
                 if (NavMesh.SamplePosition(randomPoint, out hit, maxDist, 1 << NavMesh.GetAreaFromName("Walkable")))
                 {
