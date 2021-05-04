@@ -328,7 +328,7 @@ namespace DataCollection
             if (Window_Graph.IsGraphOne)
             {
                 Updatelist(_listNumber);
-                Display?.Invoke(sendList1, sendList2);
+                //Display?.Invoke(sendList1, sendList2);
             }
                 
             //if (ShowFrameRate) Display(ConvertFloatListToIntList(framerate));

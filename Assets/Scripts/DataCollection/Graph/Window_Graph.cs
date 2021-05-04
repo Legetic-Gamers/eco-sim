@@ -35,6 +35,7 @@ public class Window_Graph : MonoBehaviour
 
 
     private RectTransform window_graph;
+    public GameObject GraphContainerGameObject;
     private RectTransform graphContainer;
     private RectTransform labelTemplateX;
     private RectTransform labelTemplateY;
@@ -86,8 +87,9 @@ public class Window_Graph : MonoBehaviour
     {
         window_graph = this.GetComponent<RectTransform>();
         gameObjectList = new List<GameObject>();
-        graphContainer = GameObject.Find("graphContainer").GetComponent<RectTransform>();
+        //graphContainer = GameObject.Find("graphContainer").GetComponent<RectTransform>();
         //graphContainer = window_graph.Find("graphContainer").GetComponent<RectTransform>();
+        graphContainer = GraphContainerGameObject.GetComponent<RectTransform>();
         labelTemplateX = graphContainer.Find("labelTemplateX").GetComponent<RectTransform>();
         labelTemplateY = graphContainer.Find("labelTemplateY").GetComponent<RectTransform>();
         dashTemplateX = graphContainer.Find("dashTemplateX").GetComponent<RectTransform>();
@@ -103,33 +105,17 @@ public class Window_Graph : MonoBehaviour
     private void Draw(List<float> list1, List<float> list2)
 {
     _list1 = list1;
-    _list2 = list2;
-    if (gameObjectList != null) DestroyGraph(gameObjectList);
-    if (_isGraphOne && _isGraphTwo)
-    {
+    DestroyGraph(gameObjectList);
+    if (_isGraphOne)
         ShowGraph(list1, lineColor);
-        DrawCurve(list2, Color.red);
-    }
-        
-    else if (_isGraphOne)
-        ShowGraph(list1, lineColor);
-    else if (_isGraphTwo)
-        ShowGraph(list2, Color.red);
 }
 
 
 private void ReDraw(object sender, EventArgs e)
 {
-    if (gameObjectList != null) DestroyGraph(gameObjectList);
-    if (_isGraphOne && _isGraphTwo)
-    {
+    DestroyGraph(gameObjectList);
+    if (_isGraphOne)
         ShowGraph(_list1, lineColor);
-        DrawCurve(_list2, Color.red);
-    }
-    else if (_isGraphOne)
-        ShowGraph(_list1, lineColor);
-    else if (_isGraphTwo)
-        ShowGraph(_list2, Color.red);
 }
 
 
@@ -138,6 +124,7 @@ private void ReDraw(object sender, EventArgs e)
     // Draws entire graph.
     private void ShowGraph(List<float> valueList, Color color)
     {
+        DestroyGraph(gameObjectList);
         if (valueList.Count == 0) return;
         var sizeDelta = graphContainer.sizeDelta;
         float graphHeight = sizeDelta.y;
@@ -154,8 +141,10 @@ private void ReDraw(object sender, EventArgs e)
 
     private void DestroyGraph(List<GameObject> gameobjects)
     {
+        if (gameobjects.Count == 0) return;
         foreach (GameObject obj in gameobjects)
         {
+            Debug.Log("Destroying shit");
             Destroy(obj);
         }
 
@@ -207,7 +196,7 @@ private void ReDraw(object sender, EventArgs e)
     // Draws the grid and labels of the X-axis.
     protected void AddGridX(List<float> valueList)
     {
-        dashTemplateX.sizeDelta = new Vector2(graphContainer.sizeDelta.y, 1f);
+        dashTemplateX.sizeDelta = new Vector2(graphContainer.sizeDelta.y + 2f, 1f);
         float graphWidth = graphContainer.sizeDelta.x;
         int numberOfValues = valueList.Count;
         float xDelta = graphWidth / numberOfValues;
@@ -215,7 +204,7 @@ private void ReDraw(object sender, EventArgs e)
         
         
 
-        foreach (int value in valueList)
+        for (int i = 0; i < valueList.Count; i++)
         {
             float xPosition = (count-firstX) * xDelta;
 
@@ -243,12 +232,13 @@ private void ReDraw(object sender, EventArgs e)
     // Draws the grid of the Y-axis, as well as the labels of the Y-axis.
     private void AddGridY(List<float> valueList)
     {
-        dashTemplateY.sizeDelta = new Vector2(graphContainer.sizeDelta.x, 1f);
+        dashTemplateY.sizeDelta = new Vector2(graphContainer.sizeDelta.x + 2f, 1f);
         float graphHeight = graphContainer.sizeDelta.y;
         float yMax = valueList.Max() * yBufferTop;
         int separatorCount = _gridCountY;
         if (_isGraphOne && _isGraphTwo)
             yMax = Mathf.Max(_list1.Max(), _list2.Max())*yBufferTop;
+        
         for (int i = 0; i <= separatorCount; i++)
         {
             RectTransform labelY = Instantiate(labelTemplateY, graphContainer, false);
@@ -256,7 +246,11 @@ private void ReDraw(object sender, EventArgs e)
             labelY.gameObject.SetActive(true); 
             float normalizedValue = (i * 1f) / separatorCount;
             labelY.anchoredPosition = (new Vector2(-10f, normalizedValue * graphHeight));
-            labelY.GetComponent<Text>().text = (yMax * normalizedValue).ToString("0.0");
+            if (yMax > 1)
+                labelY.GetComponent<Text>().text = (yMax * normalizedValue).ToString("0.0");
+            else if (yMax > 0.1f)
+                labelY.GetComponent<Text>().text = (yMax * normalizedValue).ToString("0.00");
+            else labelY.GetComponent<Text>().text = (yMax * normalizedValue).ToString("0.000");
             gameObjectList.Add(labelY.gameObject); 
 
 
