@@ -41,13 +41,12 @@ namespace AnimalsV2.States
             animal.agent.enabled = true;
             animal.GetComponentInChildren<SkinnedMeshRenderer>().enabled = true;
             animal.GetComponentInChildren<ParameterUI>(true).SetUIActive(OptionsMenu.alwaysShowParameterUI);
-
         }
 
         public override void LogicUpdate()
         {
             base.LogicUpdate();
-            if (animal.heardHostileTargets.Count == 0 && !isExiting)
+            if ((animal.heardHostileTargets.Count == 0 || animal.animalModel.CriticalEnergy || animal.animalModel.CriticalHydration) && !isExiting)
             { 
                 animal.StartCoroutine(DelayExit());
             }

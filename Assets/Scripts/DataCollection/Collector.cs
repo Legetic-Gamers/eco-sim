@@ -161,7 +161,7 @@ namespace DataCollection
                 float birthRate = 0;
                 //if(currentAnimalsTotalAlivePerSpecies[i] == 0) continue;
                 if (currentAnimalsTotalAlivePerSpecies[i] - newBirths[i] > 0f ) birthRate = newBirths[i] / (currentAnimalsTotalAlivePerSpecies[i] - newBirths[i]);
-                birthRatePerMinute[i].Add((float) Math.Round(birthRate, 1));
+                birthRatePerMinute[i].Add((float) Math.Round(birthRate, 3));
                 newBirths[i] = 0;
                 animalsAlivePerSpecies[i].Add((float) Math.Round((double) currentAnimalsTotalAlivePerSpecies[i], 1));
             }
