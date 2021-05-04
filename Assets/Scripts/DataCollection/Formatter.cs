@@ -19,9 +19,18 @@ namespace DataCollection
         /// <param name="filename"> Name of the file </param>
         /// <typeparam name="T"> Generic </typeparam>
         /// <returns> returns when the thread is finished writing. </returns>
-        public static async Task WriteToFile<T>(List<T> data, string filename)
+        ///
+        public static async Task WriteToFile<T>(List<T> data, string filename, string dirPath = "")
         {
-            string pathToFile = Path.Combine("Assets/Scripts/DataCollection/Export/", filename + ".json");
+            
+            
+            //If directory does not exist create it
+            if (!Directory.Exists(dirPath))
+            {
+                Directory.CreateDirectory(dirPath);
+            }
+            
+            string pathToFile = Path.Combine(dirPath, filename + ".json");
             string path = Path.Combine(Directory.GetCurrentDirectory(), pathToFile);
             
             if (!File.Exists(path))
