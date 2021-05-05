@@ -43,8 +43,8 @@ public class Window_Graph : MonoBehaviour
     private RectTransform dashTemplateY;
     
     private List<GameObject> gameObjectList;
-    
-    
+
+
 
     public static int TruncateFactor
     {
@@ -99,8 +99,6 @@ public class Window_Graph : MonoBehaviour
         dh.Display += Draw;
         ButtonClick.OnButtonReDraw += ReDraw;
     }
-    
-
 
     private void Draw(List<float> list1, List<float> list2)
 {
@@ -144,7 +142,6 @@ private void ReDraw(object sender, EventArgs e)
         if (gameobjects.Count == 0) return;
         foreach (GameObject obj in gameobjects)
         {
-            Debug.Log("Destroying shit");
             Destroy(obj);
         }
 

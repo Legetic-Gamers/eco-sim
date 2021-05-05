@@ -41,7 +41,6 @@ public class ButtonClick : Window_Graph
     
 
 
-
     public void ButtonReDraw()
     {
         OnButtonReDraw?.Invoke(this, EventArgs.Empty);
@@ -85,10 +84,10 @@ public class ButtonClick : Window_Graph
         isPerMinute = false;
         dropdownPopulation.options.Clear();
         dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "All Animals"});
-        dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Rabbit"});
-        dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Wolf"});
-        dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Deer"});
-        dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Bear"});
+        if (FindObjectOfType<RabbitController>()) dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Rabbit"});
+        if (FindObjectOfType<WolfController>())  dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Wolf"});
+        if (FindObjectOfType<DeerController>()) dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Deer"});
+        if (FindObjectOfType<BearController>()) dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Bear"});
         dropdownPopulation.value = 1;
         dropdownPopulation.value = 0;
         DropDownPopulation();
@@ -98,10 +97,10 @@ public class ButtonClick : Window_Graph
     {
         isPerMinute = true;
         dropdownPopulation.options.Clear();
-        dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Rabbit"});
-        dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Wolf"});
-        dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Deer"});
-        dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Bear"});
+        if (FindObjectOfType<RabbitController>()) dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Rabbit"});
+        if (FindObjectOfType<WolfController>())  dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Wolf"});
+        if (FindObjectOfType<DeerController>()) dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Deer"});
+        if (FindObjectOfType<BearController>()) dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Bear"});
         dropdownPopulation.value = 1;
         dropdownPopulation.value = 0;
         DropDownPopulation();
