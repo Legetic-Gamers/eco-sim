@@ -227,7 +227,7 @@ public class VisualAnimalDebugger : MonoBehaviour
         }
 
         //Show line to water sources
-        foreach (GameObject water in animalController.visibleWaterTargets)
+        foreach (GameObject water in animalController.visibleWaterTargets.Concat(animalController.heardWaterTargets))
         {
             if (water != null)
                 Debug.DrawLine(thisTransform.position, water.transform.position, Color.blue);

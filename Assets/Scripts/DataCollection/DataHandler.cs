@@ -334,7 +334,7 @@ namespace DataCollection
             
             //create  files for rabbits
             string rabbitDirPath = dirPath + "/" + "Rabbits";
-            await WriteToFile(c.animalsAlivePerSpecies[0], "rPop", rabbitDirPath);
+            await WriteToFile(c.animalsAlivePerSpecies[0], "rPopulation", rabbitDirPath);
             await WriteToFile(c.birthRatePerMinute[0], "rBirthRate", rabbitDirPath);
             await WriteToFile(c.rabbitStatsPerGenMean[0], "rSize", rabbitDirPath);
             await WriteToFile(c.rabbitStatsPerGenMean[1], "rMaxEnergy", rabbitDirPath);
@@ -348,7 +348,7 @@ namespace DataCollection
             
             //create  files for wolfs
             string wolfDirPath = dirPath + "/" + "Wolfs";
-            await WriteToFile(c.animalsAlivePerSpecies[1], "wPop", wolfDirPath);
+            await WriteToFile(c.animalsAlivePerSpecies[1], "wPopulation", wolfDirPath);
             await WriteToFile(c.birthRatePerMinute[1], "wBirthRate", wolfDirPath);
             await WriteToFile(c.wolfStatsPerGenMean[0], "wSize", wolfDirPath);
             await WriteToFile(c.wolfStatsPerGenMean[1], "wMaxEnergy", wolfDirPath);
@@ -362,7 +362,7 @@ namespace DataCollection
             
             //create  files for deers
             string deerDirPath = dirPath + "/" + "Deers";
-            await WriteToFile(c.animalsAlivePerSpecies[2], "dPop", deerDirPath);
+            await WriteToFile(c.animalsAlivePerSpecies[2], "dPopulation", deerDirPath);
             await WriteToFile(c.birthRatePerMinute[2], "dBirthRate", deerDirPath);
             await WriteToFile(c.deerStatsPerGenMean[0], "dSize", deerDirPath);
             await WriteToFile(c.deerStatsPerGenMean[1], "dMaxEnergy", deerDirPath);
@@ -376,7 +376,7 @@ namespace DataCollection
             
             //create  files for bears
             string bearDirPath = dirPath + "/" + "Bears";
-            await WriteToFile(c.animalsAlivePerSpecies[3], "bPop", bearDirPath);
+            await WriteToFile(c.animalsAlivePerSpecies[3], "bPopulation", bearDirPath);
             await WriteToFile(c.birthRatePerMinute[3], "bBirthRate", bearDirPath);
             await WriteToFile(c.bearStatsPerGenMean[0], "bSize", bearDirPath);
             await WriteToFile(c.bearStatsPerGenMean[1], "bMaxEnergy", bearDirPath);
@@ -390,7 +390,7 @@ namespace DataCollection
             
             //create  files for others (plants etc.)
             string plantDirPath = dirPath + "/" + "Plants";
-            await WriteToFile(c.foodActivePerMinute,"fActive", plantDirPath);
+            await WriteToFile(c.foodActivePerMinute,"pPopulation", plantDirPath);
 
         }
 
