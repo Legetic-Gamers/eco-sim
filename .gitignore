@@ -86,6 +86,9 @@ crashlytics-build.properties
 
 Packages/packages-lock.json
 
+# ignore simulation data
+/simulations/
+
 # Export generated files
 Export/**/*.json
 !Export/.gitkeep

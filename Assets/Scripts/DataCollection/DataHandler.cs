@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Model;
@@ -306,8 +307,11 @@ namespace DataCollection
         /// </summary>
         /// <param name="listNumber"> List to be printed. See Traits class for order. 0 to 12 </param>
         /// <returns></returns>
-        private async Task ExportDataToFile(int listNumber)
+        public async Task ExportDataToFile(string dirName)
         {
+            
+            string basePath = "simulations/";
+/*
             List<int> toPrint = new List<int>();
             toPrint.Add(c.causeOfDeath[AnimalModel.CauseOfDeath.Hunger]);
             toPrint.Add(c.causeOfDeath[AnimalModel.CauseOfDeath.Hydration]);
@@ -315,7 +319,102 @@ namespace DataCollection
             toPrint.Add(c.causeOfDeath[AnimalModel.CauseOfDeath.Energy]);
             toPrint.Add(c.causeOfDeath[AnimalModel.CauseOfDeath.Health]);
             toPrint.Add(c.causeOfDeath[AnimalModel.CauseOfDeath.Eaten]);
-            await WriteToFile(toPrint, "CauseOfDeath");
+            */
+
+            string dirPath = basePath + dirName;
+            dirPath = ProcessDirectoryPath(dirPath);
+            
+            if (dirPath == null)
+            {
+                Debug.LogError("Could not find available path");
+            }
+            
+            Debug.Log("Trying to export data to available path: " + dirName);
+
+            
+            //create  files for rabbits
+            string rabbitDirPath = dirPath + "/" + "Rabbits";
+            await WriteToFile(c.animalsAlivePerSpecies[0], "rPop", rabbitDirPath);
+            await WriteToFile(c.birthRatePerMinute[0], "rBirthRate", rabbitDirPath);
+            await WriteToFile(c.rabbitStatsPerGenMean[0], "rSize", rabbitDirPath);
+            await WriteToFile(c.rabbitStatsPerGenMean[1], "rMaxEnergy", rabbitDirPath);
+            await WriteToFile(c.rabbitStatsPerGenMean[2], "rMaxHydration", rabbitDirPath);
+            await WriteToFile(c.rabbitStatsPerGenMean[3], "rMaxSpeed", rabbitDirPath);
+            await WriteToFile(c.rabbitStatsPerGenMean[4], "rMaxReproductiveUrge", rabbitDirPath);
+            await WriteToFile(c.rabbitStatsPerGenMean[5], "rAgeLimit", rabbitDirPath);
+            await WriteToFile(c.rabbitStatsPerGenMean[6], "rViewAngle", rabbitDirPath);
+            await WriteToFile(c.rabbitStatsPerGenMean[7], "rViewRadius", rabbitDirPath);
+            await WriteToFile(c.rabbitStatsPerGenMean[8], "rHearingRadius", rabbitDirPath);
+            
+            //create  files for wolfs
+            string wolfDirPath = dirPath + "/" + "Wolfs";
+            await WriteToFile(c.animalsAlivePerSpecies[1], "wPop", wolfDirPath);
+            await WriteToFile(c.birthRatePerMinute[1], "wBirthRate", wolfDirPath);
+            await WriteToFile(c.wolfStatsPerGenMean[0], "wSize", wolfDirPath);
+            await WriteToFile(c.wolfStatsPerGenMean[1], "wMaxEnergy", wolfDirPath);
+            await WriteToFile(c.wolfStatsPerGenMean[2], "wMaxHydration", wolfDirPath);
+            await WriteToFile(c.wolfStatsPerGenMean[3], "wMaxSpeed", wolfDirPath);
+            await WriteToFile(c.wolfStatsPerGenMean[4], "wMaxReproductiveUrge", wolfDirPath);
+            await WriteToFile(c.wolfStatsPerGenMean[5], "wAgeLimit", wolfDirPath);
+            await WriteToFile(c.wolfStatsPerGenMean[6], "wViewAngle", wolfDirPath);
+            await WriteToFile(c.wolfStatsPerGenMean[7], "wViewRadius", wolfDirPath);
+            await WriteToFile(c.wolfStatsPerGenMean[8], "wHearingRadius", wolfDirPath);
+            
+            //create  files for deers
+            string deerDirPath = dirPath + "/" + "Deers";
+            await WriteToFile(c.animalsAlivePerSpecies[2], "dPop", deerDirPath);
+            await WriteToFile(c.birthRatePerMinute[2], "dBirthRate", deerDirPath);
+            await WriteToFile(c.deerStatsPerGenMean[0], "dSize", deerDirPath);
+            await WriteToFile(c.deerStatsPerGenMean[1], "dMaxEnergy", deerDirPath);
+            await WriteToFile(c.deerStatsPerGenMean[2], "dMaxHydration", deerDirPath);
+            await WriteToFile(c.deerStatsPerGenMean[3], "dMaxSpeed", deerDirPath);
+            await WriteToFile(c.deerStatsPerGenMean[4], "dMaxReproductiveUrge", deerDirPath);
+            await WriteToFile(c.deerStatsPerGenMean[5], "dAgeLimit", deerDirPath);
+            await WriteToFile(c.deerStatsPerGenMean[6], "dViewAngle", deerDirPath);
+            await WriteToFile(c.deerStatsPerGenMean[7], "dViewRadius", deerDirPath);
+            await WriteToFile(c.deerStatsPerGenMean[8], "dHearingRadius", deerDirPath);
+            
+            //create  files for bears
+            string bearDirPath = dirPath + "/" + "Bears";
+            await WriteToFile(c.animalsAlivePerSpecies[3], "bPop", bearDirPath);
+            await WriteToFile(c.birthRatePerMinute[3], "bBirthRate", bearDirPath);
+            await WriteToFile(c.bearStatsPerGenMean[0], "bSize", bearDirPath);
+            await WriteToFile(c.bearStatsPerGenMean[1], "bMaxEnergy", bearDirPath);
+            await WriteToFile(c.bearStatsPerGenMean[2], "bMaxHydration", bearDirPath);
+            await WriteToFile(c.bearStatsPerGenMean[3], "bMaxSpeed", bearDirPath);
+            await WriteToFile(c.bearStatsPerGenMean[4], "bMaxReproductiveUrge", bearDirPath);
+            await WriteToFile(c.bearStatsPerGenMean[5], "bAgeLimit", bearDirPath);
+            await WriteToFile(c.bearStatsPerGenMean[6], "bViewAngle", bearDirPath);
+            await WriteToFile(c.bearStatsPerGenMean[7], "bViewRadius", bearDirPath);
+            await WriteToFile(c.bearStatsPerGenMean[8], "bHearingRadius", bearDirPath);
+            
+            //create  files for others (plants etc.)
+            string plantDirPath = dirPath + "/" + "Plants";
+            await WriteToFile(c.foodActivePerMinute,"fActive", plantDirPath);
+
+        }
+
+        private string ProcessDirectoryPath(string dirPath)
+        {
+            //If directory does not exist create it
+            if (Directory.Exists(dirPath)) {
+                Debug.Log("Path is occupied: " + dirPath);
+
+                //set foldername + (1)
+                for (int i = 1; i <= 10; i++)
+                {
+
+                    dirPath = dirPath + " " + "(" + i + ")";
+                    Debug.Log("Trying : " + dirPath);
+                    if (!Directory.Exists(dirPath))
+                    {
+                        return dirPath;
+                    }
+                }
+                Debug.LogError("Could not create path: " + dirPath);
+                return null;
+            }
+            return dirPath;
         }
 
         // ReSharper disable Unity.PerformanceAnalysis

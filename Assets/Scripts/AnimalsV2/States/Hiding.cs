@@ -48,15 +48,16 @@ namespace AnimalsV2.States
             base.LogicUpdate();
             if ((animal.heardHostileTargets.Count == 0 || animal.animalModel.CriticalEnergy || animal.animalModel.CriticalHydration) && !isExiting)
             { 
-                animal.StartCoroutine(DelayExit());
+                animal.StartCoroutine(DelayExit(2));
             }
         }
 
-        IEnumerator DelayExit()
+        IEnumerator DelayExit(float delay)
         {
             isExiting = true;
-            yield return new WaitForSeconds(2);
-            if (animal.heardHostileTargets.Count == 0)
+            
+            yield return new WaitForSeconds(delay);
+            if ((animal.heardHostileTargets.Count == 0 || animal.animalModel.CriticalEnergy || animal.animalModel.CriticalHydration))
             {
                 finiteStateMachine.isLocked = false;
                 finiteStateMachine.GoToDefaultState();    

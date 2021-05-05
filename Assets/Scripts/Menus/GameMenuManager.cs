@@ -20,6 +20,7 @@ namespace Menus
         
         public GameObject pauseMenu;
         public GameObject endMenu;
+        public GameObject exportDataPopup;
         public Text timerText;
         private float timer = 0f;
 
@@ -71,6 +72,7 @@ namespace Menus
             Time.timeScale = lastGameSpeed;
             pauseMenu.SetActive(false); 
             isPaused = false;
+            CloseExportDataPopup();
         }
 
         public void Pause()
@@ -130,6 +132,37 @@ namespace Menus
                 //Bind End to action that triggers when all animals are dead
                 dh.c.onAllExtinct += End;
             }
+        }
+
+
+        public async void ExportData()
+        {
+            string folderName = GetComponentInChildren<InputField>().text;
+            
+            Debug.Log(folderName);
+
+            DataHandler dh = FindObjectOfType<DataHandler>();
+            if (dh != null)
+            {
+                await dh.ExportDataToFile(folderName);
+            }
+            else
+            {
+                Debug.LogError("No datahandler was found when exporting data!");
+            }
+            
+            CloseExportDataPopup();
+            
+        }
+
+        public void OpenExportDataPopup()
+        {
+            exportDataPopup.SetActive(true);
+        }
+
+        public void CloseExportDataPopup()
+        {
+            exportDataPopup.SetActive(false);
         }
     }
 }
