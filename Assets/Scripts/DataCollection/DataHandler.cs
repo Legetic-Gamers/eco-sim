@@ -390,7 +390,7 @@ namespace DataCollection
             
             //create  files for others (plants etc.)
             string plantDirPath = dirPath + "/" + "Plants";
-            await WriteToFile(c.foodActivePerMinute,"fActive", plantDirPath);
+            await WriteToFile(c.foodActivePerMinute,"pPopulation", plantDirPath);
 
         }
 
