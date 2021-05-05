@@ -91,7 +91,7 @@ public class WaterChunk : MonoBehaviour
 
     IEnumerator DelayWaterSources(bool placeWaterSources)
     {
-        Debug.Log("Putting down water sources the frame after start!");
+        //Debug.Log("Putting down water sources the frame after start!");
         yield return null;  //Very important. Schedule coroutine to fire after next frame after update
         if (placeWaterSources)
         {

@@ -391,7 +391,7 @@ namespace DataCollection
             //create  files for others (plants etc.)
             string plantDirPath = dirPath + "/" + "Plants";
             await WriteToFile(c.foodActivePerMinute,"fActive", plantDirPath);
-
+            Debug.Log("Finished printing");
         }
 
         private string ProcessDirectoryPath(string dirPath)

@@ -144,7 +144,7 @@ private void ReDraw(object sender, EventArgs e)
         if (gameobjects.Count == 0) return;
         foreach (GameObject obj in gameobjects)
         {
-            Debug.Log("Destroying shit");
+            //Debug.Log("Destroying shit");
             Destroy(obj);
         }
 
