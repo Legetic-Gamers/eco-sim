@@ -12,7 +12,16 @@ namespace Menus
         public GameObject canvas;
         public GameObject graph;
         private bool isActive = false;
+
+        private bool isRabbits = false;
+        private bool isWolves = false;
+        private bool isDeer = false;
+        private bool isBears = false;
+
+        public Action SetDropDownValues;
         
+
+
         // Toggle if graph visibility
         public void OnClick()
         {
@@ -20,7 +29,16 @@ namespace Menus
             canvas.GetComponent<GraphicRaycaster>().enabled = isActive;
             graph.GetComponent<Canvas>().enabled = isActive;
             Window_Graph.IsGraphOne = isActive;
+            
 
+            if (isActive)
+            {
+                if (FindObjectOfType<RabbitController>()) isRabbits = true;
+                if (FindObjectOfType<WolfController>()) isWolves = true;
+                if (FindObjectOfType<DeerController>()) isDeer = true;
+                if (FindObjectOfType<BearController>()) isBears = true;
+            }
+            SetDropDownValues();
         }
 
         // Use from GameMenuManager to hide graph

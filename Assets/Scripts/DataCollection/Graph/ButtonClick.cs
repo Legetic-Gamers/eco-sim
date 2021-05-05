@@ -1,5 +1,6 @@
 ﻿
 using System;
+using Menus;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -37,9 +38,41 @@ public class ButtonClick : Window_Graph
     public Button buttonTwo;
 
     private bool isPerMinute = false;
-    
-    
 
+    public void Start()
+    {
+        var sgm = FindObjectOfType<ShowGraphManager>();
+        if (sgm) sgm.SetDropDownValues += InitDropDownValues;
+    }
+
+
+    private void InitDropDownValues()
+    {
+        bool r = FindObjectOfType<RabbitController>();
+        bool w = FindObjectOfType<WolfController>();
+        bool d = FindObjectOfType<DeerController>();
+        bool b = FindObjectOfType<BearController>();
+        
+        dropdownPopulation.options.Clear();
+        if (!isPerMinute) dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "All Animals"});
+        if (r) dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Rabbit"});
+        if (w)  dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Wolf"});
+        if (d) dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Deer"});
+        if (b) dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Bear"});
+        
+        dropdownSpecies1.options.Clear();
+        if (r) dropdownSpecies1.options.Add(new Dropdown.OptionData() {text = "Rabbit"});
+        if (w)  dropdownSpecies1.options.Add(new Dropdown.OptionData() {text = "Wolf"});
+        if (d) dropdownSpecies1.options.Add(new Dropdown.OptionData() {text = "Deer"});
+        if (b) dropdownSpecies1.options.Add(new Dropdown.OptionData() {text = "Bear"});
+
+        
+        dropdownBirthRate.options.Clear();
+        if (r) dropdownBirthRate.options.Add(new Dropdown.OptionData() {text = "Rabbit"});
+        if (w)  dropdownBirthRate.options.Add(new Dropdown.OptionData() {text = "Wolf"});
+        if (d) dropdownBirthRate.options.Add(new Dropdown.OptionData() {text = "Deer"});
+        if (b) dropdownBirthRate.options.Add(new Dropdown.OptionData() {text = "Bear"});
+    }
 
     public void ButtonReDraw()
     {
@@ -108,8 +141,14 @@ public class ButtonClick : Window_Graph
 
     public void DropDownPopulation()
     {
+        dropdownPopulation.options.Clear();
+        if (!isPerMinute) dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "All Animals"});
+        if (FindObjectOfType<RabbitController>()) dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Rabbit"});
+        if (FindObjectOfType<WolfController>())  dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Wolf"});
+        if (FindObjectOfType<DeerController>()) dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Deer"});
+        if (FindObjectOfType<BearController>()) dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Bear"});
+        
         int species = dropdownPopulation.GetComponent<Dropdown>().value;
-        if (!isPerMinute)
         {
             GetListPopulationPerGeneration(species);
             xLabel.text = "Generation";
@@ -127,6 +166,11 @@ public class ButtonClick : Window_Graph
 
     public void DropDownTrait()
     {
+        dropdownSpecies1.options.Clear();
+        if (FindObjectOfType<RabbitController>()) dropdownSpecies1.options.Add(new Dropdown.OptionData() {text = "Rabbit"});
+        if (FindObjectOfType<WolfController>())  dropdownSpecies1.options.Add(new Dropdown.OptionData() {text = "Wolf"});
+        if (FindObjectOfType<DeerController>()) dropdownSpecies1.options.Add(new Dropdown.OptionData() {text = "Deer"});
+        if (FindObjectOfType<BearController>()) dropdownSpecies1.options.Add(new Dropdown.OptionData() {text = "Bear"});
         int species1 = dropdownSpecies1.GetComponent<Dropdown>().value;
         //int species2 = dropdownSpecies2.GetComponent<Dropdown>().value;
         int trait1 = dropdownTrait1.GetComponent<Dropdown>().value;
@@ -143,6 +187,11 @@ public class ButtonClick : Window_Graph
 
     public void DropdownBirthRate()
     {
+        dropdownBirthRate.options.Clear();
+        if (FindObjectOfType<RabbitController>()) dropdownBirthRate.options.Add(new Dropdown.OptionData() {text = "Rabbit"});
+        if (FindObjectOfType<WolfController>())  dropdownBirthRate.options.Add(new Dropdown.OptionData() {text = "Wolf"});
+        if (FindObjectOfType<DeerController>()) dropdownBirthRate.options.Add(new Dropdown.OptionData() {text = "Deer"});
+        if (FindObjectOfType<BearController>()) dropdownBirthRate.options.Add(new Dropdown.OptionData() {text = "Bear"});
         int species = dropdownBirthRate.GetComponent<Dropdown>().value;
         GetListBirthRate(species);
         yLabel.text = "Birth rate " + dropdownBirthRate.GetComponent<Dropdown>().options [species].text;
