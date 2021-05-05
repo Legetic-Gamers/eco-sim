@@ -29,8 +29,11 @@ namespace ViewController.Senses
         
 
         /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
-
-        // reduce clutter in FindTargets()
+        
+        /// <summary>
+        /// separate method to reduce clutter in FindTargets()
+        /// Clear all lists to prevent duplicates 
+        /// </summary>
         private void ClearLists()
         {
             animalController.visibleHostileTargets.Clear();
@@ -42,6 +45,7 @@ namespace ViewController.Senses
             animalController.heardHostileTargets.Clear();
             animalController.heardFriendlyTargets.Clear();
             animalController.heardPreyTargets.Clear();
+            animalController.heardWaterTargets.Clear();
         }
 
         public void FindTargets()
@@ -91,9 +95,12 @@ namespace ViewController.Senses
 
                 float distToTarget = Vector3.Distance(thisTransform.position, targetTransform.position);
 
-                if (distToTarget <= hearingRadius && 
-                    target.gameObject.CompareTag("Animal")) HandleHeardAnimalTarget(target);
-                
+                if (distToTarget <= hearingRadius)
+                {
+                    if (target.gameObject.CompareTag("Animal")) HandleHeardAnimalTarget(target);
+                    else if (target.gameObject.CompareTag("Water")) HandleHeardWaterTarget(target);
+                }
+
                 if (Vector3.Angle(transform.forward, dirToTarget) < angle / 2)
                 {
                     if (distToTarget <= viewRadius)
@@ -111,10 +118,10 @@ namespace ViewController.Senses
                             } 
                             else if (target.gameObject.CompareTag("Water"))
                             {
-                                HandleWaterTarget(target);
+                                HandleSeenWaterTarget(target);
                             } else if (target.gameObject.CompareTag("Hideout"))
                             {
-                                HandleHideoutTarget(target);                                
+                                HandleHideoutTarget(target);
                             }
                         }
                         
@@ -178,8 +185,13 @@ namespace ViewController.Senses
                 animalController.visibleFriendlyTargets.Add(target);
             }
         }
-        
-        private void HandleWaterTarget(GameObject target)
+
+        private void HandleHeardWaterTarget(GameObject target)
+        {
+            animalController.heardWaterTargets.Add(target);
+        }
+
+        private void HandleSeenWaterTarget(GameObject target)
         {
             animalController.visibleWaterTargets.Add(target);
         }

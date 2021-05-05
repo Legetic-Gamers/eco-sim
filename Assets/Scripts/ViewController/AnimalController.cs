@@ -87,9 +87,10 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
     public List<GameObject> heardHostileTargets = new List<GameObject>();
     public List<GameObject> heardFriendlyTargets = new List<GameObject>();
     public List<GameObject> heardPreyTargets = new List<GameObject>();
+    public List<GameObject> heardWaterTargets = new List<GameObject>();
 
     //used for ml, so that it does not spawn a lot of children that might interfere with training
-    public bool isInfertile = false;
+    public bool isInfertile;
 
     //The neck bone of the animal.
     public Transform eyesTransform;

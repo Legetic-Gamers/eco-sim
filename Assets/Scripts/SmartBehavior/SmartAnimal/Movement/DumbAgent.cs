@@ -66,7 +66,7 @@ public class DumbAgent : Agent, IAgent
         Vector3 thisPosition = transform.position;
         //Get the absolute vector for all targets
         Vector3 nearestFood = NavigationUtilities.GetNearestObject(animalController.visibleFoodTargets.Concat(animalController.heardPreyTargets).ToList(), thisPosition)?.transform.position ?? thisPosition;
-        Vector3 nearestWater = NavigationUtilities.GetNearestObject(animalController.visibleWaterTargets, thisPosition)?.transform.position ?? thisPosition;
+        Vector3 nearestWater = NavigationUtilities.GetNearestObject(animalController.visibleWaterTargets.Concat(animalController.heardWaterTargets).ToList(), thisPosition)?.transform.position ?? thisPosition;
         //Get the absolute vector for a potential mate
         Vector3 potentialMate = animalController?.goToMate.GetFoundMate()?.transform.position ?? thisPosition;
         
