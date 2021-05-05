@@ -117,8 +117,9 @@ namespace AnimalsV2.States
             if (currentWanderSubstate != WanderSubState.LongWalk)
             {
                 animal.animationController.CrossOverAnimation(StateAnimation.Walking.ToString());
-                currentWanderSubstate = WanderSubState.LongWalk;                
             }
+            currentWanderSubstate = WanderSubState.LongWalk;                
+
 
             //movement vector is set as local vector
             movementVector = animal.transform.forward;
@@ -131,8 +132,9 @@ namespace AnimalsV2.States
             if (currentWanderSubstate != WanderSubState.ShortWalk)
             {
                 animal.animationController.CrossOverAnimation(StateAnimation.Walking.ToString());
-                currentWanderSubstate = WanderSubState.ShortWalk;                
             }
+            currentWanderSubstate = WanderSubState.ShortWalk;                
+
 
             //movement vector is set as local vector
             movementVector = Random.insideUnitSphere;
@@ -150,8 +152,9 @@ namespace AnimalsV2.States
             if (currentWanderSubstate != WanderSubState.LookAround)
             {
                 animal.animationController.CrossOverAnimation(StateAnimation.Idle.ToString());
-                currentWanderSubstate = WanderSubState.LookAround;
             }
+            currentWanderSubstate = WanderSubState.LookAround;
+
             ticksLeftOfWanderSubstate = 2;
         }
         
@@ -166,18 +169,17 @@ namespace AnimalsV2.States
             tempVector += animal.transform.position; //add position since we navigate with global coordinates
             
             NavMeshHit hit;
-            if (NavMesh.SamplePosition(tempVector, out hit, tempVector.magnitude,
+            if (NavMesh.SamplePosition(tempVector, out hit, animal.agent.height * 2,
                 1 << NavMesh.GetAreaFromName("Walkable")))
             {
                 NavigationUtilities.NavigateToPoint(animal, tempVector);
             } else if (NavigationUtilities.PerpendicularPoint(animal.transform.position,animal.transform.forward,animal.transform.up,animal.agent.height*2 + 2f,out movementVector))
             {
+                Debug.Log("PERPENDICULAR");
                 NavigationUtilities.NavigateToPoint(animal, movementVector);
                 movementVector = animal.transform.forward;
-            } else if (NavigationUtilities.RandomPoint(animal.transform.position, 10, 10f,
-                out movementVector))
+            } else if (NavigationUtilities.RandomPoint(animal.transform.position, 10, 10f, out movementVector))
             {
-                
                 NavigationUtilities.NavigateToPoint(animal, movementVector);
                 movementVector = animal.transform.forward;
             }    

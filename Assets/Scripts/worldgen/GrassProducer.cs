@@ -37,7 +37,7 @@ public class GrassProducer : MonoBehaviour
         if (grassCount < maxGrassCount)
         {
             float chance = Random.Range(0, 1f);
-            if (chance > 0.995)
+            if (chance > 0.994)
             {
                 if (grassPrefab)
                 {

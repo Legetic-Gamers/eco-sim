@@ -20,7 +20,7 @@ namespace ViewController
             renderer = GetComponent<Renderer>();
             if (capacity == 0)
             {
-                capacity = 2;
+                capacity = 3;
             }
         }
 

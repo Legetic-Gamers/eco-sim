@@ -111,7 +111,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   text: {fileID: 6827725702088615731}
-  capacity: 2
+  capacity: 3
 --- !u!1 &3264706799578648702
 GameObject:
   m_ObjectHideFlags: 0
