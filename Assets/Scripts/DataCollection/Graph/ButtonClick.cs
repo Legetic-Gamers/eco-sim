@@ -1,5 +1,6 @@
 ﻿
 using System;
+using Menus;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -20,16 +21,9 @@ public class ButtonClick : Window_Graph
 
     public Dropdown dropdownPopulation;
     public Dropdown dropdownSpecies1;
-    //public Dropdown dropdownSpecies2;
     public Dropdown dropdownTrait1;
-
     public Dropdown dropdownBirthRate;
-    //public Dropdown dropdownTrait2;
-    //public Dropdown dropDownDataType1;
-    //public Dropdown dropDownDataType2;
-
-
- 
+    
 
     public Sprite square;
     public Sprite check;
@@ -37,10 +31,41 @@ public class ButtonClick : Window_Graph
     public Button buttonTwo;
 
     private bool isPerMinute = false;
-    
-    
+
+    public void Start()
+    {
+        var sgm = FindObjectOfType<ShowGraphManager>();
+        if (sgm) sgm.SetDropDownValues += InitDropDownValues;
+    }
 
 
+    private void InitDropDownValues()
+    {
+        bool r = FindObjectOfType<RabbitController>();
+        bool w = FindObjectOfType<WolfController>();
+        bool d = FindObjectOfType<DeerController>();
+        bool b = FindObjectOfType<BearController>();
+        
+        dropdownPopulation.options.Clear();
+        if (!isPerMinute) dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "All Animals"});
+        if (r) dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Rabbit"});
+        if (w)  dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Wolf"});
+        if (d) dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Deer"});
+        if (b) dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Bear"});
+        
+        dropdownSpecies1.options.Clear();
+        if (r) dropdownSpecies1.options.Add(new Dropdown.OptionData() {text = "Rabbit"});
+        if (w)  dropdownSpecies1.options.Add(new Dropdown.OptionData() {text = "Wolf"});
+        if (d) dropdownSpecies1.options.Add(new Dropdown.OptionData() {text = "Deer"});
+        if (b) dropdownSpecies1.options.Add(new Dropdown.OptionData() {text = "Bear"});
+
+        
+        dropdownBirthRate.options.Clear();
+        if (r) dropdownBirthRate.options.Add(new Dropdown.OptionData() {text = "Rabbit"});
+        if (w)  dropdownBirthRate.options.Add(new Dropdown.OptionData() {text = "Wolf"});
+        if (d) dropdownBirthRate.options.Add(new Dropdown.OptionData() {text = "Deer"});
+        if (b) dropdownBirthRate.options.Add(new Dropdown.OptionData() {text = "Bear"});
+    }
 
     public void ButtonReDraw()
     {
@@ -85,10 +110,10 @@ public class ButtonClick : Window_Graph
         isPerMinute = false;
         dropdownPopulation.options.Clear();
         dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "All Animals"});
-        dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Rabbit"});
-        dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Wolf"});
-        dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Deer"});
-        dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Bear"});
+        if (FindObjectOfType<RabbitController>()) dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Rabbit"});
+        if (FindObjectOfType<WolfController>())  dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Wolf"});
+        if (FindObjectOfType<DeerController>()) dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Deer"});
+        if (FindObjectOfType<BearController>()) dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Bear"});
         dropdownPopulation.value = 1;
         dropdownPopulation.value = 0;
         DropDownPopulation();
@@ -98,10 +123,10 @@ public class ButtonClick : Window_Graph
     {
         isPerMinute = true;
         dropdownPopulation.options.Clear();
-        dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Rabbit"});
-        dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Wolf"});
-        dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Deer"});
-        dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Bear"});
+        if (FindObjectOfType<RabbitController>()) dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Rabbit"});
+        if (FindObjectOfType<WolfController>())  dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Wolf"});
+        if (FindObjectOfType<DeerController>()) dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Deer"});
+        if (FindObjectOfType<BearController>()) dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Bear"});
         dropdownPopulation.value = 1;
         dropdownPopulation.value = 0;
         DropDownPopulation();
@@ -109,44 +134,117 @@ public class ButtonClick : Window_Graph
 
     public void DropDownPopulation()
     {
-        int species = dropdownPopulation.GetComponent<Dropdown>().value;
+        dropdownPopulation.options.Clear();
+        if (!isPerMinute) dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "All Animals"});
+        if (FindObjectOfType<RabbitController>()) dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Rabbit"});
+        if (FindObjectOfType<WolfController>())  dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Wolf"});
+        if (FindObjectOfType<DeerController>()) dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Deer"});
+        if (FindObjectOfType<BearController>()) dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Bear"});
+        
+        int speciesNumber = dropdownPopulation.GetComponent<Dropdown>().value;
+        string species = dropdownPopulation.GetComponent<Dropdown>().options[speciesNumber].text;
+        int number = 0;
         if (!isPerMinute)
         {
-            GetListPopulationPerGeneration(species);
+            switch (species)
+            {
+                case "All Animals":
+                    number = 0;
+                    break;
+                case "Rabbit":
+                    number = 1;
+                    break;
+                case "Wolf":
+                    number = 2;
+                    break;
+                case "Deer":
+                    number = 3;
+                    break;
+                case "Bear":
+                    number = 4;
+                    break;
+            }
+              
+            GetListPopulationPerGeneration(number);
             xLabel.text = "Generation";
         }
 
         if (isPerMinute)
         {
-            GetListPopulationPerMinute(species);
+            switch (species)
+            {
+                case "Rabbit":
+                    number = 0;
+                    break;
+                case "Wolf":
+                    number = 1;
+                    break;
+                case "Deer":
+                    number = 2;
+                    break;
+                case "Bear":
+                    number = 3;
+                    break;
+            }
+            GetListPopulationPerMinute(number);
             xLabel.text = "Time (minute)";
         }
 
-        yLabel.text = dropdownPopulation.GetComponent<Dropdown>().options [species].text + " population";
+        yLabel.text = species + " population";
         
     }
 
     public void DropDownTrait()
     {
-        int species1 = dropdownSpecies1.GetComponent<Dropdown>().value;
-        //int species2 = dropdownSpecies2.GetComponent<Dropdown>().value;
+        int speciesNumber = dropdownSpecies1.GetComponent<Dropdown>().value;
+        string species = dropdownSpecies1.GetComponent<Dropdown>().options[speciesNumber].text;
         int trait1 = dropdownTrait1.GetComponent<Dropdown>().value;
-        //int trait2 = dropdownTrait2.GetComponent<Dropdown>().value;
-        //int dataType1 = dropDownDataType1.GetComponent<Dropdown>().value;
-        //int dataType2 = dropDownDataType2.GetComponent<Dropdown>().value;
-
-        GetListTrait(0, species1, trait1, 0);
-        //GetListType(1, species2, trait2, dataType2);
+        int number = 0;
         
-        yLabel.text = dropdownSpecies1.GetComponent<Dropdown>().options [species1].text + " " + dropdownTrait1.GetComponent<Dropdown>().options [trait1].text;
+        switch (species)
+        {
+            case "Rabbit":
+                number = 0;
+                break;
+            case "Wolf":
+                number = 1;
+                break;
+            case "Deer":
+                number = 2;
+                break;
+            case "Bear":
+                number = 3;
+                break;
+        }
+        
+        GetListTrait(0, number, trait1, 0);
+
+        yLabel.text = species + " " + dropdownTrait1.GetComponent<Dropdown>().options [trait1].text;
         xLabel.text = "Generation";
     }
 
     public void DropdownBirthRate()
     {
-        int species = dropdownBirthRate.GetComponent<Dropdown>().value;
-        GetListBirthRate(species);
-        yLabel.text = "Birth rate " + dropdownBirthRate.GetComponent<Dropdown>().options [species].text;
+        int speciesNumber = dropdownBirthRate.GetComponent<Dropdown>().value;
+        string species = dropdownBirthRate.GetComponent<Dropdown>().options [speciesNumber].text;
+        int number = 0;
+        switch (species)
+        {
+            case "Rabbit":
+                number = 0;
+                break;
+            case "Wolf":
+                number = 1;
+                break;
+            case "Deer":
+                number = 2;
+                break;
+            case "Bear":
+                number = 3;
+                break;
+        }
+        GetListBirthRate(number);
+        yLabel.text = "Birth rate " + species;
         xLabel.text = "Time (minute)";
     }
 

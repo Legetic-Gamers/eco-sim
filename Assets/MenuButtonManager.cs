@@ -22,7 +22,7 @@ public class MenuButtonManager : MonoBehaviour
     {
         WindowButtonsMain.SetActive(false);
         WindowButtonsPopulation.SetActive(true);
-        
+
     }
 
     public void Traits()
