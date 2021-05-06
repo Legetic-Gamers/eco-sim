@@ -204,13 +204,6 @@ public class DumbAgent : Agent, IAgent
     {
         AnimalModel animalModel = animalController.animalModel;
 
-        if (food == null)
-        {
-            Debug.Log("food is null");
-            AddReward(0.1f);
-            return;
-        }
-            
         //Debug.Log("currentEnergy: " + animalController.animalModel.currentEnergy);
         float reward = 0f;
         //Give reward
@@ -234,9 +227,7 @@ public class DumbAgent : Agent, IAgent
             reward /= animalModel.traits.maxEnergy;
         }
         Destroy(food);
-        //AddReward((1 - reward) * 0.1f);
-        AddReward(0.1f);
-
+        AddReward((1 - reward) * 0.1f);
     }
     
     private void HandleMate(GameObject obj)
@@ -353,10 +344,6 @@ public class DumbAgent : Agent, IAgent
                 if (target.TryGetComponent(out PlantController plantController) &&
                     animalModel.CanEat(plantController.plantModel))
                 {
-                    if (target == null)
-                    {
-                        Debug.Log("EEE");
-                    }
                     animalController.eatingState.SetTarget(target);
                     fsm.ChangeState(animalController.eatingState);
                 }
