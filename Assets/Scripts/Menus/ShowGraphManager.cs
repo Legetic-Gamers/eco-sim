@@ -12,6 +12,11 @@ namespace Menus
         public GameObject canvas;
         public GameObject graph;
         private bool isActive = false;
+        
+        private bool toggleOnce = true;
+
+        public Action SetDropDownValues;
+        
 
 
         // Toggle if graph visibility
@@ -21,6 +26,13 @@ namespace Menus
             canvas.GetComponent<GraphicRaycaster>().enabled = isActive;
             graph.GetComponent<Canvas>().enabled = isActive;
             Window_Graph.IsGraphOne = isActive;
+
+            if (toggleOnce)
+            {
+                toggleOnce = false;
+                SetDropDownValues();
+            }
+            
         }
 
         // Use from GameMenuManager to hide graph

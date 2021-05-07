@@ -94,8 +94,8 @@ public class ObjectPooler : MonoBehaviour
         AnimalController[] animals = FindObjectsOfType<AnimalController>();
         PlantController[] plants = FindObjectsOfType<PlantController>();
         
-        Debug.Log(animals.Length);
-        Debug.Log(plants.Length);
+        //Debug.Log(animals.Length);
+        //Debug.Log(plants.Length);
         
         foreach(AnimalController animalController in animals)
         {

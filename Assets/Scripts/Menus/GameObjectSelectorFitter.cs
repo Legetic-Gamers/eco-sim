@@ -18,7 +18,7 @@ public class GameObjectSelectorFitter : MonoBehaviour
     {
         Clear();
         var gameObjectSettings = objectType.GameObjectSettings;
-        Debug.Log("Name was " + objectType.Name + " and length was " + gameObjectSettings.Count);
+        //Debug.Log("Name was " + objectType.Name + " and length was " + gameObjectSettings.Count);
         for (int i = 0; i < gameObjectSettings.Count; i++)
         {
             InstantiateGameObjectManager(gameObjectSettings[i]);

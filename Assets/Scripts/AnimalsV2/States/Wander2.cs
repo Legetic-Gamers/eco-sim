@@ -175,7 +175,6 @@ namespace AnimalsV2.States
                 NavigationUtilities.NavigateToPoint(animal, tempVector);
             } else if (NavigationUtilities.PerpendicularPoint(animal.transform.position,animal.transform.forward,animal.transform.up,animal.agent.height*2 + 2f,out movementVector))
             {
-                Debug.Log("PERPENDICULAR");
                 NavigationUtilities.NavigateToPoint(animal, movementVector);
                 movementVector = animal.transform.forward;
             } else if (NavigationUtilities.RandomPoint(animal.transform.position, 10, 10f, out movementVector))
