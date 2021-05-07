@@ -68,23 +68,26 @@ public class DumbAgent : Agent, IAgent
         Vector3 nearestFood = NavigationUtilities.GetNearestObject(animalController.visibleFoodTargets.Concat(animalController.heardPreyTargets).ToList(), thisPosition)?.transform.position ?? thisPosition;
         Vector3 nearestWater = NavigationUtilities.GetNearestObject(animalController.visibleWaterTargets.Concat(animalController.heardWaterTargets).ToList(), thisPosition)?.transform.position ?? thisPosition;
         //Get the absolute vector for a potential mate
-        Vector3 potentialMate = animalController?.goToMate.GetFoundMate()?.transform.position ?? thisPosition;
+        GameObject potentialMate = animalController?.goToMate.GetFoundMate();
+        AnimalController potentialMateController = potentialMate?.GetComponent<AnimalController>() ?? null;
+        Vector3 potentialMatePosition = potentialMate?.transform.position ?? thisPosition;
+        
         
         //Get Vector between animal and targets
         nearestFood = transform.InverseTransformPoint(nearestFood);
         nearestWater = transform.InverseTransformPoint(nearestWater);
-        potentialMate = transform.InverseTransformPoint(potentialMate);
+        potentialMatePosition = transform.InverseTransformPoint(potentialMatePosition);
 
         //Get the magnitude of nearestFood, nearestWater potentialMate. (Normalized)
         float maxPercievableDistance = animalController.animalModel.traits.viewRadius;
         float nearestFoodDistance = nearestFood.magnitude / maxPercievableDistance;
         float nearestWaterDistance = nearestWater.magnitude / maxPercievableDistance;
-        float potentialMateDistance = potentialMate.magnitude / maxPercievableDistance;
+        float potentialMateDistance = potentialMatePosition.magnitude / maxPercievableDistance;
 
         //normalize some of the observations
         if (nearestFood != Vector3.zero) nearestFood = nearestFood.normalized;
         if (nearestWater != Vector3.zero) nearestWater = nearestWater.normalized;
-        if (potentialMate != Vector3.zero) potentialMate = potentialMate.normalized;
+        if (potentialMatePosition != Vector3.zero) potentialMatePosition = potentialMatePosition.normalized;
         
         //Add observations for food
         sensor.AddObservation(nearestFoodDistance);
@@ -100,8 +103,8 @@ public class DumbAgent : Agent, IAgent
         
         //Add observations for mate
         sensor.AddObservation(potentialMateDistance);
-        sensor.AddObservation(potentialMate.x);
-        sensor.AddObservation(potentialMate.z);
+        sensor.AddObservation(potentialMatePosition.x);
+        sensor.AddObservation(potentialMatePosition.z);
         sensor.AddObservation(animalModel.WantingOffspring);
         
         
@@ -111,6 +114,10 @@ public class DumbAgent : Agent, IAgent
         Vector3 velocity = transform.InverseTransformVector(animalController.agent.velocity);
         sensor.AddObservation(velocity.x);
         sensor.AddObservation(velocity.z);
+
+        Vector3 potentialMateVelocity = transform.InverseTransformVector(potentialMateController?.agent.velocity ?? new Vector3(0,0,0));
+        sensor.AddObservation(potentialMateVelocity.x);
+        sensor.AddObservation(potentialMateVelocity.y);
     }
 
     //Called Every time the ML agent decides to take an action.
@@ -136,7 +143,7 @@ public class DumbAgent : Agent, IAgent
         AddReward(speedModifier * 0.0025f - 0.0025f);
 
         //Set speed
-        animalController.SetSpeed(speedModifier * 0.5f);
+        animalController.SetSpeed(speedModifier * 0.75f);
         
         NavigationUtilities.NavigateRelative(animalController, dirToGo, 1 << NavMesh.GetAreaFromName("Walkable"));
     }

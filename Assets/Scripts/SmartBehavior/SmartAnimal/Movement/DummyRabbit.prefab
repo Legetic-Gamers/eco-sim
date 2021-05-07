@@ -664,6 +664,7 @@ GameObject:
   - component: {fileID: 1389232664}
   - component: {fileID: 1389232662}
   - component: {fileID: 8983037899961157824}
+  - component: {fileID: 3467625419719642323}
   m_Layer: 8
   m_Name: DummyRabbit
   m_TagString: Animal
@@ -713,7 +714,7 @@ NavMeshAgent:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8505818697369016331}
-  m_Enabled: 0
+  m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.2
   m_Speed: 2
@@ -786,9 +787,22 @@ MonoBehaviour:
   heardHostileTargets: []
   heardFriendlyTargets: []
   heardPreyTargets: []
+  heardWaterTargets: []
   isInfertile: 1
   eyesTransform: {fileID: 5475221242315044121}
   centerTransform: {fileID: 7695058474050490900}
+--- !u!114 &3467625419719642323
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8505818697369016331}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d9fcffdb87451b408ef834740fc630f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8505818697383472513
 GameObject:
   m_ObjectHideFlags: 0

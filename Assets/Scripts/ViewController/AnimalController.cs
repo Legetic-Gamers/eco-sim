@@ -220,7 +220,7 @@ public abstract class AnimalController : MonoBehaviour, IPooledObject
 
     public abstract string GetObjectLabel();
 
-    private IEnumerator UpdateStatesLogicLoop()
+    protected IEnumerator UpdateStatesLogicLoop()
     {
         while (true)
         {
