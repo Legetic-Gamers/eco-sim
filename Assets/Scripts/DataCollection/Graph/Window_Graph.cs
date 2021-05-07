@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using DataCollection;
+using ICSharpCode.NRefactory.Ast;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
@@ -27,7 +28,7 @@ public class Window_Graph : MonoBehaviour
     private static List<float> _list1 = new List<float>() {0};
     private static List<float> _list2 = new List<float>() {0};
     private static int _truncateFactor = 1;
-    private static int _gridCountY = 12;
+    private static int _gridCountY = 10;
     private int firstX = 1;
     private static bool _isGraphOne = false;
     private static bool _isGraphTwo = false;
@@ -43,8 +44,8 @@ public class Window_Graph : MonoBehaviour
     private RectTransform dashTemplateY;
     
     private List<GameObject> gameObjectList;
-    
-    
+
+
 
     public static int TruncateFactor
     {
@@ -99,8 +100,6 @@ public class Window_Graph : MonoBehaviour
         dh.Display += Draw;
         ButtonClick.OnButtonReDraw += ReDraw;
     }
-    
-
 
     private void Draw(List<float> list1, List<float> list2)
 {
@@ -144,7 +143,6 @@ private void ReDraw(object sender, EventArgs e)
         if (gameobjects.Count == 0) return;
         foreach (GameObject obj in gameobjects)
         {
-            //Debug.Log("Destroying shit");
             Destroy(obj);
         }
 
@@ -234,10 +232,11 @@ private void ReDraw(object sender, EventArgs e)
     {
         dashTemplateY.sizeDelta = new Vector2(graphContainer.sizeDelta.x + 2f, 1f);
         float graphHeight = graphContainer.sizeDelta.y;
-        float yMax = valueList.Max() * yBufferTop;
+        //float yMax = valueList.Max() * yBufferTop;
+        float yMax = RoundMaxY(valueList.Max());
         int separatorCount = _gridCountY;
-        if (_isGraphOne && _isGraphTwo)
-            yMax = Mathf.Max(_list1.Max(), _list2.Max())*yBufferTop;
+        //if (_isGraphOne && _isGraphTwo)
+        //    yMax = Mathf.Max(_list1.Max(), _list2.Max())*yBufferTop;
         
         for (int i = 0; i <= separatorCount; i++)
         {
@@ -245,11 +244,10 @@ private void ReDraw(object sender, EventArgs e)
             //labelY.SetParent(graphContainer);
             labelY.gameObject.SetActive(true); 
             float normalizedValue = (i * 1f) / separatorCount;
-            labelY.anchoredPosition = (new Vector2(-10f, normalizedValue * graphHeight));
-            if (yMax > 1)
-                labelY.GetComponent<Text>().text = (yMax * normalizedValue).ToString("0.0");
-            else if (yMax > 0.1f)
-                labelY.GetComponent<Text>().text = (yMax * normalizedValue).ToString("0.00");
+            labelY.anchoredPosition = (new Vector2(-10f, normalizedValue * graphHeight)); 
+            if (yMax > 100) labelY.GetComponent<Text>().text = (yMax * normalizedValue).ToString("0");
+            else if (yMax > 10)  labelY.GetComponent<Text>().text = (yMax * normalizedValue).ToString("0.0");
+            else if (yMax > 0.1f) labelY.GetComponent<Text>().text = (yMax * normalizedValue).ToString("0.00");
             else labelY.GetComponent<Text>().text = (yMax * normalizedValue).ToString("0.000");
             gameObjectList.Add(labelY.gameObject); 
 
@@ -272,14 +270,15 @@ private void ReDraw(object sender, EventArgs e)
         float graphWidth = sizeDelta.x;
         int numberOfValues = valueList.Count;
         float xDelta = graphWidth / numberOfValues;
-        float yMax = valueList.Max() *yBufferTop;
+        //float yMax = valueList.Max() *yBufferTop;
+        float yMax = RoundMaxY(valueList.Max());
         int count = firstX;
 
-        if (_isGraphOne && _isGraphTwo)
-        {
-            if (_list1.Count == 0 || _list2.Count == 0) return;
-            yMax = Mathf.Max(_list1.Max(), _list2.Max()) *yBufferTop;
-        }
+        //if (_isGraphOne && _isGraphTwo)
+        //{
+        //    if (_list1.Count == 0 || _list2.Count == 0) return;
+        //    yMax = Mathf.Max(_list1.Max(), _list2.Max()) *yBufferTop;
+        //}
 
 
         GameObject lastCircleGameObject = null;
@@ -303,5 +302,53 @@ private void ReDraw(object sender, EventArgs e)
             count++;
         }
 
+    }
+
+    private float RoundMaxY(float maxValue)
+    {
+
+        if (maxValue < 0.1)
+        {
+            float tmp =  (float) Math.Round(maxValue, 2, MidpointRounding.AwayFromZero);
+            if (tmp < maxValue) return tmp + 0.01f;
+            return tmp;
+        }
+
+        if (maxValue < 1)
+        {
+            float tmp = (float) Math.Round(maxValue, 1, MidpointRounding.AwayFromZero);
+            if (tmp < maxValue) return tmp + 0.1f;
+            return tmp;
+        }
+        if (maxValue < 10) return (float) Math.Ceiling(maxValue);
+        if (maxValue < 100)
+        {
+            int tmp = (int) Math.Round(maxValue, 0, MidpointRounding.AwayFromZero);
+            do
+            {
+                tmp++;
+            } while (tmp % _gridCountY != 1);
+            return tmp - 1;
+        }
+        if (maxValue < 1000)
+        {
+            int tmp = (int) Math.Round(maxValue, 0, MidpointRounding.AwayFromZero);
+            do
+            {
+                tmp++;
+            } while (tmp % (_gridCountY*10) != 1);
+            return tmp - 1;
+        }
+        if (maxValue < 100000)
+        {
+            int tmp = (int) Math.Round(maxValue, 0, MidpointRounding.AwayFromZero);
+            do
+            {
+                tmp++;
+            } while (tmp % (_gridCountY*100) != 1);
+            return tmp - 1;
+        }
+
+        return 0;
     }
 }

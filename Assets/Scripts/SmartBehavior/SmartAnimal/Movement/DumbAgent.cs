@@ -136,7 +136,7 @@ public class DumbAgent : Agent, IAgent
         AddReward(speedModifier * 0.0025f - 0.0025f);
 
         //Set speed
-        animalController.SetSpeed(speedModifier);
+        animalController.SetSpeed(speedModifier * 0.5f);
         
         NavigationUtilities.NavigateRelative(animalController, dirToGo, 1 << NavMesh.GetAreaFromName("Walkable"));
     }
@@ -204,13 +204,6 @@ public class DumbAgent : Agent, IAgent
     {
         AnimalModel animalModel = animalController.animalModel;
 
-        if (food == null)
-        {
-            Debug.Log("food is null");
-            AddReward(0.1f);
-            return;
-        }
-            
         //Debug.Log("currentEnergy: " + animalController.animalModel.currentEnergy);
         float reward = 0f;
         //Give reward
@@ -233,10 +226,12 @@ public class DumbAgent : Agent, IAgent
             reward = Math.Min(nutritionReward, hunger);
             reward /= animalModel.traits.maxEnergy;
         }
-        Destroy(food);
-        //AddReward((1 - reward) * 0.1f);
-        AddReward(0.1f);
 
+        if (animalController.isTraining)
+        {
+            Destroy(food);
+        }
+        AddReward((1 - reward) * 0.1f);
     }
     
     private void HandleMate(GameObject obj)
@@ -329,7 +324,6 @@ public class DumbAgent : Agent, IAgent
     
     private void HandleHostileTarget(GameObject target)
     {
-        animalController.SetSpeed(animalController.speedModifier);
         fsm.ChangeState(animalController.fleeingState);
     }
     
@@ -353,10 +347,6 @@ public class DumbAgent : Agent, IAgent
                 if (target.TryGetComponent(out PlantController plantController) &&
                     animalModel.CanEat(plantController.plantModel))
                 {
-                    if (target == null)
-                    {
-                        Debug.Log("EEE");
-                    }
                     animalController.eatingState.SetTarget(target);
                     fsm.ChangeState(animalController.eatingState);
                 }
