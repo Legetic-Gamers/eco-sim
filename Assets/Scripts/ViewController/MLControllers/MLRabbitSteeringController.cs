@@ -110,10 +110,14 @@ public class MLRabbitSteeringController : AnimalController
                 speedModifier = 0f;
                 break;
             case MLTrainingState _:
-                MediumEnergyState();
+                energyModifier = 0.35f;
+                hydrationModifier = 0.4f;
+                reproductiveUrgeModifier = 1f;
                 break;
             case MLInferenceState _:
-                MediumEnergyState();
+                energyModifier = 0.35f;
+                hydrationModifier = 0.4f;
+                reproductiveUrgeModifier = 1f;
                 break;
             default:
                 energyModifier = 0.35f;

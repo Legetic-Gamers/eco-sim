@@ -1431,6 +1431,7 @@ GameObject:
   - component: {fileID: -600961360408927680}
   - component: {fileID: 4246883440997276041}
   - component: {fileID: 5503518748347963888}
+  - component: {fileID: 3140503743747419771}
   m_Layer: 8
   m_Name: SmartSteeringRabbit
   m_TagString: Animal
@@ -1635,7 +1636,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BrainParameters:
-    VectorObservationSize: 14
+    VectorObservationSize: 16
     NumStackedVectorObservations: 4
     m_ActionSpec:
       m_NumContinuousActions: 2
@@ -1644,7 +1645,7 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 1
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 5022602860645237092, guid: 88fb762d3763a004d8a90ae3616ceb6c, type: 3}
+  m_Model: {fileID: 5022602860645237092, guid: 37a031ad8c453a84fa718734b912baa2, type: 3}
   m_InferenceDevice: 2
   m_BehaviorType: 2
   m_BehaviorName: Movement
@@ -1699,9 +1700,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0795e2e31cde64428dc997f642c4648, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  showNavMeshAgentPath: 0
+  showNavMeshAgentPath: 1
   allowNavigateWithClick: 0
-  showVisibleTargets: 0
+  showVisibleTargets: 1
   showFleeingVector: 0
   showPerceptionRange: 0
 --- !u!114 &-600961360408927680
@@ -1771,6 +1772,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0d9fcffdb87451b408ef834740fc630f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3140503743747419771
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4793952549922607340}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eeade2d59b355d445a3a8d5bdfc67fa4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &4793952549949646182
