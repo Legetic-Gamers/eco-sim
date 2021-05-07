@@ -163,7 +163,7 @@ public class ObjectTab : SettingsManager
         //     simulationSettings.ObjectPlacementSettings.UpdateIndex(currentlySelectedIndex, newObjectType);
         // }
         
-        simulationSettings.ObjectPlacementSettings.InvokeUpdates();
+        //simulationSettings.ObjectPlacementSettings.InvokeUpdates();
 
     }
 

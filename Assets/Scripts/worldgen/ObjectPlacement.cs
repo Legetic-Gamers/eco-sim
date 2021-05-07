@@ -166,7 +166,7 @@ public class ObjectPlacement : MonoBehaviour
         //     Destroy(groupObject);
         //     
         // }
-        //
+        
         var objects = Resources.FindObjectsOfTypeAll<GameObject>().Where(obj => obj.name == name + " Group");
         foreach (var obj in objects)
         {
