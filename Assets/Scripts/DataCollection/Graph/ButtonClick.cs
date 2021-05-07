@@ -3,6 +3,7 @@ using System;
 using Menus;
 using UnityEngine;
 using UnityEngine.UI;
+using ViewController;
 
 
 public class ButtonClick : Window_Graph
@@ -31,7 +32,12 @@ public class ButtonClick : Window_Graph
     public Button buttonTwo;
 
     private bool isPerMinute = false;
-
+    private static bool r;
+    private static bool w;
+    private static bool d;
+    private static bool b;
+    
+    
     public void Start()
     {
         var sgm = FindObjectOfType<ShowGraphManager>();
@@ -41,10 +47,11 @@ public class ButtonClick : Window_Graph
 
     private void InitDropDownValues()
     {
-        bool r = FindObjectOfType<RabbitController>();
-        bool w = FindObjectOfType<WolfController>();
-        bool d = FindObjectOfType<DeerController>();
-        bool b = FindObjectOfType<BearController>();
+        r = FindObjectOfType<RabbitController>() || FindObjectOfType<MLRabbitSteeringController>() ||
+            FindObjectOfType<MLRabbitController>();
+        w = FindObjectOfType<WolfController>() || FindObjectOfType<MLWolfController>();
+        d = FindObjectOfType<DeerController>() || FindObjectOfType<MLDeerController>();
+        b = FindObjectOfType<BearController>() || FindObjectOfType<MLBearController>();
         
         dropdownPopulation.options.Clear();
         if (!isPerMinute) dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "All Animals"});
@@ -110,10 +117,11 @@ public class ButtonClick : Window_Graph
         isPerMinute = false;
         dropdownPopulation.options.Clear();
         dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "All Animals"});
-        if (FindObjectOfType<RabbitController>()) dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Rabbit"});
-        if (FindObjectOfType<WolfController>())  dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Wolf"});
-        if (FindObjectOfType<DeerController>()) dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Deer"});
-        if (FindObjectOfType<BearController>()) dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Bear"});
+        if (r) dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Rabbit"});
+        if (w)  dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Wolf"});
+        if (d) dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Deer"});
+        if (b) dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Bear"});
+        
         dropdownPopulation.value = 1;
         dropdownPopulation.value = 0;
         DropDownPopulation();
@@ -123,10 +131,11 @@ public class ButtonClick : Window_Graph
     {
         isPerMinute = true;
         dropdownPopulation.options.Clear();
-        if (FindObjectOfType<RabbitController>()) dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Rabbit"});
-        if (FindObjectOfType<WolfController>())  dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Wolf"});
-        if (FindObjectOfType<DeerController>()) dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Deer"});
-        if (FindObjectOfType<BearController>()) dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Bear"});
+        if (r) dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Rabbit"});
+        if (w)  dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Wolf"});
+        if (d) dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Deer"});
+        if (b) dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Bear"});
+        
         dropdownPopulation.value = 1;
         dropdownPopulation.value = 0;
         DropDownPopulation();
@@ -136,11 +145,11 @@ public class ButtonClick : Window_Graph
     {
         dropdownPopulation.options.Clear();
         if (!isPerMinute) dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "All Animals"});
-        if (FindObjectOfType<RabbitController>()) dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Rabbit"});
-        if (FindObjectOfType<WolfController>())  dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Wolf"});
-        if (FindObjectOfType<DeerController>()) dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Deer"});
-        if (FindObjectOfType<BearController>()) dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Bear"});
-        
+        if (r) dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Rabbit"});
+        if (w)  dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Wolf"});
+        if (d) dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Deer"});
+        if (b) dropdownPopulation.options.Add(new Dropdown.OptionData() {text = "Bear"});
+
         int speciesNumber = dropdownPopulation.GetComponent<Dropdown>().value;
         string species = dropdownPopulation.GetComponent<Dropdown>().options[speciesNumber].text;
         int number = 0;

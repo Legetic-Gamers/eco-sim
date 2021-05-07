@@ -23,6 +23,7 @@ public class TabGroup : MonoBehaviour
         selectedTab = buttons.IndexOf(button);
         ResetTabs();
         button.image.color = selected;
+        InitTabs();
         ShowTab(selectedTab);
     }
 
@@ -43,12 +44,71 @@ public class TabGroup : MonoBehaviour
         {
             if (i == selectedPageIndex)
             {
-                pages[i].SetActive(true);
+                //pages[i].SetActive(true);
+                Show(pages[i].gameObject);
             }
             else
             {
-                pages[i].SetActive(false);
+                //pages[i].SetActive(false);
+                Hide(pages[i].gameObject);
             }
+        }
+    }
+
+    private void InitTabs()
+    {
+        for (int i = 0; i < pages.Count; i++)
+        {
+            //Start up tab
+            pages[i].SetActive(true);
+            
+            //Hide Children
+            Hide(pages[i]);
+        }
+    }
+
+    //Hides all the children of the tab.
+    private void Hide(GameObject page)
+    {
+        int i = 0;
+
+        //Array to hold all child obj
+        GameObject[] allChildren = new GameObject[page.transform.childCount];
+
+        //Find all child obj and store to that array
+        foreach (Transform child in page.transform)
+        {
+            allChildren[i] = child.gameObject;
+            i += 1;
+        }
+
+        //Now hide them
+        foreach (GameObject child in allChildren)
+        {
+            child.gameObject.SetActive(false);
+        }
+
+    }
+    
+    //Shows all the children of the tab.
+    private void Show(GameObject page)
+    {
+        int i = 0;
+
+        //Array to hold all child obj
+        GameObject[] allChildren = new GameObject[page.transform.childCount];
+
+        //Find all child obj and store to that array
+        foreach (Transform child in page.transform)
+        {
+            allChildren[i] = child.gameObject;
+            i += 1;
+        }
+
+        //Now hide them
+        foreach (GameObject child in allChildren)
+        {
+            child.gameObject.SetActive(true);
         }
     }
 }

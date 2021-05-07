@@ -143,6 +143,16 @@ MonoBehaviour:
       gameObjectSettings:
       - gameObjectIndex: 13
         probability: 1
+    - name: Hideouts
+      minimumDistance: 14
+      newPointCount: 20
+      scale: 1
+      _yOffset: 0
+      minHeight: 0.181
+      maxHeight: 0.843
+      gameObjectSettings:
+      - gameObjectIndex: 23
+        probability: 1
   preview: 1
   availableGameObjects:
   - simulationObject: {fileID: 1069101916615702, guid: fff1095f568a7964c8c455e72f096fe7,
@@ -236,6 +246,10 @@ MonoBehaviour:
   - simulationObject: {fileID: 4793952549922607340, guid: 8ae284639f5d56e4191ae62e80024e39,
       type: 3}
     previewObject: {fileID: 1971363165378548586, guid: 3ff25ae09fa3c8e47bc18643f60840f4,
+      type: 3}
+  - simulationObject: {fileID: 108507113624723981, guid: 7d0d10d89e68114478dff109b27e4259,
+      type: 3}
+    previewObject: {fileID: 108507113624723981, guid: 70976ccf1a12d834f953072b4fdb7de4,
       type: 3}
   xFixedSize: 1
   yFixedSize: 1

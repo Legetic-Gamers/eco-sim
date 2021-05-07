@@ -16,6 +16,7 @@ public class SimulationPreview : MonoBehaviour
     public Material terrainMaterial;
 
     public bool autoUpdate;
+    
     void Start()
     {
         DisplaySimulationPreview();
@@ -35,6 +36,8 @@ public class SimulationPreview : MonoBehaviour
         simulationSettings.ObjectPlacementSettings.OnTypeAdded += OnObjectTypeAdded;
         simulationSettings.ObjectPlacementSettings.OnTypeChanged += OnTypeChanged;
         simulationSettings.ObjectPlacementSettings.OnTypeDeleted += objectPlacement.DestroyGroupObjectWithName;
+
+        
     }
 
     private void OnObjectTypeAdded(int index)
@@ -85,6 +88,11 @@ public class SimulationPreview : MonoBehaviour
             DisplaySimulationPreview();
             meshFilter.gameObject.GetComponent<MeshCollider>().sharedMesh = meshFilter.sharedMesh;
             textureApplication.UpdateMeshHeights(terrainMaterial, simulationSettings.HeightMapSettings.MinHeight, simulationSettings.HeightMapSettings.MaxHeight);
+            
+            
+            //Place objects on terrain change.
+            simulationSettings.ObjectPlacementSettings.InvokeUpdates();
+            
         }
     }
 

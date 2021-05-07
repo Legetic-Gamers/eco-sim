@@ -24,6 +24,15 @@ public class ObjectPlacementSettings
         OnTypeChanged?.Invoke(index);
     }
 
+    public void InvokeUpdates()
+    {
+        for (int i = 0; i < objectTypes.Count; i++)
+        {
+            OnTypeChanged?.Invoke(i);
+        }
+        
+    }
+
     public void AddType(ObjectType objectType)
     {
         // Debug.Log("Adding type");
