@@ -116,8 +116,14 @@ public class ObjectTab : SettingsManager
     public void SaveValuesToSettings()
     {
         if (isStarting || isBlocked)
+        {
+            print("No update made! blocked: " + isBlocked + " is starting: " + isStarting);
             return;
+        }
 
+        
+
+        print("Changing the placement!");
         ObjectType newObjectType = new ObjectType(
             nameField.text,
             fitter.GetCurrentSettings(),
@@ -130,6 +136,35 @@ public class ObjectTab : SettingsManager
         );
 
         simulationSettings.ObjectPlacementSettings.UpdateIndex(currentlySelectedIndex, newObjectType);
+    }
+
+    public void UpdateAllObjectPlacement()
+    {
+        //Update each object placed.
+        // for (int index = 0;
+        // index < simulationSettings.ObjectPlacementSettings.ObjectTypes.Count;
+        // index++)
+        // {
+        //     
+        //     //Get the old object settings
+        //     ObjectType oldObjectType = simulationSettings.ObjectPlacementSettings.ObjectTypes[index];
+        //     
+        //     ObjectType newObjectType = new ObjectType(
+        //         oldObjectType.Name,
+        //         oldObjectType.GameObjectSettings.ToArray(),
+        //         oldObjectType.MinimumDistance,
+        //         oldObjectType.NewPointCount,
+        //         oldObjectType.Scale,
+        //         oldObjectType.yOffset,
+        //         oldObjectType.MinHeight,
+        //         oldObjectType.MaxHeight
+        //     );
+        //     
+        //     simulationSettings.ObjectPlacementSettings.UpdateIndex(currentlySelectedIndex, newObjectType);
+        // }
+        
+        simulationSettings.ObjectPlacementSettings.InvokeUpdates();
+
     }
 
     public void UpdateDropdownOptions()

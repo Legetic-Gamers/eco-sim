@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using DefaultNamespace;
 using UnityEditor;
 using UnityEngine;
@@ -158,10 +159,18 @@ public class ObjectPlacement : MonoBehaviour
 
     public void DestroyGroupObjectWithName(string name)
     {
-        var groupObject = GameObject.Find(name + " Group");
-        if (groupObject != null)
+        // var groupObject = GameObject.Find(name + " Group");
+        // if (groupObject != null)
+        // {
+        //     //Destroy(GameObject.Find(name + " Group"));
+        //     Destroy(groupObject);
+        //     
+        // }
+        //
+        var objects = Resources.FindObjectsOfTypeAll<GameObject>().Where(obj => obj.name == name + " Group");
+        foreach (var obj in objects)
         {
-            Destroy(GameObject.Find(name + " Group"));
+            Destroy(obj);
         }
     }
 }
