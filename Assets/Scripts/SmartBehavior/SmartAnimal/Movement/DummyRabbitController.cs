@@ -45,6 +45,16 @@ public class DummyRabbitController : AnimalController
     public override void UpdateParameters()
     {
         //do nothing
+        speedModifier = Random.Range(0, 1f);
+        // speed
+        animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier;
+        if (agent != null)
+        {
+            agent.speed = animalModel.currentSpeed;   
+            agent.acceleration = baseAcceleration;
+            agent.angularSpeed = baseAngularSpeed;
+        }
+
     }
 
     protected override void SetPhenotype()
