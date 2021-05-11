@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using DataCollection;
-using ICSharpCode.NRefactory.Ast;
 using UnityEngine;
 using UnityEngine.UI;
-using Random = UnityEngine.Random;
 
 
 /// <summary>
