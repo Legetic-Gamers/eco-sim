@@ -2252,7 +2252,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   showNavMeshAgentPath: 0
   allowNavigateWithClick: 0
-  showVisibleTargets: 1
+  showVisibleTargets: 0
   showFleeingVector: 0
   showPerceptionRange: 0
 --- !u!120 &-3621604539398353252
@@ -2382,6 +2382,7 @@ MonoBehaviour:
   heardHostileTargets: []
   heardFriendlyTargets: []
   heardPreyTargets: []
+  heardWaterTargets: []
   isInfertile: 0
   eyesTransform: {fileID: 5540492844350553834}
   centerTransform: {fileID: 2025547147093544511}

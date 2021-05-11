@@ -143,33 +143,16 @@ public class MLRabbitSteeringController : AnimalController
         //The age will increase 2 per 2 seconds.
         animalModel.age += 0.2f;
 
-        if (isTraining)
-        {
-            // energy
-            animalModel.currentEnergy -= (animalModel.age + animalModel.currentSpeed +
-                                          animalModel.traits.viewRadius / 10 + animalModel.traits.hearingRadius / 10)
-                                         * animalModel.traits.size * energyModifier;
+        // energy
+        animalModel.currentEnergy -= (animalModel.currentSpeed / 10 +
+                                      animalModel.traits.viewRadius / 10 + animalModel.traits.hearingRadius / 8)
+                                     * animalModel.traits.size * energyModifier;
 
-            // hydration
-            animalModel.currentHydration -= animalModel.traits.size *
-                                            (1 +
-                                             animalModel.currentSpeed / animalModel.traits.endurance *
-                                             hydrationModifier);    
-        }
-        else
-        {
-            // energy
-            animalModel.currentEnergy -= (animalModel.currentSpeed / 10 +
-                                          animalModel.traits.viewRadius / 10 + animalModel.traits.hearingRadius / 8)
-                                         * animalModel.traits.size * energyModifier;
-
-            // hydration
-            animalModel.currentHydration -= (animalModel.traits.size) * (1 + animalModel.currentSpeed / 10  *
-                hydrationModifier);
-            
+        // hydration
+        animalModel.currentHydration -= (animalModel.traits.size) * (1 + animalModel.currentSpeed / 10  *
+            hydrationModifier);
         
-            
-        }
+        
         // reproductive urge
         if (animalModel.HighEnergy && animalModel.HighHydration)
         {

@@ -95,7 +95,7 @@ MonoBehaviour:
       type: 3}
     size: 500
   - label: MLSteeringRabbit
-    prefab: {fileID: 4793952549922607340, guid: 8ae284639f5d56e4191ae62e80024e39,
+    prefab: {fileID: 4793952549922607340, guid: 0f2f99122a5d4e24d83616236cf7d49c,
       type: 3}
     size: 250
   - label: BasicPlant

@@ -1634,7 +1634,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BrainParameters:
-    VectorObservationSize: 16
+    VectorObservationSize: 15
     NumStackedVectorObservations: 4
     m_ActionSpec:
       m_NumContinuousActions: 2
@@ -1643,7 +1643,7 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 1
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 5022602860645237092, guid: 2444ca8ea9b3aa64b9874abf3243495b, type: 3}
+  m_Model: {fileID: 5022602860645237092, guid: ce6783131f3410a4e9e542a3b6f18622, type: 3}
   m_InferenceDevice: 2
   m_BehaviorType: 0
   m_BehaviorName: Movement

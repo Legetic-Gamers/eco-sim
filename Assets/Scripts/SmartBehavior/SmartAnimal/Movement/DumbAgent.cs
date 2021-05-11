@@ -74,32 +74,37 @@ public class DumbAgent : Agent, IAgent
         
         
         //Get Vector between animal and targets
-        nearestFood = transform.InverseTransformPoint(nearestFood);
-        nearestWater = transform.InverseTransformPoint(nearestWater);
-        potentialMatePosition = transform.InverseTransformPoint(potentialMatePosition);
-
+        nearestFood -= thisPosition;
+        nearestWater -= thisPosition;
+        potentialMatePosition -= thisPosition;
+        
         //Get the magnitude of nearestFood, nearestWater potentialMate. (Normalized)
         float maxPercievableDistance = animalController.animalModel.traits.viewRadius;
+        
         float nearestFoodDistance = nearestFood.magnitude / maxPercievableDistance;
         float nearestWaterDistance = nearestWater.magnitude / maxPercievableDistance;
         float potentialMateDistance = potentialMatePosition.magnitude / maxPercievableDistance;
-
-        //normalize some of the observations
-        if (nearestFood != Vector3.zero) nearestFood = nearestFood.normalized;
-        if (nearestWater != Vector3.zero) nearestWater = nearestWater.normalized;
-        if (potentialMatePosition != Vector3.zero) potentialMatePosition = potentialMatePosition.normalized;
+        
+        nearestFood.y = 0;
+        nearestWater.y = 0;
+        potentialMatePosition.y = 0;
+        
+        nearestFood = transform.InverseTransformDirection(nearestFood);
+        nearestWater = transform.InverseTransformDirection(nearestWater);
+        potentialMatePosition = transform.InverseTransformDirection(potentialMatePosition);
+        
         
         //Add observations for food
         sensor.AddObservation(nearestFoodDistance);
         sensor.AddObservation(nearestFood.x);
         sensor.AddObservation(nearestFood.z);
-        sensor.AddObservation(animalModel.EnergyPercentage);
+        sensor.AddObservation(animalModel.HighEnergy);
         
         //Add observations for water
         sensor.AddObservation(nearestWaterDistance);
         sensor.AddObservation(nearestWater.x);
         sensor.AddObservation(nearestWater.z);
-        sensor.AddObservation(animalModel.HydrationPercentage);
+        sensor.AddObservation(animalModel.HighHydration);
         
         //Add observations for mate
         sensor.AddObservation(potentialMateDistance);
@@ -110,14 +115,17 @@ public class DumbAgent : Agent, IAgent
         
         //Add agents velocity (as a direction) to observations
         //Vector3 velocity = transform.InverseTransformDirection(animalController.agent.velocity);
-        
-        Vector3 velocity = transform.InverseTransformVector(animalController.agent.velocity);
+        Vector3 velocity = transform.InverseTransformDirection(animalController.agent.velocity);
+        sensor.AddObservation(animalController.agent.velocity.magnitude);
         sensor.AddObservation(velocity.x);
         sensor.AddObservation(velocity.z);
 
-        Vector3 potentialMateVelocity = transform.InverseTransformVector(potentialMateController?.agent.velocity ?? new Vector3(0,0,0));
+        /*
+        Vector3 potentialMateVelocity = transform.InverseTransformDirection(potentialMateController?.agent.velocity ?? new Vector3(0,0,0));
+        sensor.AddObservation(potentialMateController?.agent.velocity.magnitude ?? 0);
         sensor.AddObservation(potentialMateVelocity.x);
-        sensor.AddObservation(potentialMateVelocity.y);
+        sensor.AddObservation(potentialMateVelocity.z);
+        */
     }
 
     //Called Every time the ML agent decides to take an action.
@@ -145,6 +153,9 @@ public class DumbAgent : Agent, IAgent
         //Set speed
         animalController.SetSpeed(speedModifier * 0.75f);
         
+        //Debug.Log("action rotation: " + actions.ContinuousActions[0]);
+        //Debug.Log("action speed: " + actions.ContinuousActions[1]);
+
         NavigationUtilities.NavigateRelative(animalController, dirToGo, 1 << NavMesh.GetAreaFromName("Walkable"));
     }
 
@@ -203,7 +214,8 @@ public class DumbAgent : Agent, IAgent
         float reward = animalModel.traits.maxHydration - currentHydration;
         // normalize reward as a percentage
         reward /= animalModel.traits.maxHydration;
-        AddReward((1 - reward) * 0.1f);
+        //AddReward((1 - reward) * 0.1f);
+        AddReward(0.1f);
     }
 
     //The reason to why I have curentEnergy as an in-parameter is because currentEnergy is updated through EatFood before reward gets computed in AnimalMovementBrain
@@ -238,7 +250,9 @@ public class DumbAgent : Agent, IAgent
         {
             Destroy(food);
         }
-        AddReward((1 - reward) * 0.1f);
+        AddReward(0.1f);
+
+        //AddReward((1 - reward) * 0.1f);
     }
     
     private void HandleMate(GameObject obj)
@@ -253,12 +267,15 @@ public class DumbAgent : Agent, IAgent
 
     private void PreRequestDecision()
     {
-        //make sure no decision is taken when a blocking state is running
-        if (!(fsm.currentState is EatingState) && !(fsm.currentState is DrinkingState) &&
-            !(fsm.currentState is MatingState) && !(fsm.currentState is FleeingState) && animalController != null && !(fsm.currentState is Dead))
-        {
-            RequestDecision();
-        }
+        
+            //make sure no decision is taken when a blocking state is running
+            if (!(fsm.currentState is EatingState) && !(fsm.currentState is DrinkingState) &&
+                !(fsm.currentState is MatingState) && !(fsm.currentState is FleeingState) && animalController != null && !(fsm.currentState is Dead))
+            {
+                RequestDecision();
+            }    
+        
+        
     }
     
     //Listen to when parameters or senses were updated.
