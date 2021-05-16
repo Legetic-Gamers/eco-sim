@@ -4,17 +4,17 @@ using Model;
 public class DeerModel : AnimalModel, IEdible
 {
 
-    public DeerModel() : base(new Traits(3.25f, 100, 100, 
-                                    100, 5.6f, 10, 
-                                    10, 10, 10, 
-                                    180, 10, 10), 0)
+    public DeerModel() : base(new Traits(3.25f, 150, 100, 
+                                    300, 6f, 10, 
+                                    10, 90, 10, 
+                                    180, 17, 10), 0)
 
     {
         // Set variables specific to deer
         nutritionValue = traits.maxEnergy;
     }
     public float nutritionValue { get; set; }
-
+    public bool isEaten { get; set; }
     
     public DeerModel(Traits traits, int generation) : base(traits, generation)
     {
@@ -24,9 +24,9 @@ public class DeerModel : AnimalModel, IEdible
     public override AnimalModel Mate(AnimalModel otherParent)
     {
         Traits childTraits = traits.Crossover(otherParent.traits, age, otherParent.age);
-        childTraits.Mutation();
-        //TODO logic for determining generation
-        return new DeerModel(childTraits, 0);
+        childTraits.Mutation(0.05f);
+        
+        return new DeerModel(childTraits, Math.Max(generation, otherParent.generation) + 1);
     }
     
     public override bool CanEat<T>(T obj)
@@ -41,6 +41,14 @@ public class DeerModel : AnimalModel, IEdible
     
     public float GetEaten()
     {
-        return nutritionValue;
+        //Only return nutrition if deer has not already been eaten.
+        if (!isEaten)
+        {
+            actionKilled?.Invoke();
+            isEaten = true;
+            return nutritionValue;
+        }
+
+        return 0;
     }
 }

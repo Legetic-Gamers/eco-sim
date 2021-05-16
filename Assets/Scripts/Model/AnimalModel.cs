@@ -93,7 +93,6 @@ public abstract class AnimalModel
 
     public int generation { get; set; }
 
-
     public Traits traits { get; set; }
 
     /* /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\ */
@@ -170,7 +169,7 @@ public abstract class AnimalModel
             }
             else
             {
-                _currentSpeed = Mathf.Clamp(value, 0, traits.maxSpeed * traits.size);
+                _currentSpeed = Mathf.Clamp(value, 0, traits.maxSpeed);
             }
         }
     }
@@ -193,32 +192,38 @@ public abstract class AnimalModel
     }
 
     public bool isPregnant;
+    public int offspringCount = 1; // rabbit has different value
+    public int gestationTime = 20; // wolf and rabbit has different values
 
     public bool IsAlive => (currentHealth > 0 && currentEnergy > 0 && age < traits.ageLimit && currentHydration > 0);
 
     public float GetHealthPercentage => currentHealth / traits.maxEnergy;
 
-    public float GetEnergyPercentage => currentEnergy / traits.maxEnergy;
+    public float EnergyPercentage => currentEnergy / traits.maxEnergy;
 
-    public float GetHydrationPercentage => currentHydration / traits.maxHydration;
+    public float HydrationPercentage => currentHydration / traits.maxHydration;
 
-    public float GetSpeedPercentage => currentSpeed / traits.maxSpeed;
+    public float AgePercentage => age / traits.ageLimit;
+
+    public float SpeedPercentage => currentSpeed / traits.maxSpeed;
     
-    public float GetUrgePercentage => reproductiveUrge / traits.maxReproductiveUrge;
-
     public bool EnergyFull => currentEnergy == traits.maxEnergy;
 
-    public bool HighEnergy => currentEnergy / traits.maxEnergy > 0.9f;
+    public bool HighEnergy => currentEnergy / traits.maxEnergy > 0.8f;
 
     public bool LowEnergy => currentEnergy / traits.maxEnergy < 0.5f;
+    
+    public bool CriticalEnergy => currentEnergy / traits.maxEnergy < 0.2f;
 
     public bool HydrationFull => currentHydration == traits.maxHydration;
 
-    public bool HighHydration => currentHydration / traits.maxHydration > 0.9f;
+    public bool HighHydration => currentHydration / traits.maxHydration > 0.8f;
 
     public bool LowHydration => currentHydration / traits.maxHydration < 0.5f;
+    
+    public bool CriticalHydration => currentHydration / traits.maxHydration < 0.2f;
 
-    public bool WantingOffspring => (reproductiveUrge / traits.maxReproductiveUrge > (traits.maxEnergy - currentEnergy) / traits.maxEnergy && reproductiveUrge / traits.maxReproductiveUrge > (traits.maxHydration - currentHydration) / traits.maxHydration) && !isPregnant;
+    public bool WantingOffspring =>  !isPregnant && ReproductiveUrgePercentage >= 1;
     //reproductive urge greater than average of energy and hydration.
     //reproductiveUrge > (currentEnergy + currentHydration) / (traits.maxEnergy + traits.maxHydration);
     // public bool WantingOffspring()
@@ -233,6 +238,7 @@ public abstract class AnimalModel
     //     return condition;
     // }
 
+    public float ReproductiveUrgePercentage => reproductiveUrge / traits.maxReproductiveUrge;
     public bool LowHealth => currentHealth < 30;
 
     public AnimalModel(Traits traits, int generation)
@@ -241,14 +247,26 @@ public abstract class AnimalModel
         this.generation = generation;
         age = 0;
         currentHealth = traits.maxHealth;
-        currentEnergy = traits.maxEnergy;
-        currentHydration = traits.maxHydration;
-        reproductiveUrge = 0.2f;
+        currentEnergy = traits.maxEnergy/2;
+        currentHydration = traits.maxHydration/2;
+        reproductiveUrge = 0;
         this.traits = traits;
     }
-
-    public abstract AnimalModel Mate(AnimalModel otherParent);
     
+    public enum CauseOfDeath
+    {
+        Hydration,
+        Eaten,
+        Health,
+        Hunger, // Same as energy
+        Age,
+        Energy
+    };
+
+    public Action actionKilled;
+    
+    public abstract AnimalModel Mate(AnimalModel otherParent);
+
     public abstract bool CanEat<T>(T obj);
 
     public abstract bool IsSameSpecies<T>(T obj);

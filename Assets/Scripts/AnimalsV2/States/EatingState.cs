@@ -16,7 +16,7 @@ namespace AnimalsV2.States
         public EatingState(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal,
             finiteStateMachine)
         {
-            currentStateAnimation = StateAnimation.Attack;
+            stateAnimation = StateAnimation.Attack;
         }
 
         public override void Enter()
@@ -28,13 +28,13 @@ namespace AnimalsV2.States
                 animal.agent.isStopped = true;
             }
 
-            //GetNearestFood();
             animal.StartCoroutine(EatFood());
         }
 
         public override void Exit()
         {
             base.Exit();
+            
             if (animal.agent.isActiveAndEnabled && animal.agent.isOnNavMesh)
             {
                 animal.agent.isStopped = false;
@@ -57,13 +57,23 @@ namespace AnimalsV2.States
         private IEnumerator EatFood()
         {
             
+            
+            
+            // Wait a while then eat, change state and resume walking
+            if (target.TryGetComponent(out AnimalController animalController))
+            {
+                yield return null;
+            }
+            else
+            {
+                yield return new WaitForSeconds(1);   //Outcommented for training ml  
+            }
+            
+            onEatFood?.Invoke(target, animal.animalModel.currentEnergy);
+
+
             //Eat the food
             //The reason to why I have curentEnergy as an in-parameter is because currentEnergy is updated through EatFood before reward gets computed in AnimalMovementBrain
-            onEatFood?.Invoke(target, animal.animalModel.currentEnergy);
-            
-            // Wait a while then change state and resume walking
-            yield return new WaitForSeconds(1/Time.timeScale);
-            
             
             if (animal.agent.isActiveAndEnabled && animal.agent.isOnNavMesh)
             {
@@ -72,9 +82,8 @@ namespace AnimalsV2.States
             //Debug.Log("Succesfully ate.");
             
             finiteStateMachine.GoToDefaultState();
-
-            // Very important, this tells Unity to move onto next frame. Everything crashes without this
             yield return null;
+
         }
 
         public override string ToString()

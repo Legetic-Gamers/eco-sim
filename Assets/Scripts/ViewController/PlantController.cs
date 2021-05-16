@@ -1,46 +1,45 @@
 ﻿using System;
+using System.Collections;
+using System.Linq.Expressions;
 using DataCollection;
+using DefaultNamespace;
 using Model;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace ViewController
 {
-    public class PlantController : MonoBehaviour
+    public abstract class PlantController : MonoBehaviour, IPooledObject
     {
-        private TickEventPublisher tickEventPublisher;
-        
         public PlantModel plantModel;
-
-        private DataHandler dh;
+        public Transform centerTransform;
         
+        public Action<string, Vector3> SpawnNewPlant;
+        public Action<PlantController> onDeadPlant;
+
+        public void Awake()
+        {
+            if (centerTransform == null)
+            {
+                Debug.LogWarning("Center not assigned, defaulting to transform");
+                centerTransform = transform;
+            }
+        }
+
         public void Start()
         {
-            plantModel = new PlantModel();
-            if (tickEventPublisher)
+            //If there is no object pooler present, we need to call onObjectSpawn through start
+            if (FindObjectOfType<ObjectPooler>() == null)
             {
-                tickEventPublisher = FindObjectOfType<TickEventPublisher>();
-                tickEventPublisher.onParamTickEvent += HandleDeathStatus;    
-            }
-
-            dh = FindObjectOfType<DataHandler>();
-            dh.LogNewPlant(plantModel);
-        }
-
-        public void OnDestroy()
-        {
-            if (tickEventPublisher)
-            {
-                tickEventPublisher.onParamTickEvent -= HandleDeathStatus;
+                onObjectSpawn();
             }
         }
+        
+        public abstract void onObjectSpawn();
+        
+        public abstract float GetEaten();
 
-        private void HandleDeathStatus()
-        {
-            if (plantModel != null && plantModel.isEaten)
-            {
-                dh.LogDeadPlant(plantModel);
-                Destroy(gameObject);
-            }
-        }
+        public abstract string GetObjectLabel();
+
     }
 }

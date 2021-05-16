@@ -1,4 +1,6 @@
-﻿using UnityEngine.AI;
+﻿using System.Collections.Generic;
+using System.Linq;
+using UnityEngine.AI;
 
 namespace AnimalsV2.States
 {
@@ -10,13 +12,12 @@ using UnityEngine;
 
         public GoToWater(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine)
         {
-            
+            stateAnimation = StateAnimation.Walking;
         }
 
         public override void Enter()
         {
             base.Enter();
-            currentStateAnimation = StateAnimation.Walking;
             
             //Make an update instantly
             LogicUpdate();
@@ -33,18 +34,28 @@ using UnityEngine;
             base.LogicUpdate();
             if (MeetRequirements())
             {
-                GameObject closestWater = NavigationUtilities.GetNearestObject(animal.visibleWaterTargets, animal.transform.position);
+                List<GameObject> allWaterTargets = animal.visibleWaterTargets.Concat(animal.heardWaterTargets).ToList();
+                GameObject closestWater = NavigationUtilities.GetNearestObject(allWaterTargets, animal.transform.position);
                 if (closestWater != null && animal.agent.isActiveAndEnabled)
                 {
                     Vector3 pointToRunTo = closestWater.transform.position;
                     //Move the animal using the navmeshagent.
-                    NavigationUtilities.NavigateToPoint(animal,pointToRunTo);
                     
-                    if(Vector3.Distance(animal.transform.position, closestWater.transform.position) <= animal.agent.stoppingDistance + 0.3){
+                    bool succesful = NavigationUtilities.NavigateToPoint(animal, pointToRunTo);
+                    
+                    //if movement was not succesful return to default state;
+                    if (!succesful)
+                    {
+                        //Debug.Log("State gotoWater is stuck, changing to defaultState");
+                        finiteStateMachine.GoToDefaultState();
+                    }
+                    
+                    Vector3 a = new Vector3(animal.transform.position.x, 0, animal.transform.position.z);
+                    Vector3 b = new Vector3(closestWater.transform.position.x, 0, closestWater.transform.position.z);
+                    if(Vector3.Distance(a, b) <= animal.agent.stoppingDistance + 1.25f){
                         animal.drinkingState.SetTarget(closestWater);
                         finiteStateMachine.ChangeState(animal.drinkingState);
-                    }    
-                    
+                    }
                 }
                 
             }
@@ -62,8 +73,8 @@ using UnityEngine;
 
         public override bool MeetRequirements()
         {
-            // rewuirements for this state are following
-            return animal.visibleWaterTargets.Count > 0 && !animal.animalModel.HighHydration;
+            // requirements for this state are following
+            return animal.visibleWaterTargets.Concat(animal.heardWaterTargets).ToList().Count > 0 && !animal.animalModel.HighHydration;
         }
     }
 }

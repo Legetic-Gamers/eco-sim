@@ -2,15 +2,21 @@
  * Author: Johan A.
  */
 
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Model;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 namespace DataCollection
 {
     public class Collector
     {
-        private int cap = 13;
+        private int cap = 11;
+        public Action onAllExtinct;
+
+        public static int totalAnimalsAlive;
         
         // Index is generation
         public readonly List<int> totalAnimalsAlivePerGeneration;
@@ -20,6 +26,7 @@ namespace DataCollection
         
         private int timeIndexBirth;
         private int timeIndexFood;
+        private int foodDelta;
 
         // Each index contains the mean of that generation, starting from 0. 
         public readonly List<List<float>> rabbitStatsPerGenMean;
@@ -36,30 +43,42 @@ namespace DataCollection
         public readonly List<float> wolfTotalAlivePerGen;
         public readonly List<float> deerTotalAlivePerGen;
         public readonly List<float> bearTotalAlivePerGen;
-        
-        public readonly List<int> currentanimalsTotalAlivePerSpecies;
+
+        private readonly List<int> currentAnimalsTotalAlivePerSpecies;
+        public List<List<float>> animalsAlivePerSpecies; 
+
+        public readonly List<float> totalDeadAnimals; 
         
         public readonly List<int> foodActivePerMinute;
         
         //Special, index is the cause and the content is the total dead of that cause
-        public Dictionary<AnimalController.CauseOfDeath, int> causeOfDeath = new Dictionary<AnimalController.CauseOfDeath, int>();
+        public Dictionary<AnimalModel.CauseOfDeath, int> causeOfDeath;
 
         /*
         These lists are contained in allStatsPerGeneration in order:
         public List<float> sizePerGeneration;
         public List<int> maxEnergyPerGeneration;
-        public List<int> maxHealthPerGeneration;
         public List<int> maxHydrationPerGeneration;
         public List<float> maxSpeedPerGeneration;
-        public List<float> endurancePerGeneration;
+        public List<int> maxReproductiveUrge;
         public List<int> ageLimitPerGeneration;
-        public List<float> temperatureResistPerGeneration;
-        public List<float> desirabilityResistPerGeneration;
         public List<float> viewAnglePerGeneration;
         public List<float> viewRadiusPerGeneration;
         public List<float> hearingRadiusPerGeneration;
+        
+        public List<float> movementFromStartToEndPerGeneration;
         Death:
         public List<int> agePerGeneration;
+        
+        classTraits.size,
+        classTraits.maxEnergy,
+        classTraits.maxHydration,
+        classTraits.maxSpeed,
+        classTraits.maxReproductiveUrge,
+        classTraits.ageLimit,
+        classTraits.viewAngle,
+        classTraits.viewRadius,
+        classTraits.hearingRadius
         */
 
         /// <summary>
@@ -89,10 +108,10 @@ namespace DataCollection
             for (int i = 0; i < cap; i++) deerStatsPerGenVar.Add(new List<float>{0});
             for (int i = 0; i < cap; i++) bearStatsPerGenVar.Add(new List<float>{0});
 
-            totalAnimalsAlivePerGeneration = new List<int> {GameObject.FindGameObjectsWithTag("Animal").Length};
+            totalAnimalsAlivePerGeneration = new List<int> {0};
 
             birthRatePerMinute = new List<List<float>>(4);
-            for (int i = 0; i < 4; i++) birthRatePerMinute.Add(new List<float>{0});
+            for (int i = 0; i < 4; i++) birthRatePerMinute.Add(new List<float>());
             
             rabbitTotalAlivePerGen = new List<float>();
             wolfTotalAlivePerGen = new List<float>();
@@ -104,19 +123,28 @@ namespace DataCollection
             deerTotalAlivePerGen.Add(0);
             bearTotalAlivePerGen.Add(0);
 
-            currentanimalsTotalAlivePerSpecies = new List<int>{0,0,0,0};
+            currentAnimalsTotalAlivePerSpecies = new List<int>{0,0,0,0};
+            animalsAlivePerSpecies = new List<List<float>>(4);
+            for (int i = 0; i < 4; i++) animalsAlivePerSpecies.Add(new List<float>());
 
             foodActivePerMinute = new List<int>{0};
 
             newBirths = new List<float>{0,0,0,0};
             timeIndexBirth = 0;
             timeIndexFood = 0;
+            foodDelta = 0;
 
-            causeOfDeath = new Dictionary<AnimalController.CauseOfDeath, int>();
-            causeOfDeath.Add(AnimalController.CauseOfDeath.Eaten, 0);
-            causeOfDeath.Add(AnimalController.CauseOfDeath.Hydration, 0);
-            causeOfDeath.Add(AnimalController.CauseOfDeath.Hunger, 0);
-            causeOfDeath.Add(AnimalController.CauseOfDeath.Health, 0);
+            causeOfDeath = new Dictionary<AnimalModel.CauseOfDeath, int>();
+            causeOfDeath.Add(AnimalModel.CauseOfDeath.Eaten, 0);
+            causeOfDeath.Add(AnimalModel.CauseOfDeath.Hydration, 0);
+            causeOfDeath.Add(AnimalModel.CauseOfDeath.Age, 0);
+            causeOfDeath.Add(AnimalModel.CauseOfDeath.Energy, 0);
+            causeOfDeath.Add(AnimalModel.CauseOfDeath.Hunger, 0);
+            causeOfDeath.Add(AnimalModel.CauseOfDeath.Health, 0);
+            
+            totalDeadAnimals = new List<float>();
+
+            totalAnimalsAlive = 0;
         }
         
         /// <summary>
@@ -126,17 +154,24 @@ namespace DataCollection
         {
             // Calculate birthRate
             // Birth rate := new births during last minute divided by the already existing animals - the new animals 
+           
             for (int i = 0; i < 4; i++)
             {
-                float birthRate = newBirths[i] / (currentanimalsTotalAlivePerSpecies[i] - newBirths[i]);
-                if(birthRatePerMinute[i].Count <= timeIndexBirth) birthRatePerMinute[i].Add(birthRate);
-                birthRatePerMinute[i][timeIndexBirth] = birthRate;
+                //birthRatePerMinute[i].Add(0);
+                float birthRate = 0;
+                //if(currentAnimalsTotalAlivePerSpecies[i] == 0) continue;
+                if (currentAnimalsTotalAlivePerSpecies[i] - newBirths[i] > 0f ) birthRate = newBirths[i] / (currentAnimalsTotalAlivePerSpecies[i] - newBirths[i]);
+                birthRatePerMinute[i].Add((float) Math.Round(birthRate, 3));
                 newBirths[i] = 0;
+                animalsAlivePerSpecies[i].Add((float) Math.Round((double) currentAnimalsTotalAlivePerSpecies[i], 1));
             }
             timeIndexBirth++;
-            foodActivePerMinute.Add(foodActivePerMinute[timeIndexFood]);
+            if (timeIndexFood > 0) foodActivePerMinute.Add(foodActivePerMinute[timeIndexFood - 1] + foodDelta);
+            else foodActivePerMinute[0] = foodDelta;
             timeIndexFood++;
+            foodDelta = 0;
         }
+        
         
         /// <summary>
         /// Collect each animal model containing its traits. 
@@ -144,6 +179,7 @@ namespace DataCollection
         /// <param name="am"> Animal Model containing traits.</param>
         public void CollectBirth(AnimalModel am)
         {
+            totalAnimalsAlive++;
             int gen = am.generation;
 
             // Changes the referenced lists depending on the species of the animal. 
@@ -158,25 +194,27 @@ namespace DataCollection
             if(animalTotal.Count <= gen) animalTotal.Add(1);
             else animalTotal[gen] += 1;
 
-            for (int trait = 0; trait < 11 ; trait++)
+            for (int trait = 0; trait < 9; trait++)
             {
                 if(animalMean[trait].Count <= gen) animalMean[trait].Add(0);
                 if(animalVar[trait].Count <= gen) animalVar[trait].Add(0);
                 (float mean, float var) =
                         GetNewMeanVariance(animalMean[trait][gen],animalVar[trait][gen], traitsInAnimal[indexTrait], animalTotal[gen]);
-                if(animalMean.Count <= gen) animalMean[trait].Add(mean);
+                if(animalMean[trait].Count <= gen) animalMean[trait].Add((float) Math.Round(mean, 1));
                 else animalMean[trait][gen] = mean;
-                if(animalVar.Count <= gen) animalVar[trait].Add(var);
+                if(animalVar[trait].Count <= gen) animalVar[trait].Add((float) Math.Round(var, 1));
                 else animalVar[trait][gen] = var;
                 indexTrait++;
             }
             
             // Update the number of births this minute
             UpdateBirths(am);
-
+            
             // Finally add to the total of animals
             if (totalAnimalsAlivePerGeneration.Count <= gen) totalAnimalsAlivePerGeneration.Add(1);
             else totalAnimalsAlivePerGeneration[gen] += 1;
+
+            
         }
 
         /// <summary>
@@ -189,19 +227,19 @@ namespace DataCollection
             {
                 case RabbitModel _ :
                     newBirths[0] += 1;
-                    currentanimalsTotalAlivePerSpecies[0] += 1;
+                    currentAnimalsTotalAlivePerSpecies[0] += 1;
                     break;
                 case WolfModel _ :
                     newBirths[1] += 1;
-                    currentanimalsTotalAlivePerSpecies[1] += 1;
+                    currentAnimalsTotalAlivePerSpecies[1] += 1;
                     break;
                 case DeerModel _ :
                     newBirths[2] += 1;
-                    currentanimalsTotalAlivePerSpecies[2] += 1;
+                    currentAnimalsTotalAlivePerSpecies[2] += 1;
                     break;
                 case BearModel _ :
                     newBirths[3] += 1;
-                    currentanimalsTotalAlivePerSpecies[3] += 1;
+                    currentAnimalsTotalAlivePerSpecies[3] += 1;
                     break;
             }
         }
@@ -210,36 +248,68 @@ namespace DataCollection
         /// Update the age statistics when animals die. 
         /// </summary>
         /// <param name="am"> Animal Model of killed animal. </param>
-        public void CollectDeath(AnimalModel am, AnimalController.CauseOfDeath cause)
+        /// <param name="cause"> Type of death </param>
+        /// <param name="distanceTravelled"> Distance travelled to log </param>
+        public void CollectDeath(AnimalModel am, AnimalModel.CauseOfDeath cause, float distanceTravelled)
         {
+            totalAnimalsAlive--;
+            // Debug.Log("totalanimalsalive: " + totalAnimalsAlive);
+            if(totalAnimalsAlive <= 0) onAllExtinct?.Invoke();
+
             int gen = am.generation;
             
+            for (int i = totalDeadAnimals.Count - 1; i <= gen; i++) totalDeadAnimals.Add(0);
+
+            totalDeadAnimals[gen] += 1;
+
             // Changes the referenced lists depending on the species of the animal. 
-            (List<List<float>> animalMean, List<List<float>> animalVar, List<float> animalTotal) = GetAnimalList(am);
+            (List<List<float>> animalMean, List<List<float>> animalVar, _) = GetAnimalList(am);
             
-            (float mean, float var) =
-                GetNewMeanVariance(animalMean[12][gen], animalVar[12][gen], am.age, animalTotal[gen]);
+            if (gen > animalMean[9].Count - 1)
+            {
+                //Debug.Log("generation is: " + gen + " and list length is: " + animalMean[12].Count);
+                int difference = gen + 1 - animalMean[9].Count;
+                for (int i = 0; i < difference; i++)
+                {
+                    //Debug.Log("Adding: " + i);
+                    animalMean[10].Add(0);
+                    animalVar[10].Add(0);
+                    animalMean[9].Add(0);
+                    animalVar[9].Add(0);
+                }
+            }
+            
+            (float meanAge, float varAge) =
+                GetNewMeanVariance(animalMean[10][gen], animalVar[10][gen], am.age, totalDeadAnimals[gen]);
+            
+            (float meanDist, float varDist) =
+                GetNewMeanVariance(animalMean[9][gen], animalVar[9][gen], distanceTravelled, totalDeadAnimals[gen]);
                 
-            animalMean[12][gen] = mean;
-            animalVar[12][gen] = var;
+            animalMean[10][gen] = (float) Math.Round(meanAge, 1);
+            animalVar[10][gen] = (float) Math.Round(varAge, 1);
+            
+            animalMean[9][gen] = (float) Math.Round(meanDist, 1);
+            animalVar[9][gen] = (float) Math.Round(varDist, 1);
 
             causeOfDeath[cause] = causeOfDeath[cause] += 1;
+            //Debug.Log("cause of death: " + cause.ToString());
             
             switch (am)
             {
                 case RabbitModel _ :
-                    currentanimalsTotalAlivePerSpecies[0] -= 1;
+                    currentAnimalsTotalAlivePerSpecies[0] -= 1;
                     break;
                 case WolfModel _ :
-                    currentanimalsTotalAlivePerSpecies[1] -= 1;
+                    currentAnimalsTotalAlivePerSpecies[1] -= 1;
                     break;
                 case DeerModel _  :
-                    currentanimalsTotalAlivePerSpecies[2] -= 1;
+                    currentAnimalsTotalAlivePerSpecies[2] -= 1;
                     break;
                 case BearModel _  :
-                    currentanimalsTotalAlivePerSpecies[3] -= 1;
+                    currentAnimalsTotalAlivePerSpecies[3] -= 1;
                     break;
             }
+
             
         }
 
@@ -276,7 +346,6 @@ namespace DataCollection
                         totalList = bearTotalAlivePerGen;
                         break;
                 }
-
             return (meanList, varList, totalList);
         }
 
@@ -291,15 +360,16 @@ namespace DataCollection
             {
                 classTraits.size,
                 classTraits.maxEnergy,
-                classTraits.maxHealth,
+                //classTraits.maxHealth,
                 classTraits.maxHydration,
                 classTraits.maxSpeed,
-                classTraits.endurance,
+                classTraits.maxReproductiveUrge,
+                //classTraits.endurance,
                 classTraits.ageLimit,
-                classTraits.desirability,
+                //classTraits.desirability,
                 classTraits.viewAngle,
                 classTraits.viewRadius,
-                classTraits.hearingRadius,
+                classTraits.hearingRadius
             };
             return traits;
         }
@@ -323,21 +393,21 @@ namespace DataCollection
         // source: https://www.johndcook.com/blog/standard_deviation/
         private (float m, float v) GetNewMeanVariance(float m, float s,float valueToAdd, float populationSize)
         {
-            var oldM = m;
-            if(populationSize > 1) s = s * (populationSize - 2);
+            if (populationSize <= 1) return (valueToAdd, 0f);
+            float oldM = m;
+            s = s * (populationSize - 2f);
             m += (valueToAdd - m) / populationSize;
             s += (valueToAdd - m) * (valueToAdd - oldM);
-            return (populationSize > 1) ? (m, s / (populationSize - 1f)) : (m, 0);
+            return (m, s / (populationSize - 1f));
         }
 
-        public void CollectNewFood(PlantModel plantModel)
+        public void CollectNewFood()
         {
-            if (foodActivePerMinute.Count <= timeIndexFood) foodActivePerMinute.Add(1);
-            else foodActivePerMinute[timeIndexFood] += 1;
+            foodDelta += 1;
         }
-        public void CollectDeadFood(PlantModel plantModel)
+        public void CollectDeadFood()
         {
-            foodActivePerMinute[timeIndexFood] -= 1;
+            foodDelta -= 1;
         }
     }
 }    

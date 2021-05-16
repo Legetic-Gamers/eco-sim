@@ -2,10 +2,15 @@
 
 public class DeerController : AnimalController
 {
-    new void Awake()
+    protected virtual void Awake()
     {
-        base.Awake();
         animalModel = new DeerModel();
+        base.Awake();
+    }
+    
+    public override string GetObjectLabel()
+    {
+        return "Deer";
     }
     
     public override Vector3 getNormalizedScale()

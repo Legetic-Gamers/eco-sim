@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Model;
@@ -28,10 +29,13 @@ namespace DataCollection
         private int counter;
         
         private TickEventPublisher tickEventPublisher;
-        private Collector c;
+        public Collector c;
         private List<float> sendList1 = new List<float>();
         private List<float> sendList2 = new List<float>();
-        
+
+        private static int _listNumber = 1; 
+        private static int _speciesNumberPopulation = 0; 
+        private static int _speciesNumberBirthRate = 0; 
         private static int _speciesNumber1 = 0;
         private static int _traitNumber1 = 0;
         private static int _dataTypeNumber1 = 0;
@@ -65,15 +69,27 @@ namespace DataCollection
         {
             tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
             // Subscribe to Tick Event publisher update data and graph 
-            tickEventPublisher.onCollectorUpdate += UpdateDataAndGraph;
-            //ButtonClick bc = FindObjectOfType<ButtonClick>();
-            //bc.GetListType += SetList;
+            tickEventPublisher.onDataHandlerUpdate += UpdateDataAndGraph;
+            tickEventPublisher.onCollectorUpdate += CollectBirthRate;
             // Make a collector to handle data
             c = new Collector();
             // Prepare for frame rate collection
             times = new List<float>(0);
             framerate = new List<float>(10);
             counter = 5;
+        }
+
+        public void Start()
+        {
+            ButtonClick bc = FindObjectOfType<ButtonClick>();
+            if (bc)
+            {
+                bc.GetListTrait += SetTrait;
+                bc.GetListPopulationPerGeneration += SetPopulationGeneration;
+                bc.GetListPopulationPerMinute += SetPopulationMinute;
+                bc.GetListBirthRate += SetBirthRate;
+                bc.GetListFoodAvailable += SetFoodAvailable;    
+            }
         }
             
         /// <summary>
@@ -113,77 +129,292 @@ namespace DataCollection
         /// </summary>
         /// <param name="animalModel"> The model of the dead animal </param>
         /// <param name="causeOfDeath"> The Cause that made the animal call on dead state </param>
-        public void LogDeadAnimal(AnimalModel animalModel, AnimalController.CauseOfDeath causeOfDeath)
+        public void LogDeadAnimal(AnimalModel animalModel, AnimalModel.CauseOfDeath causeOfDeath, float dist)
         {
-            c.CollectDeath(animalModel, causeOfDeath);
+            c.CollectDeath(animalModel, causeOfDeath, dist);
         }
         
         /// <summary>
         /// Called when plants are activated
         /// </summary>
-        /// <param name="plantModel"> The model of the plant </param>
-        public void LogNewPlant(PlantModel plantModel)
+        public void LogNewPlant()
         {
-            c.CollectNewFood(plantModel);
+            c.CollectNewFood();
         }
         
         /// <summary>
         /// Called when a plant is eaten
         /// </summary>
-        /// <param name="plantModel"> The model of the eaten plant </param>
-        public void LogDeadPlant(PlantModel plantModel)
+        public void LogDeadPlant()
         {
-            c.CollectDeadFood(plantModel);
+            c.CollectDeadFood();
         }
 
-        private void SetList(int a, int x, int y, int z)
+        private void SetPopulationGeneration(int speciesNumberPopulation)
         {
             List<float> tmplist = new List<float>();
-            switch (x)
+            switch (speciesNumberPopulation)
             {
                 case 0:
-                    if (z == 0) tmplist = c.rabbitStatsPerGenMean[y];
-                    if (z == 1) tmplist = c.rabbitStatsPerGenVar[y];
+                    tmplist = ConvertIntListToFloatList(c.totalAnimalsAlivePerGeneration);
                     break;
                 case 1:
-                    if (z == 0) tmplist = c.wolfStatsPerGenMean[y];
-                    if (z == 1) tmplist = c.wolfStatsPerGenVar[y];
+                    tmplist = c.rabbitTotalAlivePerGen;
+                    break;
+                case 2:
+                    tmplist = c.wolfTotalAlivePerGen;
+                    break;
+                case 3:
+                    tmplist = c.deerTotalAlivePerGen;
+                    break;
+                case 4:
+                    tmplist = c.bearTotalAlivePerGen;
+                    break;
+                
+            }
+
+            sendList1 = tmplist;
+            _speciesNumberPopulation = speciesNumberPopulation;
+            _listNumber = 0;
+            Display?.Invoke(sendList1, sendList2);
+
+        }
+
+        private void SetPopulationMinute(int speciesNumberPopulation)
+        {
+            List<float> tmplist = new List<float>();
+            switch (speciesNumberPopulation)
+            {
+                case 0:
+                    tmplist = c.animalsAlivePerSpecies[0];
+                    break;
+                case 1:
+                    tmplist = c.animalsAlivePerSpecies[1];
+                    break;
+                case 2:
+                    tmplist = c.animalsAlivePerSpecies[2];
+                    break;
+                case 3:
+                    tmplist = c.animalsAlivePerSpecies[3];
+                    break;
+                
+            }
+
+            sendList1 = tmplist;
+            _speciesNumberPopulation = speciesNumberPopulation;
+            _listNumber = 4;
+            Display?.Invoke(sendList1, sendList2);
+        }
+
+        private void SetTrait(int listNumber, int speciesNumber, int traitNumber, int dataType)
+        {
+            List<float> tmplist = new List<float>();
+            switch (speciesNumber)
+            {
+                case 0:
+                    if (dataType == 0) tmplist = c.rabbitStatsPerGenMean[traitNumber];
+                    if (dataType == 1) tmplist = c.rabbitStatsPerGenVar[traitNumber];
+                    break;
+                case 1:
+                    if (dataType == 0) tmplist = c.wolfStatsPerGenMean[traitNumber];
+                    if (dataType == 1) tmplist = c.wolfStatsPerGenVar[traitNumber];
                     break;      
                 case 2:         
-                    if (z == 0) tmplist = c.deerStatsPerGenMean[y];
-                    if (z == 1) tmplist = c.deerStatsPerGenVar[y];
+                    if (dataType == 0) tmplist = c.deerStatsPerGenMean[traitNumber];
+                    if (dataType == 1) tmplist = c.deerStatsPerGenVar[traitNumber];
                     break;      
                 case 3:         
-                    if (z == 0) tmplist = c.bearStatsPerGenMean[y];
-                    if (z == 1) tmplist = c.bearStatsPerGenVar[y];
+                    if (dataType == 0) tmplist = c.bearStatsPerGenMean[traitNumber];
+                    if (dataType == 1) tmplist = c.bearStatsPerGenVar[traitNumber];
                     break;
             }
 
-            if (a == 0)
+            _listNumber = 1;
+
+            if (listNumber == 0)
             {
                 sendList1 = tmplist;
-                _speciesNumber1 = x;
-                _traitNumber1 = y;
-                _dataTypeNumber1 = z;
+                _speciesNumber1 = speciesNumber;
+                _traitNumber1 = traitNumber;
+                _dataTypeNumber1 = dataType;
             }
 
             else
             {
                 sendList2 = tmplist;
-                _speciesNumber2 = x;
-                _traitNumber2 = y;
-                _dataTypeNumber2 = z;
+                _speciesNumber2 = speciesNumber;
+                _traitNumber2 = traitNumber;
+                _dataTypeNumber2 = dataType;
+            }
+            Display?.Invoke(sendList1, sendList2);
+
+        }
+        
+        private void SetBirthRate(int speciesNumberBirthRate)
+        {
+            List<float> tmplist = new List<float>();
+            switch (speciesNumberBirthRate)
+            {
+                case 0:
+                    tmplist = c.birthRatePerMinute[0];
+                    break;
+                case 1:
+                    tmplist = c.birthRatePerMinute[1];
+                    break;
+                case 2:
+                    tmplist = c.birthRatePerMinute[2];
+                    break;
+                case 3:
+                    tmplist = c.birthRatePerMinute[3];
+                    break;
+            }
+
+            sendList1 = tmplist;
+            _speciesNumberBirthRate = speciesNumberBirthRate;
+            _listNumber = 2;
+            Display?.Invoke(sendList1, sendList2);
+
+        }
+
+        private void SetFoodAvailable()
+        {
+            sendList1 = ConvertIntListToFloatList(c.foodActivePerMinute);
+            _listNumber = 3;
+            Display?.Invoke(sendList1, sendList2);
+        }
+
+        private void Updatelist(int listNumber)
+        {
+            switch (listNumber)
+            {
+                case 0: SetPopulationGeneration(_speciesNumberPopulation);
+                    break;
+                case 1: SetTrait(0,_speciesNumber1, _traitNumber1, 0);
+                    break;
+                case 2: SetBirthRate(_speciesNumberBirthRate);
+                    break;
+                case 3: SetFoodAvailable();
+                    break;
+                case 4: SetPopulationMinute(_speciesNumberPopulation);
+                    break;
+                
             }
         }
+
         
         /// <summary>
         /// Uses the Formatter to print a list in json format in /Export. name will match trait name. 
         /// </summary>
         /// <param name="listNumber"> List to be printed. See Traits class for order. 0 to 12 </param>
         /// <returns></returns>
-        private async Task ExportDataToFile(int listNumber)
+        public async Task ExportDataToFile(string dirName)
         {
-            await WriteToFile(c.rabbitStatsPerGenMean[listNumber], traitNames[listNumber]);
+            
+            string basePath = "simulations/";
+/*
+            List<int> toPrint = new List<int>();
+            toPrint.Add(c.causeOfDeath[AnimalModel.CauseOfDeath.Hunger]);
+            toPrint.Add(c.causeOfDeath[AnimalModel.CauseOfDeath.Hydration]);
+            toPrint.Add(c.causeOfDeath[AnimalModel.CauseOfDeath.Age]);
+            toPrint.Add(c.causeOfDeath[AnimalModel.CauseOfDeath.Energy]);
+            toPrint.Add(c.causeOfDeath[AnimalModel.CauseOfDeath.Health]);
+            toPrint.Add(c.causeOfDeath[AnimalModel.CauseOfDeath.Eaten]);
+            */
+
+            string dirPath = basePath + dirName;
+            dirPath = ProcessDirectoryPath(dirPath);
+            
+            if (dirPath == null)
+            {
+                Debug.LogError("Could not find available path");
+            }
+            
+            Debug.Log("Trying to export data to available path: " + dirName);
+
+            
+            //create  files for rabbits
+            string rabbitDirPath = dirPath + "/" + "Rabbits";
+            await WriteToFile(c.animalsAlivePerSpecies[0], "rPopulation", rabbitDirPath);
+            await WriteToFile(c.birthRatePerMinute[0], "rBirthRate", rabbitDirPath);
+            await WriteToFile(c.rabbitStatsPerGenMean[0], "rSize", rabbitDirPath);
+            await WriteToFile(c.rabbitStatsPerGenMean[1], "rMaxEnergy", rabbitDirPath);
+            await WriteToFile(c.rabbitStatsPerGenMean[2], "rMaxHydration", rabbitDirPath);
+            await WriteToFile(c.rabbitStatsPerGenMean[3], "rMaxSpeed", rabbitDirPath);
+            await WriteToFile(c.rabbitStatsPerGenMean[4], "rMaxReproductiveUrge", rabbitDirPath);
+            await WriteToFile(c.rabbitStatsPerGenMean[5], "rAgeLimit", rabbitDirPath);
+            await WriteToFile(c.rabbitStatsPerGenMean[6], "rViewAngle", rabbitDirPath);
+            await WriteToFile(c.rabbitStatsPerGenMean[7], "rViewRadius", rabbitDirPath);
+            await WriteToFile(c.rabbitStatsPerGenMean[8], "rHearingRadius", rabbitDirPath);
+            
+            //create  files for wolfs
+            string wolfDirPath = dirPath + "/" + "Wolfs";
+            await WriteToFile(c.animalsAlivePerSpecies[1], "wPopulation", wolfDirPath);
+            await WriteToFile(c.birthRatePerMinute[1], "wBirthRate", wolfDirPath);
+            await WriteToFile(c.wolfStatsPerGenMean[0], "wSize", wolfDirPath);
+            await WriteToFile(c.wolfStatsPerGenMean[1], "wMaxEnergy", wolfDirPath);
+            await WriteToFile(c.wolfStatsPerGenMean[2], "wMaxHydration", wolfDirPath);
+            await WriteToFile(c.wolfStatsPerGenMean[3], "wMaxSpeed", wolfDirPath);
+            await WriteToFile(c.wolfStatsPerGenMean[4], "wMaxReproductiveUrge", wolfDirPath);
+            await WriteToFile(c.wolfStatsPerGenMean[5], "wAgeLimit", wolfDirPath);
+            await WriteToFile(c.wolfStatsPerGenMean[6], "wViewAngle", wolfDirPath);
+            await WriteToFile(c.wolfStatsPerGenMean[7], "wViewRadius", wolfDirPath);
+            await WriteToFile(c.wolfStatsPerGenMean[8], "wHearingRadius", wolfDirPath);
+            
+            //create  files for deers
+            string deerDirPath = dirPath + "/" + "Deers";
+            await WriteToFile(c.animalsAlivePerSpecies[2], "dPopulation", deerDirPath);
+            await WriteToFile(c.birthRatePerMinute[2], "dBirthRate", deerDirPath);
+            await WriteToFile(c.deerStatsPerGenMean[0], "dSize", deerDirPath);
+            await WriteToFile(c.deerStatsPerGenMean[1], "dMaxEnergy", deerDirPath);
+            await WriteToFile(c.deerStatsPerGenMean[2], "dMaxHydration", deerDirPath);
+            await WriteToFile(c.deerStatsPerGenMean[3], "dMaxSpeed", deerDirPath);
+            await WriteToFile(c.deerStatsPerGenMean[4], "dMaxReproductiveUrge", deerDirPath);
+            await WriteToFile(c.deerStatsPerGenMean[5], "dAgeLimit", deerDirPath);
+            await WriteToFile(c.deerStatsPerGenMean[6], "dViewAngle", deerDirPath);
+            await WriteToFile(c.deerStatsPerGenMean[7], "dViewRadius", deerDirPath);
+            await WriteToFile(c.deerStatsPerGenMean[8], "dHearingRadius", deerDirPath);
+            
+            //create  files for bears
+            string bearDirPath = dirPath + "/" + "Bears";
+            await WriteToFile(c.animalsAlivePerSpecies[3], "bPopulation", bearDirPath);
+            await WriteToFile(c.birthRatePerMinute[3], "bBirthRate", bearDirPath);
+            await WriteToFile(c.bearStatsPerGenMean[0], "bSize", bearDirPath);
+            await WriteToFile(c.bearStatsPerGenMean[1], "bMaxEnergy", bearDirPath);
+            await WriteToFile(c.bearStatsPerGenMean[2], "bMaxHydration", bearDirPath);
+            await WriteToFile(c.bearStatsPerGenMean[3], "bMaxSpeed", bearDirPath);
+            await WriteToFile(c.bearStatsPerGenMean[4], "bMaxReproductiveUrge", bearDirPath);
+            await WriteToFile(c.bearStatsPerGenMean[5], "bAgeLimit", bearDirPath);
+            await WriteToFile(c.bearStatsPerGenMean[6], "bViewAngle", bearDirPath);
+            await WriteToFile(c.bearStatsPerGenMean[7], "bViewRadius", bearDirPath);
+            await WriteToFile(c.bearStatsPerGenMean[8], "bHearingRadius", bearDirPath);
+            
+            //create  files for others (plants etc.)
+            string plantDirPath = dirPath + "/" + "Plants";
+            await WriteToFile(c.foodActivePerMinute,"pPopulation", plantDirPath);
+            Debug.Log("Finished outputting");
+        }
+
+        private string ProcessDirectoryPath(string dirPath)
+        {
+            //If directory does not exist create it
+            if (Directory.Exists(dirPath)) {
+                Debug.Log("Path is occupied: " + dirPath);
+
+                //set foldername + (1)
+                for (int i = 1; i <= 10; i++)
+                {
+
+                    dirPath = dirPath + " " + "(" + i + ")";
+                    Debug.Log("Trying : " + dirPath);
+                    if (!Directory.Exists(dirPath))
+                    {
+                        return dirPath;
+                    }
+                }
+                Debug.LogError("Could not create path: " + dirPath);
+                return null;
+            }
+            return dirPath;
         }
 
         // ReSharper disable Unity.PerformanceAnalysis
@@ -192,13 +423,20 @@ namespace DataCollection
         /// </summary>
         private void UpdateDataAndGraph()
         {
-            //c.Collect();
-
-            SetList(0,_speciesNumber1,_traitNumber1,_dataTypeNumber1);
-            SetList(1,_speciesNumber2,_traitNumber2,_dataTypeNumber2);
-            Display?.Invoke(sendList1, sendList2);
+            // only call display if graph is activated from ShowGraphManager
+            if (Window_Graph.IsGraphOne)
+            {
+                Updatelist(_listNumber);
+                //Display?.Invoke(sendList1, sendList2);
+            }
+                
             //if (ShowFrameRate) Display(ConvertFloatListToIntList(framerate));
-            //ExportDataToFile(0);
+            //ExportDataToFile(0); Now prints cause of death
+        }
+
+        private void CollectBirthRate()
+        {
+            c.Collect();
         }
         
         /// <summary>
@@ -213,5 +451,15 @@ namespace DataCollection
             foreach (float f in list.ToArray()) integerList.Add((int) f);
             return integerList;
         }
+        
+
+        private List<float> ConvertIntListToFloatList(List<int> list)
+        {
+            List<float> floatList = new List<float>();
+
+            foreach (int f in list.ToArray()) floatList.Add((float) f);
+            return floatList;
+        }
+
     }
 }

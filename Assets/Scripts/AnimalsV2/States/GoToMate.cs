@@ -11,16 +11,20 @@ namespace AnimalsV2.States
         
         public GoToMate(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine)
         {
-            
+            stateAnimation = StateAnimation.Walking;
         }
 
         public override void Enter()
         {
             base.Enter();
-            currentStateAnimation = StateAnimation.Walking;
             
             //Make an update instantly
             LogicUpdate();
+        }
+        
+        public override void Exit()
+        {
+            base.Exit();
         }
 
         public override void HandleInput()
@@ -38,7 +42,7 @@ namespace AnimalsV2.States
                 if (foundMate != null && animal.agent.isActiveAndEnabled)
                 {
                     Vector3 pointToRunTo = foundMate.transform.position;
-                    
+
                     // if(foundMate.TryGetComponent(out AnimalController otherAnimalController))
                     // {
                     //     if (otherAnimalController.fsm.currentState is Wander)
@@ -47,10 +51,19 @@ namespace AnimalsV2.States
                     //     }
                     // }
                     //Move the animal using the navmeshagent.
-                    NavigationUtilities.NavigateToPoint(animal,pointToRunTo);
-                    
-                    
-                    if (Vector3.Distance(animal.transform.position, foundMate.transform.position) <= animal.agent.stoppingDistance + 0.3)
+                    NavigationUtilities.NavigateToPoint(animal, pointToRunTo);
+
+                    //Stop the other rabbit
+                    // if (foundMate.TryGetComponent(out AnimalController targetAnimalController))
+                    // {
+                    //     targetAnimalController.waitingState.SetWaitTime(2);
+                    //     targetAnimalController.fsm.ChangeState(targetAnimalController.waitingState);
+                    // }
+
+
+                    Vector3 a = new Vector3(animal.transform.position.x, 0, animal.transform.position.z);
+                    Vector3 b = new Vector3(foundMate.transform.position.x, 0, foundMate.transform.position.z);
+                    if (Vector3.Distance(a, b) <= animal.agent.stoppingDistance + 1.2f)
                     {
                         animal.matingState.SetTarget(foundMate);
                         //Try to change state, else go to default state
@@ -58,18 +71,18 @@ namespace AnimalsV2.States
                         {
                             finiteStateMachine.GoToDefaultState();
                         }
-                        
-                    }    
+
+                    }
                 }
-                
             }
             else
             {
                 finiteStateMachine.GoToDefaultState();
             }
         }
+
         
-        
+
 
         public override string ToString()
         {
@@ -87,7 +100,8 @@ namespace AnimalsV2.States
             //Debug.Log("Nfriendly" + allNearbyFriendly.Count);
             foreach(GameObject potentialMate in allNearbyFriendly)
             {
-                if (potentialMate != null && potentialMate.TryGetComponent(out AnimalController potentialMateAnimalController) && potentialMateAnimalController.animalModel.IsAlive && !potentialMateAnimalController.animalModel.isPregnant)
+                if (potentialMate != null && potentialMate.TryGetComponent(out AnimalController potentialMateAnimalController) && potentialMateAnimalController.animalModel.IsAlive && !potentialMateAnimalController.animalModel.isPregnant && potentialMateAnimalController.animalModel.WantingOffspring 
+                    && !(potentialMateAnimalController.fsm.currentState is MatingState) && !(potentialMateAnimalController.fsm.currentState is Waiting))
                 {
                     
                     return potentialMateAnimalController.gameObject;

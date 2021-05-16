@@ -57,7 +57,7 @@ MonoBehaviour:
   m_OverrideTileSize: 0
   m_TileSize: 256
   m_OverrideVoxelSize: 0
-  m_VoxelSize: 0.033333335
+  m_VoxelSize: 0.016666668
   m_BuildHeightMesh: 0
   m_NavMeshData: {fileID: 0}
 --- !u!1 &7877353438260513272
@@ -72,7 +72,7 @@ GameObject:
   - component: {fileID: 7877353438260513268}
   - component: {fileID: 7877353438260513269}
   - component: {fileID: 7877353438260513274}
-  - component: {fileID: -5313717180076636877}
+  - component: {fileID: 3673197738282371999}
   m_Layer: 0
   m_Name: Small Environment
   m_TagString: Untagged
@@ -124,6 +124,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -148,6 +149,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!64 &7877353438260513274
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -162,7 +164,7 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &-5313717180076636877
+--- !u!114 &3673197738282371999
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -171,21 +173,21 @@ MonoBehaviour:
   m_GameObject: {fileID: 7877353438260513272}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e16a0bc465fe03e4baa831fa22307c12, type: 3}
+  m_Script: {fileID: 11500000, guid: dfd1930cdeb126e4bb4c069d53d38947, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   surface: {fileID: 6287326005828554896}
   food: {fileID: 5707813131339405077, guid: b7aede90df860184e82d1ea8292b5123, type: 3}
   rabbit: {fileID: 8505818697369016331, guid: d41c8705a05beb642a090f031a00299c, type: 3}
-  wolf: {fileID: 4362939137640418624, guid: 9a3fc11558a4b4a4c97a046dc0bd6872, type: 3}
+  wolf: {fileID: 2443608263682274251, guid: 36c50c1df400f6e47be4e48ed43c7155, type: 3}
   water: {fileID: 2493576781110911613, guid: 98b2e4f4f56370343b10b456a0c255a5, type: 3}
-  numFoodDefault: 2
+  numFoodDefault: 6
   numRabbitsDefault: 0
   numWolvesDefault: 0
-  numWaterDefault: 3
-  foodRespawnRateDefault: 99999
-  rangeX: 0
-  rangeZ: 0
+  numWaterDefault: 6
+  foodRespawnRateDefault: 40
+  rangeX: 10
+  rangeZ: 10
   agents: []
   wolves: []
   plants: []
@@ -227,7 +229,7 @@ PrefabInstance:
     - target: {fileID: 1423275730091016132, guid: 461108f1cc2003c45a48ddbc28f5ca04,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -4.215386
+      value: -5.04
       objectReference: {fileID: 0}
     - target: {fileID: 1423275730091016132, guid: 461108f1cc2003c45a48ddbc28f5ca04,
         type: 3}
@@ -452,7 +454,7 @@ PrefabInstance:
     - target: {fileID: 1423275730091016132, guid: 461108f1cc2003c45a48ddbc28f5ca04,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -4.215386
+      value: -5.04
       objectReference: {fileID: 0}
     - target: {fileID: 1423275730091016132, guid: 461108f1cc2003c45a48ddbc28f5ca04,
         type: 3}

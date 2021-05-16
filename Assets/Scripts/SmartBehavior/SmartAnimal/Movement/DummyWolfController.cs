@@ -12,7 +12,6 @@ public class DummyWolfController : AnimalController
         animalModel.reproductiveUrge = 100f;
         fsm.SetDefaultState(idleState);
         fsm.ChangeState(idleState);
-        fsm.currentState.currentStateAnimation = StateAnimation.Idle;
         
     }
     public override void ChangeModifiers(State state)
@@ -28,5 +27,10 @@ public class DummyWolfController : AnimalController
     public override Vector3 getNormalizedScale()
     {
         return new Vector3(0.25f, 0.5f, 0.25f);
+    }
+    
+    public override string GetObjectLabel()
+    {
+        return "DummyWolf";
     }
 }

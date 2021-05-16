@@ -1,64 +1,90 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using DefaultNamespace;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Events;
+using ViewController;
+using Object = System.Object;
+using Random = UnityEngine.Random;
 
 // http://devmag.org.za/2009/05/03/poisson-disk-sampling/
 public class ObjectPlacement : MonoBehaviour
 {
+    
     public List<GameObject> groups;
+    public SimulationSettings simulationSettings;
+    int size;
+    public void Awake()
+    {
+        simulationSettings = FindObjectOfType<SimulationSettings>();
+    }
 
 
-    public void PlaceObjects(ObjectPlacementSettings settings, MeshSettings meshSettings, HeightMapSettings heightMapSettings)
+    public void PlaceObjects(Vector2 positionOffset)
     {
         int size;
-        Debug.Log("Is this called more than once");
         groups = new List<GameObject>();
 
-        if (meshSettings.useFlatShading)
+        if (simulationSettings.MeshSettings.UseFlatShading)
         {
-            size = MeshSettings.supportedChunkSizes[meshSettings.flatShadedChunkSizeIndex];
+            size = MeshSettings.supportedChunkSizes[simulationSettings.MeshSettings.FlatShadedChunkSizeIndex];
         }
         else
         {
-            size = MeshSettings.supportedChunkSizes[meshSettings.chunkSizeIndex];
+            size = MeshSettings.supportedChunkSizes[simulationSettings.MeshSettings.ChunkSizeIndex];
         }
 
-        size = Mathf.RoundToInt(size * meshSettings.meshScale);
+        size = Mathf.RoundToInt(size * simulationSettings.MeshSettings.MeshScale);
+        this.size = size;
 
-        for (int i = 0; i < settings.objectTypes.Length; i++)
+        for (int i = 0; i < simulationSettings.ObjectPlacementSettings.ObjectTypes.Count; i++)
         {
-            GameObject groupObject = new GameObject(settings.objectTypes[i].name + " Group");
-            groups.Add(groupObject);
-            groupObject.transform.parent = this.transform;
-            List<Vector2> points = GeneratePlacementPoints(settings, meshSettings.meshScale, i, size);
-            foreach (var point in points)
+            PlaceObjectType(simulationSettings.ObjectPlacementSettings.GetObjectType(i), positionOffset);
+        }
+    }
+
+    public void PlaceObjectType(ObjectType objectType, Vector2 positionOffset)
+    {
+        //Debug.Log("PLACEOBJECTYPE");
+        int deleted = 0;
+        if (objectType.GameObjectSettings == null || objectType.GameObjectSettings.Count <= 0)
+        {
+            return;
+        }
+        GameObject groupObject = new GameObject(objectType.Name + " Group");
+        groups.Add(groupObject);
+        groupObject.transform.parent = this.transform;
+        List<Vector2> points = GeneratePlacementPoints(objectType, simulationSettings.MeshSettings.MeshScale, size);
+        foreach (var point in points)
+        {
+            float maxLength = 0;
+            foreach (var obj in objectType.GameObjectSettings)
             {
-                // GameObject gameObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                float maxLength = 0;
-                foreach (var obj in settings.objectTypes[i].gameObjectSettings)
+                maxLength += obj.Probability;
+            }
+
+            float randomChoice = Random.Range(0f, maxLength);
+            float counter = 0;
+            int randomIndex = 0;
+
+            for (int j = 0; j < objectType.GameObjectSettings.Count; j++)
+            {
+                counter += objectType.GameObjectSettings[j].Probability;
+                if (randomChoice <= counter)
                 {
-                    maxLength += obj.probability;
+                    randomIndex = j;
+                    break;
                 }
+            }
+            //Debug.Log("GameObjectSettings Count [" + objectType.GameObjectSettings.Count + "] Random index: " + randomIndex);
+            if (objectType.GameObjectSettings[randomIndex].GameObject != null)
+            {
+                GameObject gameObject = Instantiate(objectType.GameObjectSettings[randomIndex].GameObject, new Vector3(point.x - size / 2 + positionOffset.x, simulationSettings.HeightMapSettings.MaxHeight + 10, point.y - size / 2 + positionOffset.y), Quaternion.identity);
 
-                float randomChoice = Random.Range(0f, maxLength);
-                float counter = 0;
-                int randomIndex = 0;
-
-                for (int j = 0; j < settings.objectTypes[i].gameObjectSettings.Length; j++)
-                {
-                    counter += settings.objectTypes[i].gameObjectSettings[j].probability;
-                    if (randomChoice < counter)
-                    {
-                        randomIndex = j;
-                        break;
-                    }
-                }
-
-                GameObject gameObject = Instantiate(settings.objectTypes[i].gameObjectSettings[randomIndex].gameObject, new Vector3(point.x - size / 2, heightMapSettings.maxHeight + 10, point.y - size / 2), Quaternion.identity);
-
-                //gameObject.transform.position = new Vector3(point.x - size / 2, heightMapSettings.maxHeight + 10, point.y - size / 2);
                 gameObject.transform.parent = groupObject.transform;
-                //gameObject.transform.localScale = Vector3.one * settings.objectTypes[i].scale * meshSettings.meshScale;
 
                 Ray ray = new Ray(gameObject.transform.position, gameObject.transform.TransformDirection(Vector3.down));
                 RaycastHit hit;
@@ -66,8 +92,8 @@ public class ObjectPlacement : MonoBehaviour
                 {
                     if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Ground"))
                     {
-                        bool withinSpan = hit.point.y <= (heightMapSettings.maxHeight - heightMapSettings.minHeight) * settings.objectTypes[i].maxHeight
-                        && hit.point.y >= (heightMapSettings.maxHeight - heightMapSettings.minHeight) * settings.objectTypes[i].minHeight;
+                        bool withinSpan = hit.point.y <= (simulationSettings.HeightMapSettings.MaxHeight - simulationSettings.HeightMapSettings.MinHeight) * objectType.MaxHeight
+                        && hit.point.y >= (simulationSettings.HeightMapSettings.MaxHeight - simulationSettings.HeightMapSettings.MinHeight) * objectType.MinHeight;
 
                         if (withinSpan)
                         {
@@ -75,17 +101,30 @@ public class ObjectPlacement : MonoBehaviour
                             var agent = gameObject.GetComponent<NavMeshAgent>();
                             if (agent == null)
                             {
-                                gameObject.transform.position = new Vector3(oldPosition.x, hit.point.y + settings.objectTypes[i].yOffset, oldPosition.z);
+                                gameObject.transform.position = new Vector3(oldPosition.x, hit.point.y + objectType.yOffset, oldPosition.z);
                             }
                             else
                             {
-                                agent.Warp(new Vector3(oldPosition.x, hit.point.y + settings.objectTypes[i].yOffset, oldPosition.z));
+                                agent.Warp(new Vector3(oldPosition.x, hit.point.y + objectType.yOffset, oldPosition.z));
                             }
+                            
+                            if (gameObject.TryGetComponent(out IPooledObject pooledObject))
+                            {
+                                if (gameObject.TryGetComponent(out AnimalController animalController))
+                                {
+                                    ObjectPooler.Instance?.HandleAnimalInstantiated(gameObject, pooledObject.GetObjectLabel());
+                                } else if (gameObject.TryGetComponent(out PlantController plantController))
+                                {
+                                    ObjectPooler.Instance?.HandleFoodInstantiated(gameObject, pooledObject.GetObjectLabel());
+                                }    
+                            }
+                            
+
                             continue;
                         }
                     }
-
                 }
+                
                 if (Application.isEditor)
                 {
                     DestroyImmediate(gameObject);
@@ -94,15 +133,45 @@ public class ObjectPlacement : MonoBehaviour
                 {
                     Destroy(gameObject);
                 }
+                deleted++;
             }
         }
+        //ObjectPooler.Instance?.HandleFinishedSpawning();
     }
 
-    public static List<Vector2> GeneratePlacementPoints(ObjectPlacementSettings settings, float meshScale, int objectIndex, int size)
+    public static List<Vector2> GeneratePlacementPoints(ObjectType objectType, float meshScale, int size)
     {
-        List<Vector2> points = PoissonDiskSampling.GeneratePoisson(size, size, settings.objectTypes[objectIndex].minimumDistance * meshScale, settings.objectTypes[objectIndex].newPointCount);
+        List<Vector2> points = PoissonDiskSampling.GeneratePoisson(size, size, objectType.MinimumDistance * meshScale, objectType.NewPointCount);
 
         return points;
+    }
+
+    public void UpdateObjectType(int index, Vector2 positionOffset)
+    {
+        DestoryGroupObjectWithIndex(index);
+        PlaceObjectType(simulationSettings.ObjectPlacementSettings.GetObjectType(index), positionOffset);
+    }
+
+    public void DestoryGroupObjectWithIndex(int index)
+    {
+        DestroyGroupObjectWithName(simulationSettings.ObjectPlacementSettings.GetObjectType(index).Name);
+    }
+
+    public void DestroyGroupObjectWithName(string name)
+    {
+        // var groupObject = GameObject.Find(name + " Group");
+        // if (groupObject != null)
+        // {
+        //     //Destroy(GameObject.Find(name + " Group"));
+        //     Destroy(groupObject);
+        //     
+        // }
+        
+        var objects = Resources.FindObjectsOfTypeAll<GameObject>().Where(obj => obj.name == name + " Group");
+        foreach (var obj in objects)
+        {
+            Destroy(obj);
+        }
     }
 }
 

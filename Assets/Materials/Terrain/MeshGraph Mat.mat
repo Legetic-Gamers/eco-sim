@@ -75,11 +75,11 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - Vector1_195EFE00: 3
-    - Vector1_196E40F6: 0.73
+    - Vector1_196E40F6: 0.4
     - Vector1_24186FB8: 0.3
-    - Vector1_3E158F7: 1
+    - Vector1_3E158F7: 0.3
     - Vector1_7F1FC29C: 10
-    - Vector1_83579301: 0
+    - Vector1_83579301: 0.1
     - Vector1_96D1680F: 0.6
     - Vector1_994B5707: 0
     - Vector1_CDA8E1D9: 0.3
@@ -106,14 +106,14 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 1
     - grassHighHeight: 1
-    - grassLowHeight: 0.416
-    - maxHeight: 8.93
+    - grassLowHeight: 0.41
+    - maxHeight: 10.85
     - minHeight: 0
-    - sandHeight: 0.119
+    - sandHeight: 0.24
     - waterHeight: 0
     m_Colors:
     - Color_375F3FFA: {r: 0.504717, g: 0.8103465, b: 1, a: 0}
-    - Color_3BC10489: {r: 0.4528302, g: 0.1747329, b: 0.010679956, a: 0}
+    - Color_3BC10489: {r: 0.23584902, g: 0.025587412, b: 0.025587412, a: 0}
     - Color_4D0CA4B0: {r: 0.32793146, g: 0.75471693, b: 0.29547876, a: 0}
     - Color_6F761AA7: {r: 0.49056602, g: 0.34423304, b: 0.14578141, a: 0}
     - Color_90877421: {r: 0.13630977, g: 0.34905657, b: 0.03786936, a: 0}
@@ -122,8 +122,8 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
-    - grassHighColor: {r: 0.13253756, g: 0.2924528, b: 0.103462085, a: 0}
-    - grassLowColor: {r: 0.24200113, g: 0.33962262, b: 0.21947311, a: 0}
-    - sandColor: {r: 0.5283019, g: 0.5242764, b: 0.47597012, a: 0}
-    - waterColor: {r: 0.46257564, g: 0.6830319, b: 0.7264151, a: 0}
+    - grassHighColor: {r: 0.5754717, g: 0.5754717, b: 0.5754717, a: 0}
+    - grassLowColor: {r: 0.32941177, g: 0.7529412, b: 0.29411766, a: 0}
+    - sandColor: {r: 1, g: 0.92941177, b: 0.654902, a: 0}
+    - waterColor: {r: 0.5058824, g: 0.8117647, b: 1, a: 0}
   m_BuildTextureStacks: []

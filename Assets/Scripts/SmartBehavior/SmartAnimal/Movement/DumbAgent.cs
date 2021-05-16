@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.Linq;
-using System.Security.Authentication.ExtendedProtection;
 using AnimalsV2;
+using AnimalsV2.States;
+using AnimalsV2.States.AnimalsV2.States;
 using Model;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
@@ -10,39 +12,39 @@ using Unity.MLAgents.Sensors;
 using UnityEngine;
 using UnityEngine.AI;
 using ViewController;
+using ViewController.Senses;
 using Random = UnityEngine.Random;
 using Vector3 = UnityEngine.Vector3;
 
+[RequireComponent(typeof(MLRabbitSteeringController)), RequireComponent(typeof(Senses))]
 public class DumbAgent : Agent, IAgent
 {
     //ANIMAL RELATED THINGS
-    private AnimalController animalController;
-    private AnimalModel animalModel;
-    private TickEventPublisher eventPublisher;
+    private MLRabbitSteeringController animalController;
+    private Senses senses;
     private FiniteStateMachine fsm;
     public Action<float> onEpisodeBegin { get; set; }
     public Action<float> onEpisodeEnd { get; set; }
 
     
-    public void Start()
+    public void Awake()
     {
+        //make sure sensetick is using constant tick interval
+        senses = GetComponent<Senses>();
+        senses.useConstantTickInterval = true;
+        
         //init specific
-        animalController = GetComponent<AnimalController>();
-        animalModel = animalController.animalModel;
+        animalController = GetComponent<MLRabbitSteeringController>();
+        if(animalController) animalController.OnStartML += Init;
+    }
+
+    private void Init()
+    {
         fsm = animalController.fsm;
-        eventPublisher = FindObjectOfType<global::TickEventPublisher>();
         
-        //Set the animal as sterile if we want to train/heuristic
-        if (TryGetComponent(out BehaviorParameters bp))
-        {
-            Debug.Log("Agent is infertile!");
-            animalController.isInfertile =
-                bp.BehaviorType == BehaviorType.Default || bp.BehaviorType == BehaviorType.HeuristicOnly;
-        }
-        
-        //change to a state which does not navigate the agent. If no decisionmaker is present, it will stay at this state (if default state is also set).
-        fsm.SetDefaultState(animalController.idleState);
-        fsm.ChangeState(animalController.idleState);
+        //set infertile if training
+        animalController.isInfertile = animalController.isTraining;
+        if(animalController.isInfertile) Debug.Log("Agent is infertile!");
         
         EventSubscribe();
     }
@@ -57,88 +59,103 @@ public class DumbAgent : Agent, IAgent
     //Choices based on https://github.com/Unity-Technologies/ml-agents/blob/release_2_verified_docs/docs/Learning-Environment-Design-Agents.md#vector-observations
     public override void CollectObservations(VectorSensor sensor)
     {
+        AnimalModel animalModel = animalController.animalModel;
+
+        if (animalModel == null || animalController == null) return;
         //Position of the animal
         Vector3 thisPosition = transform.position;
         //Get the absolute vector for all targets
         Vector3 nearestFood = NavigationUtilities.GetNearestObject(animalController.visibleFoodTargets.Concat(animalController.heardPreyTargets).ToList(), thisPosition)?.transform.position ?? thisPosition;
-        Vector3 nearestWater = NavigationUtilities.GetNearestObject(animalController.visibleWaterTargets, thisPosition)?.transform.position ?? thisPosition;
+        Vector3 nearestWater = NavigationUtilities.GetNearestObject(animalController.visibleWaterTargets.Concat(animalController.heardWaterTargets).ToList(), thisPosition)?.transform.position ?? thisPosition;
         //Get the absolute vector for a potential mate
-        Vector3 potentialMate = animalController.goToMate.GetFoundMate()?.transform.position ?? thisPosition;
+        GameObject potentialMate = animalController?.goToMate.GetFoundMate();
+        AnimalController potentialMateController = potentialMate?.GetComponent<AnimalController>() ?? null;
+        Vector3 potentialMatePosition = potentialMate?.transform.position ?? thisPosition;
+        
         
         //Get Vector between animal and targets
-        nearestFood = nearestFood - thisPosition;
-        nearestWater = nearestWater - thisPosition;
-        potentialMate = potentialMate - thisPosition;
-
+        nearestFood -= thisPosition;
+        nearestWater -= thisPosition;
+        potentialMatePosition -= thisPosition;
+        
         //Get the magnitude of nearestFood, nearestWater potentialMate. (Normalized)
         float maxPercievableDistance = animalController.animalModel.traits.viewRadius;
+        
         float nearestFoodDistance = nearestFood.magnitude / maxPercievableDistance;
         float nearestWaterDistance = nearestWater.magnitude / maxPercievableDistance;
-        float potentialMateDistance = potentialMate.magnitude / maxPercievableDistance;
+        float potentialMateDistance = potentialMatePosition.magnitude / maxPercievableDistance;
         
-        //Convert to relative vector to animal
+        nearestFood.y = 0;
+        nearestWater.y = 0;
+        potentialMatePosition.y = 0;
+        
         nearestFood = transform.InverseTransformDirection(nearestFood);
         nearestWater = transform.InverseTransformDirection(nearestWater);
-        potentialMate = transform.InverseTransformDirection(potentialMate);
+        potentialMatePosition = transform.InverseTransformDirection(potentialMatePosition);
+        
         
         //Add observations for food
         sensor.AddObservation(nearestFoodDistance);
         sensor.AddObservation(nearestFood.x);
         sensor.AddObservation(nearestFood.z);
-        sensor.AddObservation(animalModel.GetEnergyPercentage);
+        sensor.AddObservation(animalModel.HighEnergy);
         
         //Add observations for water
         sensor.AddObservation(nearestWaterDistance);
         sensor.AddObservation(nearestWater.x);
         sensor.AddObservation(nearestWater.z);
-        sensor.AddObservation(animalModel.GetHydrationPercentage);
+        sensor.AddObservation(animalModel.HighHydration);
         
         //Add observations for mate
         sensor.AddObservation(potentialMateDistance);
-        sensor.AddObservation(potentialMate.x);
-        sensor.AddObservation(potentialMate.z);
+        sensor.AddObservation(potentialMatePosition.x);
+        sensor.AddObservation(potentialMatePosition.z);
         sensor.AddObservation(animalModel.WantingOffspring);
         
         
         //Add agents velocity (as a direction) to observations
+        //Vector3 velocity = transform.InverseTransformDirection(animalController.agent.velocity);
         Vector3 velocity = transform.InverseTransformDirection(animalController.agent.velocity);
+        sensor.AddObservation(animalController.agent.velocity.magnitude);
         sensor.AddObservation(velocity.x);
         sensor.AddObservation(velocity.z);
 
+        /*
+        Vector3 potentialMateVelocity = transform.InverseTransformDirection(potentialMateController?.agent.velocity ?? new Vector3(0,0,0));
+        sensor.AddObservation(potentialMateController?.agent.velocity.magnitude ?? 0);
+        sensor.AddObservation(potentialMateVelocity.x);
+        sensor.AddObservation(potentialMateVelocity.z);
+        */
     }
 
     //Called Every time the ML agent decides to take an action.
     //steering inspired by: https://github.com/Unity-Technologies/ml-agents/blob/release_2_verified_docs/Project/Assets/ML-Agents/Examples/FoodCollector/Scripts/FoodCollectorAgent.cs
     public override void OnActionReceived(ActionBuffers actions)
     {
-
-        AddReward(-0.0025f * 0.1f);
         Vector3 dirToGo = transform.forward;
-        /*
-        //binary possiblity 1 or 0
-        int run = actions.DiscreteActions[0];
-
-        //if run is 1, set running speed
-        float speedModifier = run == 1 ? AnimalController.RunningSpeed : AnimalController.JoggingSpeed;
-        */
         
         //Continuous actions are preclamped by mlagents [-1, 1]
         float rotationAngle = actions.ContinuousActions[0] * 110; //90
         
-        //Give penalty based on how much rotation is made. 0 is no rotation and 1 (or -1) is max rotation.
-        AddReward(- Math.Abs(actions.ContinuousActions[0]) * 0.0050f);
+        //Give reward based on how much rotation is made. 0 is no rotation and 1 (or -1) is max rotation.
+        AddReward(- Math.Abs(actions.ContinuousActions[0]) * 0.0025f);
         
         //Rotate vector based on rotation from the action
         dirToGo = Quaternion.AngleAxis(rotationAngle, Vector3.up) * dirToGo;
-        dirToGo *= 3;
+        dirToGo *= 4;
 
         float speedModifier = actions.ContinuousActions[1];
         speedModifier = 0.5f * speedModifier + 0.5f; //make sure that function of interval [-1,1] maps to [0,1]
         
+        //Give penalty: more speed => less penalty
+        AddReward(speedModifier * 0.0025f - 0.0025f);
+
+        //Set speed
+        animalController.SetSpeed(speedModifier * 0.75f);
         
-        animalModel.currentSpeed = animalModel.traits.maxSpeed * speedModifier * animalModel.traits.size;
-        animalController.agent.speed = animalModel.currentSpeed * Time.timeScale;
-        
+        //Debug.Log("action rotation: " + actions.ContinuousActions[0]);
+        //Debug.Log("action speed: " + actions.ContinuousActions[1]);
+
         NavigationUtilities.NavigateRelative(animalController, dirToGo, 1 << NavMesh.GetAreaFromName("Walkable"));
     }
 
@@ -175,7 +192,7 @@ public class DumbAgent : Agent, IAgent
     }
     
     
-    private void HandleDeath()
+    private void HandleDeath(AnimalController animalController, bool gotEaten)
     {
         AddReward(-1);
         onEpisodeEnd?.Invoke(100f);
@@ -185,25 +202,31 @@ public class DumbAgent : Agent, IAgent
     
     private void HandleDrink(GameObject water, float currentHydration)
     {
-        float reward = 0f;
-        if (water.gameObject.CompareTag("Water"))
+        AnimalModel animalModel = animalController.animalModel;
+
+        if (!animalController.isTraining)
         {
-            // the reward should be proportional to how much hydration was gained when drinking
-            reward = animalModel.traits.maxHydration - currentHydration;
-            // normalize reward as a percentage
-            reward /= animalModel.traits.maxHydration;
+            //Turn 180 degrees to help them not get stuck
+            transform.RotateAround (transform.position, transform.up, 180f);
         }
-        //AddReward(reward * 0.1f);
-        AddReward(reward * 0.1f);
+        
+        // the reward should be proportional to how much hydration was gained when drinking
+        float reward = animalModel.traits.maxHydration - currentHydration;
+        // normalize reward as a percentage
+        reward /= animalModel.traits.maxHydration;
+        //AddReward((1 - reward) * 0.1f);
+        AddReward(0.1f);
     }
 
     //The reason to why I have curentEnergy as an in-parameter is because currentEnergy is updated through EatFood before reward gets computed in AnimalMovementBrain
     private void HandleEat(GameObject food, float currentEnergy)
     {
+        AnimalModel animalModel = animalController.animalModel;
+
         //Debug.Log("currentEnergy: " + animalController.animalModel.currentEnergy);
         float reward = 0f;
         //Give reward
-        if (food.GetComponent<AnimalController>()?.animalModel is IEdible edibleAnimal &&
+        if (food.TryGetComponent(out AnimalController foodAnimalController) && foodAnimalController.animalModel is IEdible edibleAnimal &&
             animalModel.CanEat(edibleAnimal))
         {
             float nutritionReward = edibleAnimal.nutritionValue;
@@ -213,7 +236,7 @@ public class DumbAgent : Agent, IAgent
             reward = Math.Min(nutritionReward, hunger);
             // normalize reward as a percentage
             reward /= animalModel.traits.maxEnergy;
-        } else if (food.GetComponent<PlantController>()?.plantModel is IEdible ediblePlant && animalModel.CanEat(ediblePlant))
+        } else if (food.TryGetComponent(out PlantController foodPlantController) && foodPlantController.plantModel  is IEdible ediblePlant && animalModel.CanEat(ediblePlant))
         {
             float nutritionReward = ediblePlant.nutritionValue;
             float hunger = animalModel.traits.maxEnergy - currentEnergy;
@@ -223,46 +246,95 @@ public class DumbAgent : Agent, IAgent
             reward /= animalModel.traits.maxEnergy;
         }
 
+        if (animalController.isTraining)
+        {
+            Destroy(food);
+        }
         AddReward(0.1f);
+
+        //AddReward((1 - reward) * 0.1f);
     }
     
     private void HandleMate(GameObject obj)
     {
         //SetReward(1f);
-        AddReward(1f);
+        AddReward(2f);
+        //Task achieved
         //Task achieved
         onEpisodeEnd?.Invoke(100f);
         EndEpisode();
     }
-    
-    private void HandleBirth(object sender, AnimalController.OnBirthEventArgs e)
+
+    private void PreRequestDecision()
     {
         
-     }
+            //make sure no decision is taken when a blocking state is running
+            if (!(fsm.currentState is EatingState) && !(fsm.currentState is DrinkingState) &&
+                !(fsm.currentState is MatingState) && !(fsm.currentState is FleeingState) && animalController != null && !(fsm.currentState is Dead))
+            {
+                RequestDecision();
+            }    
+        
+        
+    }
     
     //Listen to when parameters or senses were updated.
     private void EventSubscribe()
     {
-        //Request decision on every sense tick
-        eventPublisher.onSenseTickEvent += RequestDecision;
-        animalController.actionDeath += HandleDeath;
-        animalController.eatingState.onEatFood += HandleEat;
-        animalController.matingState.onMate += HandleMate;
-        animalController.drinkingState.onDrinkWater += HandleDrink;
+        StartCoroutine(SubscribeTickEvent());
+
+        if (animalController)
+        {
+            animalController.deadState.onDeath += HandleDeath;
+            animalController.eatingState.onEatFood += HandleEat;
+            animalController.matingState.onMate += HandleMate;
+            animalController.drinkingState.onDrinkWater += HandleDrink;
+            animalController.actionPerceivedHostile += HandleHostileTarget;    
+        }
+    }
+
+    //method used to spread out when ticks happen, this is pretty crucial for performance in real simulation. 
+    IEnumerator SubscribeTickEvent()
+    {
+        float delaySeconds = Random.Range(0, 0.5f);
+
+        if (animalController.isTraining)
+        {
+            Debug.Log("No delay on subscribing tick event");
+            delaySeconds = 0;
+        }
+        
+        // Wait a while then change state and resume walking
+        yield return new WaitForSeconds(delaySeconds);
+        
+        //subscribe to own onSenseTick
+        if (senses)
+        {
+            senses.onSenseTick += PreRequestDecision;
+        }
     }
 
 
     public void EventUnsubscribe()
     {
-        eventPublisher.onSenseTickEvent -= RequestDecision;
-        animalController.actionDeath -= HandleDeath;
-        animalController.eatingState.onEatFood -= HandleEat;
-        animalController.matingState.onMate -= HandleMate;
-        animalController.drinkingState.onDrinkWater -= HandleDrink;
+        if (senses)
+        {
+            senses.onSenseTick -= PreRequestDecision;
+        }
+
+        if (animalController)
+        {
+            animalController.deadState.onDeath -= HandleDeath;
+            animalController.eatingState.onEatFood -= HandleEat;
+            animalController.matingState.onMate -= HandleMate;
+            animalController.drinkingState.onDrinkWater -= HandleDrink;
+            animalController.actionPerceivedHostile -= HandleHostileTarget;    
+        }
     }
 
     private void OnDestroy()
     {
+        if(animalController) animalController.OnStartML -= Init;
         EventUnsubscribe();
     }
     
@@ -270,14 +342,60 @@ public class DumbAgent : Agent, IAgent
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Target"))
         {
-            animalController.Interact(other.gameObject);
+            Interact(other.gameObject);
         }
-/*
-        if (other.gameObject.CompareTag("Wall"))
+    }
+    
+    private void HandleHostileTarget(GameObject target)
+    {
+        fsm.ChangeState(animalController.fleeingState);
+    }
+    
+    //General method that takes unknown gameobject as input and interacts with the given gameobject depending on what it is. It can be to e.g. consume or to mate
+    // It is not guaranteed that the statechange will happen since meetrequirements has to be true for given statechange.
+    public void Interact(GameObject target)
+    {
+        AnimalModel animalModel = animalController.animalModel;
+
+        //Dont start to interact if we are fleeing.
+        if (fsm == null || fsm.currentState is FleeingState || fsm.currentState is Dead) return;
+
+        //Debug.Log(gameObject.name);
+        switch (target.tag)
         {
-            HandleDeath();
+            case "Water":
+                animalController.drinkingState.SetTarget(target);
+                fsm.ChangeState(animalController.drinkingState);
+                break;
+            case "Plant":
+                if (target.TryGetComponent(out PlantController plantController) &&
+                    animalModel.CanEat(plantController.plantModel))
+                {
+                    animalController.eatingState.SetTarget(target);
+                    fsm.ChangeState(animalController.eatingState);
+                }
+
+                break;
+            case "Animal":
+                if (target.TryGetComponent(out AnimalController otherAnimalController))
+                {
+                    AnimalModel otherAnimalModel = otherAnimalController.animalModel;
+                    //if we can eat the other animal we try to do so
+                    if (animalModel.CanEat(otherAnimalModel))
+                    {
+                        animalController.eatingState.SetTarget(target);
+                        fsm.ChangeState(animalController.eatingState);
+                    }
+                    else if (animalModel.IsSameSpecies(otherAnimalModel))
+                    {
+                        animalController.matingState.SetTarget(target);
+                        fsm.ChangeState(animalController.matingState);
+                    }
+                }
+
+                break;
         }
-        */
+
     }
     
 }

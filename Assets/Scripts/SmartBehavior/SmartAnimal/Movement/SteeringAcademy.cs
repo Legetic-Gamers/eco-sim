@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using AnimalsV2;
 using AnimalsV2.States.AnimalsV2.States;
 using Unity.MLAgents;
 using UnityEditor;
@@ -96,6 +97,14 @@ public class SteeringAcademy : MonoBehaviour
             GameObject obj = Instantiate(environmentObject.prefab, transform, false);
             obj.transform.position = obj.transform.position +
                                      new Vector3(Random.Range(-rangeX, rangeX), 0, Random.Range(-rangeZ, rangeZ));
+
+            if (environmentObject.spawnAtEdge)
+            {
+                NavMeshHit hit;
+                NavMesh.FindClosestEdge(obj.transform.position, out hit, NavMesh.AllAreas);
+                obj.transform.position = hit.position;
+            }
+            
             environmentObject.instances.Add(obj);
         }
     }
@@ -126,11 +135,11 @@ public class SteeringAcademy : MonoBehaviour
 
             animalModel.currentEnergy = 0.5f * animalModel.traits.maxEnergy;
             animalModel.currentHydration = 0.5f * animalModel.traits.maxHydration;
-            animalModel.reproductiveUrge = 0.5f;
             animalModel.reproductiveUrge = 0.2f;
             animalModel.age = 0;
-            animalController.fsm.absorbingState = false;
-            animalController.fsm.GoToDefaultState();
+            //Ugly solution to stop agent from entering dead animation and not resetting
+            animalController.deadState.stateAnimation = StateAnimation.Walking;
+            animalController.fsm.ForceDefaultState();
             if(animalController.agent.isActiveAndEnabled && animalController.agent.isOnNavMesh) animalController.agent.ResetPath();
         }
     }
@@ -157,6 +166,7 @@ public class EnvironmentObject
     [SerializeField] public GameObject prefab;
     [SerializeField] public List<GameObject> instances;
     [SerializeField] public int amountPerRound;
+    [SerializeField] public bool spawnAtEdge;
 
     public string GetTag()
     {

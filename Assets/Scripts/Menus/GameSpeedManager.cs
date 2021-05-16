@@ -1,26 +1,19 @@
+using System;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Menus
 {
     public class GameSpeedManager : MonoBehaviour
     {
-        
-        public void SlowDown()
+        public Slider mainSlider;
+        public TextMeshProUGUI text;
+
+        public void ChangeSpeed()
         {
-            if (!PauseMenuManager.isPaused) Time.timeScale = 0.5f;
-            //Debug.Log("Slowing down");
-        }
-        
-        public void SetStandardSpeed()
-        {
-            if (!PauseMenuManager.isPaused) Time.timeScale = 1f;
-            //Debug.Log("Setting standard speed");
-        }
-        
-        public void FastForward()
-        {
-            if (!PauseMenuManager.isPaused) Time.timeScale = 2f;
-            //Debug.Log("Speeding up");
+            Time.timeScale = mainSlider.value;
+            text.text = "Simulation Speed " + Time.timeScale;
         }
     }
 }

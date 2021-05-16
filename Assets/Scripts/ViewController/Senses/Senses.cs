@@ -1,4 +1,7 @@
+using System;
+using System.Collections;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace ViewController.Senses
 {
@@ -15,55 +18,95 @@ namespace ViewController.Senses
         private LayerMask targetMask;
         [SerializeField]
         private LayerMask obstacleMask;
-    
+
+        [SerializeField] public bool useConstantTickInterval;
+        
         private AnimalController animalController;
 
-        private TickEventPublisher tickEventPublisher;
+        private Transform thisTransform;
+        
+        public Action onSenseTick;
+        
 
         /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
-
-        // reduce clutter in FindTargets()
+        
+        /// <summary>
+        /// separate method to reduce clutter in FindTargets()
+        /// Clear all lists to prevent duplicates 
+        /// </summary>
         private void ClearLists()
         {
             animalController.visibleHostileTargets.Clear();
             animalController.visibleFriendlyTargets.Clear();
             animalController.visibleFoodTargets.Clear();
             animalController.visibleWaterTargets.Clear();
+            animalController.visibleHideoutTargets.Clear();
             
             animalController.heardHostileTargets.Clear();
             animalController.heardFriendlyTargets.Clear();
             animalController.heardPreyTargets.Clear();
+            animalController.heardWaterTargets.Clear();
         }
 
-        private void FindTargets()
+        public void FindTargets()
         {
             // prevent adding duplicates
             ClearLists();
 
+            if (thisTransform == null)
+            {
+                thisTransform = transform;
+            }
+
             // add targets in list when they enter the sphere
-            Collider[] targetsInRadius = Physics.OverlapSphere(transform.position, radius, targetMask);
+            Collider[] targetsInRadius = Physics.OverlapSphere(thisTransform.position, radius, targetMask);
 
             // loop through targets within the entire circle to determine whether to add to a Targets list
             for (int i = 0; i < targetsInRadius.Length; i++)
             {
                 GameObject target = targetsInRadius[i].gameObject;
+                Transform targetTransform = target.transform;
 
                 // don't add self
                 if (target == gameObject) continue;
                 
-                Vector3 dirToTarget = (target.transform.position - transform.position).normalized;
-
-                float distToTarget = Vector3.Distance(transform.position, target.transform.position);
-
-                if (distToTarget <= hearingRadius && 
-                    target.gameObject.CompareTag("Animal")) HandleHeardAnimalTarget(target);
+                //If target is an animal, try to find its center transform, otherwise target transform is at the feet.
+                if (target.gameObject.CompareTag("Animal"))
+                {
+                    if(target.TryGetComponent(out AnimalController targetController) && targetController.centerTransform != null)
+                    {
+                        targetTransform = targetController.centerTransform;
+                    }
+                    
+                }
                 
+                //If target is a plant, try to find its center transform, otherwise target transform is at the bottom.
+                if (target.gameObject.CompareTag("Plant"))
+                {
+                    if(target.TryGetComponent(out PlantController plantController) && plantController.centerTransform != null )
+                    {
+                        targetTransform = plantController.centerTransform;
+                    }
+                    
+                }
+                
+                
+                Vector3 dirToTarget = (targetTransform.position - transform.position).normalized;
+
+                float distToTarget = Vector3.Distance(thisTransform.position, targetTransform.position);
+
+                if (distToTarget <= hearingRadius)
+                {
+                    if (target.gameObject.CompareTag("Animal")) HandleHeardAnimalTarget(target);
+                    else if (target.gameObject.CompareTag("Water")) HandleHeardWaterTarget(target);
+                }
+
                 if (Vector3.Angle(transform.forward, dirToTarget) < angle / 2)
                 {
                     if (distToTarget <= viewRadius)
                     {
                         // if target is not obscured
-                        if (!Physics.Raycast(transform.position, dirToTarget, distToTarget, obstacleMask))
+                        if (!Physics.Raycast(thisTransform.position, dirToTarget, distToTarget, obstacleMask))
                         {
                             if (target.gameObject.CompareTag("Plant"))
                             {
@@ -75,9 +118,13 @@ namespace ViewController.Senses
                             } 
                             else if (target.gameObject.CompareTag("Water"))
                             {
-                                HandleWaterTarget(target);
+                                HandleSeenWaterTarget(target);
+                            } else if (target.gameObject.CompareTag("Hideout"))
+                            {
+                                HandleHideoutTarget(target);
                             }
                         }
+                        
                     }
                 }
             }
@@ -85,6 +132,14 @@ namespace ViewController.Senses
 
         
         /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
+
+        private void HandleHideoutTarget(GameObject target)
+        {
+            if (target.TryGetComponent(out HideoutController hideoutController) && hideoutController.CanHide(animalController))
+            {
+                animalController.visibleHideoutTargets.Add(target);
+            }
+        }
         
         private void HandleHeardAnimalTarget(GameObject target)
         {
@@ -102,7 +157,7 @@ namespace ViewController.Senses
                 animalController.heardFriendlyTargets.Add(target);
             }
             //if this animalModel can eat the targets animalModel: add to visibleFoodTargets
-            else if (animalController.animalModel.CanEat(targetAnimalController.animalModel) )
+            else if (animalController.animalModel.CanEat(targetAnimalController.animalModel) && targetAnimalController.fsm.currentState != targetAnimalController.hiding)
             {
                 animalController.heardPreyTargets.Add(target);
             }
@@ -120,7 +175,7 @@ namespace ViewController.Senses
 
             }  
             //if this animalModel can the targets animalModel: add to visibleFoodTargets
-            else if (animalController.animalModel.CanEat(targetAnimalController.animalModel))
+            else if (animalController.animalModel.CanEat(targetAnimalController.animalModel) && targetAnimalController.fsm.currentState != targetAnimalController.hiding)
             {
                 animalController.visibleFoodTargets.Add(target);
             }
@@ -130,30 +185,32 @@ namespace ViewController.Senses
                 animalController.visibleFriendlyTargets.Add(target);
             }
         }
-        
-        private void HandleWaterTarget(GameObject target)
+
+        private void HandleHeardWaterTarget(GameObject target)
+        {
+            animalController.heardWaterTargets.Add(target);
+        }
+
+        private void HandleSeenWaterTarget(GameObject target)
         {
             animalController.visibleWaterTargets.Add(target);
         }
 
         private void HandlePlantTarget(GameObject target)
         {
-            //Debug.Log("HERE1");
             PlantController targetPlantController = target.GetComponent<PlantController>();
-            if (animalController.animalModel.CanEat(targetPlantController.plantModel))
+            if (animalController.animalModel.CanEat(targetPlantController.plantModel) && targetPlantController.plantModel.isMature)
             {
-                //Debug.Log("HERE2");
                 animalController.visibleFoodTargets.Add(target);
             }
         }
         
         /* \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ */
-        private void Start()
-        {
-            tickEventPublisher = FindObjectOfType<global::TickEventPublisher>();
         
+
+        public void Init()
+        {
             animalController = GetComponent<AnimalController>();
-            
             hearingRadius = animalController.animalModel.traits.hearingRadius; 
             viewRadius = animalController.animalModel.traits.viewRadius;
             
@@ -161,24 +218,58 @@ namespace ViewController.Senses
             radius = Mathf.Max(hearingRadius,viewRadius);
             
             angle = animalController.animalModel.traits.viewAngle;
-            
-            
-            if (tickEventPublisher)
+
+            thisTransform = animalController.eyesTransform;
+            if (thisTransform == null)
             {
-                // subscribe to Ticks
-                tickEventPublisher.onSenseTickEvent += FindTargets;
+                Debug.LogWarning("NO EYES FOUND, SENSING FROM FEET!");
+                thisTransform = transform;
             }
         }
 
+        public void Activate()
+        {
+            if (animalController)
+            {
+                if (useConstantTickInterval)
+                {
+                    Debug.Log("Using tickEventPublisher for senses");
+                    StartCoroutine(ConstantSenseLoop());
+                }
+                else
+                {
+                    StartCoroutine(RandomSensesLoop());
+                }   
+            }
+        }
+
+        public void Deactivate()
+        {
+            StopAllCoroutines();
+        }
+
+        private IEnumerator ConstantSenseLoop()
+        {
+            while (true)
+            {
+                FindTargets();
+                onSenseTick?.Invoke();
+                yield return new WaitForSeconds(0.5f);
+            
+            }
+        }
+        private IEnumerator RandomSensesLoop()
+        {
+            while (true)
+            {
+                FindTargets();
+                onSenseTick?.Invoke();
+                yield return new WaitForSeconds(Random.Range(0.5f, 1f));
+            }
+        }
         private void OnDestroy()
         {
-            if (tickEventPublisher)
-            {
-                // unsubscribe from Ticks
-                tickEventPublisher.onSenseTickEvent -= FindTargets;
-            }
+            StopAllCoroutines();
         }
-        
-
     }
 }

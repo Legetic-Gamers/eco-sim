@@ -31,14 +31,24 @@ namespace AnimalsV2
             return animalTransform.position + Vector3.Normalize(pointToAnimalVector)*5f;
         }
 
-        public static void NavigateToPoint(AnimalController animal, Vector3 position)
+        public static bool NavigateToPoint(AnimalController animal, Vector3 position)
         {
             NavMeshHit hit;
             if (NavMesh.SamplePosition(position, out hit, animal.agent.height * 2,
-                1 << NavMesh.GetAreaFromName("Walkable")))
+                1 << NavMesh.GetAreaFromName("Walkable")) && animal.agent.isOnNavMesh)
             {
-                animal.agent.SetDestination(hit.position);
+                //animal.agent.SetDestination(hit.position);
+                //To avoid async path calculation we do this
+                NavMeshPath path = new NavMeshPath();
+                animal.agent.CalculatePath(hit.position, path);
+                if (path.status == NavMeshPathStatus.PathComplete)
+                {
+                    animal.agent.SetPath(path);
+                    return true;
+                }
             }
+
+            return false;
             //TODO Maybe handle this!
 
             // NavMeshAgent agent = animal.agent;
@@ -67,7 +77,7 @@ namespace AnimalsV2
         //https://docs.unity3d.com/ScriptReference/AI.NavMesh.SamplePosition.html
         public static bool RandomPoint(Vector3 center, float range, float maxDist, out Vector3 result)
         {
-            while (true)
+            for (int i = 0; i < 100; i++)
             {
                 Vector3 randomPoint = center + Random.insideUnitSphere * range;
                 NavMeshHit hit;
@@ -79,15 +89,6 @@ namespace AnimalsV2
                     //Try opposite direction to avoid clinging to walls.
                 }
             }
-            //     else if (NavMesh.SamplePosition(new Vector3(-randomPoint.x, randomPoint.y, -randomPoint.z), out hit,
-            //         maxDist, 1 << NavMesh.GetAreaFromName("Walkable")))
-            //     {
-            //         result = hit.position;
-            //         return true;
-            //     }
-            // }
-
-
             result = center;
             return false;
         }
@@ -160,7 +161,15 @@ namespace AnimalsV2
                 }
             }
 
-            return nearbyObj ?? null;
+            //I know this is very redundant but Unity gives error if we return a null caused by a destroyed object
+            if (nearbyObj != null)
+            {
+                return nearbyObj;
+            }
+            else
+            {
+                return null;
+            }
 
         }
 
@@ -210,24 +219,12 @@ namespace AnimalsV2
         //     }
         //     return allPercievedObjectsWithTag;
         // }
-
-        public static Vector3 RandomNavSphere(Vector3 origin, float dist, int layermask)
-        {
-            Vector3 randDirection = Random.insideUnitSphere * dist;
-
-            randDirection += origin;
-
-            NavMeshHit navHit;
-
-            NavMesh.SamplePosition(randDirection, out navHit, dist, layermask);
-
-            return navHit.position;
-        }
+        
 
         public static void NavigateRelative(AnimalController animal, Vector3 relativeVector, int layerMask)
         {
             //if the relative vector (which we want to navigate through) is zero, we return. Alos if animal is null we return
-            if (relativeVector.Equals(Vector3.zero) || !animal)
+            if (relativeVector.Equals(Vector3.zero) || !animal || !animal.agent.isOnNavMesh)
             {
                 return;
             }
@@ -239,7 +236,14 @@ namespace AnimalsV2
             if (NavMesh.SamplePosition(destination, out hit, Vector3.Distance(origin, relativeVector), layerMask) &&
                 !animal.agent.isStopped)
             {
-                animal.agent.SetDestination(destination);
+                //animal.agent.SetDestination(destination);
+                //To avoid async path calculation we do this
+                NavMeshPath path = new NavMeshPath();
+                animal.agent.CalculatePath(hit.position, path);
+                if (path.status != NavMeshPathStatus.PathInvalid)
+                {
+                    animal.agent.SetPath(path);
+                }
             }
         }
     }

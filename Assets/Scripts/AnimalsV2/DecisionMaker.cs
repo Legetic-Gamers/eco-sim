@@ -3,12 +3,15 @@
  */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using AnimalsV2.States;
 using AnimalsV2.States.AnimalsV2.States;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 using static AnimalsV2.Priorities;
+using Random = UnityEngine.Random;
 
 namespace AnimalsV2
 {
@@ -16,21 +19,41 @@ namespace AnimalsV2
     {
         //TODO REDUCE DEPENDENCIES.
         private AnimalController animalController;
-        private AnimalModel animalModel;
-        private TickEventPublisher eventPublisher;
-        private FiniteStateMachine fsm;
-
-
-        public void Start()
+        public FiniteStateMachine fsm;
+        
+        private List<Priorities> prio = new List<Priorities>();
+        
+        
+        public void Init()
         {
             animalController = GetComponent<AnimalController>();
             fsm = animalController.fsm;
-            animalModel = animalController.animalModel;
-            eventPublisher = FindObjectOfType<global::TickEventPublisher>();
-
             EventSubscribe();
         }
+
+        public void Activate()
+        {
+            StartCoroutine(MakeDecisionLoop());
+        }
+
+        public void Deactivate()
+        {
+            StopAllCoroutines();
+        }
         
+        private void OnDestroy()
+        {
+            EventUnsubscribe();
+        }
+        
+        private IEnumerator MakeDecisionLoop()
+        {
+            while (true)
+            {
+                MakeDecision();
+                yield return new WaitForSeconds(Random.Range(0.5f, 1f));
+            }
+        }
 
         private void MakeDecision()
         {
@@ -46,9 +69,12 @@ namespace AnimalsV2
         /// </summary>
         private void Prioritize()
         {
-            List<Priorities> prio = new List<Priorities>();
+            prio.Clear();
 
-
+            AnimalModel animalModel = animalController.animalModel;
+            //Debug.Log("currentHydration: " + animalModel.currentHydration);
+            //Debug.Log("maxHydration: " + animalModel.traits.maxEnergy);
+            
             if (!animalModel.HighHydration && !animalModel.HighEnergy)
                 //not low energy but not high either + not low hydration but not high either -> find Water and then Food.
             {
@@ -57,8 +83,6 @@ namespace AnimalsV2
 
                 prio.Insert(0, Food);
                 prio.Insert(0, Water);
-
-                
             }
 
             if (animalModel.HighHydration && !animalModel.HighEnergy)
@@ -104,6 +128,7 @@ namespace AnimalsV2
             //     }
             //     Debug.Log(priolist);
             // }
+            
 
             //TODO det som händer här är att det blir alltid den som är sist i priority vi går till, which is bad.
             foreach (var priority in prio)
@@ -116,21 +141,18 @@ namespace AnimalsV2
                         {
                             return;
                         }
-
                         break;
                     case Water:
                         if (ChangeState(animalController.goToWaterState))
                         {
                             return;
                         }
-                        
                         break;
                     case Mate:
                         if (ChangeState(animalController.goToMate))
                         {
                             return;
                         }
-
                         break;
                     default:
                         fsm.GoToDefaultState();
@@ -150,20 +172,19 @@ namespace AnimalsV2
         private void EventSubscribe()
         {
             //eventPublisher.onParamTickEvent += MakeDecision;
-            eventPublisher.onSenseTickEvent += MakeDecision;
-
+            //eventPublisher.onSenseTickEvent += MakeDecision;
             animalController.actionPerceivedHostile += HandleHostileTarget;
-            animalController.actionDeath += HandleDeath;
         }
 
 
         public void EventUnsubscribe()
         {
             //eventPublisher.onParamTickEvent -= MakeDecision;
-            eventPublisher.onSenseTickEvent -= MakeDecision;
-
-            animalController.actionPerceivedHostile -= HandleHostileTarget;
-            animalController.actionDeath -= HandleDeath;
+            //eventPublisher.onSenseTickEvent -= MakeDecision;
+            if (animalController)
+            {
+                animalController.actionPerceivedHostile -= HandleHostileTarget;
+            }
         }
 
         /// <summary>
@@ -176,10 +197,10 @@ namespace AnimalsV2
             ChangeState(animalController.fleeingState);
         }
 
-        private void HandleDeath()
-        {
-            //Debug.Log("You dead!");
-            ChangeState(animalController.deadState);
-        }
+        // private void HandleDeath(AnimalController animalController, bool gotEaten)
+        // {
+        //     //Debug.Log("You dead!");
+        //     ChangeState(animalController.deadState);
+        // }
     }
 }

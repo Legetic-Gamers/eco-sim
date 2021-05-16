@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -15,43 +17,56 @@ public class WaterChunk : MonoBehaviour
     HeightMapSettings heightMapSettings;
     Vector3[] worldVerticies;
     float realWaterLevel;
+    private GameObject waterObjectPrefab;
+    
 
 
-    public void Setup(Vector2 position, WaterSettings waterSettings, HeightMapSettings heightMapSettings, Vector3 scale, Transform parent, Vector3[] worldVerticies)
+    public void Setup(Vector2 position, WaterSettings waterSettings, HeightMapSettings heightMapSettings, Vector3 scale, Transform parent, Vector3[] worldVerticies, bool placeWaterSources)
     {
         this.waterSettings = waterSettings;
         this.heightMapSettings = heightMapSettings;
         this.worldVerticies = worldVerticies;
 
-
         waterObject = new GameObject("Water Chunk");
         waterObject.transform.parent = parent;
 
-        waterObject.transform.position = new Vector3(position.x, 0, position.y);
         meshFilter = waterObject.AddComponent<MeshFilter>();
         meshRenderer = waterObject.AddComponent<MeshRenderer>();
-        meshRenderer.material = waterSettings.material;
+        meshRenderer.material = waterSettings.Material;
 
         meshFilter.mesh = GenerateMesh();
         //waterObject.AddComponent<WaterNoise>();
         //waterObject.GetComponent<WaterNoise>().settings = waterSettings;
-        realWaterLevel = Mathf.Lerp(heightMapSettings.minHeight, heightMapSettings.maxHeight, waterSettings.waterLevel);
+        realWaterLevel = Mathf.Lerp(heightMapSettings.MinHeight, heightMapSettings.MaxHeight, waterSettings.WaterLevel);
         waterObject.transform.localScale = new Vector3(scale.x, 1, scale.z);
-        waterObject.transform.position += new Vector3(0, realWaterLevel, 0);
+        waterObject.transform.position = new Vector3(position.x, realWaterLevel, position.y);
         collider = waterObject.AddComponent<BoxCollider>();
         collider.size = new Vector3(1, realWaterLevel, 1);
         collider.center -= new Vector3(0, 0.5f * realWaterLevel, 0);
 
         obstacle = waterObject.AddComponent<NavMeshObstacle>();
+        obstacle.size = collider.size;
+        obstacle.center = collider.center - new Vector3(0,0.1f,0);
         obstacle.carving = true;
-        
 
-        if (waterSettings.stylizedWater)
+        if (waterSettings.WaterObjectPrefab == null)
+        {
+            waterObjectPrefab = new GameObject("Water Object Default");
+        }else
+        {
+            waterObjectPrefab = waterSettings.WaterObjectPrefab;
+        }
+        
+        if (waterSettings.StylizedWater)
         {
             var stylizedObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
             stylizedObject.name = "Water Stylized";
+            stylizedObject.layer = LayerMask.NameToLayer("Water");
             stylizedObject.transform.parent = waterObject.transform;
             stylizedObject.transform.localScale = collider.size;
+            // var stylizedCollider = stylizedObject.AddComponent<BoxCollider>();
+            // stylizedCollider.size = new Vector3(1, realWaterLevel, 1);
+            // stylizedCollider.center -= new Vector3(0, 0.5f * realWaterLevel, 0);
 
             if (Application.isEditor)
             {
@@ -67,15 +82,23 @@ public class WaterChunk : MonoBehaviour
             }
             var stylizedMeshRenderer = stylizedObject.GetComponent<MeshRenderer>();
 
-            stylizedObject.transform.position = new Vector3(0, realWaterLevel / 2, 0);
-            stylizedMeshRenderer.material = waterSettings.stylizedMaterial;
+            stylizedObject.transform.position = new Vector3(position.x, realWaterLevel / 2, position.y);
+            stylizedMeshRenderer.material = waterSettings.StylizedMaterial;
         }
 
-
-        PlaceWaterSources();
-
+        StartCoroutine(DelayWaterSources(placeWaterSources));
     }
 
+    IEnumerator DelayWaterSources(bool placeWaterSources)
+    {
+        //Debug.Log("Putting down water sources the frame after start!");
+        yield return null;  //Very important. Schedule coroutine to fire after next frame after update
+        if (placeWaterSources)
+        {
+            PlaceWaterSources();
+        }
+    }
+    
     private void OnDestroy()
     {
         Destroy(waterObject);
@@ -90,19 +113,19 @@ public class WaterChunk : MonoBehaviour
         var normals = new List<Vector3>();
         var uvs = new List<Vector2>();
 
-        for (int x = 0; x < waterSettings.gridSize + 1; x++)
+        for (int x = 0; x < waterSettings.GridSize + 1; x++)
         {
-            for (int y = 0; y < waterSettings.gridSize + 1; y++)
+            for (int y = 0; y < waterSettings.GridSize + 1; y++)
             {
-                verticies.Add(new Vector3(-waterSettings.size * 0.5f + waterSettings.size * (x / ((float)waterSettings.gridSize)), 0, -waterSettings.size * 0.5f + waterSettings.size * (y / ((float)waterSettings.gridSize))));
+                verticies.Add(new Vector3(-waterSettings.Size * 0.5f + waterSettings.Size * (x / ((float)waterSettings.GridSize)), 0, -waterSettings.Size * 0.5f + waterSettings.Size * (y / ((float)waterSettings.GridSize))));
                 normals.Add(Vector3.up);
-                uvs.Add(new Vector2(x / (float)waterSettings.gridSize, y / (float)waterSettings.gridSize));
+                uvs.Add(new Vector2(x / (float)waterSettings.GridSize, y / (float)waterSettings.GridSize));
             }
 
         }
 
         var triangles = new List<int>();
-        var vertCount = waterSettings.gridSize + 1;
+        var vertCount = waterSettings.GridSize + 1;
 
         for (int i = 0; i < vertCount * vertCount - vertCount; i++)
         {
@@ -128,7 +151,7 @@ public class WaterChunk : MonoBehaviour
     {
         foreach (var vert in worldVerticies)
         {
-            if (Mathf.Abs(vert.y - realWaterLevel) <= waterSettings.waterVertexDiff)
+            if (Mathf.Abs(vert.y - realWaterLevel) <= waterSettings.WaterVertexDiff)
             {
                 PlaceWaterSource(vert);
             }
@@ -138,14 +161,29 @@ public class WaterChunk : MonoBehaviour
 
     private void PlaceWaterSource(Vector3 pos)
     {
-        GameObject waterSource = new GameObject("Water Source");
+        GameObject waterSource = Instantiate(waterObjectPrefab);
         waterSource.transform.parent = waterObject.transform;
         waterSource.tag = "Water";
         waterSource.layer = LayerMask.NameToLayer("Target");
         BoxCollider box = waterSource.AddComponent<BoxCollider>();
         box.isTrigger = true;
         box.size = new Vector3(0.5f, 0.5f, 0.5f);
-        waterSource.transform.position = pos;
+        NavMeshHit hit;
+        
+        
+        //make sure water blocks are placed on navmesh
+        if (NavMesh.SamplePosition(pos, out hit, 100f,
+            1 << NavMesh.GetAreaFromName("Walkable")))
+        {
+            waterSource.transform.position = hit.position;
+        }
+        else
+        {
+            waterSource.transform.position = pos;
+            
+            Debug.Log("WTF");
+        }
+        
     }
 
 }

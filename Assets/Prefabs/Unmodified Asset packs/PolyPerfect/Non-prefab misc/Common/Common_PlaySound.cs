@@ -37,7 +37,7 @@ public class Common_PlaySound : MonoBehaviour
         }
     }
 
-    void Running()
+    protected void Running()
     {
         if (running)
         {
@@ -45,7 +45,7 @@ public class Common_PlaySound : MonoBehaviour
         }
     }
 
-    void Attacking()
+    protected void Attacking()
     {
         if (attacking)
         {
@@ -53,7 +53,7 @@ public class Common_PlaySound : MonoBehaviour
         }
     }
 
-    void Death()
+    protected void Death()
     {
         if (death)
         {
@@ -61,7 +61,7 @@ public class Common_PlaySound : MonoBehaviour
         }
     }
 
-    void Sleeping()
+    protected void Sleeping()
     {
         if (sleeping)
         {

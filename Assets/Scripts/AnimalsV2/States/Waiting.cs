@@ -6,16 +6,15 @@ namespace AnimalsV2.States
     public class Waiting : State
     {
 
-        private float waitTime = 1f;
+        private float waitTime = 3f;
         public Waiting(AnimalController animal, FiniteStateMachine finiteStateMachine) : base(animal, finiteStateMachine)
         {
-            currentStateAnimation = StateAnimation.Idle;
+            stateAnimation = StateAnimation.Idle;
         }
 
         public override void Enter()
         {
             base.Enter();
-            currentStateAnimation = StateAnimation.Idle;
             
             if (animal.agent.isActiveAndEnabled && animal.agent.isOnNavMesh)
             {
@@ -30,7 +29,10 @@ namespace AnimalsV2.States
         {
 
             // Wait a while then change state and resume walking
-            yield return new WaitForSeconds(waitTime/Time.timeScale);
+            // yield return new WaitForSeconds(waitTime/Time.timeScale);
+            
+            yield return new WaitForSeconds(waitTime);
+            
             finiteStateMachine.GoToDefaultState();
             if (animal.agent.isActiveAndEnabled && animal.agent.isOnNavMesh)
             {
@@ -63,6 +65,10 @@ namespace AnimalsV2.States
 
         public void SetWaitTime(float time)
         {
+            //Reset waiting
+            animal.StopCoroutine(Wait());
+            
+            //Set new waiting time
             this.waitTime = time;
         }
 

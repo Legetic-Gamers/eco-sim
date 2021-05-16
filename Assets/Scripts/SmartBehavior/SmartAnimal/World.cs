@@ -157,7 +157,7 @@ public class World : MonoBehaviour
             AnimalController animalController = newObject.GetComponent<AnimalController>();
             if (animalController)
             {
-                animalController.onBirth += HandleBirth;
+                animalController.OnBirth += HandleBirth;
                 
             }
         }
@@ -180,7 +180,7 @@ public class World : MonoBehaviour
                 if (animalController)
                 {
                     
-                    animalController.onBirth -= HandleBirth;
+                    animalController.OnBirth -= HandleBirth;
                     
                 }
             }
@@ -193,7 +193,7 @@ public class World : MonoBehaviour
                 AnimalController animalController = w.GetComponent<AnimalController>();
                 if (animalController)
                 {
-                    animalController.onBirth -= HandleBirth;
+                    animalController.OnBirth -= HandleBirth;
                     
                 }
             }

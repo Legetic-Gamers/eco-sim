@@ -2,27 +2,75 @@
  * Author: Alexander L.V
  */
 
+using System;
+using System.Linq;
 using UnityEngine;
 
 namespace AnimalsV2
 {
-    public class AnimationController
+    public class AnimationController : MonoBehaviour
     {
         private AnimalController animal;
         private Animator animator;
+        private float defaultSpeed;
+        
+        [HideInInspector]
+        private Camera camera;
 
         private float transitionSpeed = 0.1f;
 
+        private const float cameraDistanceThreshold = 65f;  //threshold in which lower distance to camera will render animation
 
-        public AnimationController(AnimalController animal)
+        public void Init()
+        {
+            animal = GetComponent<AnimalController>();
+            animator = GetComponent<Animator>();
+            animator.keepAnimatorControllerStateOnDisable = true;
+            defaultSpeed = animator.speed;
+            camera = Camera.main;
+            EventSubscribe();
+        }
+
+        public void OnDestroy()
+        {
+            EventUnsubscribe();
+        }
+
+        //only animate when close to camera and when timescale is below a threshold
+        private void Update()
+        {
+            if (Time.timeScale < 5)
+            {
+                if (animator.enabled && !IsCloseToCamera())
+                {
+                    animator.enabled = false;
+                    //Debug.Log("disable animator");
+                } else if (!animator.enabled && IsCloseToCamera())
+                {
+                    animator.enabled = true;
+                    animator.Rebind();
+                    //Debug.Log("enable animator");
+                    FSM_OnStateEnter(animal.fsm.currentState);
+                    
+                }    
+            }
+            else
+            {
+                if (animator.enabled)
+                {
+                    animator.enabled = false;
+                }
+            }
+        }
+
+        public AnimationController()
         {
             //Get access to animal to animate
-            this.animal = animal;
-
+            //this.animal = animal;
+            
             //Get access to Animator to animate the animal.
-            animator = this.animal.GetComponent<Animator>();
-            animator.Play("Base Layer." + StateAnimation.Walking,0);
-            //Debug.Log("AnimationController listening to FSM");
+            //animator = this.animal.GetComponent<Animator>();
+            //animator.Play("Base Layer." + StateAnimation.Walking,0);
         }
 
         public void EventSubscribe()
@@ -30,23 +78,30 @@ namespace AnimalsV2
             //Listen to state changes of the animals states to update animations.
             animal.fsm.OnStateEnter += FSM_OnStateEnter;
             animal.fsm.OnStateLogicUpdate += FSM_OnStateLogicUpdate;
-            animal.fsm.OnStateExit += FSM_OnStateExit;
         }
 
         public void EventUnsubscribe()
         {
             animal.fsm.OnStateEnter -= FSM_OnStateEnter;
             animal.fsm.OnStateLogicUpdate -= FSM_OnStateLogicUpdate;
-            animal.fsm.OnStateExit -= FSM_OnStateExit;
         }
 
         //Animation parameters which need updating on state enter.
-        private void FSM_OnStateEnter(State state)
+        public void FSM_OnStateEnter(State state)
         {
-            //Debug.Log("Enter " + state.GetStateAnimation() +" Animation");
-
             //animator.SetFloat("runningSpeed",animal.animalModel.GetSpeedPercentage);
-            animator?.CrossFade("Base Layer." + state.GetStateAnimation(), transitionSpeed, 0);
+            CrossOverAnimation(state.GetStateAnimation());
+        }
+
+        public void PlayAnimation(string animationName)
+        {
+            animator.Play("Base Layer." + animationName,0 ,0 );
+        }
+
+        public void CrossOverAnimation(string animationName)
+        {
+            animator.CrossFade("Base Layer." + animationName, transitionSpeed, 0);
+
         }
 
         //Animation parameters which need updating every frame
@@ -63,17 +118,12 @@ namespace AnimalsV2
             //     animator?.CrossFade("Base Layer." + state.GetStateAnimation(), transitionSpeed, 0);
             // }
         }
-
-        //Animation parameters which need updating once a state ends
-        private void FSM_OnStateExit(State state)
+        
+        
+        bool IsCloseToCamera()
         {
-            //Debug.Log("Exit " + state.GetStateAnimation() +" Animation");
-            animator?.CrossFade("Base Layer." + state.GetStateAnimation(), transitionSpeed, 0);
+            return Vector3.Distance(camera.transform.position, animal.transform.position) < cameraDistanceThreshold;
         }
-
-        public void PlayAnimation(StateAnimation animation, float transitionSpeed)
-        {
-            animator.CrossFade("Base Layer." + animation, transitionSpeed, 0);
-        }
+        
     }
 }

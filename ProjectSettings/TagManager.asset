@@ -8,6 +8,9 @@ TagManager:
   - Water
   - Plant
   - Wall
+  - FxTemporaire
+  - Music
+  - Hideout
   layers:
   - Default
   - TransparentFX

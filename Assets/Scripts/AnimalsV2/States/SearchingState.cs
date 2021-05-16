@@ -54,7 +54,7 @@ namespace AnimalsV2.States
         {
             targetObject = t;
             
-            currentStateAnimation = Walking;
+            stateAnimation = Walking;
             //Override animation
             if (t != null)
             {
@@ -63,7 +63,7 @@ namespace AnimalsV2.States
                 //target is an animal and i can eat it -> we are chasing something.
                 if (targetController != null && animal.animalModel.CanEat(targetController.animalModel)){
                     //Run fast if chasing
-                    currentStateAnimation = Running;
+                    stateAnimation = Running;
                     //Debug.Log(currentStateAnimation.ToString());
                     
                 }

@@ -3,30 +3,33 @@ using Model;
 
 public class WolfModel : AnimalModel, IEdible
 {
-    public WolfModel() : base(new Traits(2.35f, 200, 100, 
-                                100, 5.55f, 10, 
-                                10, 100, 10, 
-                                180, 10, 5), 0)
+    public WolfModel() : base(new Traits(2.35f, 250, 100, 
+                                260, 6.25f, 120f, 
+                                10, 120, 10, 
+                                180, 14, 10), 0)
 
     {
         nutritionValue = traits.maxEnergy;
+        gestationTime = 15; // 10 weeks IRL
     }
 
 
     public WolfModel(Traits traits, int generation) : base(traits, generation)
     {
         nutritionValue = traits.maxEnergy;
+        gestationTime = 15;
     }
     public float nutritionValue { get; set; }
+    public bool isEaten { get; set; }
 
 
 
     public override AnimalModel Mate(AnimalModel otherParent)
     {
         Traits childTraits = traits.Crossover(otherParent.traits, age, otherParent.age);
-        childTraits.Mutation();
-        //TODO logic to determine generation
-        return new WolfModel(childTraits,0);
+        childTraits.Mutation(0.05f);
+        
+        return new WolfModel(childTraits,Math.Max(generation, otherParent.generation) + 1);
     }
     
     
@@ -44,6 +47,14 @@ public class WolfModel : AnimalModel, IEdible
 
     public float GetEaten()
     {
-        return nutritionValue;
+        //Only return nutrition if wolf has not already been eaten.
+        if (!isEaten)
+        {
+            actionKilled?.Invoke();
+            isEaten = true;
+            return nutritionValue;
+        }
+
+        return 0;
     }
 }

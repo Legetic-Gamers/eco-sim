@@ -1,25 +1,50 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using DefaultNamespace;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class AnimalSpawner : MonoBehaviour
 {
     private ObjectPooler pooler;
+    public Action<GameObject, string> onAnimalInstantiated;
+    public Action isDone;
+    private int loop = 0;
     public void Start()
     {
-        pooler = ObjectPooler.instance;
-        StartCoroutine(SpawnRabbit());
+        pooler = ObjectPooler.Instance;
+        
+        //StartCoroutine(SpawnRabbit());
+        for (int i = 0; i < 3; i++)
+        {
+            //pooler.SpawnFromPool("Rabbits", new Vector3(Random.Range(0f, 10f), 0, Random.Range(0f, 10f)), Quaternion.identity);
+            GameObject obj = Instantiate(pooler.pools[0].prefab, new Vector3(Random.Range(0f, 10f), 0, 0), Quaternion.identity);
+            obj.SetActive(false);
+            pooler.HandleAnimalInstantiated(obj, "Rabbits");
+        }
+        pooler.HandleFinishedSpawning();
+    }
+
+    private void Update()
+    {
+        if (loop > 300)
+        {
+            pooler.SpawnFromPool("Rabbits", new Vector3(Random.Range(0f, 10f), 0, Random.Range(0f, 10f)), Quaternion.identity);
+            loop = 0;
+        }
+
+        loop++;
+
     }
 
     private IEnumerator SpawnRabbit()
     {
-        int i = 1;
         while(true)
         {
-            pooler.SpawnFromPool("Rabbit", Random.insideUnitCircle * 10, Quaternion.identity);
-            yield return new WaitForSeconds(0.1f);
+            Vector3 position = new Vector3(Random.Range(0f, 10f), 0, Random.Range(0f, 10f));
+            pooler.SpawnFromPool("Rabbit", position, Quaternion.identity);
+            yield return new WaitForSeconds(1f);
         }
     }
 }

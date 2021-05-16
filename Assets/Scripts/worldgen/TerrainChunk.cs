@@ -54,9 +54,9 @@ public class TerrainChunk
         this.waterSettings = waterSettings;
         this.objectPlacementSettings = objectPlacementSettings;
 
-        sampleCentre = coordinate * meshSettings.meshWorldSize / meshSettings.meshScale;
-        Vector2 position = coordinate * meshSettings.meshWorldSize;
-        bounds = new Bounds(position, Vector2.one * meshSettings.meshWorldSize);
+        sampleCentre = coordinate * meshSettings.MeshWorldSize / meshSettings.MeshScale;
+        Vector2 position = coordinate * meshSettings.MeshWorldSize;
+        bounds = new Bounds(position, Vector2.one * meshSettings.MeshWorldSize);
 
         meshObject = new GameObject("Terrain Chunk");
         meshRenderer = meshObject.AddComponent<MeshRenderer>();
@@ -75,9 +75,11 @@ public class TerrainChunk
             terrainMesh = new TerrainMesh();
             terrainMesh.updateCallback += UpdateTerrainChunk;
             terrainMesh.updateCallback += SetCollisionMesh;
-            if (waterSettings.generateWater) terrainMesh.updateCallback += SetWater;
             if (OnChunkLoaded != null)
                 terrainMesh.updateCallback += OnChunkLoaded;
+            
+            if (waterSettings.GenerateWater) terrainMesh.updateCallback += SetWater;
+
             terrainMesh.updateCallback += PlaceObjects;
             SetVisible(true);
         }
@@ -103,7 +105,7 @@ public class TerrainChunk
 
     public void Load()
     {
-        ThreadedDataRequester.RequestData(() => HeightMapGenerator.GenerateHeightMap(meshSettings.numVertsPerLine, meshSettings.numVertsPerLine, heightMapSettings, sampleCentre), OnHeightMapReceived);
+        ThreadedDataRequester.RequestData(() => HeightMapGenerator.GenerateHeightMap(meshSettings.NumVertsPerLine, meshSettings.NumVertsPerLine, heightMapSettings, sampleCentre), OnHeightMapReceived);
     }
 
     private void OnHeightMapReceived(object heightMapObject)
@@ -223,8 +225,9 @@ public class TerrainChunk
 
     public void SetWater()
     {
+        //Debug.Log("Position: " + coordinate * meshSettings.meshWorldSize);
         waterChunk = meshObject.AddComponent<WaterChunk>();
-        waterChunk.Setup(coordinate * meshSettings.meshWorldSize, waterSettings, heightMapSettings, meshRenderer.bounds.size, meshObject.transform, meshFilter.mesh.vertices);
+        waterChunk.Setup(coordinate * meshSettings.MeshWorldSize, waterSettings, heightMapSettings, meshRenderer.bounds.size, meshObject.transform, meshFilter.mesh.vertices, true);
     }
 
     public void PlaceObjects()
@@ -232,9 +235,9 @@ public class TerrainChunk
         if (hasSetCollider)
         {
             ObjectPlacement objectPlacement = meshObject.AddComponent<ObjectPlacement>();
-            objectPlacement.PlaceObjects(objectPlacementSettings, meshSettings, heightMapSettings);
+            objectPlacement.PlaceObjects(coordinate * meshSettings.MeshWorldSize);
+            ObjectPooler.Instance.HandleFinishedSpawning();
         }
-
     }
 
     public void SetVisible(bool visible)

@@ -9,6 +9,7 @@ using AnimalsV2.States.AnimalsV2.States;
 using Unity.Barracuda;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
+using Unity.MLAgents.Policies;
 using Unity.MLAgents.Sensors;
 using UnityEngine;
 using UnityEngine.AI;
@@ -19,48 +20,47 @@ public class AnimalBrainAgent : Agent,IAgent
 {
     //ANIMAL RELATED THINGS
     private AnimalController animalController;
-    private AnimalModel animalModel;
     private TickEventPublisher eventPublisher;
     private FiniteStateMachine fsm;
 
 
     public World world;
 
-
-    //We could have multiple brains, EX:
-    // Brain to use when no wall is present
-    //public NNModel noWallBrain;
-    // Brain to use when a jumpable wall is present
-    //public NNModel smallWallBrain;
-    // Brain to use when a wall requiring a block to jump over is present
-    //public NNModel bigWallBrain;
-    public void Start()
+    public void Init()
     {
-        //Debug.Log("Brain Awake");
-
         animalController = GetComponent<AnimalController>();
         fsm = animalController.fsm;
-        animalModel = animalController.animalModel;
-        
-
         eventPublisher = FindObjectOfType<global::TickEventPublisher>();
-
-        //
-
         EventSubscribe();
+    }
+
+    public void OnDestroy()
+    {
+        EventUnsubscribe();
+    }
+
+    public void Activate()
+    {
+        eventPublisher.onSenseTickEvent += RequestDecision;
+    }
+
+    public void Deactivate()
+    {
+        eventPublisher.onSenseTickEvent -= RequestDecision;
     }
 
     public override void OnEpisodeBegin()
     {
+
+        //dont run OnEpisodeBegin if inference mode
+        if (TryGetComponent(out BehaviorParameters bp) && bp.BehaviorType == BehaviorType.InferenceOnly) return;
+        
+        
+        Debug.Log("WHY IS ONEPISODEBEGIN GETTING CALLED?");
         base.OnEpisodeBegin();
-
-        //Reset stuff 
-
+        
 
         //Reset animal position and rotation.
-        // 
-        //resetRabbit();
-
         ResetRabbit();
 
         if (fsm != null && fsm.currentState is Dead)
@@ -70,15 +70,12 @@ public class AnimalBrainAgent : Agent,IAgent
 
         if (world) world.ResetOnOnlyOneLeft();
 
-        // if (StepCount == MaxStep)
-        // {
-        //     Destroy(gameObject);
-        // }
+        
     }
 
     private void ResetRabbit()
     {
-        
+        AnimalModel animalModel = animalController.animalModel;
         //MAKE SURE YOU ARE USING LOCAL POSITION
         if (transform != null && world != null)
         {
@@ -89,12 +86,15 @@ public class AnimalBrainAgent : Agent,IAgent
             
             if (animalModel != null && animalController !=null)
             {
-                animalModel.currentEnergy = animalModel.traits.maxEnergy;
+                float beginEnergy = Random.Range(0.3f, 1f);
+                float beginHydration = Random.Range(0.3f, 1f);
+
+                animalModel.currentEnergy = animalModel.traits.maxEnergy * beginEnergy;
                 animalModel.currentHealth = animalModel.traits.maxHealth;
-                animalModel.currentHydration = animalModel.traits.maxHydration;
+                animalModel.currentHydration = animalModel.traits.maxHydration * beginHydration;
                 animalModel.reproductiveUrge = 0.0f;
                 animalModel.age = 0;
-                animalController.fsm.absorbingState = false;
+                animalController.fsm.isLocked = false;
                 
                 animalController.isInfertile = true;
             }
@@ -112,12 +112,15 @@ public class AnimalBrainAgent : Agent,IAgent
     public override void CollectObservations(VectorSensor sensor)
     {
         base.CollectObservations(sensor);
+        
+        AnimalModel animalModel = animalController.animalModel;
+
         if (animalModel == null) return;
         
         //parameters of the Animal = 2
-        sensor.AddObservation(animalModel.GetEnergyPercentage);
+        sensor.AddObservation(animalModel.EnergyPercentage);
         //sensor.AddObservation(animalModel.currentSpeed / animalModel.traits.maxSpeed); //UNESSECARY
-        sensor.AddObservation(animalModel.GetHydrationPercentage); 
+        sensor.AddObservation(animalModel.HydrationPercentage); 
         //sensor.AddObservation(animalModel.currentHealth / animalModel.traits.maxHealth);//UNESSECARY
         //sensor.AddObservation(animalModel.WantingOffspring); IS ALREADY IN GOTOMATE REQUIREMENTS
 
@@ -135,6 +138,9 @@ public class AnimalBrainAgent : Agent,IAgent
     public override void OnActionReceived(ActionBuffers vectorAction)
     {
         base.OnActionReceived(vectorAction);
+        
+        AnimalModel animalModel = animalController.animalModel;
+
         ActionSegment<int> discreteActions = vectorAction.DiscreteActions;
 
         
@@ -143,22 +149,22 @@ public class AnimalBrainAgent : Agent,IAgent
         if (discreteActions[0] == 0)
         {
             ChangeState(animalController.wanderState);
-            print("Wander.");
+            //print("Wander.");
         }
         else if (discreteActions[0] == 1)
         {
             ChangeState(animalController.goToWaterState);
-            print("Look for Water.");
+            //print("Look for Water.");
         }
         else if (discreteActions[0] == 2)
         {
             ChangeState(animalController.goToMate);
-            print("Look for Mate.");
+            //print("Look for Mate.");
         }
         else if (discreteActions[0] == 3)
         {
             ChangeState(animalController.goToFoodState);
-            print("Look for food.");
+            //print("Look for food.");
         }
 
         ///////////////////////////////////////////////////////////////SET REWARDS/PENALTIES
@@ -169,12 +175,12 @@ public class AnimalBrainAgent : Agent,IAgent
             {
                 ChangeState(animalController.fleeingState);
         
-                print("Flee!");
+                //print("Flee!");
             }
             else
             {
-                AddReward(-5 / animalController.animalModel.traits.ageLimit);
-                if (world) world.totalScore -= 5 / animalController.animalModel.traits.ageLimit;
+                AddReward(-1);
+                if (world) world.totalScore -= 1;
             }
         }
         
@@ -196,9 +202,10 @@ public class AnimalBrainAgent : Agent,IAgent
         //////////////////////////////////////////MAX Count functionality
         if (StepCount >= 1500)
         {
-            //EndEpisode();
+            
             //TODO REENABLE FOR TRAINING
-            //Destroy(gameObject);
+            //EndEpisode();
+            
         }
         
     }
@@ -214,10 +221,7 @@ public class AnimalBrainAgent : Agent,IAgent
             
             actionMask.WriteMask(0, new int[] {0, 1, 2, 3});
         }
-        // else
-        // {
-        //     Debug.Log("False");
-        // }
+        
     }
 
     //Used for testing, gives us control over the output from the ML algortihm.
@@ -288,11 +292,13 @@ public class AnimalBrainAgent : Agent,IAgent
             discreteActions[0] = 4;
             
         }
+        /*
         else if (Input.GetKey(KeyCode.Alpha0))
         {
             HandleDeath();
             
         }
+        */
     }
 
 
@@ -306,45 +312,41 @@ public class AnimalBrainAgent : Agent,IAgent
     //Listen to when senses were updated.
     private void EventSubscribe()
     {
-        eventPublisher.onSenseTickEvent += RequestDecision;
-
-        animalController.actionDeath += HandleDeath;
+        animalController.deadState.onDeath += HandleDeath;
         animalController.matingState.onMate += HandleMate;
         animalController.eatingState.onEatFood += HandleEating;
         animalController.drinkingState.onDrinkWater += HandleDrinking;
         
         //For fast action on spotting hostile
-        // animalController.actionPerceivedHostile += HandleHostileTarget;
+        animalController.actionPerceivedHostile += HandleHostileTarget;
     }
 
 
     public void EventUnsubscribe()
     {
-        eventPublisher.onSenseTickEvent -= RequestDecision;
-
-        animalController.actionDeath -= HandleDeath;
+        animalController.deadState.onDeath -= HandleDeath;
         animalController.matingState.onMate -= HandleMate;
         animalController.eatingState.onEatFood -= HandleEating;
         animalController.drinkingState.onDrinkWater -= HandleDrinking;
         
         //For fast action on spotting hostile
-        // animalController.actionPerceivedHostile -= HandleHostileTarget;
+        animalController.actionPerceivedHostile -= HandleHostileTarget;
     }
 
     //Called when the animal sees a hostile animal. This allows for quicker reaction times to this urgent event.
-    // private void HandleHostileTarget(GameObject obj)
-    // {
-    //     RequestDecision();
-    // }
+    private void HandleHostileTarget(GameObject obj)
+    {
+        RequestDecision();
+    }
 
 
-    private void HandleDeath()
+    private void HandleDeath(AnimalController animalController, bool gotEaten)
     {
         //Penalize for every year not lived. (mating gives more than death)
         // AddReward( (animalModel.age / animalModel.traits.ageLimit)/2);
         // if (world) world.totalScore += (int)((animalModel.age / animalModel.traits.ageLimit)/2);
         
-        ChangeState(animalController.deadState);
+        //ChangeState(animalController.deadState);
         EventUnsubscribe();
 
         //Task failed
@@ -360,10 +362,7 @@ public class AnimalBrainAgent : Agent,IAgent
         //Task achieved
         //TODO REENABLE FOR TRAINING
         //EndEpisode();
-        
-        
-        
-        //Destroy(gameObject);
+
     }
 
    

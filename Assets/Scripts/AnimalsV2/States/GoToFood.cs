@@ -3,6 +3,7 @@
  */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.MLAgents;
@@ -28,16 +29,17 @@ namespace AnimalsV2.States
         public override void Enter()
         {
             base.Enter();
-            currentStateAnimation = StateAnimation.Walking;
+            stateAnimation = StateAnimation.Walking;
             
             if (closestFood != null && closestFood.TryGetComponent(out AnimalController a))
             {
                 //If we are going to eat an animal
-                currentStateAnimation = StateAnimation.Running;
+                stateAnimation = StateAnimation.Running;
                 //Dont slow down when chasing.
                 animal.agent.autoBraking = false;
-
             }
+
+            //animal.StartCoroutine(ChangeStuckState());
             
             //Make an update instantly
             LogicUpdate();
@@ -48,6 +50,8 @@ namespace AnimalsV2.States
             base.Exit();
             //Set autobraking back on.
             animal.agent.autoBraking = true;
+            
+            //animal.StopCoroutine(ChangeStuckState());
         }
         public override void HandleInput()
         {
@@ -58,33 +62,43 @@ namespace AnimalsV2.States
         {
             base.LogicUpdate();
 
+            if (closestFood != null)
+            {
+                Vector3 a = new Vector3(animal.transform.position.x, 0, animal.transform.position.z);
+                Vector3 b = new Vector3(closestFood.transform.position.x, 0, closestFood.transform.position.z);
 
-            nearbyFood.Clear();
-            //Get all potential food
-            if (animal.visibleFoodTargets != null) // first list may be null
-                nearbyFood = nearbyFood.Concat(animal.visibleFoodTargets).ToList();
-            if (animal.heardPreyTargets != null) // second list may be null
-                nearbyFood = nearbyFood.Concat(animal.heardPreyTargets).ToList();
-            
+
+                if (Vector3.Distance(a, b) <= animal.agent.stoppingDistance + 0.75)
+                {
+                    animal.eatingState.SetTarget(closestFood);
+                    finiteStateMachine.ChangeState(animal.eatingState);
+                    return;
+                }   
+            }
+
             if (MeetRequirements())
             {
-                closestFood = NavigationUtilities.GetNearestObject(nearbyFood, animal.transform.position);
-                if (closestFood != null && animal.agent.isActiveAndEnabled)
+                if (animal.agent.isActiveAndEnabled)
                 {
 
                     Vector3 pointToRunTo = closestFood.transform.position;
-                    //Move the animal using the navmeshagent.
-                    NavigationUtilities.NavigateToPoint(animal, pointToRunTo);
                     
-                    
-                    if (Vector3.Distance(animal.transform.position, closestFood.transform.position) <=
-                    animal.agent.stoppingDistance + 0.3)
+                    //Overshoot if we are chasing another animal.
+                    if (closestFood.TryGetComponent(out NavMeshAgent otherAgent))
                     {
-                        animal.eatingState.SetTarget(closestFood);
-                        finiteStateMachine.ChangeState(animal.eatingState);
+                        pointToRunTo = pointToRunTo + otherAgent.velocity;
                     }
+
+                    //Move the animal using the navmeshagent.
+                    bool succesful = NavigationUtilities.NavigateToPoint(animal, pointToRunTo);
                     
-                    
+                    //if movement was not succesful return to default state;
+                    if (!succesful)
+                    {
+                        //Debug.Log("State gotoFood is stuck, changing to defaultState");
+                        finiteStateMachine.GoToDefaultState();
+                    }
+
                 }else
                 {
                     finiteStateMachine.GoToDefaultState();
@@ -106,7 +120,7 @@ namespace AnimalsV2.States
 
         public override bool MeetRequirements()
         {
-            
+            nearbyFood.Clear();
             nearbyFood = animal.heardPreyTargets.Concat(animal.visibleFoodTargets).ToList();
             
 
